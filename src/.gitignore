@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+
+program.bin
+storage.bin
+disk.img
+trace.txt
+temp.craw
+
+run
+test
+untest
+perform
+song
+speech
+
+target/
