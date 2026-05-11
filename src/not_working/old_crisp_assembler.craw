@@ -1,0 +1,106 @@
+; ##########  ##########  ##########  ##########  ##########
+; ##          ##      ##      ##      ####        ##      ##
+; ##          ##########      ##        ######    ##########
+; ##          ##  ####        ##            ####  ##
+; ##########  ##    ####  ##########  ##########  ##
+
+; Craw Rapid Instruction Set Programming
+
+; !!!PLEASE REMEMBER!!! !!!When adding new comments update all non-zero fgo lines!!!
+
+; Lowercase letters, 0-9 digits, " for string literals, and simple symbols .,' comments are #
+; use of ~ encloses raw crawssembly code for lower-level control
+; 0x01 - 0x0f are hot registers, registers above these (i.e. > 0x0f)
+; are used outside of the single-line scope. 0x03-0x04 is kept empty for quick cals
+; 0x06 and 0x07 are used for line statement values, such as the comparison in branch statments
+; 0x05[0b00000011] is the current word mode. i.e. they type of code the executioner is currently in
+; 0 = string, 1 = number, 2 = operation 3 = normal execution
+; more information can be found in notes.txt
+
+1			; main loop over every character, parsed from inputs.txt
+inp			; get next character
+sav r00 r01		; save this character into 0x01
+sav r01 r02		; duplicates character into 0x02 - the duplication register
+
+sav A r01		; loads the first excecution jump (FEJ) to main code
+10			; dual-use label, execution routes here if char isn't a letter
+fgo 0			; dual-use fgo, first execution skips to 35
+
+sav 35 r01		; loads up FEJ to line 35
+11			; dual-use label, execution goes here if the char is in a string
+fgo 0			; dual-use fgo, FEJ to line 35, SEJ continues 11 label function
+sav r02 ref		; string mode, print the character from 0x01 duplication value
+fgo 45			; returns back to the function call, dynamic isn't needed here
+
+sav 40			; loads in FEJ to end of label 12
+12			; non-letter branching character, used for booleans
+fgo 0			; FEJ goes to line 40, SEJ fufills boolean resolution code
+
+; Wire-in the four types of if ('=', '!', '>', '<') for the STARTING value in 0x06, 0x07=0 at this point
+
+fgo 47			; returns to main label 10 code where label 12 was called
+; from this point (and on line 35) add on the length between line 38 and the line above to all !0 fgo's 
+sav r05 r01		; load in data register
+cal AND 3 r01		; extracts 0x05[0b00000011] for mode value
+sav 33 r01		; loads in line number for dual-use fgo in label 11
+ifz 11			; if mode is 0 (string) jump to label 11
+cal add -2 r01		; splits non-string modes into -1, 0, 1 for ifl, ifz, ifg calls
+ifz 12			; if mode is 2 (branch operation), jump to label 12
+
+fgo 78			; escapes label 10 (character letter test) to main code where 10 is called
+
+sav 71 r01		; load in FEJ to line X
+20			; toggles string-normal mode inside 0x05[0b00000011]
+fgo 0			; D-U fgo
+
+sav 63 r01		; FEJ to end of 21 label definition
+21			; string mode is active
+fgo 0			; D-U fgo
+cal OR -1		; set 0x05[0b00000011] to normal mode
+fgo 75			; return to end of choice block in label 20
+
+sav 70 r01		; load in FEJ line number
+22			; string mode is inactive
+fgo 0			; D-U fgo
+cal OR -3		; set 0x05[0b00000011] to string mode
+fgo 75			; return to end of choice block in label 20
+
+cal AND 3 r01		; extracts 0b00000011 from 0x05
+cal add -3 r01		; if 0x05[0b00000011] = 3 then 0, else -3
+ifz 21			; string mode is active, go to label 21
+ifl 22			; string mode is inactive, go to label 22
+sav r01 r05		; save toggled value to 0x05
+
+fgo 85			; returns back to the main code after label 20 is called
+
+sav r02 r01		; restores fgo-ish 0x01 from line 26 from duplication register
+cal add -96 r01		; ascii code offset at 'a', codes below are < 0
+sav 29 r01		; saves line number of label 11 fgo call for dual-use
+ifl 10			; if ascii code < 'a', go to label 101
+sav r02 r01		; restores fgo-ish 0x01 from line 37
+cal add -26 r01		; ascii code offset at 'z', codes above are > 0
+sav 29 r00		; saves line number of label 101 fgo call for dual-use
+ifg 11			; if ascii code > 'z', go to label 11
+
+cal add -34 r02		; special code block to test for '"' for 0x05[0b00000011] string mode toggle
+jmz 20			; if char is 34 (") go to label 20
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

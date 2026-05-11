@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cargo run main.rs --release
+cargo run main.rs --release --run

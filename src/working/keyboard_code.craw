@@ -1,0 +1,10 @@
+1			; main code
+sav 0 r01		; destroy key code
+io keyboard poll r01	; get last key
+jmz 1			; skip 0 codes
+io text int r01		; show 0x01 contents
+io text newline rff	; drop down a line
+cal add -27 r01		; test for code 27 for Esc
+jmg 1			; >0 continue jump
+jml 1			; <0 continue jump
+stp			; stop code if code = 27

@@ -1,0 +1,7 @@
+#!/bin/bash
+mv assembly.craw temp.craw
+nano song.txt
+python3 song_parser.py
+mv song.craw assembly.craw
+./run
+mv temp.craw assembly.craw

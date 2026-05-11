@@ -1,0 +1,6 @@
+#!/bin/bash
+mv assembly.craw temp.craw
+python3 performance.py
+mv performance.craw assembly.craw
+./run
+mv temp.craw assembly.craw
