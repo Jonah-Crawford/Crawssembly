@@ -15,3 +15,7 @@ song
 speech
 
 target/
+trace.txt
+*.bin
+__pycache__/
+*.pyc
