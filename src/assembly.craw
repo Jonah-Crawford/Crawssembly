@@ -1,22 +1,85 @@
-sav 100 r10
-sav 123 r11
-
-io mem addr r10
-io mem write r11
-io text int r11
-io text newline rff
-sav 100 r10
-sav -123 r11
-io disk addr r10
-io disk read r12
-io text int r12
-io text newline rff
-io disk write r11
-io disk read r12
-io text int r12
-
+sav 10 r01
+sav 0 r02
+io mem addr r02
+io mem write r01
+sav 0 r01
+io mem addr r01
+io mem read r01
+io text int r01
+sav -5 r01
+sav 1 r02
+io mem addr r02
+io mem write r01
+sav 0 r02
+sav 0 r01
+io mem addr r01
+io mem write r02
+sav 8 r03
+sav 0 r01
+io mem addr r01
+sav 97 r02
+cal shl r02 r03
+cal add 98 r01
+cal shl r01 r03
+cal add 99 r01
+cal shl r01 r03
+cal add 100 r01
+io mem write r01
+sav 8 r03
+sav 7 r02
+sav 1 r01
+cal shl r01 r02
+cal add 127 r01
+sav r01 r07
+sav 7 r02
+sav 3 r01
+cal shl r01 r02
+sav 126 r01
+cal shl r01 r02
+cal add 0 r01
+sav r01 r06
+sav 7 r02
+sav 7 r01
+cal shl r01 r02
+sav 124 r01
+cal shl r01 r02
+sav 0 r01
+cal shl r01 r02
+cal add 0 r01
+sav r01 r05
+sav 7 r02
+sav 8 r01
+cal shl r01 r02
+sav 0 r01
+cal shl r01 r02
+sav 0 r01
+cal shl r01 r02
+cal add 0 r01
+sav r01 r04
+sav 0 r01
+io mem addr r01
+io mem read r02
+cal and r02 r07
+io text char r01
+cal and r02 r06
+cal shr r01 r03
+io text char r01
+cal and r02 r05
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+cal and r02 r04
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav 1 r01
+sav 2 r02
+io mem addr r02
+io mem write r01
 1
 io keyboard poll r01
 cal add -27 r01
 jmg 1
 jml 1
+stp

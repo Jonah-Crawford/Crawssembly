@@ -70,7 +70,6 @@ def emit_select_channel(out, channel):
     "io speaker channel r01",
   ])
 
-
 def emit_set_freq(out, note):
   out = insert_large(NOTE_FREQS[note], out)
   out.append("io speaker freq r01")
@@ -97,8 +96,7 @@ def parse_tick(raw_line, line_number):
     hold = token.endswith("*")
     note = token[:-1] if hold else token
 
-    if note not in NOTE_FREQS:
-      raise Exception(f"Unknown note '{note}' on line {line_number}")
+    if note not in NOTE_FREQS: raise Exception(f"Unknown note '{note}' on line {line_number}")
 
     parsed.append((note, hold))
 
@@ -115,8 +113,7 @@ def parse_tick(raw_line, line_number):
 
 def free_channel(active):
   for channel in range(CHANNEL_COUNT):
-    if active[channel] is None:
-      return channel
+    if active[channel] is None: return channel
 
   return None
 

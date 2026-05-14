@@ -1,0 +1,13 @@
+let x = 10
+print x
+let y = -5
+let x = "abcd"
+print x
+print "1234"
+/c/
+1
+io keyboard poll r01
+cal add -27 r01
+jmg 1
+jml 1
+stp
