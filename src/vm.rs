@@ -612,7 +612,7 @@ impl Cpu {
         y: 0,
         buttons: 0,
       })),
-      speakers: Arc::new(Mutex::new([Speaker::default(); SPEAKER_COUNT])),
+      speakers,
       speaker_channel: 0,
       audio_handle: audio,
 
@@ -1336,10 +1336,8 @@ impl Cpu {
           0x0 => { 
             if value < 0 || value as usize >= SPEAKER_COUNT {
               self.regs[REG_IO_STATUS] = IO_BAD_VALUE; 
-              eprintln!("bad channel id '{}'", value as usize);
             } else {
               self.speaker_channel = value as usize;
-              println!("channel selected {}", value as usize);
             } 
           }
 
@@ -1347,45 +1345,37 @@ impl Cpu {
           0x1 => {
             if value <= 0 {
               self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
-              eprintln!("bad freq value '{}'", value);
             } else {
               speakers[self.speaker_channel].freq = value as f32;
-              println!("speaker {} freq {}", self.speaker_channel, value as f32);
             }
           }
 
           // volume
           0x2 => {
             speakers[self.speaker_channel].vol = value.clamp(0, 100) as f32 / 100.0; 
-            println!("speaker {} volume {}", self.speaker_channel, value.clamp(0, 100) as f32)
           }
 
           // wave
           0x3 => {
-            if value < 0 || value > 4 {
+            if value < 0 || value > (SPEAKER_COUNT as i32) {
               self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
-              eprintln!("bad wave-type value '{}'", value);
             } else {
               speakers[self.speaker_channel].wave = value; } 
-              println!("speaker {} wave-type {}", self.speaker_channel, value)
           }
 
           // on
           0x4 => {
             speakers[self.speaker_channel].enabled = true;
-            println!("speaker {} on", self.speaker_channel);
           }
 
           // off
           0x5 => {
             speakers[self.speaker_channel].enabled = false;
-            println!("speaker {} off", self.speaker_channel);
           }
 
           // toggle
           0x6 => {
             speakers[self.speaker_channel].enabled = !speakers[self.speaker_channel].enabled;
-            println!("speaker {} toggled (enabled={})", self.speaker_channel, speakers[self.speaker_channel].enabled)
           }
 
           _ => { self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND; }
