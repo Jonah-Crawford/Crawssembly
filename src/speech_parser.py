@@ -1,331 +1,60 @@
 from imm import i as construct
 
-CHANNEL_COUNT = 4
 OUTPUT_FILE = "speech.craw"
 
 DEFAULT_MS = 350
 BREAK_MS = 10
-VOICE_FREQ = 120
-WAVE = 1  # sine if supported, use 0 for square
-
-VOICED = {
-  "AH", "AA", "AE", "EH", "EE", "IH", "UH", "OO", "OH", "ER",
-  "AI", "AY", "OW", "OY", "AW",
-  "M", "N", "NG",
-  "L", "R", "W", "Y",
-  "Z", "ZH", "V", "DH",
-  "B", "D", "G", "J"
-}
-
-VOWELS = {
-  "AH", "AA", "AE", "EH", "EE", "IH", "UH", "OO", "OH", "ER",
-  "AI", "AY", "OW", "OY", "AW"
-}
-
-STOPS = {"P", "B", "T", "D", "K", "G"}
-PAUSES = {"SIL", "PAUSE"}
 
 PHONEMES = {
-  # Vowels
-  "AH": {"frames": [
-    {"ms": 40, "channels": [(0, 124, 8), (1, 600, 5), (2, 1000, 4)]},
-    {"ms": 80, "channels": [(0, 122, 24), (1, 680, 14), (2, 1080, 9)]},
-    {"ms": 180, "channels": [(0, 118, 35), (1, 720, 18), (2, 1150, 12)]},
-    {"ms": 60, "channels": [(0, 114, 18), (1, 660, 10), (2, 1050, 6)]},
-  ]},
+  "AH": [(60, 124, 650, 1100, 2600, 0, 70), (180, 118, 720, 1200, 2600, 0, 85), (60, 114, 650, 1050, 2400, 0, 55)],
+  "AA": [(60, 124, 700, 1150, 2600, 0, 70), (180, 117, 780, 1250, 2600, 0, 85), (60, 113, 700, 1100, 2400, 0, 55)],
+  "AE": [(60, 126, 580, 1500, 2600, 0, 70), (170, 119, 680, 1750, 2700, 0, 85), (60, 115, 600, 1500, 2500, 0, 55)],
+  "EH": [(50, 126, 450, 1500, 2500, 0, 70), (170, 119, 540, 1750, 2600, 0, 85), (60, 115, 480, 1500, 2400, 0, 55)],
+  "EE": [(60, 128, 280, 2000, 3000, 0, 70), (200, 120, 330, 2300, 3100, 0, 85), (60, 116, 290, 2050, 2900, 0, 50)],
+  "IH": [(50, 128, 330, 1700, 2800, 0, 70), (160, 120, 410, 1950, 2900, 0, 82), (50, 116, 360, 1750, 2700, 0, 50)],
+  "UH": [(50, 124, 360, 900, 2300, 0, 70), (160, 117, 430, 1080, 2400, 0, 82), (50, 113, 360, 920, 2200, 0, 50)],
+  "OO": [(60, 123, 280, 700, 2200, 0, 70), (170, 116, 330, 840, 2300, 0, 85), (60, 112, 280, 700, 2100, 0, 50)],
+  "OH": [(60, 123, 450, 850, 2400, 0, 70), (170, 116, 540, 980, 2500, 0, 85), (60, 112, 460, 820, 2300, 0, 50)],
+  "ER": [(60, 122, 380, 1150, 2300, 0, 65), (170, 115, 460, 1350, 2400, 0, 80), (60, 111, 390, 1180, 2200, 0, 50)],
 
-  "AA": {"frames": [
-    {"ms": 45, "channels": [(0, 124, 8), (1, 650, 5), (2, 1050, 4)]},
-    {"ms": 90, "channels": [(0, 121, 25), (1, 730, 15), (2, 1160, 9)]},
-    {"ms": 170, "channels": [(0, 117, 35), (1, 780, 18), (2, 1240, 12)]},
-    {"ms": 55, "channels": [(0, 113, 18), (1, 720, 10), (2, 1160, 6)]},
-  ]},
+  "AI": [(90, 124, 700, 1100, 2600, 0, 75), (140, 120, 500, 1600, 2800, 0, 85), (160, 115, 300, 2200, 3100, 0, 70)],
+  "AY": [(120, 124, 700, 1100, 2600, 0, 75), (180, 117, 360, 2100, 3000, 0, 80), (120, 113, 280, 2200, 3100, 0, 55)],
+  "OW": [(100, 123, 520, 960, 2500, 0, 75), (170, 119, 450, 880, 2400, 0, 85), (130, 115, 330, 780, 2200, 0, 65)],
+  "OY": [(100, 123, 500, 900, 2500, 0, 75), (170, 120, 430, 1300, 2700, 0, 85), (130, 116, 320, 2150, 3100, 0, 65)],
+  "AW": [(100, 124, 760, 1200, 2600, 0, 75), (170, 121, 650, 1100, 2500, 0, 85), (130, 117, 390, 820, 2300, 0, 65)],
 
-  "AE": {"frames": [
-    {"ms": 40, "channels": [(0, 126, 8), (1, 560, 5), (2, 1400, 4)]},
-    {"ms": 90, "channels": [(0, 123, 25), (1, 620, 15), (2, 1600, 8)]},
-    {"ms": 170, "channels": [(0, 119, 34), (1, 680, 18), (2, 1750, 10)]},
-    {"ms": 60, "channels": [(0, 115, 18), (1, 620, 10), (2, 1550, 6)]},
-  ]},
+  "M": [(40, 116, 220, 750, 1800, 0, 50), (100, 114, 250, 900, 1900, 0, 70), (40, 112, 230, 780, 1800, 0, 45)],
+  "N": [(35, 122, 240, 850, 1900, 0, 50), (90, 120, 280, 1100, 2100, 0, 70), (35, 117, 250, 900, 1900, 0, 45)],
+  "NG": [(45, 116, 260, 760, 1900, 0, 50), (110, 114, 300, 850, 2000, 0, 70), (45, 111, 270, 760, 1900, 0, 45)],
 
-  "EH": {"frames": [
-    {"ms": 40, "channels": [(0, 126, 8), (1, 420, 5), (2, 1450, 4)]},
-    {"ms": 80, "channels": [(0, 123, 25), (1, 500, 15), (2, 1650, 8)]},
-    {"ms": 170, "channels": [(0, 119, 35), (1, 540, 18), (2, 1750, 10)]},
-    {"ms": 60, "channels": [(0, 115, 18), (1, 480, 10), (2, 1550, 6)]},
-  ]},
+  "L": [(50, 124, 320, 1100, 2400, 0, 55), (120, 118, 430, 1450, 2600, 0, 75), (50, 114, 360, 1200, 2400, 0, 45)],
+  "R": [(50, 122, 300, 950, 2200, 0, 55), (120, 116, 390, 1250, 2300, 0, 75), (50, 112, 320, 1050, 2200, 0, 45)],
+  "W": [(45, 122, 250, 600, 2000, 0, 55), (90, 116, 420, 950, 2300, 0, 72), (45, 112, 360, 760, 2100, 0, 45)],
+  "Y": [(45, 126, 250, 2000, 3000, 0, 55), (90, 120, 430, 2000, 2900, 0, 72), (45, 116, 360, 1750, 2700, 0, 45)],
 
-  "EE": {"frames": [
-    {"ms": 50, "channels": [(0, 128, 8), (1, 260, 4), (2, 1900, 3)]},
-    {"ms": 90, "channels": [(0, 124, 24), (1, 300, 13), (2, 2150, 7)]},
-    {"ms": 200, "channels": [(0, 120, 35), (1, 330, 16), (2, 2300, 8)]},
-    {"ms": 60, "channels": [(0, 116, 16), (1, 290, 8), (2, 2050, 4)]},
-  ]},
+  "S": [(130, 0, 4500, 6200, 7600, 100, 60)],
+  "SH": [(150, 0, 2800, 4200, 6000, 100, 65)],
+  "F": [(120, 0, 1800, 3500, 5200, 100, 50)],
+  "TH": [(130, 0, 3200, 4800, 6500, 100, 45)],
+  "H": [(100, 0, 900, 1800, 3000, 80, 40)],
 
-  "IH": {"frames": [
-    {"ms": 35, "channels": [(0, 128, 8), (1, 320, 4), (2, 1650, 3)]},
-    {"ms": 75, "channels": [(0, 124, 24), (1, 370, 13), (2, 1850, 7)]},
-    {"ms": 160, "channels": [(0, 120, 34), (1, 410, 16), (2, 1950, 9)]},
-    {"ms": 50, "channels": [(0, 116, 16), (1, 360, 8), (2, 1750, 5)]},
-  ]},
+  "Z": [(160, 120, 420, 3600, 5000, 45, 65)],
+  "ZH": [(160, 120, 450, 2600, 4200, 45, 65)],
+  "V": [(140, 120, 420, 1500, 3500, 40, 60)],
+  "DH": [(140, 120, 420, 2800, 4500, 40, 60)],
 
-  "UH": {"frames": [
-    {"ms": 35, "channels": [(0, 124, 8), (1, 340, 4), (2, 850, 3)]},
-    {"ms": 75, "channels": [(0, 121, 24), (1, 400, 12), (2, 980, 8)]},
-    {"ms": 160, "channels": [(0, 117, 34), (1, 430, 15), (2, 1080, 11)]},
-    {"ms": 50, "channels": [(0, 113, 16), (1, 360, 8), (2, 920, 5)]},
-  ]},
+  "P": [(35, 0, 0, 0, 0, 0, 0), (45, 0, 1400, 2600, 4200, 100, 75)],
+  "B": [(35, 115, 300, 700, 1800, 0, 45), (55, 120, 500, 1200, 2500, 35, 70)],
+  "T": [(30, 0, 0, 0, 0, 0, 0), (45, 0, 3200, 4800, 6500, 100, 70)],
+  "D": [(30, 118, 300, 900, 2000, 0, 45), (50, 122, 700, 1700, 2800, 35, 70)],
+  "K": [(35, 0, 0, 0, 0, 0, 0), (50, 0, 1600, 3000, 5200, 100, 75)],
+  "G": [(35, 115, 300, 700, 1800, 0, 45), (55, 120, 650, 1300, 2400, 30, 70)],
 
-  "OO": {"frames": [
-    {"ms": 45, "channels": [(0, 123, 8), (1, 260, 4), (2, 650, 3)]},
-    {"ms": 85, "channels": [(0, 120, 24), (1, 300, 13), (2, 760, 8)]},
-    {"ms": 170, "channels": [(0, 116, 35), (1, 330, 16), (2, 840, 12)]},
-    {"ms": 60, "channels": [(0, 112, 17), (1, 280, 8), (2, 700, 5)]},
-  ]},
+  "CH": [(30, 0, 0, 0, 0, 0, 0), (60, 0, 2200, 3500, 5400, 100, 75), (80, 0, 3000, 4500, 6200, 100, 60)],
+  "J": [(40, 118, 400, 1000, 2300, 0, 45), (70, 120, 700, 1800, 3000, 40, 70), (70, 118, 500, 2600, 4200, 45, 60)],
 
-  "OH": {"frames": [
-    {"ms": 45, "channels": [(0, 123, 8), (1, 420, 4), (2, 800, 3)]},
-    {"ms": 85, "channels": [(0, 120, 24), (1, 500, 13), (2, 900, 8)]},
-    {"ms": 170, "channels": [(0, 116, 35), (1, 540, 16), (2, 980, 12)]},
-    {"ms": 60, "channels": [(0, 112, 17), (1, 460, 8), (2, 820, 5)]},
-  ]},
-
-  "ER": {"frames": [
-    {"ms": 45, "channels": [(0, 122, 8), (1, 360, 4), (2, 1100, 3)]},
-    {"ms": 85, "channels": [(0, 119, 23), (1, 420, 12), (2, 1250, 8)]},
-    {"ms": 170, "channels": [(0, 115, 33), (1, 460, 15), (2, 1350, 10)]},
-    {"ms": 60, "channels": [(0, 111, 16), (1, 390, 8), (2, 1180, 5)]},
-  ]},
-
-  # Diphthongs
-  "AI": {"frames": [
-    {"ms": 70, "channels": [(0, 124, 22), (1, 700, 14), (2, 1100, 9)]},
-    {"ms": 110, "channels": [(0, 121, 34), (1, 620, 18), (2, 1350, 10)]},
-    {"ms": 150, "channels": [(0, 118, 35), (1, 450, 16), (2, 1750, 9)]},
-    {"ms": 120, "channels": [(0, 115, 26), (1, 310, 12), (2, 2200, 7)]},
-    {"ms": 70, "channels": [(0, 112, 12), (1, 270, 6), (2, 2000, 4)]},
-  ]},
-
-  "AY": {"frames": [
-    {"ms": 90, "channels": [(0, 124, 25), (1, 700, 15), (2, 1100, 9)]},
-    {"ms": 140, "channels": [(0, 121, 35), (1, 560, 17), (2, 1450, 9)]},
-    {"ms": 170, "channels": [(0, 117, 32), (1, 360, 14), (2, 2100, 8)]},
-    {"ms": 120, "channels": [(0, 113, 15), (1, 280, 7), (2, 2200, 4)]},
-  ]},
-
-  "OW": {"frames": [
-    {"ms": 90, "channels": [(0, 123, 25), (1, 520, 14), (2, 960, 9)]},
-    {"ms": 150, "channels": [(0, 119, 35), (1, 450, 16), (2, 880, 11)]},
-    {"ms": 160, "channels": [(0, 115, 30), (1, 330, 14), (2, 780, 12)]},
-    {"ms": 100, "channels": [(0, 111, 14), (1, 280, 7), (2, 680, 5)]},
-  ]},
-
-  "OY": {"frames": [
-    {"ms": 90, "channels": [(0, 123, 25), (1, 500, 14), (2, 900, 9)]},
-    {"ms": 150, "channels": [(0, 120, 35), (1, 430, 16), (2, 1300, 9)]},
-    {"ms": 170, "channels": [(0, 116, 30), (1, 320, 13), (2, 2150, 8)]},
-    {"ms": 110, "channels": [(0, 112, 14), (1, 280, 7), (2, 2200, 4)]},
-  ]},
-
-  "AW": {"frames": [
-    {"ms": 90, "channels": [(0, 124, 25), (1, 760, 15), (2, 1200, 9)]},
-    {"ms": 150, "channels": [(0, 121, 35), (1, 650, 17), (2, 1100, 10)]},
-    {"ms": 170, "channels": [(0, 117, 31), (1, 390, 14), (2, 820, 11)]},
-    {"ms": 110, "channels": [(0, 113, 14), (1, 280, 7), (2, 700, 5)]},
-  ]},
-
-  # Nasals
-  "M": {"frames": [
-    {"ms": 30, "channels": [(0, 116, 8), (1, 220, 4), (2, 750, 2)]},
-    {"ms": 90, "channels": [(0, 114, 28), (1, 250, 14), (2, 900, 8)]},
-    {"ms": 40, "channels": [(0, 112, 12), (1, 230, 6), (2, 780, 3)]},
-  ]},
-
-  "N": {"frames": [
-    {"ms": 25, "channels": [(0, 122, 8), (1, 240, 4), (2, 850, 2)]},
-    {"ms": 80, "channels": [(0, 120, 28), (1, 280, 14), (2, 1100, 8)]},
-    {"ms": 35, "channels": [(0, 117, 12), (1, 250, 6), (2, 900, 3)]},
-  ]},
-
-  "NG": {"frames": [
-    {"ms": 35, "channels": [(0, 116, 8), (1, 260, 4), (2, 760, 2)]},
-    {"ms": 105, "channels": [(0, 114, 28), (1, 300, 14), (2, 850, 8)]},
-    {"ms": 40, "channels": [(0, 111, 12), (1, 270, 6), (2, 760, 3)]},
-  ]},
-
-  # Liquids / approximants
-  "L": {"frames": [
-    {"ms": 35, "channels": [(0, 124, 8), (1, 320, 4), (2, 1100, 3)]},
-    {"ms": 70, "channels": [(0, 121, 26), (1, 390, 12), (2, 1350, 7)]},
-    {"ms": 85, "channels": [(0, 118, 30), (1, 430, 14), (2, 1450, 8)]},
-    {"ms": 30, "channels": [(0, 114, 12), (1, 360, 6), (2, 1200, 3)]},
-  ]},
-
-  "R": {"frames": [
-    {"ms": 35, "channels": [(0, 122, 8), (1, 300, 4), (2, 950, 3)]},
-    {"ms": 70, "channels": [(0, 119, 26), (1, 350, 12), (2, 1150, 8)]},
-    {"ms": 85, "channels": [(0, 116, 30), (1, 390, 14), (2, 1250, 9)]},
-    {"ms": 30, "channels": [(0, 112, 12), (1, 320, 6), (2, 1050, 4)]},
-  ]},
-
-  "W": {"frames": [
-    {"ms": 35, "channels": [(0, 122, 8), (1, 250, 4), (2, 600, 3)]},
-    {"ms": 65, "channels": [(0, 119, 26), (1, 300, 13), (2, 700, 9)]},
-    {"ms": 55, "channels": [(0, 116, 30), (1, 420, 12), (2, 950, 7)]},
-    {"ms": 25, "channels": [(0, 112, 12), (1, 360, 6), (2, 760, 3)]},
-  ]},
-
-  "Y": {"frames": [
-    {"ms": 35, "channels": [(0, 126, 8), (1, 250, 4), (2, 2000, 3)]},
-    {"ms": 65, "channels": [(0, 123, 26), (1, 300, 12), (2, 2300, 8)]},
-    {"ms": 55, "channels": [(0, 120, 30), (1, 430, 12), (2, 2000, 7)]},
-    {"ms": 25, "channels": [(0, 116, 12), (1, 360, 6), (2, 1750, 3)]},
-  ]},
-
-  # Voiceless fricatives
-  "S": {"frames": [
-    {"ms": 20, "channels": [(3, 3900, 4)]},
-    {"ms": 20, "channels": [(3, 4700, 10)]},
-    {"ms": 20, "channels": [(3, 4300, 9)]},
-    {"ms": 20, "channels": [(3, 5100, 10)]},
-    {"ms": 20, "channels": [(3, 4500, 8)]},
-    {"ms": 30, "channels": [(3, 4100, 4)]},
-  ]},
-
-  "SH": {"frames": [
-    {"ms": 25, "channels": [(3, 2300, 5)]},
-    {"ms": 25, "channels": [(3, 3000, 12)]},
-    {"ms": 25, "channels": [(3, 2600, 11)]},
-    {"ms": 25, "channels": [(3, 3200, 12)]},
-    {"ms": 25, "channels": [(3, 2800, 9)]},
-    {"ms": 25, "channels": [(3, 2400, 5)]},
-  ]},
-
-  "F": {"frames": [
-    {"ms": 20, "channels": [(3, 1300, 3)]},
-    {"ms": 20, "channels": [(3, 1900, 8)]},
-    {"ms": 20, "channels": [(3, 1500, 7)]},
-    {"ms": 20, "channels": [(3, 2200, 8)]},
-    {"ms": 20, "channels": [(3, 1700, 6)]},
-    {"ms": 20, "channels": [(3, 1400, 3)]},
-  ]},
-
-  "TH": {"frames": [
-    {"ms": 20, "channels": [(3, 2500, 3)]},
-    {"ms": 25, "channels": [(3, 3300, 8)]},
-    {"ms": 25, "channels": [(3, 2900, 7)]},
-    {"ms": 25, "channels": [(3, 3500, 8)]},
-    {"ms": 20, "channels": [(3, 3000, 4)]},
-  ]},
-
-  "H": {"frames": [
-    {"ms": 25, "channels": [(3, 700, 2)]},
-    {"ms": 35, "channels": [(3, 950, 8)]},
-    {"ms": 25, "channels": [(3, 850, 6)]},
-    {"ms": 15, "channels": [(3, 600, 2)]},
-  ]},
-
-  # Voiced fricatives
-  "Z": {"frames": [
-    {"ms": 30, "channels": [(0, 122, 8), (3, 3300, 3)]},
-    {"ms": 35, "channels": [(0, 120, 22), (3, 3800, 8)]},
-    {"ms": 35, "channels": [(0, 118, 22), (3, 3400, 7)]},
-    {"ms": 35, "channels": [(0, 116, 20), (3, 4000, 8)]},
-    {"ms": 25, "channels": [(0, 113, 8), (3, 3200, 3)]},
-  ]},
-
-  "ZH": {"frames": [
-    {"ms": 30, "channels": [(0, 122, 8), (3, 2200, 3)]},
-    {"ms": 35, "channels": [(0, 120, 22), (3, 2700, 9)]},
-    {"ms": 35, "channels": [(0, 118, 22), (3, 2500, 8)]},
-    {"ms": 35, "channels": [(0, 116, 20), (3, 2900, 8)]},
-    {"ms": 25, "channels": [(0, 113, 8), (3, 2200, 3)]},
-  ]},
-
-  "V": {"frames": [
-    {"ms": 25, "channels": [(0, 122, 8), (3, 1200, 2)]},
-    {"ms": 35, "channels": [(0, 120, 22), (3, 1550, 7)]},
-    {"ms": 35, "channels": [(0, 118, 22), (3, 1350, 6)]},
-    {"ms": 30, "channels": [(0, 115, 18), (3, 1700, 7)]},
-    {"ms": 15, "channels": [(0, 112, 8), (3, 1200, 2)]},
-  ]},
-
-  "DH": {"frames": [
-    {"ms": 25, "channels": [(0, 122, 8), (3, 2300, 2)]},
-    {"ms": 35, "channels": [(0, 120, 22), (3, 2800, 7)]},
-    {"ms": 35, "channels": [(0, 118, 22), (3, 2500, 6)]},
-    {"ms": 30, "channels": [(0, 115, 18), (3, 3000, 7)]},
-    {"ms": 15, "channels": [(0, 112, 8), (3, 2200, 2)]},
-  ]},
-
-  # Stops / plosives
-  "P": {"frames": [
-    {"ms": 35, "channels": []},
-    {"ms": 15, "channels": [(3, 90, 24)]},
-    {"ms": 20, "channels": [(3, 1800, 10)]},
-    {"ms": 10, "channels": []},
-  ]},
-
-  "B": {"frames": [
-    {"ms": 25, "channels": [(0, 115, 8)]},
-    {"ms": 20, "channels": [(0, 115, 20), (3, 120, 24)]},
-    {"ms": 25, "channels": [(0, 120, 16), (3, 700, 8)]},
-    {"ms": 20, "channels": []},
-  ]},
-
-  "T": {"frames": [
-    {"ms": 30, "channels": []},
-    {"ms": 15, "channels": [(3, 3200, 14)]},
-    {"ms": 20, "channels": [(3, 4200, 9)]},
-    {"ms": 10, "channels": []},
-  ]},
-
-  "D": {"frames": [
-    {"ms": 25, "channels": [(0, 118, 8)]},
-    {"ms": 15, "channels": [(0, 120, 18), (3, 1700, 12)]},
-    {"ms": 25, "channels": [(0, 122, 14), (3, 2200, 7)]},
-    {"ms": 15, "channels": []},
-  ]},
-
-  "K": {"frames": [
-    {"ms": 35, "channels": []},
-    {"ms": 15, "channels": [(3, 1600, 15)]},
-    {"ms": 20, "channels": [(3, 2600, 10)]},
-    {"ms": 15, "channels": []},
-  ]},
-
-  "G": {"frames": [
-    {"ms": 25, "channels": [(0, 115, 8)]},
-    {"ms": 20, "channels": [(0, 116, 20), (3, 100, 23)]},
-    {"ms": 25, "channels": [(0, 120, 15), (3, 900, 8)]},
-    {"ms": 20, "channels": []},
-  ]},
-
-  # Affricates
-  "CH": {"frames": [
-    {"ms": 30, "channels": []},
-    {"ms": 20, "channels": [(3, 2200, 16)]},
-    {"ms": 40, "channels": [(3, 3000, 12)]},
-    {"ms": 40, "channels": [(3, 2600, 10)]},
-    {"ms": 40, "channels": [(3, 2200, 5)]},
-  ]},
-
-  "J": {"frames": [
-    {"ms": 25, "channels": [(0, 118, 8)]},
-    {"ms": 25, "channels": [(0, 120, 20), (3, 1600, 12)]},
-    {"ms": 45, "channels": [(0, 121, 20), (3, 2600, 9)]},
-    {"ms": 45, "channels": [(0, 118, 16), (3, 2200, 6)]},
-    {"ms": 40, "channels": [(0, 114, 8)]},
-  ]},
-
-  # Utility
-  "SIL": {"frames": [
-    {"ms": 220, "channels": []},
-  ]},
-
-  "PAUSE": {"frames": [
-    {"ms": 350, "channels": []},
-  ]},
+  "SIL": [(220, 0, 0, 0, 0, 0, 0)],
+  "PAUSE": [(350, 0, 0, 0, 0, 0, 0)],
 }
 
 LETTER_NAMES = {
@@ -360,138 +89,45 @@ LETTER_NAMES = {
 def insert_large(value, out):
   if -128 <= value <= 127:
     out.append(f"sav {value} r01")
-    return out
+    return
 
   out.append("sav 7 r02")
   blocks = construct(value, 0, False)
 
   for index, block in enumerate(blocks):
-    if index + 1 == len(blocks):
-      out.append(f"cal add {block} r01")
+    if index + 1 == len(blocks): out.append(f"cal add {block} r01")
     else:
-      out.extend([
-        f"sav {block} r01",
-        "cal shl r01 r02",
-      ])
+      out.append(f"sav {block} r01")
+      out.append("cal shl r01 r02")
 
-  return out
+def emit_value(out, value): insert_large(value, out)
 
-def emit_channel(out, channel):
-  out.extend([
-    f"sav {channel} r01",
-    "io speaker channel r01",
-  ])
+def emit_speech_param(out, name, value):
+  emit_value(out, value)
+  out.append(f"io speech {name} r01")
 
-def emit_freq(out, freq):
-  insert_large(freq, out)
-  out.append("io speaker freq r01")
+def emit_speech_frame(out, frame):
+  ms, pitch, f1, f2, f3, noise, volume = frame
 
-def emit_volume(out, volume):
-  out.extend([
-    f"sav {volume} r01",
-    "io speaker volume r01",
-  ])
+  emit_speech_param(out, "pitch", pitch)
+  emit_speech_param(out, "f1", f1)
+  emit_speech_param(out, "f2", f2)
+  emit_speech_param(out, "f3", f3)
+  emit_speech_param(out, "noise", noise)
+  emit_speech_param(out, "volume", volume)
+  emit_speech_param(out, "ms", ms)
+  out.append("io speech speak rff")
 
-def emit_wave(out, wave):
-  out.extend([
-    f"sav {wave} r01",
-    "io speaker wave r01",
-  ])
-
-def emit_on(out):
-  out.append("io speaker on rff")
-
-def emit_off(out):
-  out.append("io speaker off rff")
+  emit_sleep(out, ms)
 
 def emit_letters(out, chars):
   for char in chars:
-    out.append(f"sav {ord(char)} ref")
+    emit_value(out, ord(char))
+    out.append("sav r01 ref")
 
 def emit_sleep(out, ms):
-  insert_large(ms, out)
+  emit_value(out, ms)
   out.append("io time sleep r01")
-
-def emit_stop_all(out):
-  for channel in range(CHANNEL_COUNT):
-    emit_channel(out, channel)
-    emit_off(out)
-
-def emit_channels(out, channels):
-  emit_stop_all(out)
-
-  for channel, freq, volume in channels:
-    emit_channel(out, channel)
-    emit_freq(out, freq)
-    emit_volume(out, volume)
-    emit_on(out)
-
-def emit_frame(out, frame):
-  emit_channels(out, frame["channels"])
-  emit_sleep(out, frame["ms"])
-
-def is_voiced(name):
-  return name in VOICED
-
-def is_vowel(name):
-  return name in VOWELS
-
-def is_stop(name):
-  return name in STOPS
-
-def is_pause(name):
-  return name in PAUSES
-
-def should_break_after(name, next_name):
-  if next_name is None:
-    return True
-
-  if is_pause(name) or is_pause(next_name):
-    return True
-
-  if is_voiced(name) and is_voiced(next_name):
-    return False
-
-  if is_stop(name):
-    return False
-
-  return True
-
-def should_shorten(name, prev_name, next_name):
-  if is_pause(name):
-    return False
-
-  if is_vowel(name) and next_name is not None and not is_pause(next_name):
-    return True
-
-  if name in {"L", "R", "W", "Y"} and next_name is not None:
-    return True
-
-  return False
-
-def scaled_frame(frame, factor):
-  return {
-    "ms": max(10, round(frame["ms"] * factor)),
-    "channels": frame["channels"],
-  }
-
-def maybe_shorten_frames(name, frames, prev_name, next_name):
-  if should_shorten(name, prev_name, next_name):
-    return [scaled_frame(frame, 0.72) for frame in frames]
-
-  return frames
-
-def emit_phoneme(out, name, phoneme, prev_name=None, next_name=None):
-  out.append(f"; phoneme {name}")
-
-  frames = maybe_shorten_frames(name, phoneme["frames"], prev_name, next_name)
-
-  for frame in frames:
-    emit_frame(out, frame)
-
-  if should_break_after(name, next_name):
-    emit_stop_all(out)
-    emit_sleep(out, BREAK_MS)
 
 def parse_tokens(lines):
   tokens = []
@@ -499,71 +135,57 @@ def parse_tokens(lines):
   for line_number, raw_line in enumerate(lines, start=1):
     line = raw_line.split(";")[0].strip().upper()
 
-    if line == "":
-      continue
+    if line == "": continue
 
     if line == "-":
-      tokens.append(("PAUSE", line_number, " "))
+      tokens.append(("PAUSE", " "))
       continue
 
     if line.startswith('"') and line.endswith('"'):
-      text = line[1:-1]
-
-      for char in text:
+      for char in line[1:-1]:
         if char == " ":
-          tokens.append(("PAUSE", line_number, " "))
+          tokens.append(("PAUSE", " "))
           continue
 
-        if char not in LETTER_NAMES:
-          raise Exception(f"Unknown letter '{char}' on line {line_number}")
+        if char not in LETTER_NAMES: raise Exception(f"Unknown letter '{char}' on line {line_number}")
 
-        for name in LETTER_NAMES[char]:
-          tokens.append((name, line_number, char))
+        for phoneme in LETTER_NAMES[char]: tokens.append((phoneme, char))
 
       continue
 
-    if line in LETTER_NAMES and line not in PHONEMES:
-      for name in LETTER_NAMES[line]:
-        tokens.append((name, line_number, line))
+    if line not in PHONEMES: raise Exception(f"Unknown phoneme '{line}' on line {line_number}")
 
-      continue
-
-    if line not in PHONEMES:
-      raise Exception(f"Unknown phoneme '{line}' on line {line_number}")
-
-    if line in PAUSES:
-      tokens.append((line, line_number, " "))
-    else:
-      tokens.append((line, line_number, line))
+    tokens.append((line, line))
 
   return tokens
 
 def compile_speech(lines):
   out = [
     "; Generated by speech_parser.py (C) CRAW SYSTEMS",
+    "; Speech chip format",
     "; Input: speech.txt",
     "",
   ]
 
-  for channel in range(CHANNEL_COUNT):
-    emit_channel(out, channel)
-    emit_wave(out, WAVE)
-    emit_volume(out, 0)
-    emit_off(out)
-    out.append("")
-
   tokens = parse_tokens(lines)
 
-  for index, (name, line_number, display) in enumerate(tokens):
-    prev_name = tokens[index - 1][0] if index > 0 else None
-    next_name = tokens[index + 1][0] if index + 1 < len(tokens) else None
-
+  for phoneme, display in tokens:
     emit_letters(out, display)
-    emit_phoneme(out, name, PHONEMES[name], prev_name, next_name)
+    out.append(f"; phoneme {phoneme}")
+
+    if phoneme in {"SIL", "PAUSE"}:
+      emit_sleep(out, PHONEMES[phoneme][0][0])
+    else:
+      for frame in PHONEMES[phoneme]:
+        emit_speech_frame(out, frame)
+
+      emit_sleep(out, BREAK_MS)
 
     out.append("")
 
-  emit_stop_all(out)
+  emit_sleep(out, 300)
+
+  emit_speech_param(out, "volume", 0)
   return out
 
 def main():

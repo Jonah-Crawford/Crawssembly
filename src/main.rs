@@ -550,6 +550,7 @@ fn parse_io_device(tok: &str) -> Result<u8, String> {
     "speaker" | "audio" => Ok(0x5),
     "mem" | "memory" => Ok(0x6),
     "disk" | "disc" => Ok(0x7),
+    "speech" => Ok(0x8),
     _ => Err(format!("Unknown I/O device '{tok}'"))
   }
 }
@@ -616,6 +617,8 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
       _ => Err(format!("Unknown speaker command '{tok}'"))
     },
 
+
+    // mem
     0x6 => match t.as_str() {
       "addr" | "address" => Ok(0x0),
       "read" => Ok(0x1),
@@ -623,12 +626,27 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
       _ => Err(format!("Unknown memory command '{tok}'"))
     }
 
+    // disk
     0x7 => match t.as_str() {
       "addr" | "address" => Ok(0x0),
       "read" => Ok(0x1),
       "write" => Ok(0x2),
       "save" | "update" => Ok(0x3),
       _ => Err(format!("Unknown disk command '{tok}'"))
+    }
+
+    // speak
+    0x8 => match t.as_str() {
+      "pitch" => Ok(0x0),
+      "f1" | "freq1" | "fone" | "freqone" => Ok(0x1),
+      "f2" | "freq2" | "ftwo" | "freqtwo" => Ok(0x2),
+      "f3" | "freq3" | "fthree" | "freqthree" => Ok(0x3),
+      "noise" => Ok(0x4),
+      "vol" | "volume" => Ok(0x5),
+      "ms" | "dur" | "duration" => Ok(0x6),
+      "speak" | "say" => Ok(0x7),
+      "reset" | "clear" => Ok(0x8),
+      _ => Err(format!("Unknown speech command '{tok}'"))
     }
 
     _ => Err(format!("Unknown I/O device id {}", device))

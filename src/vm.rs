@@ -6,6 +6,7 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 use std::fs::{File, OpenOptions};
 use std::io::{BufWriter, Read, Seek, SeekFrom, Write};
 use std::thread;
+use std::collections::VecDeque;
 use std::sync::{
   Arc,
   Mutex,
@@ -361,7 +362,7 @@ impl Default for Speaker {
 
 pub struct AudioHandle { _stream: cpal::Stream }
 
-pub fn start_audio(speakers: Arc<Mutex<[Speaker; SPEAKER_COUNT]>>) -> Result<AudioHandle, String> {
+pub fn start_audio(speakers: Arc<Mutex<[Speaker; SPEAKER_COUNT]>>, speech_samples: Arc<Mutex<VecDeque<f32>>>) -> Result<AudioHandle, String> {
   let host = cpal::default_host();
 
   let device = host
@@ -384,7 +385,7 @@ pub fn start_audio(speakers: Arc<Mutex<[Speaker; SPEAKER_COUNT]>>) -> Result<Aud
       device.build_output_stream(
         &config.into(),
         move |data: &mut [f32], _| {
-          write_audio(data, channels, sample_rate, &speakers, &mut phases);
+          write_audio(data, channels, sample_rate, &speakers, &speech_samples, &mut phases);
         },
         err_fn,
         None
@@ -410,6 +411,7 @@ fn write_audio(
   channels: usize,
   sample_rate: f32,
   speakers: &Arc<Mutex<[Speaker; SPEAKER_COUNT]>>,
+  speech_samples: &Arc<Mutex<VecDeque<f32>>>,
   phases: &mut [f32; SPEAKER_COUNT],
 ) {
   let speaker_snapshot = match speakers.lock() {
@@ -440,6 +442,12 @@ fn write_audio(
 
       while phases[i] >= 1.0 {
         phases[i] -= 1.0;
+      }
+    }
+
+    if let Ok(mut speech) = speech_samples.lock() {
+      if let Some(speech_sample) = speech.pop_front() {
+        sample += speech_sample;
       }
     }
 
@@ -548,6 +556,17 @@ struct Cpu {
   #[allow(dead_code)] // speakers throw a fit if this isn't here
   pub audio_handle: Option<AudioHandle>,
 
+  // speech
+  speech_pitch: f32,
+  speech_f1: f32,
+  speech_f2: f32,
+  speech_f3: f32,
+  speech_noise: f32,
+  speech_volume: f32,
+  speech_ms: u32,
+
+  speech_samples: Arc<Mutex<VecDeque<f32>>>,
+
 }
 
 impl Cpu {
@@ -572,7 +591,9 @@ impl Cpu {
 
     let speakers = Arc::new(Mutex::new([Speaker::default(); SPEAKER_COUNT]));
 
-    let audio = match start_audio(Arc::clone(&speakers)) {
+    let speech_samples = Arc::new(Mutex::new(VecDeque::new()));
+
+    let audio = match start_audio(Arc::clone(&speakers), Arc::clone(&speech_samples)) {
       Ok(handle) => {
         Some(handle)
       }
@@ -580,7 +601,6 @@ impl Cpu {
         None
       }
     };
-
 
     Self {
       regs,
@@ -615,6 +635,14 @@ impl Cpu {
       speakers,
       speaker_channel: 0,
       audio_handle: audio,
+      speech_pitch: 0.0f32,
+      speech_f1: 0.0f32,
+      speech_f2: 0.0f32,
+      speech_f3: 0.0f32,
+      speech_noise: 0.0f32,
+      speech_volume: 0.0f32,
+      speech_ms: 0u32,
+      speech_samples: speech_samples,
 
     }
   }
@@ -685,6 +713,7 @@ impl Cpu {
     let mut bytes = Vec::with_capacity(self.disk.len() * 4);
 
     for value in &self.disk {
+      let value = *value as i32;
       bytes.extend_from_slice(&value.to_le_bytes());
     }
 
@@ -1437,8 +1466,104 @@ impl Cpu {
         _ => { self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND }
 
       }
+
+      // speech
+      0x8 => match command {
+
+        // pitch
+        0x0 => self.speech_pitch = value.max(0) as f32,
+
+        // f1
+        0x1 => self.speech_f1 = value.max(0) as f32,
+
+        // f2
+        0x2 => self.speech_f2 = value.max(0) as f32,
+
+        // f3
+        0x3 => self.speech_f3 = value.max(0) as f32,
+
+        // noise 0..100
+        0x4 => self.speech_noise = (value.clamp(0, 100) as f32) / 100.0,
+
+        // volume 0..100
+        0x5 => self.speech_volume = (value.clamp(0, 100) as f32) / 100.0,
+
+        // ms
+        0x6 => self.speech_ms = value.max(1) as u32,
+
+        // speak
+        0x7 => {
+          self.speech_speak();
+        }
+
+        _ => {
+          self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
+        }
+      }
+
       _ => {
         self.regs[REG_IO_STATUS] = IO_INVALID_DEVICE;
+      }
+    }
+  }
+
+  fn envelope(&mut self, n: usize, total: usize) -> f32 {
+    let attack = (total / 10).max(1);
+    let release = (total / 8).max(1);
+
+    if n < attack {
+      n as f32 / attack as f32
+    } else if n + release > total {
+      (total - n) as f32 / release as f32
+    } else {
+     1.0
+    } 
+  }
+
+  fn speech_speak(&mut self) {
+    let sample_rate = 44100.0;
+    let samples = ((self.speech_ms as f32 / 1000.0) * sample_rate) as usize;
+
+    let mut out = Vec::with_capacity(samples);
+
+    let mut phase = 0.0f32;
+    let mut rng = 1u32;
+
+    for n in 0..samples {
+      let t = n as f32 / sample_rate;
+
+      let env = self.envelope(n, samples);
+
+      let voiced = if self.speech_pitch > 0.0 {
+        phase += self.speech_pitch / sample_rate;
+
+        if phase >= 1.0 {
+          phase -= 1.0;
+        }
+
+        // buzzy source
+        (phase * 2.0 - 1.0) * (1.0 - self.speech_noise)
+      } else {
+        0.0
+      };
+
+      rng = rng.wrapping_mul(1664525).wrapping_add(1013904223);
+      let noise = (((rng >> 16) as f32 / 65535.0) * 2.0 - 1.0) * self.speech_noise;
+
+      let source = voiced + noise;
+
+      let f1 = (2.0 * std::f32::consts::PI * self.speech_f1 * t).sin() * 0.45;
+      let f2 = (2.0 * std::f32::consts::PI * self.speech_f2 * t).sin() * 0.30;
+      let f3 = (2.0 * std::f32::consts::PI * self.speech_f3 * t).sin() * 0.18;
+
+      let sample = source * (f1 + f2 + f3) * self.speech_volume * env;
+
+      out.push(sample.clamp(-1.0, 1.0));
+    }
+
+    if let Ok(mut queue) = self.speech_samples.lock() {
+      for sample in out {
+        queue.push_back(sample);
       }
     }
   }
