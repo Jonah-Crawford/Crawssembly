@@ -1,3 +1,5 @@
 #!/bin/bash
 clear
+nano code.crisp
 python3 crisp.py
+./run

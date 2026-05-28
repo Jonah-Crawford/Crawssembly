@@ -1,10 +1,8 @@
 let x = 10
-print x
-let y = -5
-let x = "abcd"
-print x
-print "1234"
+println x
+debug regs 0 16
 /c/
+rmv 1
 1
 io keyboard poll r01
 cal add -27 r01

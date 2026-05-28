@@ -506,6 +506,40 @@ fn _mouse_button_bit(button: MouseButton) -> i32 {
   }
 }
 
+#[derive(Clone, Copy)]
+struct Resonator {
+  y1: f32,
+  y2: f32,
+}
+
+impl Resonator {
+  fn new() -> Self {
+    Self {
+      y1: 0.0,
+      y2: 0.0,
+    }
+  }
+
+  fn process(&mut self, input: f32, freq: f32, bandwidth: f32, sample_rate: f32) -> f32 {
+    if freq <= 0.0 {
+      return 0.0;
+    }
+
+    let r = (-std::f32::consts::PI * bandwidth / sample_rate).exp();
+    let theta = std::f32::consts::TAU * freq / sample_rate;
+
+    let a1 = 2.0 * r * theta.cos();
+    let a2 = -(r * r);
+
+    let y = input + a1 * self.y1 + a2 * self.y2;
+
+    self.y2 = self.y1;
+    self.y1 = y;
+
+    y
+  }
+}
+
 struct Cpu {
   regs: [i32; 256],
 
@@ -566,6 +600,10 @@ struct Cpu {
   speech_ms: u32,
 
   speech_samples: Arc<Mutex<VecDeque<f32>>>,
+
+  speech_r1: Resonator,
+  speech_r2: Resonator,
+  speech_r3: Resonator,
 
 }
 
@@ -643,6 +681,9 @@ impl Cpu {
       speech_volume: 0.0f32,
       speech_ms: 0u32,
       speech_samples: speech_samples,
+      speech_r1: Resonator::new(),
+      speech_r2: Resonator::new(),
+      speech_r3: Resonator::new(),
 
     }
   }
@@ -1149,7 +1190,7 @@ impl Cpu {
     match device {
       // text / console
       0x0 => match command {
-        // ASCII
+        // char
         0x0 => {
           if let Some(c) = char::from_u32(self.regs[r] as u32) {
             print!("{}", c);
@@ -1166,6 +1207,11 @@ impl Cpu {
         // newline
         0x2 => {
           print!("\r\n");
+          let _ = io::stdout().flush();
+        }
+
+        0x3 => {
+          print!("{:08X}", value);
           let _ = io::stdout().flush();
         }
 
@@ -1521,42 +1567,41 @@ impl Cpu {
   }
 
   fn speech_speak(&mut self) {
-    let sample_rate = 44100.0;
-    let samples = ((self.speech_ms as f32 / 1000.0) * sample_rate) as usize;
+    let sample_rate = 44100.0f32;
+    let samples = ((self.speech_ms as f32 / 1000.0f32) * sample_rate) as usize;
 
     let mut out = Vec::with_capacity(samples);
-
     let mut phase = 0.0f32;
     let mut rng = 1u32;
 
     for n in 0..samples {
-      let t = n as f32 / sample_rate;
-
       let env = self.envelope(n, samples);
 
       let voiced = if self.speech_pitch > 0.0 {
         phase += self.speech_pitch / sample_rate;
 
-        if phase >= 1.0 {
+        while phase >= 1.0 {
           phase -= 1.0;
         }
 
-        // buzzy source
-        (phase * 2.0 - 1.0) * (1.0 - self.speech_noise)
+        // sawtooth/glottal-ish buzz
+        2.0f32 * phase - 1.0f32
       } else {
         0.0
       };
 
       rng = rng.wrapping_mul(1664525).wrapping_add(1013904223);
-      let noise = (((rng >> 16) as f32 / 65535.0) * 2.0 - 1.0) * self.speech_noise;
+      let noise = ((rng >> 16) as f32 / 32768.0f32) - 1.0f32;
 
-      let source = voiced + noise;
+      let source =
+        voiced * (1.0f32 - self.speech_noise)
+        + noise * self.speech_noise;
 
-      let f1 = (2.0 * std::f32::consts::PI * self.speech_f1 * t).sin() * 0.45;
-      let f2 = (2.0 * std::f32::consts::PI * self.speech_f2 * t).sin() * 0.30;
-      let f3 = (2.0 * std::f32::consts::PI * self.speech_f3 * t).sin() * 0.18;
+      let y1 = self.speech_r1.process(source, self.speech_f1, 90.0f32, sample_rate) * 0.75f32;
+      let y2 = self.speech_r2.process(source, self.speech_f2, 120.0f32, sample_rate) * 0.45f32;
+      let y3 = self.speech_r3.process(source, self.speech_f3, 180.0f32, sample_rate) * 0.25f32;
 
-      let sample = source * (f1 + f2 + f3) * self.speech_volume * env;
+      let sample = (y1 + y2 + y3) * self.speech_volume * env * 0.25f32;
 
       out.push(sample.clamp(-1.0, 1.0));
     }

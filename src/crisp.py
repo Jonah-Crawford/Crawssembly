@@ -25,6 +25,8 @@ class Compiler:
 
     self.craw_mode = False
 
+    self.reserved_keywords = []
+
   def int_to_hex(self, value): return f"{value:x}".zfill(2)
 
   def is_integer(self, text):
@@ -33,6 +35,8 @@ class Compiler:
 
   def construct_int(self, value, out=1):
     craw = []
+
+    if isinstance(out, str): out = int(out, 16)
 
     if isinstance(value, (int, str)): value = int(value)
 
@@ -65,9 +69,11 @@ class Compiler:
   def reset_regs(self, regstart=1, regend=238):
     for i in range(regend - regstart + 1): self.crawssembly.append(f" sav 0 r{self.int_to_hex(regstart + i)}")
 
-  def assign_var(self, name, value, recursion=1):
+  def assign_var(self, name, value, recursion=1, force_type=None):
     string = False
     array = False
+
+    if name in self.reserved_keywords: raise Exception(f"CRISP Error: Can not set variable to reserved keyword '{name}' (Line {self.line_index})")
 
     if name in self.mem_addr:
       self.crawssembly.append("sav 0 r02")
@@ -79,7 +85,6 @@ class Compiler:
           "io mem write r02"
         ])
 
-
         if isinstance(addr, list): self.empty_addrs.append(addr[0]); self.full_addrs.remove(addr[0])
         else: self.empty_addrs.append(addr); self.full_addrs.remove(addr)
 
@@ -90,6 +95,18 @@ class Compiler:
     if value and value[0].startswith('"') and value[-1].endswith('"'): string = True
     elif value and value[0].startswith("[") and value[-1].endswith("]"): array = True
 
+    if force_type:
+      if force_type == "str":
+        string = True
+        array = False
+      elif force_type == "int":
+        string = False
+        array = False
+      elif force_type == "array":
+        string = False
+        array = False
+      else: raise Exception(f"CRISP Compile Error: Unknown forced variable type '{force_type}' (Compiling Line {self.line_index})")
+
     if string: final_value = ""
     elif array: final_value = []
 
@@ -97,7 +114,10 @@ class Compiler:
 
     needs_solving = False
 
+    if not isinstance(value, list): value = [value]
+
     for idx, v in enumerate(value):
+      print(f"idx: {idx}, v: {v}, value: {value}")
 
       if string:
         if '"' not in v: final_value += str(v)
@@ -162,75 +182,77 @@ class Compiler:
         self.mem_addr.update({name : [used_addr, "str"]})
 
     if needs_solving:
-      (data_type, memstart, memend) = self.solve_expression(value, recursion + 1)
-      # something something...
+      (data_type, mem) = self.solve_expression(value, recursion + 1)
+      print("Can't do this yet")
 
   def print_value(self, data_type, mem_list):
 
     if data_type == "str":
-      self.crawssembly.append("sav 8 r03")
+      self.crawssembly.extend([
+        "sav 8 r03",
 
-      self.crawssembly.extend(self.construct_int(255)) # byte 4 mask
-      self.crawssembly.append("sav r01 r07")
+        "sav 127 r01",
+        "cal add 127 r01",
+        "cal add 1 r01",
+        "sav r01 r07",
 
-      self.crawssembly.extend(self.construct_int(65280)) # byte 3 mask
-      self.crawssembly.append("sav r01 r06")
+        "sav r07 r06",
+        "cal shl r06 r03",
+        "sav r01 r06",
 
-      self.crawssembly.extend(self.construct_int(16711680)) # byte 2 mask
-      self.crawssembly.append("sav r01 r05")
+        "sav r06 r05",
+        "cal shl r05 r03",
+        "sav r01 r05",
 
-      self.crawssembly.extend(self.construct_int(-16777216)) # byte 1 mask
-      self.crawssembly.append("sav r01 r04")
+        "sav r05 r04",
+        "cal shl r04 r03",
+        "sav r01 r04"
 
-      for mem in mem_list:
-        for byte in range(4):
+      ])
 
-          if byte == 0: # first byte
-            self.crawssembly.extend(self.construct_int(mem))
+      for mem_addr in mem_list:
+        self.crawssembly.extend(self.construct_int(mem_addr))
 
-            self.crawssembly.extend([
-              "io mem addr r01",
-              "io mem read r02",
-              "cal and r02 r07",
-              "io text char r01"
-            ])
+        self.crawssembly.extend([
+          "io mem addr r01",
+          "io mem read r02",
 
-          elif byte == 1: # second byte
-            self.crawssembly.extend([
-              "cal and r02 r06",
-              "cal shr r01 r03",
-              "io text char r01"
-            ])
+          "sav r02 r01",
+          "cal and r04 r01",
+          "cal shr r01 r03",
+          "cal shr r01 r03",
+          "cal shr r01 r03",
+          "io text char r01",
 
-          elif byte == 2: # third byte
-            self.crawssembly.extend([
-              "cal and r02 r05",
-              "cal shr r01 r03",
-              "cal shr r01 r03",
-              "io text char r01"
-            ])
+          "sav r02 r01",
+          "cal and r05 r01",
+          "cal shr r01 r03",
+          "cal shr r01 r03",
+          "io text char r01",
 
-          else: # last byte
-            self.crawssembly.extend([
-              "cal and r02 r04",
-              "cal shr r01 r03",
-              "cal shr r01 r03",
-              "cal shr r01 r03",
-              "io text char r01"
-            ])
+          "sav r02 r01",
+          "cal and r06 r01",
+          "cal shr r01 r03",
+          "io text char r01",
+
+          "sav r02 r01",
+          "cal and r07 r01",
+          "io text char r01"
+        ])
 
       return
 
-    elif data_type == "array": print("can't do ts yet"); return
+    elif data_type == "int":
+      for mem_addr in mem_list:
+        self.crawssembly.extend(self.construct_int(mem_addr))
 
-    elif data_type == "int": # works for single-mem ints only atm
-      self.crawssembly.extend(self.construct_int(mem_list[0]))
+        self.crawssembly.extend([
+          "io mem addr r01",
+          "io mem read r01",
+          "io text int r01"
+        ])
 
-      self.crawssembly.extend([
-        "io mem addr r01",
-        "io mem read r01",
-        "io text int r01"
-      ])
+    elif data_type == "array": print("Can't print arrays yet")
 
   def get_var(self, name, regstart, recursion=1):
     data_length = len(self.mem_addr[name][0])
@@ -243,6 +265,86 @@ class Compiler:
       ]) # loads each piece of data from memory into regs from regstart -> regstart + data_length
 
     return self.mem_addr[name] # returns variable data
+
+  # debug memory is VERY hardcoded, might be stinky but oh well Please send any complaints following the form of "make ts dynamic" to tritech.corebench@gmail.com
+  def debug_memory(self, mode, expression):  # debug runs *top-down* to preserve the most register values (construct_int still runs though...)
+    if mode not in ("mem", "var", "regs"): raise Exception(f"CRISP Error: Unknown debug type '{mode}' (Line {self.line_index})")
+
+    elif mode == "mem":
+      if len(expression) != 2: raise Exception(f"CRISP Error: Bad memory debug values; expected start and end, not '{expression}' (Line {self.line_index})")
+
+      start = expression[0]
+      end = expression[1]
+
+      self.crawssembly.extend(self.construct_int(start, "ec"))
+      self.crawssembly.extend(self.construct_int(end, "eb"))
+
+      self.crawssembly.extend([
+        "sav 58 rea",
+        "sav 32 re9",
+        "65535", # 65535 is the last label definition available (16-bit store)
+        "io mem addr rec",
+        "io mem read r01",
+        "io text hex rec",
+        "io text char rea",
+        "io text char re9",
+        "io text hex r01",
+        "io text newline rff",
+        "sav rec r01",
+        "cal add 1 r01",
+        "sav r01 red",
+        "sav r01 rec",
+        "cal not rea rea",
+        "cal add 1 r01",
+        "cal add r01 red",
+        "jml 65535",
+        "rmv 65535"
+      ])
+
+    elif mode == "var":
+      if len(expression) != 1: raise Exception(f"CRISP Error: '{expression}' is not a singluar variable (Line {self.line_index})")
+      if expression[0] not in list(self.mem_addr.keys()): raise Exception(f"CRISP Error: '{expression}' is not defined (Line {self.line_index})")
+
+      mem, type = self.mem_addr[expression[0]]
+
+      self.crawssembly.extend(["sav 58 rec", "sav 32 reb"])
+
+      for mem_addr in mem:
+        self.crawssembly.extend(self.construct_int(mem_addr))
+        self.crawssembly.extend([
+          "io mem addr r01",
+          "io mem read red",
+          "io text hex r01",
+          "io text char rec",
+          "io text char reb",
+          "io text hex red",
+          "io text newline rff",
+        ])
+
+    elif mode == "regs":
+      if len(expression) != 2: raise Exception(f"CRISP Error: Expected 'start end', not '{expression}' (Line {self.line_index})")
+
+      try:
+
+        if "0x" in expression[0]: start = int(expression[0], 16)
+        else: start = int(expression[0])
+
+        if "0x" in expression[1]: end = int(expression[1], 16)
+        else: end = int(expression[1])
+
+      except: raise Exception(f"CRISP Error: Bad register values '{expression}' (Line {self.line_index})")
+
+      self.crawssembly.extend(["sav 58 red", "sav 32 rec"])
+
+      for reg in range(start, end):
+        self.crawssembly.extend(self.construct_int(reg))
+        self.crawssembly.extend([
+          "io text hex r01",
+          "io text char red",
+          "io text char rec",
+          f"io text hex r{self.int_to_hex(reg)}",
+          "io text newline rff",
+       ])
 
   def solve_expression(self, expression, recursion=1, single_bypass=False): # solves varA X varB
     is_array = False
@@ -275,26 +377,34 @@ class Compiler:
       elif "[" in token or "]" in token: is_array = True
       elif '"' in token: is_str = True
 
+      mem = None
+
       if is_str and is_int: raise Exception(f"CRISP Error: Cannot solve expression with int and string types (Line {self.line_index + 1})")
       if is_str and is_array: raise Exception(f"CRISP Error: Cannot solve expression with array and string types (Line {self.line_index + 1})")
       if is_int and is_array: raise Exception(f"CRISP Error: Cannot solve expression with array and integer types (Line {self.line_index + 1})")
 
       if token not in ("+", "-"):
-        if '"' in token:
-          token = token.replace('"', "")
+        if '"' in token: token = token.replace('"', "")
+        if "[" in token: token = token.replace("[", "")
+        if "]" in token: token = token.replace("]", "")
 
-          self.assign_var(self.empty_temp_vars[0], token, recursion + 1)
-          self.full_temp_vars.append(self.empty_temp_vars[0])
+        if is_int: temp_type = "int"
+        elif is_array: temp_type = "array"
+        else: temp_type = "str"
 
-          if idx == 0:
-            nameA = self.empty_temp_vars[0]
-            memA = self.mem_addr[nameA][0]
-          elif idx == 2:
-            nameB = self.empty_temp_vars[0]
-            memB = self.mem_addr[nameB][0]
-          else: raise Exception(f"CRISP Error: Cannot solve expression with >3 components (Line {self.line_index + 1})")
+        self.assign_var(self.empty_temp_vars[0], token, recursion + 1, force_type=temp_type)
+        self.full_temp_vars.append(self.empty_temp_vars[0])
 
-          self.empty_temp_vars.pop(0)
+        if idx == 0:
+          nameA = self.empty_temp_vars[0]
+          memA = self.mem_addr[nameA][0]
+        elif idx == 2:
+          nameB = self.empty_temp_vars[0]
+          memB = self.mem_addr[nameB][0]
+        else: raise Exception(f"CRISP Error: Cannot solve expression of the form {expression} (Line {self.line_index + 1})")
+
+        name = self.empty_temp_vars.pop(0)
+        mem = self.mem_addr[name]
 
       if token == "-":
         if not is_int:
@@ -345,7 +455,11 @@ class Compiler:
         else: # data length is too large for register use
           raise Exception("Data too big, come back later when I've done ts")
 
-    return None, None
+    if is_str: type = "str"
+    if is_int: type = "int"
+    if is_array: type = "array"
+
+    return type, [mem]
 
   def compile_lines(self):
     for line_index, line in enumerate(self.crisp):
@@ -362,7 +476,7 @@ class Compiler:
 
       self.line_indent = len(line) - len(line.lstrip(" "))
 
-      print(f"line: {line}memory: {self.mem_addr}\n")
+      print(f"\nline: {line}memory: {self.mem_addr}")
 
       try: tokens = line.split(self.comment_str)[0].split(" ")
       except: continue
@@ -375,26 +489,43 @@ class Compiler:
 
       if self.line_indent != 0: tokens = tokens[self.line_indent:]
 
-      if command == "let":
+
+# -----------------------------------   A D D   C O M M A N D S   H E R E   -----------------------------------
+
+      if command in ("", " ", None, "\n"): raise Exception(f"CRISP Error: Malformed line start. (Line {self.line_index})")
+
+      elif command == "let":
         var = tokens[1]
         value = tokens[tokens.index("=") + 1:]
         self.assign_var(var, value, recursion=1)
 
       elif command == "print":
         expression = tokens[1:]
+
         (data_type, mem) = self.solve_expression(expression)
         self.print_value(data_type, mem)
 
-      else: raise Exception("CRISP Error: Unknown command '{command}' (Line {self.line_index})")
+      elif command == "println":
+        expression = tokens[1:]
+
+        (data_type, mem) = self.solve_expression(expression)
+        self.print_value(data_type, mem)
+
+        self.crawssembly.append("io text newline rff")
+
+      elif command == "debug":
+        self.debug_memory(tokens[1], tokens[2:])
+
+
+
+
+
+
+
+
+      else: raise Exception(f"CRISP Error: Unknown command '{command}' (Line {self.line_index})")
 
     print(f"memory: {self.mem_addr}")
-
-
-
-
-
-
-
 
 
 def main():

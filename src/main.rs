@@ -564,6 +564,7 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
       "char" => Ok(0x0),
       "int" => Ok(0x1),
       "newline" | "nl" => Ok(0x2),
+      "hex" => Ok(0x3),
       _ => Err(format!("Unknown text command '{tok}'"))
     },
 
