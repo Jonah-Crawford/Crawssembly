@@ -1,9 +1,13 @@
-let x = 10
-println x
+let x = "Hello"
+debug mem 0 6
+println x + x
 debug regs 0 16
+debug mem 0 6
+
 /c/
 rmv 1
 1
+sav 0 r01
 io keyboard poll r01
 cal add -27 r01
 jmg 1
