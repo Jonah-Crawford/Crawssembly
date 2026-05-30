@@ -422,35 +422,41 @@ class Compiler:
 
   # merges together strings to avoid "hello world" + "!" being made into ['"hello', 'world"', "+", '"!"'] and failing len=3 checks
   def split_expression(self, expression):
+    parts = []
+    current = []
     inside_string = False
-    symbol_idx = None
 
-    for idx, token in enumerate(expression):
-      if token.startswith('"'): inside_string = True
+    for token in expression:
+      if token.startswith('"'):
+        inside_string = True
 
       if token in self.calc_symbols and not inside_string:
-        symbol_idx = idx
-        break
+        if not current:
+          raise Exception(
+            f"CRISP Error: Missing value before '{token}' "
+            f"(Line {self.line_index + 1})"
+          )
+
+        parts.append(" ".join(current))
+        parts.append(token)
+        current = []
+        continue
+
+      current.append(token)
 
       if token.endswith('"'): inside_string = False
 
-    if symbol_idx is None: return [" ".join(expression)]
+    if inside_string:
+      raise Exception(
+        f"CRISP Error: Unterminated string in expression "
+        f"(Line {self.line_index + 1})"
+      )
 
-    left = " ".join(expression[:symbol_idx])
-    op = expression[symbol_idx]
-    right = " ".join(expression[symbol_idx + 1:])
+    if current:parts.append(" ".join(current))
 
-    return [left, op, right]
+    return parts
 
-  def join_value_tokens(self, tokens):
-    if not tokens:
-      raise Exception("CRISP Error: Missing value in expression")
-
-    text = " ".join(tokens)
-
-    return text
-
-  def solve_expression(self, expression, recursion=1, single_bypass=False):
+  def solve_expression_core(self, expression, recursion=1, single_bypass=False):
     temp_names = []
 
     print(f"Old expression: {expression}")
@@ -485,7 +491,7 @@ class Compiler:
 
         raise Exception(f"CRISP Error: I don't know how to parse '{token}' (Line {self.line_index + 1})")
 
-    expression = self.split_expression(expression)
+    expression = self.split_expression(expression) # solve_expression() should do this already, but better safe than sorry
 
     if len(expression) == 1:
       token = expression[0]
@@ -523,10 +529,8 @@ class Compiler:
 
       clean = token
 
-      if clean.startswith('"') and clean.endswith('"'):
-        clean = clean[1:-1]
-      elif clean.startswith("[") and clean.endswith("]"):
-        clean = clean[1:-1]
+      if clean.startswith('"') and clean.endswith('"'): clean = clean[1:-1]
+      elif clean.startswith("[") and clean.endswith("]"): clean = clean[1:-1]
 
       temp_name = self.empty_temp_vars.pop(0)
       self.full_temp_vars.append(temp_name)
@@ -542,8 +546,7 @@ class Compiler:
     nameB, memB = materialise(right, "B")
 
     if op == "-":
-      if typeA != "int":
-        raise Exception(f"CRISP Error: Cannot subtract a {typeA} type")
+      if typeA != "int": raise Exception(f"CRISP Error: Cannot subtract a {typeA} type")
 
       self.get_var(nameA, 3, recursion + 1)
       self.get_var(nameB, 4, recursion + 1)
@@ -562,7 +565,11 @@ class Compiler:
 
       self.free_temp(temp_names)
 
-      return "int", [mem], None
+      name = self.empty_temp_vars.pop(0)
+      self.full_temp_vars.append(name)
+      self.mem_addr[name] = [[mem], "int"]
+
+      return "int", [mem], [name]
 
     if op == "+":
       if typeA == "array":
@@ -584,7 +591,11 @@ class Compiler:
 
         self.free_temp(temp_names)
 
-        return "int", [mem], None
+        name = self.empty_temp_vars.pop(0)
+        self.full_temp_vars.append(name)
+        self.mem_addr[name] = [[mem], "int"]
+
+        return "int", [mem], [name]
 
       if typeA == "str":
         name = self.empty_temp_vars.pop(0)
@@ -619,6 +630,54 @@ class Compiler:
 
     raise Exception(f"CRISP Error: Unknown operator '{op}' (Line {self.line_index + 1})")
 
+  def solve_expression(self, expression):
+    print(f"old expression: {expression}")
+    expression = self.split_expression(expression)
+    print(f"new expression: {expression}")
+
+    if len(expression) == 1:
+      return self.solve_expression_core(expression)
+
+    if len(expression) % 2 == 0:
+      raise Exception(
+        f"CRISP Error: Expected an odd-lengthed expression. "
+        f"Expected pattern: value operation value operation value. "
+        f"(Line {self.line_index + 1})"
+      )
+
+    temp_names = []
+
+    node = expression[:3]
+    var_type, result_mem, temps = self.solve_expression_core(node)
+
+    if temps: temp_names.extend(temps)
+
+    result_name = temps[0] if temps else None
+
+    idx = 3
+
+    while idx < len(expression):
+      op = expression[idx]
+      rhs = expression[idx + 1]
+
+      if result_name is None:
+        result_name = self.empty_temp_vars.pop(0)
+        self.full_temp_vars.append(result_name)
+        self.mem_addr[result_name] = [result_mem, var_type]
+        temp_names.append(result_name)
+
+      node = [result_name, op, rhs]
+
+      var_type, result_mem, temps = self.solve_expression_core(node)
+
+      if temps:
+        temp_names.extend(temps)
+        result_name = temps[0]
+
+      idx += 2
+
+    return var_type, result_mem, temp_names
+
   def compile_lines(self):
     for line_index, line in enumerate(self.crisp):
 
@@ -650,6 +709,7 @@ class Compiler:
 
 # -----------------------------------   A D D   C O M M A N D S   H E R E   -----------------------------------
 
+
       if command in ("", " ", None, "\n"): raise Exception(f"CRISP Error: Malformed line start. (Line {self.line_index + 1})")
 
       elif command == "let":
@@ -678,8 +738,7 @@ class Compiler:
 
         if temp_names: self.free_temp(temp_names)
 
-      elif command == "debug":
-        self.debug_memory(tokens[1], tokens[2:])
+      elif command == "debug": self.debug_memory(tokens[1], tokens[2:])
 
 
 

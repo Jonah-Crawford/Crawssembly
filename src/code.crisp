@@ -1,9 +1,9 @@
-let x = "Hello World"
-println x + x
-println x + "!"
-println "!" + x
-println "Hello World"
-println x
+let x = "abc"
+let y = "123"
+let z = "ABC"
+println x + y
+println x + y + z
+println "abc" + y + z
 
 /c/
 rmv 1
