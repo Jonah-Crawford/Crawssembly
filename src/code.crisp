@@ -1,8 +1,5 @@
-let x = "Hello"
-debug mem 0 6
-println x + x
-debug regs 0 16
-debug mem 0 6
+let x = "Hello World"
+println "!" + x
 
 /c/
 rmv 1

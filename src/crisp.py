@@ -80,6 +80,9 @@ class Compiler:
     string = False
     array = False
 
+    if isinstance(value, list):
+      if value[0].startswith('"') and value[-1].endswith('"'): value = " ".join(value)
+
     if name in self.reserved_keywords: raise Exception(f"CRISP Error: Can not set variable to reserved keyword '{name}' (Line {self.line_index + 1})")
 
     print(f"assign_var()  name: {name}, value: {value}, force_type: {force_type}")
@@ -417,6 +420,41 @@ class Compiler:
           "io text newline rff",
        ])
 
+# merges together strings to avoid "hello world" + "!" being made into ['"hello', 'world"', "+", '"!"'] and failing len=3 checks
+  def split_expression(self, expression):
+    inside_string = False
+
+    for idx, token in enumerate(expression):
+      if token.startswith('"'):
+        inside_string = True
+
+      if token in self.calc_symbols and not inside_string:
+        left = expression[:idx]
+        op = token
+        right = expression[idx + 1:]
+
+        return [
+          self.join_value_tokens(left),
+          op,
+          self.join_value_tokens(right)
+        ]
+
+      if token.endswith('"'):
+        inside_string = False
+
+    if len(expression) == 1:
+      return [self.join_value_tokens(expression)]
+
+    raise Exception(f"CRISP Error: Could not split expression '{' '.join(expression)}'")
+
+  def join_value_tokens(self, tokens):
+    if not tokens:
+      raise Exception("CRISP Error: Missing value in expression")
+
+    text = " ".join(tokens)
+
+    return text
+
   def solve_expression(self, expression, recursion=1, single_bypass=False): # solves varA X varB
     is_array = False
     is_int = False
@@ -443,34 +481,29 @@ class Compiler:
 
         else: raise Exception(f"CRISP Error: I don't know how to parse '{expression[0]}' (Line {self.line_index + 1})")
 
-    # merges together strings to avoid "hello world" + "!" being made into ['"hello', 'world"', "+", '"!"'] and failing len=3 checks
-
     inside_string = False
 
     realA = None
     realB = None
 
+    typeA = None
+    typeB = None
+
     symbol_idx = None
 
     print(f"Old expression: {expression}")
 
-    for idx, token in enumerate(expression):
-      if token.startswith('"'): inside_string = True; token = token.replace('"', "")
-      if token.endswith('"'): inside_string = False; token = token.replace('"', "")
-
-      if token in self.calc_symbols and not inside_string: symbol_idx = idx
-
-      if inside_string and not symbol_idx: realA += str(token)
-      elif not symbol_idx: realA = token
-
-      if inside_string and symbol_idx: realB += str(token)
-      elif symbol_idx: realB = token
-
-    expression = [realA, expression[symbol_idx], realB]
+    expression = self.split_expression(expression)
 
     print(f"New expression: {expression}")
 
     if len(expression) != 3 and not single_bypass: raise Exception(f"CRISP Error: Expression lengths must be of the form 'value' 'operation' 'value' (Line {self.line_index + 1})")
+
+    if expression[0].startswith('"') and expression[0].endswith('"'): typeA = "str"
+    if expression[-1].startswith('"') and expression[-1].endswith('"'): typeB = "str"
+
+    if expression[-1].startswith("[") and expression[-1].endswith("]"): typeA = "array"
+    if expression[-1].startswith("[") and expression[-1].endswith("]"): typeB = "array"
 
     definedA = False
     definedB = False
@@ -480,17 +513,12 @@ class Compiler:
 
     print(expression)
 
-    typeA = None
-    typeB = None
-
     print(f"definedA: {definedA}, definedB: {definedB}")
 
     if definedA: typeA = self.mem_addr[expression[0]][1]
     if definedB: typeB = self.mem_addr[expression[-1]][1]
 
     print(f"typeA: {typeA}, typeB: {typeB}")
-
-    if typeA != typeB: raise Exception(f"CRISP Error: Can not use '{expression[1]}' with '{typeA}' type and '{typeB}' type (Line {self.line_index + 1})")
 
     if typeA == "str":
       is_str = True
@@ -509,6 +537,8 @@ class Compiler:
       if self.is_integer(token): is_int = True
       elif "[" in token or "]" in token: is_array = True
       elif '"' in token: is_str = True
+
+      if typeA != typeB: raise Exception(f"CRISP Error: Can not use '{expression[1]}' with '{typeA}' type and '{typeB}' type (Line {self.line_index + 1})")
 
       mem = None
 
@@ -555,15 +585,17 @@ class Compiler:
         # this bit is actually stinky, the compiler constructs the second value before actually looking at it properly
         # because calculation step needs the next value as the method of calculation depends on said value
 
+        print("iterating over symbol character")
+
         if definedB:
           memB = self.mem_addr[expression[2]][0]
           nameB = expression[2]
-        elif token not in self.calc_symbols:
+        else:
           if expression[2].startswith('"') and expression[2].endswith('"'): typeB = "str"
           elif expression[2].startswith("[") and expression[2].endswith("]"): typeB = "array"
           else: typeB = "int"
 
-          self.assign_var(self.empty_temp_vars[0], token, recursion + 1, force_type=typeB)
+          self.assign_var(self.empty_temp_vars[0], expression[2], recursion + 1, force_type=typeB)
 
           nameB = self.empty_temp_vars.pop(0)
           memB = self.mem_addr[nameB][0]
@@ -613,7 +645,7 @@ class Compiler:
 
           return "int", [mem], None
 
-        elif is_str: # actually simple, just copy mem values and push them together
+        elif is_str:
           print(f"string concat reached, memA: {memA}, memB: {memB}")
 
           name = self.empty_temp_vars.pop(0)
