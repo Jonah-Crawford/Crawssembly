@@ -1,5 +1,9 @@
 let x = "Hello World"
+println x + x
+println x + "!"
 println "!" + x
+println "Hello World"
+println x
 
 /c/
 rmv 1

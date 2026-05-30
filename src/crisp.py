@@ -420,32 +420,27 @@ class Compiler:
           "io text newline rff",
        ])
 
-# merges together strings to avoid "hello world" + "!" being made into ['"hello', 'world"', "+", '"!"'] and failing len=3 checks
+  # merges together strings to avoid "hello world" + "!" being made into ['"hello', 'world"', "+", '"!"'] and failing len=3 checks
   def split_expression(self, expression):
     inside_string = False
+    symbol_idx = None
 
     for idx, token in enumerate(expression):
-      if token.startswith('"'):
-        inside_string = True
+      if token.startswith('"'): inside_string = True
 
       if token in self.calc_symbols and not inside_string:
-        left = expression[:idx]
-        op = token
-        right = expression[idx + 1:]
+        symbol_idx = idx
+        break
 
-        return [
-          self.join_value_tokens(left),
-          op,
-          self.join_value_tokens(right)
-        ]
+      if token.endswith('"'): inside_string = False
 
-      if token.endswith('"'):
-        inside_string = False
+    if symbol_idx is None: return [" ".join(expression)]
 
-    if len(expression) == 1:
-      return [self.join_value_tokens(expression)]
+    left = " ".join(expression[:symbol_idx])
+    op = expression[symbol_idx]
+    right = " ".join(expression[symbol_idx + 1:])
 
-    raise Exception(f"CRISP Error: Could not split expression '{' '.join(expression)}'")
+    return [left, op, right]
 
   def join_value_tokens(self, tokens):
     if not tokens:
@@ -455,232 +450,174 @@ class Compiler:
 
     return text
 
-  def solve_expression(self, expression, recursion=1, single_bypass=False): # solves varA X varB
-    is_array = False
-    is_int = False
-    is_str = False
-
+  def solve_expression(self, expression, recursion=1, single_bypass=False):
     temp_names = []
+
+    print(f"Old expression: {expression}")
 
     memA = None
     nameA = None
     memB = None
     nameB = None
 
+    def infer_type(token):
+      if token in self.mem_addr: return self.mem_addr[token][1]
+      if token.startswith('"') and token.endswith('"'): return "str"
+      if token.startswith("[") and token.endswith("]"): return "array"
+      if self.is_integer(token): return "int"
+      raise Exception(f"CRISP Error: '{token}' is not defined (Line {self.line_index + 1})")
+
     if not single_bypass:
       if len(expression) == 0: raise Exception(f"CRISP Error: Empty expressions can't be parsed. (Line {self.line_index + 1})")
 
       if len(expression) == 1:
-        if '"' not in expression[0] and ("[" not in expression[0] and "]" not in expression[0]):
-          if expression[0] not in self.mem_addr: raise Exception(f"CRISP Error: {expression[0]} is not defined (Line {self.line_index + 1})")
-          else: return self.mem_addr[expression[0]][-1], self.mem_addr[expression[0]][0]
+        token = expression[0]
 
-        elif '"' in expression[0] or self.is_integer(expression[0]): return self.solve_expression(expression, recursion, single_bypass=True)
+        if not token.startswith('"') and not token.endswith('"') and "[" not in token and "]" not in token:
+          if token not in self.mem_addr: raise Exception(f"CRISP Error: {token} is not defined (Line {self.line_index + 1})")
 
-        elif ("[" in expression[0] and "]" in expression[0]): raise Exception("Still can't do arrays yet fool")
+          return self.mem_addr[token][1], self.mem_addr[token][0], None
 
-        else: raise Exception(f"CRISP Error: I don't know how to parse '{expression[0]}' (Line {self.line_index + 1})")
+        if '"' in token or self.is_integer(token): return self.solve_expression(expression, recursion, single_bypass=True)
 
-    inside_string = False
+        if "[" in token and "]" in token:
+          raise Exception("Still can't do arrays yet fool")
 
-    realA = None
-    realB = None
-
-    typeA = None
-    typeB = None
-
-    symbol_idx = None
-
-    print(f"Old expression: {expression}")
+        raise Exception(f"CRISP Error: I don't know how to parse '{token}' (Line {self.line_index + 1})")
 
     expression = self.split_expression(expression)
 
+    if len(expression) == 1:
+      token = expression[0]
+
+      if token in self.mem_addr: return self.mem_addr[token][1], self.mem_addr[token][0], None
+
+      data_type = infer_type(token)
+
+      clean = token
+      if clean.startswith('"') and clean.endswith('"'): clean = clean[1:-1]
+
+      temp_name = self.empty_temp_vars.pop(0)
+      self.full_temp_vars.append(temp_name)
+
+      self.assign_var(temp_name, clean, recursion + 1, force_type=data_type)
+
+      return data_type, self.mem_addr[temp_name][0], [temp_name]
+
     print(f"New expression: {expression}")
 
-    if len(expression) != 3 and not single_bypass: raise Exception(f"CRISP Error: Expression lengths must be of the form 'value' 'operation' 'value' (Line {self.line_index + 1})")
+    if len(expression) != 3: raise Exception(f"CRISP Error: Expression lengths must be of the form 'value' 'operation' 'value' (Line {self.line_index + 1})")
 
-    if expression[0].startswith('"') and expression[0].endswith('"'): typeA = "str"
-    if expression[-1].startswith('"') and expression[-1].endswith('"'): typeB = "str"
+    left, op, right = expression
 
-    if expression[-1].startswith("[") and expression[-1].endswith("]"): typeA = "array"
-    if expression[-1].startswith("[") and expression[-1].endswith("]"): typeB = "array"
+    typeA = infer_type(left)
+    typeB = infer_type(right)
 
-    definedA = False
-    definedB = False
+    if typeA != typeB: raise Exception(f"CRISP Error: Can not use '{op}' with '{typeA}' type and '{typeB}' type (Line {self.line_index + 1})")
 
-    if expression[0] in self.mem_addr: definedA = True
-    if expression[-1] in self.mem_addr: definedB = True
+    def materialise(token, side):
+      if token in self.mem_addr:
+        name = token
+        mem = self.mem_addr[token][0]
+        return name, mem
 
-    print(expression)
+      clean = token
 
-    print(f"definedA: {definedA}, definedB: {definedB}")
+      if clean.startswith('"') and clean.endswith('"'):
+        clean = clean[1:-1]
+      elif clean.startswith("[") and clean.endswith("]"):
+        clean = clean[1:-1]
 
-    if definedA: typeA = self.mem_addr[expression[0]][1]
-    if definedB: typeB = self.mem_addr[expression[-1]][1]
+      temp_name = self.empty_temp_vars.pop(0)
+      self.full_temp_vars.append(temp_name)
 
-    print(f"typeA: {typeA}, typeB: {typeB}")
+      self.assign_var(temp_name, clean, recursion + 1, force_type=typeA)
 
-    if typeA == "str":
-      is_str = True
-      is_array = False
-      is_int = False
-    elif typeA == "int":
-      is_str = False
-      is_array = False
-      is_int = True
-    elif typeA == "array":
-      is_str = False
-      is_array = True
-      is_int = False
+      temp_names.append(temp_name)
 
-    for idx, token in enumerate(expression):
-      if self.is_integer(token): is_int = True
-      elif "[" in token or "]" in token: is_array = True
-      elif '"' in token: is_str = True
+      mem = self.mem_addr[temp_name][0]
+      return temp_name, mem
 
-      if typeA != typeB: raise Exception(f"CRISP Error: Can not use '{expression[1]}' with '{typeA}' type and '{typeB}' type (Line {self.line_index + 1})")
+    nameA, memA = materialise(left, "A")
+    nameB, memB = materialise(right, "B")
 
-      mem = None
+    if op == "-":
+      if typeA != "int":
+        raise Exception(f"CRISP Error: Cannot subtract a {typeA} type")
 
-      print(f"idx: {idx}, token: {token}")
+      self.get_var(nameA, 3, recursion + 1)
+      self.get_var(nameB, 4, recursion + 1)
 
-      if is_str and is_int: raise Exception(f"CRISP Error: Cannot solve expression with int and string types (Line {self.line_index + 1})")
-      if is_str and is_array: raise Exception(f"CRISP Error: Cannot solve expression with array and string types (Line {self.line_index + 1})")
-      if is_int and is_array: raise Exception(f"CRISP Error: Cannot solve expression with array and integer types (Line {self.line_index + 1})")
+      mem = self.empty_addrs.pop(0)
+      self.full_addrs.append(mem)
 
-      if token not in self.calc_symbols: # i.e. the token is a value
-        if '"' in token: token = token.replace('"', "")
-        if "[" in token: token = token.replace("[", "")
-        if "]" in token: token = token.replace("]", "")
+      self.crawssembly.extend(self.construct_int(mem))
+      self.crawssembly.extend([
+        "io mem addr r01",
+        "cal not r04 r04",
+        "cal add 1 r01",
+        "cal add r01 r03",
+        "io mem write r01"
+      ])
 
-        if is_int: temp_type = "int"
-        elif is_array: temp_type = "array"
-        else: temp_type = "str"
+      self.free_temp(temp_names)
 
-        self.assign_var(self.empty_temp_vars[0], token, recursion + 1, force_type=temp_type)
-        self.full_temp_vars.append(self.empty_temp_vars[0])
+      return "int", [mem], None
 
-        try:
-          name = self.empty_temp_vars.pop(0)
-          mem = self.mem_addr[name][0] # values if expression logic falls through
+    if op == "+":
+      if typeA == "array":
+        raise Exception("Can't do ts yet")
 
-          temp_names.append(name)
-        except: pass
-
-        if idx == 0 and not definedA: nameA = self.empty_temp_vars[0]
-        elif idx == 0: nameA = token
-
-        elif idx == 2 and not definedB: nameB = self.empty_temp_vars[0]
-        elif idx == 2: nameB = token
-
-        else: raise Exception(f"CRISP Error: Cannot solve expression of the form {' '.join(expression)} (Line {self.line_index + 1})")
-
-        try:
-          if idx == 0: memA = self.mem_addr[nameA][0]
-          if idx == 2: memB = self.mem_addr[nameB][0]
-        except: print(f"temp variable '{nameA}' or '{nameB}' has been deleted")
-
-      else:
-
-        # this bit is actually stinky, the compiler constructs the second value before actually looking at it properly
-        # because calculation step needs the next value as the method of calculation depends on said value
-
-        print("iterating over symbol character")
-
-        if definedB:
-          memB = self.mem_addr[expression[2]][0]
-          nameB = expression[2]
-        else:
-          if expression[2].startswith('"') and expression[2].endswith('"'): typeB = "str"
-          elif expression[2].startswith("[") and expression[2].endswith("]"): typeB = "array"
-          else: typeB = "int"
-
-          self.assign_var(self.empty_temp_vars[0], expression[2], recursion + 1, force_type=typeB)
-
-          nameB = self.empty_temp_vars.pop(0)
-          memB = self.mem_addr[nameB][0]
-
-      if token == "-":
-        if not is_int:
-          if is_str: raise Exception("CRISP Error: Cannot subtract a str type")
-          else: raise Exception("CRISP Error: Cannot subtract an array type")
-
-        self.get_var(nameA, 3, recursion + 1)
-        self.get_var(nameB, 4, recursion + 1)
-
+      if typeA == "int":
         mem = self.empty_addrs.pop(0)
         self.full_addrs.append(mem)
+
+        self.get_var(nameA, 3, recursion + 1)
+        self.get_var(nameB, 3 + len(memA), recursion + 1)
 
         self.crawssembly.extend(self.construct_int(mem))
         self.crawssembly.extend([
           "io mem addr r01",
-          "cal not r04 r04",
-          "cal add 1 r01",
-          "cal add r01 r03",
+          "cal add r03 r04",
           "io mem write r01"
-        ]) # <----------- ts only works for -2^31 < n < 2^31 - 1, UNDERFLOW WILL HAPPEN!
+        ])
 
         self.free_temp(temp_names)
 
         return "int", [mem], None
 
-      if token == "+":
-        if is_array: raise Exception("Can't do ts yet")
+      if typeA == "str":
+        name = self.empty_temp_vars.pop(0)
+        self.full_temp_vars.append(name)
 
-        elif is_int:
-          mem = self.empty_addrs.pop(0)
-          self.full_addrs.append(mem)
+        mem_ref = memA + memB
+        mem = []
 
-          self.get_var(nameA, 3, recursion + 1)
-          self.get_var(nameB, 3 + len(memA), recursion + 1)
+        for _ in range(len(mem_ref)):
+          addr = self.empty_addrs.pop(0)
+          mem.append(addr)
+          self.full_addrs.append(addr)
 
-          self.crawssembly.extend(self.construct_int(mem))
+        self.mem_addr.update({name: [mem, "str"]})
+
+        for mem_idx, addr in enumerate(mem_ref):
+          self.crawssembly.extend(self.construct_int(addr))
           self.crawssembly.extend([
             "io mem addr r01",
-            "cal add r03 r04",
-            "io mem write r01"
-          ]) # <----------- ts only works for -2^31 < n < 2^31 - 1, OVERFLOW WILL HAPPEN!
+            "io mem read r03"
+          ])
 
-          self.free_temp(temp_names)
+          self.crawssembly.extend(self.construct_int(mem[mem_idx]))
+          self.crawssembly.extend([
+            "io mem addr r01",
+            "io mem write r03"
+          ])
 
-          return "int", [mem], None
+        self.free_temp(temp_names)
 
-        elif is_str:
-          print(f"string concat reached, memA: {memA}, memB: {memB}")
+        return "str", mem, [name]
 
-          name = self.empty_temp_vars.pop(0)
-          self.full_temp_vars.append(name)
-
-          mem = []
-
-          mem_ref = memA + memB
-
-          for _ in range(len(memA) + len(memB)):
-            mem.append(self.empty_addrs.pop(0))
-            self.full_addrs.append(mem[0])
-
-          print(f"memA: {memA}, memB: {memB}, mem: {mem}, name: {name}, mem_ref: {mem_ref}")
-
-          self.mem_addr.update({name : [mem, "str"]})
-
-          self.free_temp(temp_names)
-
-          self.debug_memory("mem", ["0", "2"])
-
-          for mem_idx, addr in enumerate(mem_ref):
-            self.crawssembly.extend(self.construct_int(addr))
-            self.crawssembly.extend(["io mem addr r01", "io mem read r03"])
-            self.crawssembly.extend(self.construct_int(mem[mem_idx]))
-            self.crawssembly.extend(["io mem addr r01", "io mem write r03"])
-
-          return "str", mem, [name]
-
-    if is_str: type = "str"
-    elif is_int: type = "int"
-    elif is_array: type = "array"
-    else: raise Exception(f"CRISP Compile Error: Could not assign a type to expression '{' '.join(expression)}' output (Compiling Line {self.line_index})")
-
-    return type, [mem], [name]
+    raise Exception(f"CRISP Error: Unknown operator '{op}' (Line {self.line_index + 1})")
 
   def compile_lines(self):
     for line_index, line in enumerate(self.crisp):
@@ -734,8 +671,6 @@ class Compiler:
         (data_type, mem, temp_names) = self.solve_expression(expression)
 
         print(f"mem: {mem}, temp_names: {temp_names}")
-
-        self.debug_memory("mem", ["0", "7"])
 
         self.print_value(data_type, mem)
 
