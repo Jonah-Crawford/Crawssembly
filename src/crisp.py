@@ -38,7 +38,7 @@ class Compiler:
 
   def is_integer(self, text):
     try: int(text); return True
-    except ValueError: return False
+    except (ValueError, TypeError): return False
 
   def construct_int(self, value, out=1):
     craw = []
@@ -76,38 +76,95 @@ class Compiler:
   def reset_regs(self, regstart=1, regend=238):
     for i in range(regend - regstart + 1): self.crawssembly.append(f" sav 0 r{self.int_to_hex(regstart + i)}")
 
+
+
   def assign_var(self, name, value, recursion=1, force_type=None):
     string = False
     array = False
 
-    if isinstance(value, list):
-      if value[0].startswith('"') and value[-1].endswith('"'): value = " ".join(value)
+    # solve_expression() sometimes returns a tuple directly and sometimes it may arrive wrapped as [tuple]
+    if isinstance(value, list) and len(value) == 1 and isinstance(value[0], tuple):value = value[0]
 
-    if name in self.reserved_keywords: raise Exception(f"CRISP Error: Can not set variable to reserved keyword '{name}' (Line {self.line_index + 1})")
+    # Transfer ownership from expression/temp result to the real variable IMPORTANT: do not call free_temp() here, because that clears RAM.
+    if isinstance(value, tuple):
+      value_type, value_addrs, temp_vars = value
+
+      if name in self.reserved_keywords:
+        raise Exception(f"CRISP Error: Can not set variable to reserved keyword '{name}' (Line {self.line_index + 1})")
+
+      if name in self.mem_addr:
+        self.crawssembly.append("sav 0 r02")
+
+        for addr in self.mem_addr[name][0]:
+          self.crawssembly.extend(self.construct_int(addr))
+          self.crawssembly.extend([
+            "io mem addr r01",
+            "io mem write r02"
+          ])
+
+          if addr not in self.empty_addrs:
+            self.empty_addrs.append(addr)
+
+          if addr in self.full_addrs:
+            self.full_addrs.remove(addr)
+
+        self.empty_addrs.sort()
+        del self.mem_addr[name]
+
+      self.mem_addr[name] = [value_addrs, value_type]
+
+      for temp in temp_vars or []:
+        if temp in self.mem_addr:
+          del self.mem_addr[temp]
+
+        if temp in self.full_temp_vars:
+          self.full_temp_vars.remove(temp)
+
+        if temp not in self.empty_temp_vars:
+          self.empty_temp_vars.append(temp)
+
+      self.empty_temp_vars.sort()
+      return
+
+    if isinstance(value, list):
+      if value and isinstance(value[0], str) and value[0].startswith('"') and value[-1].endswith('"'):
+        value = " ".join(value)
+
+    if name in self.reserved_keywords:
+      raise Exception(f"CRISP Error: Can not set variable to reserved keyword '{name}' (Line {self.line_index + 1})")
 
     print(f"assign_var()  name: {name}, value: {value}, force_type: {force_type}")
 
-    if value in list(self.mem_addr.keys()):
+    # Copy existing variable
+    if isinstance(value, str) and value in self.mem_addr:
       mem_ref = self.mem_addr[value][0]
-      type = self.mem_addr[value][1]
+      data_type = self.mem_addr[value][1]
 
       mem = []
 
-      for addr in mem_ref:
-        mem.append(self.empty_addrs.pop(0))
-        self.full_addrs.append(mem[0])
+      for _ in mem_ref:
+        addr = self.empty_addrs.pop(0)
+        mem.append(addr)
+        self.full_addrs.append(addr)
 
       for idx, addr in enumerate(mem_ref):
         self.crawssembly.extend(self.construct_int(addr))
-        self.crawssembly.extend(["io mem addr r01", "io mem read r03"])
+        self.crawssembly.extend([
+          "io mem addr r01",
+          "io mem read r03"
+        ])
+
         self.crawssembly.extend(self.construct_int(mem[idx]))
-        self.crawssembly.extend(["io mem addr r01", "io mem write r03"])
+        self.crawssembly.extend([
+          "io mem addr r01",
+          "io mem write r03"
+        ])
 
-      self.mem_addr.update({name : [mem, type]})
-
+      self.mem_addr[name] = [mem, data_type]
       return
 
-    if name in list(self.mem_addr.keys()):
+    # Overwrite existing variable
+    if name in self.mem_addr:
       print(f"assign_var()  name {name} defined")
       self.crawssembly.append("sav 0 r02")
 
@@ -118,15 +175,19 @@ class Compiler:
           "io mem write r02"
         ])
 
-        if isinstance(addr, list): self.empty_addrs.append(addr[0]); self.full_addrs.remove(addr[0])
-        else: self.empty_addrs.append(addr); self.full_addrs.remove(addr)
+        if addr not in self.empty_addrs:
+          self.empty_addrs.append(addr)
 
-        self.empty_addrs.sort()
+        if addr in self.full_addrs:
+          self.full_addrs.remove(addr)
 
+      self.empty_addrs.sort()
       del self.mem_addr[name]
 
-    if value and value[0].startswith('"') and value[-1].endswith('"'): string = True
-    elif value and value[0].startswith("[") and value[-1].endswith("]"): array = True
+    if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
+      string = True
+    elif isinstance(value, str) and value.startswith("[") and value.endswith("]"):
+      array = True
 
     if force_type:
       if force_type == "str":
@@ -137,102 +198,112 @@ class Compiler:
         array = False
       elif force_type == "array":
         string = False
-        array = False
-      else: raise Exception(f"CRISP Compile Error: Unknown forced variable type '{force_type}' (Compiling Line {self.line_index})")
+        array = True
+      else:
+        raise Exception(f"CRISP Compile Error: Unknown forced variable type '{force_type}' (Compiling Line {self.line_index})")
 
-    if string: final_value = ""
-    elif array: final_value = []
+    if string:
+      final_value = ""
+    elif array:
+      final_value = []
 
     mem = self.empty_addrs[0]
-
     needs_solving = False
 
-    if not isinstance(value, list): value = [value]
+    if not isinstance(value, list):
+      value = [value]
 
     print(f"assign_var()  name: {name}, value: {value}, string: {string}, array: {array}")
 
     for idx, v in enumerate(value):
-
       if string:
-        if '"' not in v: final_value += str(v)
-        else: final_value += str(v).replace('"', "")
-        if idx != len(value) - 1: final_value += " " # restores space from line.split()
+        v = str(v)
 
-      elif array: pass # this will be complex for sure O_O
+        if v.startswith('"') and v.endswith('"'):
+          final_value += v[1:-1]
+        elif v.startswith('"'):
+          final_value += v[1:]
+        elif v.endswith('"'):
+          final_value += v[:-1]
+        else:
+          final_value += v
+
+        if idx != len(value) - 1:
+          final_value += " "
+
+      elif array:
+        pass
 
       else:
         if not self.is_integer(v):
           needs_solving = True
           break
 
-        else:
-          self.mem_addr.update({name : [[mem], "int"]})
+        self.mem_addr[name] = [[mem], "int"]
 
-          self.crawssembly.extend(self.construct_int(v, 1))
-          self.crawssembly.extend(self.construct_int(mem, 2))
+        self.crawssembly.extend(self.construct_int(v, 1))
+        self.crawssembly.extend(self.construct_int(mem, 2))
+        self.crawssembly.extend([
+          "io mem addr r02",
+          "io mem write r01"
+        ])
+
+        self.empty_addrs.remove(mem)
+        self.full_addrs.append(mem)
+
+        return
+
+    if string:
+      self.crawssembly.append("sav 8 r03")
+
+      print(f"assign_var() final_value: {final_value}")
+
+      used_addr = []
+
+      for i, c in enumerate(final_value):
+        char_value = ord(c)
+
+        if (i % 4) == 0:
+          word_addr = self.empty_addrs.pop(0)
+          self.full_addrs.append(word_addr)
+          used_addr.append(word_addr)
+
+          self.crawssembly.extend(self.construct_int(word_addr))
           self.crawssembly.extend([
-            "io mem addr r02",
+            "io mem addr r01",
+            f"sav {char_value} r01"
+          ])
+
+          if i != len(final_value) - 1:
+            self.crawssembly.append("cal shl r01 r03")
+
+        elif (i % 4) == 3:
+          self.crawssembly.extend([
+            f"cal add {char_value} r01",
             "io mem write r01"
           ])
 
-          self.empty_addrs.remove(mem)
-          self.full_addrs.append(mem)
+        else:
+          self.crawssembly.append(f"cal add {char_value} r01")
 
-          break # singe reg only, skips string and array parsing
-
-      if string:
-        self.crawssembly.append("sav 8 r03")
-
-        print(f"assign_var() final_value: {final_value}")
-
-        used_addr = []
-
-        for i, c in enumerate(final_value):
-          value = ord(c)
-
-          if (i % 4) == 0:
-            word_addr = self.empty_addrs.pop(0)
-            self.full_addrs.append(word_addr)
-            used_addr.append(word_addr)
-
-            self.crawssembly.extend(self.construct_int(word_addr))
-            self.crawssembly.extend([
-              "io mem addr r01",
-              f"sav {value} r01"
-            ])
-
-            if i != len(final_value) - 1:
-              self.crawssembly.append("cal shl r01 r03")
-
-          elif (i % 4) == 3:
-            self.crawssembly.extend([
-              f"cal add {value} r01",
-              "io mem write r01"
-            ])
-
-          else:
-            self.crawssembly.extend([
-              f"cal add {value} r01"
-            ])
-
-            if i != len(final_value) - 1:
-              self.crawssembly.append("cal shl r01 r03")
-
-        if len(final_value) % 4 != 0:
-          remaining = 4 - (len(final_value) % 4)
-
-          for _ in range(remaining):
+          if i != len(final_value) - 1:
             self.crawssembly.append("cal shl r01 r03")
 
-          self.crawssembly.append("io mem write r01")
+      if len(final_value) % 4 != 0:
+        remaining = 4 - (len(final_value) % 4)
 
-        self.mem_addr.update({name : [used_addr, "str"]})
+        for _ in range(remaining):
+          self.crawssembly.append("cal shl r01 r03")
+
+        self.crawssembly.append("io mem write r01")
+
+      self.mem_addr[name] = [used_addr, "str"]
+      return
 
     if needs_solving:
-      (data_type, mem, temp_name) = self.solve_expression(value, recursion + 1)
-      print("Can't do this yet")
+      data_type, mem, temp_names = self.solve_expression(value)
 
-      if temp_name: self.free_temp(temp_name)
+      self.assign_var(name, (data_type, mem, temp_names), recursion + 1)
 
   def print_value(self, data_type, mem_list):
 
@@ -314,7 +385,7 @@ class Compiler:
         self.crawssembly.extend(self.construct_int(addr))
         self.crawssembly.extend([
           "io mem addr r01",
-          "io mem write ref" # if `io mem addr r01` works, error code reg will be 0. If it doesn't them memory update will show this \_0.0_/
+          "io mem write ree" # ree should be 0 because of good io, address should never fail unless you're doing something insane
         ])
 
         if addr not in self.empty_addrs: self.empty_addrs.append(addr)
@@ -456,7 +527,7 @@ class Compiler:
 
     return parts
 
-  def solve_expression_core(self, expression, recursion=1, single_bypass=False):
+  def solve_expression_node(self, expression, recursion=1, single_bypass=False):
     temp_names = []
 
     print(f"Old expression: {expression}")
@@ -479,12 +550,12 @@ class Compiler:
       if len(expression) == 1:
         token = expression[0]
 
-        if not token.startswith('"') and not token.endswith('"') and "[" not in token and "]" not in token:
+        if not token.startswith('"') and not token.endswith('"') and "[" not in token and "]" not in token and not self.is_integer(token):
           if token not in self.mem_addr: raise Exception(f"CRISP Error: {token} is not defined (Line {self.line_index + 1})")
 
           return self.mem_addr[token][1], self.mem_addr[token][0], None
 
-        if '"' in token or self.is_integer(token): return self.solve_expression(expression, recursion, single_bypass=True)
+        if '"' in token or self.is_integer(token): return self.solve_expression_node(expression, recursion, single_bypass=True)
 
         if "[" in token and "]" in token:
           raise Exception("Still can't do arrays yet fool")
@@ -572,8 +643,7 @@ class Compiler:
       return "int", [mem], [name]
 
     if op == "+":
-      if typeA == "array":
-        raise Exception("Can't do ts yet")
+      if typeA == "array": raise Exception("Can't do ts yet")
 
       if typeA == "int":
         mem = self.empty_addrs.pop(0)
@@ -636,7 +706,7 @@ class Compiler:
     print(f"new expression: {expression}")
 
     if len(expression) == 1:
-      return self.solve_expression_core(expression)
+      return self.solve_expression_node(expression)
 
     if len(expression) % 2 == 0:
       raise Exception(
@@ -648,7 +718,7 @@ class Compiler:
     temp_names = []
 
     node = expression[:3]
-    var_type, result_mem, temps = self.solve_expression_core(node)
+    var_type, result_mem, temps = self.solve_expression_node(node)
 
     if temps: temp_names.extend(temps)
 
@@ -668,7 +738,7 @@ class Compiler:
 
       node = [result_name, op, rhs]
 
-      var_type, result_mem, temps = self.solve_expression_core(node)
+      var_type, result_mem, temps = self.solve_expression_node(node)
 
       if temps:
         temp_names.extend(temps)
@@ -681,9 +751,11 @@ class Compiler:
   def compile_lines(self):
     for line_index, line in enumerate(self.crisp):
 
-      if line in ("", None, "\n"): continue
+      line = line.strip()
 
-      if line.strip() == self.crawssembly_str: self.craw_mode = not self.craw_mode; continue
+      if line in ("", None, "\n", self.comment_str): continue
+
+      if line == self.crawssembly_str: self.craw_mode = not self.craw_mode; continue
 
       if self.craw_mode:
         self.crawssembly.append(line.strip())
@@ -693,7 +765,7 @@ class Compiler:
 
       self.line_indent = len(line) - len(line.lstrip(" "))
 
-      print(f"\nline: {line}memory: {self.mem_addr}")
+      print(f"\nline: {line}\nmemory: {self.mem_addr}")
 
       try: tokens = line.split(self.comment_str)[0].split(" ")
       except: continue
@@ -707,15 +779,23 @@ class Compiler:
       if self.line_indent != 0: tokens = tokens[self.line_indent:]
 
 
-# -----------------------------------   A D D   C O M M A N D S   H E R E   -----------------------------------
+# -----------------------------------   C O M M A N D S   -----------------------------------
 
 
       if command in ("", " ", None, "\n"): raise Exception(f"CRISP Error: Malformed line start. (Line {self.line_index + 1})")
 
+# Variable declaration, adds the name to the inter-memory layer and stores {name : [memory_addresses, variable_type]}
+# In Crawssembly, loads in open memory address, writes compacted 32-bit value to said address, moves to next value
+# let variable = "Hello World!"
+
       elif command == "let":
         var = tokens[1]
-        value = tokens[tokens.index("=") + 1:]
+        value = self.solve_expression(tokens[tokens.index("=") + 1:])
         self.assign_var(var, value, recursion=1)
+
+# Basic print, uses `io text char` to display charcters.
+# Solves the expression, iterates over every value, and sends them to stdout
+# print "Hello World!"
 
       elif command == "print":
         expression = tokens[1:]
@@ -724,6 +804,9 @@ class Compiler:
         self.print_value(data_type, mem)
 
         if temp_names: self.free_temp(temp_names)
+
+# The same as 'print' but adds a newline character using `io text newline rff` to the end to drop down to the next char column
+# println "Hello World!"
 
       elif command == "println":
         expression = tokens[1:]
@@ -738,8 +821,32 @@ class Compiler:
 
         if temp_names: self.free_temp(temp_names)
 
+# Debug values, can be 'mem', 'reg', or 'var'. Displays volitile data stored for that particular variable/range
+# Not the quickest, but should run on O(n) time.
+# debug mem 0 16
+
       elif command == "debug": self.debug_memory(tokens[1], tokens[2:])
 
+# Unbinds the variable from the inter-memory layer, after this is called the variable is removed from scope, but the data remains in RAM
+# unbind variable1 variable 2
+
+      elif command == "unbind":
+        if len(tokens) == 1: raise Exception(f"CRISP Error: no variable(s) specified for 'unbind' (Line {self.line_index + 1})")
+        _ = self.mem_addr.pop(token[-1], None) # No need to make an error if there is no variable, just don't do anything
+
+# Same as 'unbind', yet the RAM addresses are also cleared
+# delete variable1 variable 2
+
+      elif command == "delete":
+        if len(tokens) == 1: raise Exception(f"CRISP Error: no variable(s) specified for 'delete' (Line {self.line_index + 1})")
+        var = self.mem_addr.pop(token[-1], None)
+
+        if var: self.free_temp([var])
+
+# Keyword to stop execution, can be used anywhere
+# stop
+
+      elif command == "stop": self.crawssembly.append("stp")
 
 
 
@@ -748,8 +855,6 @@ class Compiler:
 
 
       else: raise Exception(f"CRISP Error: Unknown command '{command}' (Line {self.line_index + 1})")
-
-
 
 def main():
   with open("code.crisp", "r") as f: crisp = f.readlines()

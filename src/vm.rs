@@ -7,6 +7,7 @@ use std::fs::{File, OpenOptions};
 use std::io::{BufWriter, Read, Seek, SeekFrom, Write};
 use std::thread;
 use std::collections::VecDeque;
+use ctrlc;
 use std::sync::{
   Arc,
   Mutex,
@@ -24,9 +25,9 @@ use crossterm::{
   terminal::{self, ClearType},
 };
 
-use ctrlc;
-
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
+
+use sysinfo::System;
 
 type Instr = u32;
 
@@ -94,10 +95,21 @@ fn parse_bench_iters(args: &[String]) -> Option<u64> {
 fn run_bench(program: &[Decoded], iters: u64) {
   let mut cpu = Cpu::new();
 
-  let start = Instant::now();
-  let mut total_ticks: u64 = 0;
+  let mut sys = System::new_all();
+  sys.refresh_cpu_all();
 
-  for run_index in 0..iters {
+  let cpu_mhz =
+    sys.cpus()
+    .first()
+    .map(|cpu| cpu.frequency())
+    .unwrap_or(0) as f64;
+
+  let cpu_hz = cpu_mhz * 1_000_000.0;
+
+  let mut total_ticks: u64 = 0;
+  let start = Instant::now();
+
+  for _ in 0..iters {
     let t = SystemTime::now()
       .duration_since(UNIX_EPOCH)
       .unwrap();
@@ -106,18 +118,19 @@ fn run_bench(program: &[Decoded], iters: u64) {
 
     total_ticks += cpu.execute_noio(program, &time_input_list);
 
-    if run_index < 10 {
-      println!("seed={} rFF={}", seed, cpu.regs[0xFF]);
-    }
   }
 
   let dt = start.elapsed().as_secs_f64();
   let hz = (total_ticks as f64) / dt;
 
+  let cycles_per_instruction = cpu_hz / hz;
+
   println!("BENCH runs={} total_ticks={} time={:.6}s", iters, total_ticks, dt);
   println!("BENCH throughput:  {:.3} Hz = ~{:.3} MHz", hz, hz / 1_000_000.0);
   println!("~{:.3} ns / instruction", (dt * 1e9) / total_ticks as f64);
   println!("BENCH final rFF: {}", cpu.regs[0xFF]);
+  println!("Estimated vm cost: {:.2} host CPU cycles / instruction", cycles_per_instruction);
+
 }
 
 fn load_program(path: &str) -> Result<Vec<Instr>, String> {
@@ -969,8 +982,6 @@ impl Cpu {
       self.regs[0] = input[0];
     }
 
-    let start = Instant::now();
-
     let mut prog = ProgRef::Main;
     let mut pc: i32 = 0;
     let mut tick: u64 = 0;
@@ -1068,14 +1079,35 @@ impl Cpu {
       running_for_handler.store(false, Ordering::SeqCst);
     }).expect("failed to set Ctrl+C handler");
 
-    let trace_file = File::create("trace.txt").expect("failed to create trace file");
-    let mut trace = BufWriter::new(trace_file);
+    let mut sys = System::new_all();
+    sys.refresh_cpu_all();
 
-    write!(trace, "tick,line").ok();
-    for i in 0..256 {
-      write!(trace, ",r{:02X}", i).ok();
-    }
-    writeln!(trace).ok();
+    let cpu_mhz =
+      sys.cpus()
+      .first()
+      .map(|cpu| cpu.frequency())
+      .unwrap_or(0) as f64;
+
+    let cpu_hz = cpu_mhz * 1_000_000.0;
+
+    let tracing = std::env::args().any(|a| a == "--trace");
+
+    let mut trace = if tracing {
+      let trace_file = File::create("trace.txt").expect("failed to create trace file");
+      let mut trace = BufWriter::new(trace_file);
+
+      write!(trace, "tick,line").ok();
+      for i in 0..256 {
+        write!(trace, ",r{:02X}", i).ok();
+      }
+      writeln!(trace).ok();
+
+      Some(trace)
+    } else {
+      None
+    };
+
+    let start = Instant::now();
 
     loop {
       let len = self.prog_len(program, prog);
@@ -1109,13 +1141,15 @@ impl Cpu {
         }
       }
 
-      write!(trace, "{},{}", tick, pc + 1).ok();
+      if let Some(trace) = trace.as_mut() {
+        write!(trace, "{},{}", tick, pc + 1).ok();
 
-      for val in self.regs.iter() {
-        write!(trace, ",{}", val).ok();
+        for val in self.regs.iter() {
+          write!(trace, ",{}", val).ok();
+        }
+
+        writeln!(trace).ok();
       }
-
-      writeln!(trace).ok();
 
       let (next_prog, next_pc, did_stop) = self.step(d, prog, pc, input, program, looped);
       prog = next_prog;
@@ -1126,7 +1160,9 @@ impl Cpu {
       }
     }
 
-    trace.flush().ok();
+    let dt = start.elapsed().as_secs_f64() - self.sleep_times;
+
+    if let Some(trace) = trace.as_mut() { trace.flush().ok(); }
 
     let _ = execute!(
       stdout,
@@ -1137,12 +1173,14 @@ impl Cpu {
     );
     let _ = terminal::disable_raw_mode();
 
-    let dt = start.elapsed().as_secs_f64() - self.sleep_times;
-    println!("Done: ticks={} time={:.10}s 0xFF={}", tick, dt, self.regs[0xFF]);
     let hz = if dt > 0.0 { (tick as f64) / dt } else { 0.0 };
-    println!("Clock speed was revealed to be {:.3} Hz = ~{:.3} MHz", hz, hz / 1_000_000.0);
     let ns_per = (dt * 1e9) / (tick as f64);
+    let cycles_per_instruction = cpu_hz / hz;
+
+    println!("Done: ticks={} time={:.10}s 0xFF={}", tick, dt, self.regs[0xFF]);
+    println!("Clock speed was revealed to be {:.3} Hz = ~{:.3} MHz", hz, hz / 1_000_000.0);
     println!("~{:.3} ns / instruction", ns_per);
+    println!( "Estimated vm cost: {:.2} host CPU cycles / instruction", cycles_per_instruction);
 
     if self.disk_dirty { let _ = self.save_disk(DISK_PATH); }
 

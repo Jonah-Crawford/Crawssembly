@@ -1,16 +1,17 @@
-let x = "abc"
-let y = "123"
-let z = "ABC"
-println x + y
-println x + y + z
-println "abc" + y + z
+let space = " "
+let name = "Jonah"
+let activity = "writing craw code"
+
+println name + space + "is the best at" + space + activity
+
 
 /c/
 rmv 1
 1
-sav 0 r01
 io keyboard poll r01
 cal add -27 r01
 jmg 1
 jml 1
-stp
+/c/
+
+stop

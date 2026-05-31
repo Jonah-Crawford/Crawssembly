@@ -1,272 +1,312 @@
 sav 8 r03
 sav 0 r01
 io mem addr r01
-sav 97 r01
+sav 32 r01
 cal shl r01 r03
-cal add 98 r01
+cal shl r01 r03
+cal shl r01 r03
+io mem write r01
+sav 8 r03
+sav 1 r01
+io mem addr r01
+sav 74 r01
+cal shl r01 r03
+cal add 111 r01
+cal shl r01 r03
+cal add 110 r01
+cal shl r01 r03
+cal add 97 r01
+io mem write r01
+sav 2 r01
+io mem addr r01
+sav 104 r01
+cal shl r01 r03
+cal shl r01 r03
+cal shl r01 r03
+io mem write r01
+sav 8 r03
+sav 3 r01
+io mem addr r01
+sav 119 r01
+cal shl r01 r03
+cal add 114 r01
+cal shl r01 r03
+cal add 105 r01
+cal shl r01 r03
+cal add 116 r01
+io mem write r01
+sav 4 r01
+io mem addr r01
+sav 105 r01
+cal shl r01 r03
+cal add 110 r01
+cal shl r01 r03
+cal add 103 r01
+cal shl r01 r03
+cal add 32 r01
+io mem write r01
+sav 5 r01
+io mem addr r01
+sav 99 r01
+cal shl r01 r03
+cal add 114 r01
+cal shl r01 r03
+cal add 97 r01
+cal shl r01 r03
+cal add 119 r01
+io mem write r01
+sav 6 r01
+io mem addr r01
+sav 32 r01
 cal shl r01 r03
 cal add 99 r01
 cal shl r01 r03
+cal add 111 r01
+cal shl r01 r03
+cal add 100 r01
 io mem write r01
-sav 8 r03
-sav 1 r01
+sav 7 r01
 io mem addr r01
-sav 49 r01
+sav 101 r01
 cal shl r01 r03
-cal add 50 r01
 cal shl r01 r03
-cal add 51 r01
-cal shl r01 r03
-io mem write r01
-sav 8 r03
-sav 2 r01
-io mem addr r01
-sav 65 r01
-cal shl r01 r03
-cal add 66 r01
-cal shl r01 r03
-cal add 67 r01
 cal shl r01 r03
 io mem write r01
-sav 0 r01
-io mem addr r01
-io mem read r03
-sav 3 r01
-io mem addr r01
-io mem write r03
 sav 1 r01
 io mem addr r01
 io mem read r03
-sav 4 r01
-io mem addr r01
-io mem write r03
-sav 8 r03
-sav 127 r01
-cal add 127 r01
-cal add 1 r01
-sav r01 r07
-sav r07 r06
-cal shl r06 r03
-sav r01 r06
-sav r06 r05
-cal shl r05 r03
-sav r01 r05
-sav r05 r04
-cal shl r04 r03
-sav r01 r04
-sav 3 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 4 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-io text newline rff
-sav 3 r01
-io mem addr r01
-io mem write ref
-sav 4 r01
-io mem addr r01
-io mem write ref
-sav 0 r01
-io mem addr r01
-io mem read r03
-sav 3 r01
-io mem addr r01
-io mem write r03
-sav 1 r01
-io mem addr r01
-io mem read r03
-sav 4 r01
-io mem addr r01
-io mem write r03
-sav 3 r01
-io mem addr r01
-io mem read r03
-sav 5 r01
-io mem addr r01
-io mem write r03
-sav 4 r01
-io mem addr r01
-io mem read r03
-sav 6 r01
+sav 8 r01
 io mem addr r01
 io mem write r03
 sav 2 r01
 io mem addr r01
 io mem read r03
-sav 7 r01
+sav 9 r01
+io mem addr r01
+io mem write r03
+sav 0 r01
+io mem addr r01
+io mem read r03
+sav 10 r01
 io mem addr r01
 io mem write r03
 sav 8 r03
-sav 127 r01
-cal add 127 r01
-cal add 1 r01
-sav r01 r07
-sav r07 r06
-cal shl r06 r03
-sav r01 r06
-sav r06 r05
-cal shl r05 r03
-sav r01 r05
-sav r05 r04
-cal shl r04 r03
-sav r01 r04
-sav 5 r01
+sav 11 r01
 io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 6 r01
+sav 105 r01
+cal shl r01 r03
+cal add 115 r01
+cal shl r01 r03
+cal add 32 r01
+cal shl r01 r03
+cal add 116 r01
+io mem write r01
+sav 12 r01
 io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 7 r01
+sav 104 r01
+cal shl r01 r03
+cal add 101 r01
+cal shl r01 r03
+cal add 32 r01
+cal shl r01 r03
+cal add 98 r01
+io mem write r01
+sav 13 r01
 io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-io text newline rff
-sav 3 r01
-io mem addr r01
-io mem write ref
-sav 4 r01
-io mem addr r01
-io mem write ref
-sav 5 r01
-io mem addr r01
-io mem write ref
-sav 6 r01
-io mem addr r01
-io mem write ref
-sav 7 r01
-io mem addr r01
-io mem write ref
-sav 8 r03
-sav 3 r01
+sav 101 r01
+cal shl r01 r03
+cal add 115 r01
+cal shl r01 r03
+cal add 116 r01
+cal shl r01 r03
+cal add 32 r01
+io mem write r01
+sav 14 r01
 io mem addr r01
 sav 97 r01
 cal shl r01 r03
-cal add 98 r01
+cal add 116 r01
 cal shl r01 r03
-cal add 99 r01
 cal shl r01 r03
 io mem write r01
+sav 8 r01
+io mem addr r01
+io mem read r03
+sav 15 r01
+io mem addr r01
+io mem write r03
+sav 9 r01
+io mem addr r01
+io mem read r03
+sav 16 r01
+io mem addr r01
+io mem write r03
+sav 10 r01
+io mem addr r01
+io mem read r03
+sav 17 r01
+io mem addr r01
+io mem write r03
+sav 11 r01
+io mem addr r01
+io mem read r03
+sav 18 r01
+io mem addr r01
+io mem write r03
+sav 12 r01
+io mem addr r01
+io mem read r03
+sav 19 r01
+io mem addr r01
+io mem write r03
+sav 13 r01
+io mem addr r01
+io mem read r03
+sav 20 r01
+io mem addr r01
+io mem write r03
+sav 14 r01
+io mem addr r01
+io mem read r03
+sav 21 r01
+io mem addr r01
+io mem write r03
+sav 11 r01
+io mem addr r01
+io mem write ree
+sav 12 r01
+io mem addr r01
+io mem write ree
+sav 13 r01
+io mem addr r01
+io mem write ree
+sav 14 r01
+io mem addr r01
+io mem write ree
+sav 15 r01
+io mem addr r01
+io mem read r03
+sav 11 r01
+io mem addr r01
+io mem write r03
+sav 16 r01
+io mem addr r01
+io mem read r03
+sav 12 r01
+io mem addr r01
+io mem write r03
+sav 17 r01
+io mem addr r01
+io mem read r03
+sav 13 r01
+io mem addr r01
+io mem write r03
+sav 18 r01
+io mem addr r01
+io mem read r03
+sav 14 r01
+io mem addr r01
+io mem write r03
+sav 19 r01
+io mem addr r01
+io mem read r03
+sav 22 r01
+io mem addr r01
+io mem write r03
+sav 20 r01
+io mem addr r01
+io mem read r03
+sav 23 r01
+io mem addr r01
+io mem write r03
+sav 21 r01
+io mem addr r01
+io mem read r03
+sav 24 r01
+io mem addr r01
+io mem write r03
+sav 0 r01
+io mem addr r01
+io mem read r03
+sav 25 r01
+io mem addr r01
+io mem write r03
+sav 11 r01
+io mem addr r01
+io mem read r03
+sav 26 r01
+io mem addr r01
+io mem write r03
+sav 12 r01
+io mem addr r01
+io mem read r03
+sav 27 r01
+io mem addr r01
+io mem write r03
+sav 13 r01
+io mem addr r01
+io mem read r03
+sav 28 r01
+io mem addr r01
+io mem write r03
+sav 14 r01
+io mem addr r01
+io mem read r03
+sav 29 r01
+io mem addr r01
+io mem write r03
+sav 22 r01
+io mem addr r01
+io mem read r03
+sav 30 r01
+io mem addr r01
+io mem write r03
+sav 23 r01
+io mem addr r01
+io mem read r03
+sav 31 r01
+io mem addr r01
+io mem write r03
+sav 24 r01
+io mem addr r01
+io mem read r03
+sav 32 r01
+io mem addr r01
+io mem write r03
+sav 25 r01
+io mem addr r01
+io mem read r03
+sav 33 r01
+io mem addr r01
+io mem write r03
 sav 3 r01
 io mem addr r01
 io mem read r03
+sav 34 r01
+io mem addr r01
+io mem write r03
 sav 4 r01
 io mem addr r01
-io mem write r03
-sav 1 r01
-io mem addr r01
 io mem read r03
-sav 5 r01
-io mem addr r01
-io mem write r03
-sav 3 r01
-io mem addr r01
-io mem write ref
-sav 4 r01
-io mem addr r01
-io mem read r03
-sav 3 r01
+sav 35 r01
 io mem addr r01
 io mem write r03
 sav 5 r01
 io mem addr r01
 io mem read r03
+sav 36 r01
+io mem addr r01
+io mem write r03
 sav 6 r01
 io mem addr r01
+io mem read r03
+sav 37 r01
+io mem addr r01
 io mem write r03
-sav 2 r01
+sav 7 r01
 io mem addr r01
 io mem read r03
-sav 7 r01
+sav 38 r01
 io mem addr r01
 io mem write r03
 sav 8 r03
@@ -283,7 +323,7 @@ sav r01 r05
 sav r05 r04
 cal shl r04 r03
 sav r01 r04
-sav 3 r01
+sav 26 r01
 io mem addr r01
 io mem read r02
 sav r02 r01
@@ -304,7 +344,7 @@ io text char r01
 sav r02 r01
 cal and r07 r01
 io text char r01
-sav 6 r01
+sav 27 r01
 io mem addr r01
 io mem read r02
 sav r02 r01
@@ -325,7 +365,217 @@ io text char r01
 sav r02 r01
 cal and r07 r01
 io text char r01
-sav 7 r01
+sav 28 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 29 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 30 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 31 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 32 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 33 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 34 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 35 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 36 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 37 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 38 r01
 io mem addr r01
 io mem read r02
 sav r02 r01
@@ -347,24 +597,101 @@ sav r02 r01
 cal and r07 r01
 io text char r01
 io text newline rff
-sav 4 r01
+sav 8 r01
 io mem addr r01
-io mem write ref
-sav 5 r01
+io mem write ree
+sav 9 r01
 io mem addr r01
-io mem write ref
-sav 3 r01
+io mem write ree
+sav 10 r01
 io mem addr r01
-io mem write ref
-sav 6 r01
+io mem write ree
+sav 15 r01
 io mem addr r01
-io mem write ref
-sav 7 r01
+io mem write ree
+sav 16 r01
 io mem addr r01
-io mem write ref
+io mem write ree
+sav 17 r01
+io mem addr r01
+io mem write ree
+sav 18 r01
+io mem addr r01
+io mem write ree
+sav 19 r01
+io mem addr r01
+io mem write ree
+sav 20 r01
+io mem addr r01
+io mem write ree
+sav 21 r01
+io mem addr r01
+io mem write ree
+sav 11 r01
+io mem addr r01
+io mem write ree
+sav 12 r01
+io mem addr r01
+io mem write ree
+sav 13 r01
+io mem addr r01
+io mem write ree
+sav 14 r01
+io mem addr r01
+io mem write ree
+sav 22 r01
+io mem addr r01
+io mem write ree
+sav 23 r01
+io mem addr r01
+io mem write ree
+sav 24 r01
+io mem addr r01
+io mem write ree
+sav 25 r01
+io mem addr r01
+io mem write ree
+sav 26 r01
+io mem addr r01
+io mem write ree
+sav 27 r01
+io mem addr r01
+io mem write ree
+sav 28 r01
+io mem addr r01
+io mem write ree
+sav 29 r01
+io mem addr r01
+io mem write ree
+sav 30 r01
+io mem addr r01
+io mem write ree
+sav 31 r01
+io mem addr r01
+io mem write ree
+sav 32 r01
+io mem addr r01
+io mem write ree
+sav 33 r01
+io mem addr r01
+io mem write ree
+sav 34 r01
+io mem addr r01
+io mem write ree
+sav 35 r01
+io mem addr r01
+io mem write ree
+sav 36 r01
+io mem addr r01
+io mem write ree
+sav 37 r01
+io mem addr r01
+io mem write ree
+sav 38 r01
+io mem addr r01
+io mem write ree
 rmv 1
 1
-sav 0 r01
 io keyboard poll r01
 cal add -27 r01
 jmg 1
