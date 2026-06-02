@@ -20,7 +20,7 @@ A custom 21-bit instruction set architecture, assembler, and virtual machine wri
 - VM
 - Experimental tooling
 
-## Example
+## Example: Simple BMP Displayer
 ```
 sav 14 r02              ; jte line number
 1                       ; draw logic
