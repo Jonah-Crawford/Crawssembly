@@ -4,7 +4,9 @@
 ##          ##  ####        ##            ####  ##
 ##########  ##    ####  ##########  ##########  ##
 
-# CRISP COMPILER (C) 2026 CRAW SYSTEMS Jonah Crawford
+# Craw Rapid Instruction Set Programming
+
+# CRISP COMPILER (C) 2026 CRAW SYSTEMS Written By Jonah Crawford
 
 from imm import i as construct
 
@@ -27,6 +29,8 @@ class Compiler:
     self.crawssembly_str = "/c/"
 
     self.calc_symbols = ["+", "-"]
+    self.bool_symbols = ["==", "!=", ">>", "<<", ">=", "<="]
+    self.bin_symbols = ["¬¬", "&&", "||", "^^"]
 
     self.line_index = 0
 
@@ -75,8 +79,6 @@ class Compiler:
 
   def reset_regs(self, regstart=1, regend=238):
     for i in range(regend - regstart + 1): self.crawssembly.append(f" sav 0 r{self.int_to_hex(regstart + i)}")
-
-
 
   def assign_var(self, name, value, recursion=1, force_type=None):
     string = False
@@ -491,6 +493,41 @@ class Compiler:
           "io text newline rff",
        ])
 
+  def cast_variable(self, tokens):
+    if len(tokens) != 3:
+      if len(tokens) > 3: raise Exception(f"CRISP Error: No cast type specified for variable '{tokens[1]} (Line {self.line_index + 1})'")
+      if len(tokens) < 3: raise Exception(f"CRISP Error: I don't know what to do with '{tokens[3]}' for command 'cast' (Line {self.line_index + 1})")
+      else: raise Exception(f"CRISP Compile Error: Token list changed mid-execution during 'cast' execution (Compiling Line {self.line_index + 1})")
+
+    name = tokens[1]
+    type = tokens[2]
+
+    if type == "null": raise Exception(f"CRISP Error: You can't cast variable to null type (Line {self.line_index + 1})")
+
+    if type not in ("int", "str", "array", "bool"): raise Exception(f"CRISP Error: object type '{type}' does not exist (Line {self.line_index + 1})")
+
+    if name not in list(self.mem_addr.keys()): raise Exception(f"CRISP Error: Variable '{name} not defined (Line {self.line_index + 1})'")
+
+    original_type = self.mem_addr[name][1]
+
+    if original_type = type: continue # skip over the line, no need to do anything else
+
+    error_text = f"CRISP Error: Cannot cast '{name}' of {original_type} type to {type} type (Line {self.line_index + 1})"
+
+    if type == "int":
+      if original_type not in ("str", "bool"): raise Exception(error_text)
+
+      if original_type == "str": # iterate over every char in variable memory addresses, check if they are only 0-9
+
+        for address in self.mem_addr[name][0]:
+        
+
+
+
+
+
+
+
   # merges together strings to avoid "hello world" + "!" being made into ['"hello', 'world"', "+", '"!"'] and failing len=3 checks
   def split_expression(self, expression):
     parts = []
@@ -831,14 +868,14 @@ class Compiler:
 # unbind variable1 variable 2
 
       elif command == "unbind":
-        if len(tokens) == 1: raise Exception(f"CRISP Error: no variable(s) specified for 'unbind' (Line {self.line_index + 1})")
+        if len(tokens) == 1: raise Exception(f"CRISP Error: No variable(s) specified for 'unbind' (Line {self.line_index + 1})")
         _ = self.mem_addr.pop(token[-1], None) # No need to make an error if there is no variable, just don't do anything
 
 # Same as 'unbind', yet the RAM addresses are also cleared
 # delete variable1 variable 2
 
       elif command == "delete":
-        if len(tokens) == 1: raise Exception(f"CRISP Error: no variable(s) specified for 'delete' (Line {self.line_index + 1})")
+        if len(tokens) == 1: raise Exception(f"CRISP Error: No variable(s) specified for 'delete' (Line {self.line_index + 1})")
         var = self.mem_addr.pop(token[-1], None)
 
         if var: self.free_temp([var])
@@ -848,8 +885,10 @@ class Compiler:
 
       elif command == "stop": self.crawssembly.append("stp")
 
+# Mutates variable type to fit desired type, throws an error when trying to cast something silly (Like "Hi" to an integer)
+# cast variable string
 
-
+      elif command == "cast": self.cast_variable(tokens)
 
 
 

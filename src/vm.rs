@@ -48,8 +48,8 @@ const IO_BAD_VALUE: i32 = 3;
 const IO_UNAVAILABLE: i32 = 4;
 
 // screen
-const SCREEN_W: usize = 256;
-const SCREEN_H: usize = 256;
+const SCREEN_W: usize = 50;
+const SCREEN_H: usize = 50;
 const IO_SCREEN_OUT_OF_BOUNDS: i32 = 0x10;
 
 const SPEAKER_COUNT: usize = 8;
@@ -1226,7 +1226,7 @@ impl Cpu {
     self.regs[REG_IO_STATUS] = IO_OK;
 
     match device {
-      // text / console
+      // text
       0x0 => match command {
         // char
         0x0 => {
@@ -1248,9 +1248,18 @@ impl Cpu {
           let _ = io::stdout().flush();
         }
 
+        // hex
         0x3 => {
           print!("{:08X}", value);
           let _ = io::stdout().flush();
+        }
+
+        // error
+        0x4 => {
+          if self.regs[238] != 0 {
+            print!("Crawssembly Error Code {}", self.regs[238]);
+            let _ = io::stdout().flush();
+          }
         }
 
         _ => {

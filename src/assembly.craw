@@ -1,699 +1,194 @@
-sav 8 r03
-sav 0 r01
-io mem addr r01
-sav 32 r01
-cal shl r01 r03
-cal shl r01 r03
-cal shl r01 r03
-io mem write r01
-sav 8 r03
-sav 1 r01
-io mem addr r01
-sav 74 r01
-cal shl r01 r03
-cal add 111 r01
-cal shl r01 r03
-cal add 110 r01
-cal shl r01 r03
-cal add 97 r01
-io mem write r01
-sav 2 r01
-io mem addr r01
-sav 104 r01
-cal shl r01 r03
-cal shl r01 r03
-cal shl r01 r03
-io mem write r01
-sav 8 r03
-sav 3 r01
-io mem addr r01
-sav 119 r01
-cal shl r01 r03
-cal add 114 r01
-cal shl r01 r03
-cal add 105 r01
-cal shl r01 r03
-cal add 116 r01
-io mem write r01
-sav 4 r01
-io mem addr r01
-sav 105 r01
-cal shl r01 r03
-cal add 110 r01
-cal shl r01 r03
-cal add 103 r01
-cal shl r01 r03
-cal add 32 r01
-io mem write r01
-sav 5 r01
-io mem addr r01
-sav 99 r01
-cal shl r01 r03
-cal add 114 r01
-cal shl r01 r03
-cal add 97 r01
-cal shl r01 r03
-cal add 119 r01
-io mem write r01
-sav 6 r01
-io mem addr r01
-sav 32 r01
-cal shl r01 r03
-cal add 99 r01
-cal shl r01 r03
-cal add 111 r01
-cal shl r01 r03
-cal add 100 r01
-io mem write r01
-sav 7 r01
-io mem addr r01
-sav 101 r01
-cal shl r01 r03
-cal shl r01 r03
-cal shl r01 r03
-io mem write r01
-sav 1 r01
-io mem addr r01
-io mem read r03
-sav 8 r01
-io mem addr r01
-io mem write r03
-sav 2 r01
-io mem addr r01
-io mem read r03
-sav 9 r01
-io mem addr r01
-io mem write r03
-sav 0 r01
-io mem addr r01
-io mem read r03
-sav 10 r01
-io mem addr r01
-io mem write r03
-sav 8 r03
-sav 11 r01
-io mem addr r01
-sav 105 r01
-cal shl r01 r03
-cal add 115 r01
-cal shl r01 r03
-cal add 32 r01
-cal shl r01 r03
-cal add 116 r01
-io mem write r01
-sav 12 r01
-io mem addr r01
-sav 104 r01
-cal shl r01 r03
-cal add 101 r01
-cal shl r01 r03
-cal add 32 r01
-cal shl r01 r03
-cal add 98 r01
-io mem write r01
-sav 13 r01
-io mem addr r01
-sav 101 r01
-cal shl r01 r03
-cal add 115 r01
-cal shl r01 r03
-cal add 116 r01
-cal shl r01 r03
-cal add 32 r01
-io mem write r01
-sav 14 r01
-io mem addr r01
-sav 97 r01
-cal shl r01 r03
-cal add 116 r01
-cal shl r01 r03
-cal shl r01 r03
-io mem write r01
-sav 8 r01
-io mem addr r01
-io mem read r03
-sav 15 r01
-io mem addr r01
-io mem write r03
-sav 9 r01
-io mem addr r01
-io mem read r03
-sav 16 r01
-io mem addr r01
-io mem write r03
-sav 10 r01
-io mem addr r01
-io mem read r03
-sav 17 r01
-io mem addr r01
-io mem write r03
-sav 11 r01
-io mem addr r01
-io mem read r03
-sav 18 r01
-io mem addr r01
-io mem write r03
-sav 12 r01
-io mem addr r01
-io mem read r03
-sav 19 r01
-io mem addr r01
-io mem write r03
-sav 13 r01
-io mem addr r01
-io mem read r03
-sav 20 r01
-io mem addr r01
-io mem write r03
-sav 14 r01
-io mem addr r01
-io mem read r03
-sav 21 r01
-io mem addr r01
-io mem write r03
-sav 11 r01
-io mem addr r01
-io mem write ree
-sav 12 r01
-io mem addr r01
-io mem write ree
-sav 13 r01
-io mem addr r01
-io mem write ree
-sav 14 r01
-io mem addr r01
-io mem write ree
-sav 15 r01
-io mem addr r01
-io mem read r03
-sav 11 r01
-io mem addr r01
-io mem write r03
-sav 16 r01
-io mem addr r01
-io mem read r03
-sav 12 r01
-io mem addr r01
-io mem write r03
-sav 17 r01
-io mem addr r01
-io mem read r03
-sav 13 r01
-io mem addr r01
-io mem write r03
-sav 18 r01
-io mem addr r01
-io mem read r03
-sav 14 r01
-io mem addr r01
-io mem write r03
-sav 19 r01
-io mem addr r01
-io mem read r03
-sav 22 r01
-io mem addr r01
-io mem write r03
-sav 20 r01
-io mem addr r01
-io mem read r03
-sav 23 r01
-io mem addr r01
-io mem write r03
-sav 21 r01
-io mem addr r01
-io mem read r03
-sav 24 r01
-io mem addr r01
-io mem write r03
-sav 0 r01
-io mem addr r01
-io mem read r03
-sav 25 r01
-io mem addr r01
-io mem write r03
-sav 11 r01
-io mem addr r01
-io mem read r03
-sav 26 r01
-io mem addr r01
-io mem write r03
-sav 12 r01
-io mem addr r01
-io mem read r03
-sav 27 r01
-io mem addr r01
-io mem write r03
-sav 13 r01
-io mem addr r01
-io mem read r03
-sav 28 r01
-io mem addr r01
-io mem write r03
-sav 14 r01
-io mem addr r01
-io mem read r03
-sav 29 r01
-io mem addr r01
-io mem write r03
-sav 22 r01
-io mem addr r01
-io mem read r03
-sav 30 r01
-io mem addr r01
-io mem write r03
-sav 23 r01
-io mem addr r01
-io mem read r03
-sav 31 r01
-io mem addr r01
-io mem write r03
-sav 24 r01
-io mem addr r01
-io mem read r03
-sav 32 r01
-io mem addr r01
-io mem write r03
-sav 25 r01
-io mem addr r01
-io mem read r03
-sav 33 r01
-io mem addr r01
-io mem write r03
-sav 3 r01
-io mem addr r01
-io mem read r03
-sav 34 r01
-io mem addr r01
-io mem write r03
-sav 4 r01
-io mem addr r01
-io mem read r03
-sav 35 r01
-io mem addr r01
-io mem write r03
-sav 5 r01
-io mem addr r01
-io mem read r03
-sav 36 r01
-io mem addr r01
-io mem write r03
-sav 6 r01
-io mem addr r01
-io mem read r03
-sav 37 r01
-io mem addr r01
-io mem write r03
-sav 7 r01
-io mem addr r01
-io mem read r03
-sav 38 r01
-io mem addr r01
-io mem write r03
-sav 8 r03
-sav 127 r01
-cal add 127 r01
-cal add 1 r01
-sav r01 r07
-sav r07 r06
-cal shl r06 r03
-sav r01 r06
-sav r06 r05
-cal shl r05 r03
-sav r01 r05
-sav r05 r04
-cal shl r04 r03
-sav r01 r04
-sav 26 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 27 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 28 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 29 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 30 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 31 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 32 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 33 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 34 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 35 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 36 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 37 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-sav 38 r01
-io mem addr r01
-io mem read r02
-sav r02 r01
-cal and r04 r01
-cal shr r01 r03
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r05 r01
-cal shr r01 r03
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r06 r01
-cal shr r01 r03
-io text char r01
-sav r02 r01
-cal and r07 r01
-io text char r01
-io text newline rff
-sav 8 r01
-io mem addr r01
-io mem write ree
-sav 9 r01
-io mem addr r01
-io mem write ree
-sav 10 r01
-io mem addr r01
-io mem write ree
-sav 15 r01
-io mem addr r01
-io mem write ree
-sav 16 r01
-io mem addr r01
-io mem write ree
-sav 17 r01
-io mem addr r01
-io mem write ree
-sav 18 r01
-io mem addr r01
-io mem write ree
-sav 19 r01
-io mem addr r01
-io mem write ree
-sav 20 r01
-io mem addr r01
-io mem write ree
-sav 21 r01
-io mem addr r01
-io mem write ree
-sav 11 r01
-io mem addr r01
-io mem write ree
-sav 12 r01
-io mem addr r01
-io mem write ree
-sav 13 r01
-io mem addr r01
-io mem write ree
-sav 14 r01
-io mem addr r01
-io mem write ree
-sav 22 r01
-io mem addr r01
-io mem write ree
-sav 23 r01
-io mem addr r01
-io mem write ree
-sav 24 r01
-io mem addr r01
-io mem write ree
-sav 25 r01
-io mem addr r01
-io mem write ree
-sav 26 r01
-io mem addr r01
-io mem write ree
-sav 27 r01
-io mem addr r01
-io mem write ree
-sav 28 r01
-io mem addr r01
-io mem write ree
-sav 29 r01
-io mem addr r01
-io mem write ree
-sav 30 r01
-io mem addr r01
-io mem write ree
-sav 31 r01
-io mem addr r01
-io mem write ree
-sav 32 r01
-io mem addr r01
-io mem write ree
-sav 33 r01
-io mem addr r01
-io mem write ree
-sav 34 r01
-io mem addr r01
-io mem write ree
-sav 35 r01
-io mem addr r01
-io mem write ree
-sav 36 r01
-io mem addr r01
-io mem write ree
-sav 37 r01
-io mem addr r01
-io mem write ree
-sav 38 r01
-io mem addr r01
-io mem write ree
-rmv 1
-1
-io keyboard poll r01
-cal add -27 r01
-jmg 1
-jml 1
-stp
+; Conway's Game Of Life
+
+; https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules (Accessed 2026-06-01 ~20:53 GMT+1)
+; (1) Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+; (2) Any live cell with two or three live neighbours lives on to the next generation.
+; (3) Any live cell with more than three live neighbours dies, as if by overpopulation.
+; (4) Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+
+sav 64 r0a		; screen width
+sav 64 r0b		; screen height
+
+5			; main loop
+
+io screen clear rff	; clear screen
+
+sav -1 r08		; initial X
+sav -1 r09		; initial Y
+
+; 03 04 05 | NW NN NE |       -W
+; 06 07 0c | WW CC EE | -2 -1 +0
+; 0d 0e 0f | SW SS SW |       +W
+
+sav -1 r07		; centre memory address
+sav -2 r06		; west memory address
+sav 0 r0c		; east memory address
+sav r0a r0f		; south-east address
+cal add -1 r0f		; ready south address
+sav r01 r0e		; south address
+cal add -1 r0e		; ready south-west
+sav r01 r0d		; south-west address
+cal not r0a rff		; get north address
+sav r01 r04		; north address
+cal add -1 r04		; ready north-west
+sav r01 r03		; north-west address
+cal add 1 r04		; ready north-east
+sav r01 r05		; north-east address
+
+sav 7 r01		; ready shift amount
+sav 7 r02		; second byte of 1,000
+cal shl r01 r02		; shift to 896
+cal add 104 r01		; construct 1,000
+io time sleep r01	; pause for 1,000 ms
+
+io mouse btn r02	; get button mask
+cal and 1 r02		; get left button
+ifg 10			; if left mouse
+io mouse x r01		; read mouse x pos
+io screen x r01		; set pixel x
+io mouse y r01		; read mouse y pos
+sav 1 r02		; ready left shift value
+cal shl r01 r02		; y << 1 to mul by 2
+io screen y r01		; set pixel y
+sav r01 r02		; save y into 0x02
+io mouse x r01		; restore x into 0x01
+
+15			; slow-but-fine addr multiplier
+cal add -1 r02		; decrement Y
+sav r01 r02		; update Y
+
+
+
+rmv 15			; clear label 15 from memory
+
+
+rmv 10			; end left mouse
+cal and 2 r02		; get right buttom
+ifg 10			; if right button
+
+
+rmv 10			; end right button
+
+10			; wait loop
+sav 7 r01               ; ready shift amount
+sav 7 r02               ; second byte of 1,000
+cal shl r01 r02         ; shift to 896
+cal add 104 r01         ; construct 1,000
+io time sleep r01       ; pause for 1,000 ms
+io keyboard poll r01	; get last key
+cal add -32 r01		; test for code 32 for spacebar
+jmz 10			; if space, do pause loop
+rmv 10			; clear label 10 from memory
+
+1			; row loop
+cal add 1 r09		; increment Y
+sav r01 r09		; update Y
+sav -1 r08		; reset X
+
+2			; column loop
+cal add 1 r08		; increment X
+sav r01 r08		; update X
+
+cal not r0a rff		; negative screen width
+cal add 1 r01		; fixes off-by-one diff error
+cal add r08 r01		; get X difference
+jmz 1			; get to next row
+
+cal add 1 r03		; increment NW addr
+sav r01 r03		; update NW address
+cal add 1 r04		; increment NN addr
+sav r01 r04		; update NN address
+cal add 1 r05		; increment NE addr
+sav r01 r05		; update NE address
+cal add 1 r06		; increment WW addr
+sav r01 r06		; update WW address
+cal add 1 r07		; increment CC addr
+sav r01 r07		; update CC address
+cal add 1 r0c		; increment EE addr
+sav r01 r0c		; update EE address
+cal add 1 r0d		; increment SW addr
+sav r01 r0d		; update SW address
+cal add 1 r0e		; increment SS addr
+sav r01 r0e		; update SS address
+cal add 1 r0f		; increment SW addr
+sav r01 r0f		; update SW address
+
+io screen x r08		; set pixel X
+io screen y r09		; set pixel Y
+
+io mem addr r03		; access NW addr
+io mem read r02		; read NW addr
+io mem addr r04		; access NN addr
+io mem read r01		; read NN addr
+cal add r02 r01		; NW + NN
+io mem addr r05		; access NE addr
+io mem read r02		; read NE addr
+cal add r02 r01		; N sum
+io mem addr r06		; access WW addr
+io mem read r02		; read WW addr
+cal add r02 r01		; N + WW
+io mem addr r0c		; access EE addr
+io mem read r02		; read EE addr
+cal add r02 r01		; N sum + mid sum
+io mem addr r0d		; access SW addr
+io mem read r02		; read SW addr
+cal add r02 r01		; N + mid + SW
+io mem addr r0e		; access SS addr
+io mem read r02		; read SS addr
+cal add r02 r01		; N + mid + SW + SS
+io mem addr r0f		; access SE addr
+io mem read r02		; read SE addr
+cal add r02 r01		; neighbour sum
+sav r01 r02		; save to sum reg
+
+io mem addr r07		; set address
+io mem read r01		; read value
+
+rmv 3			; remove label 3 edge case
+rmv 4			; remove label 4 edge case
+
+ifz 3			; if cell=dead
+cal add -3 r02		; get check for rule 4
+ifz 4			; if rule 4 satisfied
+io mem addr r07		; access cell addr
+sav 1 r01		; ready alive value
+io mem write r01	; set cell to alive
+sav 127 r01		; ready max col value
+io screen r r01		; set high red
+io screen g r01		; set high green
+io screen b r01		; set high blue
+io screen pixel rff	; show pixel
+rmv 4			; end rule 4 satisfied
+jmp 2			; continue loop
+rmv 3			; end cell=dead
+
+cal add -2 r02		; get check for rule 1
+ifl 3			; if rule 1 satisfied
+io mem addr r07		; access cell addr
+sav 0 r01		; ready dead value
+io mem write r01	; set cell to dead
+jmp 2			; continue loop
+rmv 3			; end rule 1 satisfied
+
+cal add -4 r02		; get check for rule 2
+ifl 3			; if rule 2 satisfied
+sav 127 r01		; ready max col value
+io screen r r01		; set high red
+io screen g r01		; set high green
+io screen b r01		; set high blue
+io screen pixel rff	; show pixel
+jmp 2			; continue loop
+rmv 3			; end rule 2 satisfied
+
+cal add -3 r02		; get check for rule 3
+ifg 3			; if rule 3 satisfied
+io mem addr r07		; access cell addr
+sav 0 r01		; ready dead value
+io mem write r01	; set cell to dead
+jmp 2			; continue loop
+rmv 3			; end rule 3 satisfied
+
+cal not r0b rff		; ready negation step
+cal add 1 r01		; negative screen height
+cal add r01 r09		; get height-Y
+jmg 1			; continue to Y

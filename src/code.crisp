@@ -1,8 +1,6 @@
-let space = " "
-let name = "Jonah"
-let activity = "writing craw code"
-
-println name + space + "is the best at" + space + activity
+let x = 5
+let y = "abc"
+print x + y
 
 
 /c/
