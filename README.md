@@ -5,6 +5,8 @@ A custom 21-bit instruction set architecture, assembler, and virtual machine wri
 ## Features
 - 256 registers
 - 21-bit instruction format
+- 32-bit system structure
+- DWORD-sized memory
 - Custom ALU
 - Disk IO
 - Memory operations
