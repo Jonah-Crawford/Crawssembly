@@ -6,40 +6,45 @@
 ; (3) Any live cell with more than three live neighbours dies, as if by overpopulation.
 ; (4) Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
-sav 64 r0a		; screen width
-sav 64 r0b		; screen height
+sav 63 r0a		; working screen width
+sav 63 r0b		; working screen height
 
 5			; main loop
 
 io screen clear rff	; clear screen
 
-sav -1 r08		; initial X
-sav -1 r09		; initial Y
+sav 0 r08		; initial X
+sav 0 r09		; initial Y
 
 ; 03 04 05 | NW NN NE |       -W
 ; 06 07 0c | WW CC EE | -2 -1 +0
 ; 0d 0e 0f | SW SS SW |       +W
 
-sav -1 r07		; centre memory address
-sav -2 r06		; west memory address
-sav 0 r0c		; east memory address
-sav r0a r0f		; south-east address
-cal add -1 r0f		; ready south address
-sav r01 r0e		; south address
-cal add -1 r0e		; ready south-west
-sav r01 r0d		; south-west address
-cal not r0a rff		; get north address
-sav r01 r04		; north address
-cal add -1 r04		; ready north-west
-sav r01 r03		; north-west address
-cal add 1 r04		; ready north-east
-sav r01 r05		; north-east address
+sav r0a r07             ; r07 = width
+cal add 1 r07           ; width + 1
+sav r01 r07             ; CC
+cal add -1 r07		; ready WW
+sav r01 r06             ; WW
+cal add 1 r07		; ready EE
+sav r01 r0c             ; EE
+sav 0 r03               ; NW
+sav 1 r04               ; NN
+sav 2 r05               ; NE
+sav r0a r0d		; ready doubling width
+cal add r0a r0d		; double width
+sav r01 r0d             ; SW = 2*width
+cal add 1 r0d		; ready SS
+sav r01 r0e             ; SS
+cal add 2 r0d		; ready SE
+sav r01 r0f             ; SE
 
 sav 7 r01		; ready shift amount
 sav 7 r02		; second byte of 1,000
 cal shl r01 r02		; shift to 896
 cal add 104 r01		; construct 1,000
 io time sleep r01	; pause for 1,000 ms
+
+sav 0 r10		; clear last mouse address
 
 io mouse btn r02	; get button mask
 cal and 1 r02		; get left button
@@ -51,22 +56,46 @@ sav 1 r02		; ready left shift value
 cal shl r01 r02		; y << 1 to mul by 2
 io screen y r01		; set pixel y
 sav r01 r02		; save y into 0x02
-io mouse x r01		; restore x into 0x01
-
 15			; slow-but-fine addr multiplier
 cal add -1 r02		; decrement Y
 sav r01 r02		; update Y
-
-
-
+cal add r0a r10		; add on width to total
+sav r01 r10		; update count
+sav r02 r01		; restore Y for loop check
+jmg 15			; if Y diff > 0, continue
 rmv 15			; clear label 15 from memory
-
-
+io mouse x r01		; get X for width remainder
+cal add r01 r10		; find final memory address
+io mem addr r01		; access address under mouse
+io mem read r01		; read cell value
+cal not 1 r01		; invert value
+io mem write r01	; write to address
 rmv 10			; end left mouse
+
 cal and 2 r02		; get right buttom
 ifg 10			; if right button
-
-
+io mouse x r01		; read mouse x pos
+io screen x r01		; set pixel x
+io mouse y r01		; read mouse y pos
+sav 1 r02		; ready left shift value
+cal shl r01 r02		; y << 1 to mul by 2
+cal add 1 r01		; get bottom (odd) cell
+io screen y r01		; set pixel y
+sav r01 r02		; save y into 0x02
+15			; slow-but-fine addr multiplier
+cal add -1 r02		; decrement Y
+sav r01 r02		; update Y
+cal add r0a r10		; add on width to total
+sav r01 r10		; update count
+sav r02 r01		; restore Y for loop check
+jmg 15			; if Y diff > 0, continue
+rmv 15			; clear label 15 from memory
+io mouse x r01		; get X for width remainder
+cal add r01 r10		; find final memory address
+io mem addr r01		; access address under mouse
+io mem read r01		; read cell value
+cal not 1 r01		; invert value
+io mem read r01		; write to address
 rmv 10			; end right button
 
 10			; wait loop

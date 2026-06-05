@@ -48,8 +48,8 @@ const IO_BAD_VALUE: i32 = 3;
 const IO_UNAVAILABLE: i32 = 4;
 
 // screen
-const SCREEN_W: usize = 50;
-const SCREEN_H: usize = 50;
+const SCREEN_W: usize = 64; // <-------------------------------- SCREEN_W
+const SCREEN_H: usize = 64; // <-------------------------------- SCREEN_H
 const IO_SCREEN_OUT_OF_BOUNDS: i32 = 0x10;
 
 const SPEAKER_COUNT: usize = 8;
@@ -1510,9 +1510,12 @@ impl Cpu {
 
         // addr
         0x0 => {
-          if value < 0 || value > 65535 { self.regs[REG_IO_STATUS] = IO_BAD_VALUE; }
+          if value < 0 || value > 65535 {
+            self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+          } else {
           self.mem_addr = value as usize;
           //println!("mem_addr now equals '{}'", self.mem_addr);
+          }
         }
 
         // read
@@ -1535,7 +1538,7 @@ impl Cpu {
 
         // addr
         0x0 => {
-          if value < 0 || value > 65535 { self.regs[REG_IO_STATUS] = IO_BAD_VALUE; }
+          if value < 0 || value > 65535 { self.regs[REG_IO_STATUS] = IO_BAD_VALUE; return; }
           self.disk_addr = value as usize;
           //println!("disk_addr now equals '{}'", self.mem_addr)
         }

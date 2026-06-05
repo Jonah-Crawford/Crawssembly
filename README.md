@@ -2,6 +2,8 @@
 
 A custom 21-bit instruction set architecture, assembler, and virtual machine written primarily in Rust.
 
+![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&dl=1)
+
 ## Features
 - 256 registers
 - 21-bit instruction format
@@ -19,6 +21,9 @@ A custom 21-bit instruction set architecture, assembler, and virtual machine wri
 - Assembler
 - VM
 - Experimental tooling
+
+## Philosophy
+Built as an exploration of low-level computing systems, ISA design, and virtual machine architecture.
 
 ## Example: Simple BMP Displayer
 ```
@@ -157,6 +162,3 @@ jml 7                   ; code < 27, continue
 jmg 7                   ; code > 27, continue
 stp                     ; code = 27, end
 ```
-
-## Philosophy
-Built as an exploration of low-level computing systems, ISA design, and virtual machine architecture.

@@ -19,7 +19,7 @@ class Compiler:
 
     self.mem_addr = {}
 
-    self.empty_addrs = [i for i in range(RAM_SIZE)]
+    self.empty_addrs = [i for i in range(RAM_SIZE)] # heavy on memory here, most programs won't touch anything above 0x0000FFFF
     self.full_addrs = []
 
     self.empty_temp_vars = [f"_CRISP_TEMP_{i}" for i in range(256)]
@@ -37,6 +37,10 @@ class Compiler:
     self.craw_mode = False
 
     self.reserved_keywords = []
+
+    self.empty_labels = [i for i in range(2**16)]
+
+    self.branch_labels = []
 
   def int_to_hex(self, value): return f"{value:x}".zfill(2)
 
@@ -493,41 +497,6 @@ class Compiler:
           "io text newline rff",
        ])
 
-  def cast_variable(self, tokens):
-    if len(tokens) != 3:
-      if len(tokens) > 3: raise Exception(f"CRISP Error: No cast type specified for variable '{tokens[1]} (Line {self.line_index + 1})'")
-      if len(tokens) < 3: raise Exception(f"CRISP Error: I don't know what to do with '{tokens[3]}' for command 'cast' (Line {self.line_index + 1})")
-      else: raise Exception(f"CRISP Compile Error: Token list changed mid-execution during 'cast' execution (Compiling Line {self.line_index + 1})")
-
-    name = tokens[1]
-    type = tokens[2]
-
-    if type == "null": raise Exception(f"CRISP Error: You can't cast variable to null type (Line {self.line_index + 1})")
-
-    if type not in ("int", "str", "array", "bool"): raise Exception(f"CRISP Error: object type '{type}' does not exist (Line {self.line_index + 1})")
-
-    if name not in list(self.mem_addr.keys()): raise Exception(f"CRISP Error: Variable '{name} not defined (Line {self.line_index + 1})'")
-
-    original_type = self.mem_addr[name][1]
-
-    if original_type = type: continue # skip over the line, no need to do anything else
-
-    error_text = f"CRISP Error: Cannot cast '{name}' of {original_type} type to {type} type (Line {self.line_index + 1})"
-
-    if type == "int":
-      if original_type not in ("str", "bool"): raise Exception(error_text)
-
-      if original_type == "str": # iterate over every char in variable memory addresses, check if they are only 0-9
-
-        for address in self.mem_addr[name][0]:
-        
-
-
-
-
-
-
-
   # merges together strings to avoid "hello world" + "!" being made into ['"hello', 'world"', "+", '"!"'] and failing len=3 checks
   def split_expression(self, expression):
     parts = []
@@ -850,11 +819,7 @@ class Compiler:
 
         (data_type, mem, temp_names) = self.solve_expression(expression)
 
-        print(f"mem: {mem}, temp_names: {temp_names}")
-
         self.print_value(data_type, mem)
-
-        self.crawssembly.append("io text newline rff")
 
         if temp_names: self.free_temp(temp_names)
 
@@ -885,10 +850,23 @@ class Compiler:
 
       elif command == "stop": self.crawssembly.append("stp")
 
-# Mutates variable type to fit desired type, throws an error when trying to cast something silly (Like "Hi" to an integer)
-# cast variable string
+# Branch keyword for decisions, allocates a label memory in the inter-memory layer and solves the boolean expression
+# if variable == variable
 
-      elif command == "cast": self.cast_variable(tokens)
+      elif command == "if":
+       (result, mem, temp_names) = self.solve_expression(tokens[1:])
+
+       self.make_if_statement(result, mem, temp_names)
+
+# Ends the scope of the most recent 'if' branch by removing it from memory
+# endif
+
+      elif command == "endif": self.crawssembly.append(f"rmv {self.branch_lables.pop(-1)}")
+
+
+
+
+
 
 
 

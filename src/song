@@ -1,6 +1,6 @@
 #!/bin/bash
 mv assembly.craw temp.craw
-nano song.txt
+wnano song.txt
 python3 song_parser.py
 mv song.craw assembly.craw
 ./run
