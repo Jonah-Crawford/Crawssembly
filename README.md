@@ -2,7 +2,7 @@
 
 A custom 21-bit instruction set architecture, assembler, and virtual machine written primarily in Rust.
 
-![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&dl=1)
+![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
 ## Features
 - 256 registers
