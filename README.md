@@ -2,6 +2,13 @@
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
+## Assembly; What's the deal?
+
+Computers are an amazing product of the information age. Billions of computers are running around the world all doing imporant, or not-so-important, tasks. But how do the computers know what to do?
+Programming languages are used to tell the computer what to do, but the issue is that there are so many to choose from. There's around 8 000 differnt ways to tell a computer what to do! How can they keep up with the different syntax, styles, and methods? The secret? All languages basically boil down to a single language, Assembly.
+
+
+
 ## Why does Crawssembly exist?
 
 Crawssembly is an educational assembly-like language designed to teach how computers work from the ground up.
@@ -21,7 +28,7 @@ The goal is to help you understand what high-level languages are really doing be
 Getting your head around binary (also known as Base-2) is perhaps the most important skill when working with low-level computing. However, the need for binary thinking has diminished with the massive rise of high-level languages like Python, Java, and Swift. A programmer can create amazing tools, games, and projects without ever actually needing to know what binary is.
 For those who don't know what binary is, this guide go through the basics, but for more information, Wikipedia is always a great place to start!
 
-### What is Bianry?
+### What is Binary?
 
 Binary, simply, is just another way to use numbers. We humans use the Base-10 system, meaning that we have 10 seperate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
 
@@ -29,7 +36,7 @@ At their core, computers are a bunch of transistors, very small switches that ca
 
 Think about a car's gearstick, it would be easier to use if there were only 2 gears rather than the 6 or more in reality.
 
-### So how does binary get used?
+### How does Binary get used?
 It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
 
 9 + 1 becomes 10
@@ -118,7 +125,7 @@ The computer will do what it's told exactlly as written to the letter. If you to
 
 ### Registers
 
-The most basic instruction is storing values. 
+The most basic instruction is storing data, which is stored as numbers, which is stored in cells. Each storage cell, which is called a register, holds a value, much like a variable in a higher language.
 
 
 
