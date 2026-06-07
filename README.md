@@ -37,6 +37,7 @@ etc...
 It's clear that place value works in 10's, the number '8' could represent 8 1's, 8 10's 8 100's, 8 1000's etc... depending on where it's place in the number.
 
 | Place Value | 10 000 | 1 000 | 100 | 10 | 1 |
+| ----------- | ------ | ----- | --- | -- | - |
 |   Number    |   8    |   3   |  0  | 7  | 2 |
 
 The example above shows how the number 83072 is equal to
