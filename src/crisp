@@ -1,5 +1,5 @@
 #!/bin/bash
 clear
-wnano code.crisp
+edit code.crisp
 python3 crisp.py || { exit 1; }
 ./run

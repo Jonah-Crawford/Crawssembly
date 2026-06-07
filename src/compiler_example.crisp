@@ -1,0 +1,107 @@
+let variable_names = []					/?/ list of all stored variable names
+let variable_data = []					/?/ list of all stored variable data
+
+let empty_memory = []					/?/ empty memory address store
+let memory_range = 65535				/?/ RAM size
+
+for i in memory_range					/?/ for every memory address in range
+
+append i empty_memory					/?/ adds memory address to empty_memory
+
+endfor							/?/ ends for loop
+
+func assign_var name value memory_list			/?/ function to create a variable with args name, value, and memory_list
+
+let already_defined = false				/?/ assumes the value isn't defined yet
+for var_name in variable_names				/?/ for loop to check if name is in stored variable names
+
+if name == var_name					/?/ check each element in variable_names
+let already_defined = true				/?/ if a match is found, the variable is already defined
+
+endif							/?/ ends name match
+
+endfor							/?/ ends definition check
+if already_defined					/?/ if the variable is already defined
+
+index name variable_names var_index			/?/ get data index for that name
+let type = variable_data[var_index][1]			/?/ gets old type (this method means the var type is immutable!)
+remove var_index variable_data				/?/ remoes old data element
+remove var_index variable_names				/?/ removes old name element 
+append name variable_names				/?/ stores variable name
+append [memory_list, type] variable_data		/?/ stores value array
+
+append "sav " + value + " r01				/?/ saves value
+
+endif							/?/ ends defined check
+
+if not already_defined					/?/ checks for new definition
+
+append name variable_names				/?/ stores new name
+if value == "true" or value == "false"			/?/ checks for boolean value
+
+append [memory_list "bool"] variable_data		/?/ stores proper var data
+if value == "true"					/?/ check for true value
+
+append "sav 1 r01" crawssembly				/?/ saves true
+
+endif							/?/ ends true check
+if value == "false"					/?/ checks for false value
+
+append "sav 0 r01" crawssembly				/?/ saves false
+
+endif							/?/ ends false check
+
+endif							/?/ ends boolean check
+
+endif							/?/ ends new definition check
+
+endfunc							/?/ ends function definition
+
+let crisp_file = "code.crisp"				/?/ sets crisp filename
+let crawssembly_file = "assembly.craw"			/?/ sets crawssembly filename
+let crawssembly = []					/?/ initialises crawssembly array
+
+getfile crisp_file crisp				/?/ gets contents of file into crisp
+split crisp						/?/ split crisp strings into an array of lines
+
+for crisp_line in crisp					/?/ loops over crisp lines
+
+index " " crisp_line command_index			/?/ gets first space 
+
+substr 0 command_index crisp_line command		/?/ gets substring from index 0 to first ' ' into command
+substr command_index -1 crisp_line args			/?/ get trailing text after command into args
+
+if command == "let"					/?/ tests for 'let' command
+index " " args name_index				/?/ gets first seperator for the var name
+substr 0 name_index args var_name			/?/ saves name into var_name
+
+substr name_index -1 args var_assignment		/?/ gets trailing text after name definition
+index "=" var_assignment equals_index			/?/ finds index of '='
+let value_index = equals_index + 1			/?/ increments '=' index to get index of value
+substr value_index -1 var_assignment var_value		/?/ gets the variable value
+
+length var_value var_length				/?/ gets length of value
+let simple_mem = var_length / 4				/?/ gets estimated value size
+
+let var_mem = []					/?/ defines varible memory array
+
+for idx in simple_mem					/?/ for loop to add variable memory addresses
+
+let address = empty_memory[0]				/?/ gets lowest empty address
+remove 0 empty_memory					/?/ removes that address from empty memory store
+append idx var_mem					/?/ adds the memory address
+
+endfor							/?/ ends for loop
+
+exec assign_var var_name var_value var_mem		/?/ runs assign_var function with proper arguments
+
+endif							/?/ ends 'let' command check
+
+endfor							/?/ ends for loop
+
+merge crawssembly					/?/ merges array into single string
+
+sendfile crawssembly_file crawssembly			/?/ writes output to .craw file
+println "Written to file " + crawssembly_file		/?/ outputs text to show user successful run
+
+stop							/?/ ends program

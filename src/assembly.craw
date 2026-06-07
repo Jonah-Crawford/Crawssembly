@@ -1,0 +1,223 @@
+sav 8 r03
+sav 0 r01
+io mem addr r01
+sav 39 r01
+cal shl r01 r03
+cal add 73 r01
+cal shl r01 r03
+cal add 70 r01
+cal shl r01 r03
+cal add 39 r01
+io mem write r01
+sav 1 r01
+io mem addr r01
+sav 32 r01
+cal shl r01 r03
+cal add 84 r01
+cal shl r01 r03
+cal add 101 r01
+cal shl r01 r03
+cal add 115 r01
+io mem write r01
+sav 2 r01
+io mem addr r01
+sav 116 r01
+cal shl r01 r03
+cal shl r01 r03
+cal shl r01 r03
+io mem write r01
+sav 8 r03
+sav 127 r01
+cal add 127 r01
+cal add 1 r01
+sav r01 r07
+sav r07 r06
+cal shl r06 r03
+sav r01 r06
+sav r06 r05
+cal shl r05 r03
+sav r01 r05
+sav r05 r04
+cal shl r04 r03
+sav r01 r04
+sav 0 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 1 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+sav 2 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+io text newline rff
+sav 0 r01
+io mem addr r01
+io mem write ree
+sav 1 r01
+io mem addr r01
+io mem write ree
+sav 2 r01
+io mem addr r01
+io mem write ree
+sav 1 r01
+sav 0 r02
+io mem addr r02
+io mem write r01
+sav 1 r01
+sav 1 r02
+io mem addr r02
+io mem write r01
+sav 0 r01
+io mem addr r01
+io mem read r03
+sav 1 r01
+io mem addr r01
+io mem read r04
+sav r04 r01
+cal not r01 r01
+cal add 1 r01
+cal add r01 r03
+sav 7 r02
+sav 1 r01
+cal shl r01 r02
+cal add 17 r01
+sav r01 r02
+32768
+sav r02 r01
+fgo 0
+sav 1 r05
+fgo 153
+rmv 32768
+sav 0 r05
+sav 7 r02
+sav 1 r01
+cal shl r01 r02
+cal add 14 r01
+sav r01 r02
+sav r03 r01
+jmz 32768
+rmv 32768
+sav 2 r01
+io mem addr r01
+io mem write r05
+sav 2 r01
+io mem addr r01
+io mem read r01
+io text int r01
+io text newline rff
+sav 2 r01
+io mem addr r01
+io mem read r01
+ifg 32769
+sav 8 r03
+sav 3 r01
+io mem addr r01
+sav 116 r01
+cal shl r01 r03
+cal add 114 r01
+cal shl r01 r03
+cal add 117 r01
+cal shl r01 r03
+cal add 101 r01
+io mem write r01
+sav 8 r03
+sav 127 r01
+cal add 127 r01
+cal add 1 r01
+sav r01 r07
+sav r07 r06
+cal shl r06 r03
+sav r01 r06
+sav r06 r05
+cal shl r05 r03
+sav r01 r05
+sav r05 r04
+cal shl r04 r03
+sav r01 r04
+sav 3 r01
+io mem addr r01
+io mem read r02
+sav r02 r01
+cal and r04 r01
+cal shr r01 r03
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r05 r01
+cal shr r01 r03
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r06 r01
+cal shr r01 r03
+io text char r01
+sav r02 r01
+cal and r07 r01
+io text char r01
+io text newline rff
+sav 3 r01
+io mem addr r01
+io mem write ree
+rmv 32769
+rmv 1
+1
+io keyboard poll r01
+cal add -27 r01
+jmg 1
+jml 1
+stp

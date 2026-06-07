@@ -1,7 +1,13 @@
-let x = 5
-let y = "abc"
-print x + y
+println "'IF' Test"
 
+let x = 1
+let b = x == 1
+
+println b
+
+if b
+println "true"
+endif
 
 /c/
 rmv 1

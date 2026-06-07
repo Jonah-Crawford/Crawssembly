@@ -1,164 +1,106 @@
 # Crawssembly
-
-A custom 21-bit instruction set architecture, assembler, and virtual machine written primarily in Rust.
+## A beginner entry-point to Assembly Languages
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
-## Features
-- 256 registers
-- 21-bit instruction format
-- 32-bit system structure
-- DWORD-sized memory
-- Custom ALU
-- Disk IO
-- Memory operations
-- Graphics experiments
-- Audio experiments
-- Branching and labels
-- Signed integer support
+## Why does Crawssembly exist?
 
-## Components
-- Assembler
-- VM
-- Experimental tooling
+Crawssembly is an educational assembly-like language designed to teach how computers work from the ground up.
+Traditional assembly languages such as x86 and ARM are powerful, but often overwhelming for beginners.
+Crawssembly removes much of the complexity while preserving the core ideas:
+- Registers
+- Memory
+- Arithmetic
+- Program Flow
+- Input and Output
+The goal is to help you understand what high-level languages are really doing behind the scenes.
 
-## Philosophy
-Built as an exploration of low-level computing systems, ISA design, and virtual machine architecture.
+## Binary
 
-## Example: Simple BMP Displayer
-```
-sav 14 r02              ; jte line number
-1                       ; draw logic
-sav r02 r01             ; ready jte line number
-fgo 0                   ; jte fgo
-io screen x r10         ; set x
-io screen y r11         ; set y
-io screen r r12         ; set r
-io screen g r13         ; set g
-io screen b r14         ; set b
-io screen pixel rff     ; set pixel
-io screen present rff   ; show screen
-fgo 121                 ; return to main code (hardcoded)
+Getting your head around binary (also known as Base-2) is perhaps the most important skill when working with low-level computing. However, the need for binary thinking has diminished with the massive rise of high-level languages like Python, Java, and Swift. A programmer can create amazing tools, games, and projects without ever actually needing to know what binary is.
+For those who don't know what binary is, this guide go through the basics, but for more information, Wikipedia is always a great place to start!
 
-sav 21 r02              ; jte line number
-2                       ; image error code
-sav r02 r01             ; ready jte line number
-fgo 0                   ; jte fgo
-sav 58 ref              ; stdout :
-sav 40 ref              ; stdout (
-stp                     ; end program
+Binary, simply, is just another way to use numbers. We humans use the Base-10 system, meaning that we have 10 seperate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9) You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
+At their core, computers are a bunch of transistors, very small switches that can only be in two states; On or Off. This is because two-state switches are very realiable and can change state quickly.
+Think about a car's gearbox, it would be easier to use if there were only 2 gears rather than the 6 or more in reality.
 
-sav 30 r02              ; jte line number
-3                       ; y jump code
-sav r02 r01             ; ready jte line number
-fgo 0                   ; jte fgo
-sav 0 r10               ; reset x coordinate
-cal add -1 r11          ; deccrement y coordinate
-sav r01 r11             ; update y coordinate
-fgo 127                 ; return to main code (hardcoded)
+So how does binary get used? It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
 
-io screen clear rff     ; clears the screen
-sav 19 r02              ; label 2 jte line number
-cal add -66 r00         ; test for 66 for B
-jmg 2                   ; code > 66, error
-jml 2                   ; code < 66, error
-inp                     ; get next byte
-cal add -77 r00         ; test for 77 for M
-jmg 2                   ; code > 77, error
-jml 2                   ; code < 77, error
-inp                     ; byte 0x02
-inp                     ; byte 0x03
-inp                     ; byte 0x04
-inp                     ; byte 0x05
-inp                     ; byte 0x06
-inp                     ; byte 0x07
-inp                     ; byte 0x08
-inp                     ; byte 0x09
-inp                     ; byte 0x0A
-sav 8 r02               ; load 8 shifts
-sav r00 r06             ; save 0x0A
-inp                     ; byte 0x0B
-sav r00 r05             ; save 0x0B
-inp                     ; byte 0x0C
-sav r00 r04             ; save 0x0C
-inp                     ; byte 0x0D
-sav r00 r03             ; save 0x0D
-cal shl r03 r02         ; 0x0D << 8
-cal add r04 r01         ; 0x0D | 0x0C
-cal shl r01 r02         ; (0x0D | 0x0C) << 8
-cal add r05 r01         ; 0x0D | 0x0C | 0x0B
-cal shl r01 r02         ; (0x0D | 0x0C | 0x0B) << 8
-cal add r06 r01         ; 0x0D | 0x0C | 0x0B | 0x0A (offset)
-sav r01 r07             ; save offset
-inp                     ; byte 0x0E
-inp                     ; byte 0x0F
-inp                     ; byte 0x10
-inp                     ; byte 0x11
-inp                     ; byte 0x12
-sav r00 r06             ; save 0x12
-inp                     ; byte 0x13
-sav r00 r05             ; save 0x13
-inp                     ; byte 0x14
-sav r00 r04             ; save 0x14
-inp                     ; byte 0x15
-sav r00 r03             ; save 0x15
-cal shl r03 r02         ; 0x15 << 8
-cal add r04 r01         ; 0x15 | 0x14
-cal shl r01 r02         ; (0x15 | 0x14) << 8
-cal add r05 r01         ; 0x15 | 0x14 | 0x13
-cal shl r01 r02         ; (0x15 | 0x14 | 0x13) << 8
-cal add r06 r01         ; 0x15 | 0x14 | 0x13 | 0x12 (width)
-cal not r01 r01         ; NOT width
-cal add 1 r01           ; negate width
-sav r01 r08             ; save width
-inp                     ; byte 0x16
-sav r00 r06             ; save 0x16
-inp                     ; byte 0x17
-sav r00 r05             ; save 0x17
-inp                     ; byte 0x18
-sav r00 r04             ; save 0x18
-inp                     ; byte 0x19
-sav r00 r03             ; save 0x19
-cal shl r03 r02         ; 0x19 << 8
-cal add r04 r01         ; 0x19 | 0x18
-cal shl r01 r02         ; (0x19 | 0x18) << 8
-cal add r05 r01         ; 0x19 | 0x18 | 0x17
-cal shl r01 r02         ; (0x19 | 0x18 | 0x17) << 8
-cal add r06 r01         ; 0x19 | 0x18 | 0x17 | 0x16 (height)
-sav r01 r09             ; save height
-sav r09 r11             ; start y at bottom (BMP are backwards)
-cal add -25 r07         ; remove passed bytes
-sav r01 r07             ; update byte offset
-5                       ; byte offset loop
-inp                     ; move to next byte
-cal add -1 r07          ; decrement offset
-sav r01 r07             ; update offset
-jmg 5                   ; move again if not done
-6                       ; main data extract loop
-cal add -128 r00        ; normalise blue byte
-sav r01 r14             ; save byte into blue reg
-inp                     ; move to next byte
-cal add -128 r00        ; normalise green byte
-sav r01 r13             ; save byte into green reg
-inp                     ; move to next byte
-cal add -128 r00        ; normalise red byte
-sav r01 r12             ; save byte into red reg
-inp                     ; move to next byte
-inp                     ; skip alpha
-sav 5 r02               ; label 1 jte line number
-jmp 1                   ; draw pixel
-cal add 1 r10           ; increment x
-sav r01 r10             ; update x coordinate
-cal add r08 r10         ; test for x end
-jml 6                   ; x < end, do next pixel
-sav 26 r02              ; label 3 jte line number
-jmz 3                   ; decrement y
-sav r11 r01             ; ready y coordinate for end test
-jmg 6                   ; y > 0, continue
-7                       ; exit loop
-io keyboard poll r01    ; get last key
-cal add -27 r01         ; test for code 27 for Esc
-jml 7                   ; code < 27, continue
-jmg 7                   ; code > 27, continue
-stp                     ; code = 27, end
-```
+9 + 1 becomes 10
+99 + 1 becomes 100
+999 + 1 becomes 1000
+etc...
+
+It's clear that place value works in 10's, the number '8' could represent 8 1's, 8 10's 8 100's, 8 1000's etc... depending on where it's place in the number.
+
+| Place Value | 10 000 | 1 000 | 100 | 10 | 1 |
+| Number      |   8    |   3   |  0  | 7  | 2 |
+
+The example above shows how the number 83072 is equal to
+8 * 10 000 +
+3 * 1 000 +
+0 * 100 + 
+7 * 10 +
+2 * 1
+
+For binary, only 2 digits are used. These are 0 for 'Off', and 1 for 'On'. Because only 2 symbols are used, place value works based on 2, not 10.
+So a '1' could represent 1 1's, 1 2's, 1 4's, 1 8's, 1 16's, etc... depending on where it is in the number.
+
+| Place Value | 16 | 8 | 4 | 2 | 1 |
+| Binary      | 1  | 0 | 1 | 1 | 0 |
+
+We can see that the binary number 10110 is the same as
+1 * 16 +
+0 * 8 +
+1 * 4 +
+1 * 2 +
+0 * 1
+
+Which, when calcualted, equals 22. So 10110 in Binary is the exact same as 22 in Base-10
+A counting example is provided below to show what counting in binary looks like
+
+| Base-10 | Base-2 |
+| 0 | 0 |
+| 1 | 1 |
+| 2 | 10 |
+| 3 | 11 |
+| 4 | 100 |
+| 5 | 101 |
+| 6 | 110 |
+| 7 | 111 |
+| 8 | 1000 |
+| 9 | 1001 |
+| 10 | 1010 |
+| 11 | 1011 |
+| 12 | 1100 |
+| 13 | 1101 |
+| 14 | 1110 |
+| 15 | 1111 |
+
+
+High level languages tend to spoil the user with many programs, functions, and data types. The computer doesn't see it that way. From the silicon's perspective, everything is binary numbers. A string such as "Hello World!" is actually a long binary number, the computer doesn't know what 'H' is, only it's binary representation.
+Every photo, song, text, and piece of code is actually just a long list of 1's and 0's.
+
+## The Basics
+
+> A small warning before beginning; Because assembly works directly with the computer's processor, you can easily break something if working alongside important data, such as an Operating System like Windows. For this reason, Crawssembly is kept within reasonable hardware limits. Removing these limits, while condoned in the name of learning and curiosity, should only be done if you are confident that your programs won't overwrite data that really shouldn't be overwritten.
+
+If you've used high-level programming languages before, you'll know that telling a computer how to work is quite different than telling another person what to do.
+For example, asking your friend to get a drink from the kitchen is a simple matter, but getting a computer to do this requires you to define a drink, where the ktichen is, the precise steps needed to move to the drink's location, how to pick up the drink, the movements needed to take the drink back to you while not dropping or crushing the cup, etc...
+The computer will do what it's told exactlly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your skin into bread to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical; ambiguity kills the machine.
+
+### Registers
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Crawssembly is a product of CRAW SYSTEMS (C) 2026*

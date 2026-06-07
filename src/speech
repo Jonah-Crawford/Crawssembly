@@ -1,7 +1,7 @@
 #!/bin/bash
 mv assembly.craw temp.craw
 clear
-wnano speech.txt
+edit speech.txt
 python3 speech_parser.py
 mv speech.craw assembly.craw
 ./run

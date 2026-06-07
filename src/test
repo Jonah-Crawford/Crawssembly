@@ -1,4 +1,4 @@
 #!/bin/bash
 mv assembly.craw temp.craw
-wnano assembly.craw
+edit assembly.craw
 ./run
