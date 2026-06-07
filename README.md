@@ -32,7 +32,7 @@ For those who don't know what binary is, this guide go through the basics, but f
 
 ### What is Binary?
 
-Binary, simply, is just another way to use numbers. We humans use the Base-10 system, meaning that we have 10 seperate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
+Binary, simply, is just another way to use numbers. We humans use the Base-10 (A.K.A Decimal) system, meaning that we have 10 seperate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
 
 At their core, computers are a bunch of transistors, very small switches that can only be in two states; On or Off. This is because two-state switches are very realiable and can change state quickly.
 
@@ -115,6 +115,33 @@ High level languages tend to spoil the user with many programs, functions, and d
 
 Every photo, song, text, and piece of code is actually just a long list of 1's and 0's!
 
+### Other Number Systems
+
+Another counting system regually used is Hexadecimal, or Base-16. Because we only have 10 numbers, the letters A-F are also used. A = 11, B = 12, C = 13, etc...
+
+| Place Value | 256 | 16 | 1 |
+| ----------- | --- | -- | - |
+| Hexadecimal |  A  |  3 | F |
+
+A3F =
+
+11 * 256 + 
+
+3 * 16 +
+
+15 * 1
+
+= 2623
+
+Hexadecimal is used because it neatly condenses binary numbers, a 4 digit binary number can be compressed into a single hexadecimal digit
+
+### How can I tell the difference?
+
+Because the number '100' could be in weird and wonderful base, it's neccessary to show what number system is being used if Base-10 has moved aside for a moment.
+
+If the number is in binary, it's usually prefaced with '0b', so if you saw '0b100' then you can be sure that's binary, equal to 4 in Base-10. If you see '0x', that's hexadecimal. So '0x100' would be 256 in Base-10.
+
+
 ## The Basics
 
 > A small warning before beginning; Because assembly works directly with the computer's processor, you can easily break something if working alongside important data, such as an Operating System like Windows. For this reason, Crawssembly is kept within reasonable hardware limits. Removing these limits, while condoned in the name of learning and curiosity, should only be done if you are confident that your programs won't overwrite data that really shouldn't be overwritten.
@@ -123,13 +150,13 @@ If you've used high-level programming languages before, you'll know that telling
 
 For example, asking your friend to get a drink from the kitchen is a simple matter, but getting a computer to do this requires you to define a drink, where the ktichen is, the precise steps needed to move to the drink's location, how to pick up the drink, the movements needed to take the drink back to you while not dropping or crushing the cup, etc...
 
-The computer will do what it's told exactlly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your skin into bread to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical; ambiguity kills the machine.
+The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your skin into bread to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical: "Ambiguity kills the machine, precision keeps it running."
 
 ### Registers
 
 The most basic instruction is storing data, which is stored as numbers, which is stored in cells. Each storage cell, which is called a register, holds a value, much like a variable in a higher language.
 
-
+Crawssembly provides 256 registers for quick storage
 
 
 
