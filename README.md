@@ -38,7 +38,7 @@ At their core, computers are a bunch of transistors, very small switches that ca
 
 Think about a car's gearstick, it would be easier to use if there were only 2 gears rather than the 6 or more in reality.
 
-### How does Binary get used?
+### How does binary get used?
 It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
 
 9 + 1 becomes 10
@@ -87,9 +87,9 @@ We can see that the binary number 10110 is the same as
 
 0 * 1
 
-Which, when calcualted, equals 22. So 10110 in Binary is the exact same as 22 in Base-10
+Which, when calcualted, equals 22. So 10110 in binary is the exact same as 22 in Base-10
 
-A counting example is provided below to show what counting in binary looks like
+A counting example is provided below to show what counting in binary looks like:
 
 | Base-10 | Binary |
 | ------- | ------ |
@@ -113,7 +113,7 @@ A counting example is provided below to show what counting in binary looks like
 
 High level languages tend to spoil the user with many programs, functions, and data types. The computer doesn't see it that way. From the silicon's perspective, everything is binary numbers. A string such as "Hello World!" is actually a long binary number, the computer doesn't know what 'H' is, only it's binary representation.
 
-Every photo, song, text, and piece of code is actually just a long list of 1's and 0's.
+Every photo, song, text, and piece of code is actually just a long list of 1's and 0's!
 
 ## The Basics
 
