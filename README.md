@@ -56,7 +56,7 @@ For binary, only 2 digits are used. These are 0 for 'Off', and 1 for 'On'. Becau
 So a '1' could represent 1 1's, 1 2's, 1 4's, 1 8's, 1 16's, etc... depending on where it is in the number.
 
 | Place Value | 16 | 8 | 4 | 2 | 1 |
-
+| ----------- | -- | - | - | - | - |
 |   Binary    | 1  | 0 | 1 | 1 | 0 |
 
 We can see that the binary number 10110 is the same as
@@ -75,37 +75,22 @@ Which, when calcualted, equals 22. So 10110 in Binary is the exact same as 22 in
 A counting example is provided below to show what counting in binary looks like
 
 | Base-10 | Binary |
-
+| ------- | ------ |
 |    0    |    0   |
-
 |    1    |    1   |
-
 |    2    |   10   |
-
 |    3    |   11   |
-
 |    4    |   100  |
-
 |    5    |   101  |
-
 |    6    |   110  |
-
 |    7    |   111  |
-
 |    8    |  1000  |
-
 |    9    |  1001  |
-
 |    10   |  1010  |
-
 |    11   |  1011  |
-
 |    12   |  1100  |
-
 |    13   |  1101  |
-
 |    14   |  1110  |
-
 |    15   |  1111  |
 
 
