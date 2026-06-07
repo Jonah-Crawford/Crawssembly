@@ -49,7 +49,7 @@ It's basically the same as normal counting. In Base-10, when you reach '9' and y
 
 etc...
 
-It's clear that place value works in 10's, the number '8' could represent 8 1's, 8 10's 8 100's, 8 1000's etc... depending on where it's place in the number.
+It's clear that place value works in 10's, the number '8' could represent 8 1's, 8 10's 8 100's, 8 1000's etc... depending on where it is in the number.
 
 | Place Value | 10 000 | 1 000 | 100 | 10 | 1 |
 | ----------- | ------ | ----- | --- | -- | - |
@@ -89,32 +89,6 @@ We can see that the binary number 10110 is the same as
 
 Which, when calcualted, equals 22. So 10110 in binary is the exact same as 22 in Base-10
 
-A counting example is provided below to show what counting in binary looks like:
-
-| Base-10 | Binary |
-| ------- | ------ |
-|    0    |    0   |
-|    1    |    1   |
-|    2    |   10   |
-|    3    |   11   |
-|    4    |   100  |
-|    5    |   101  |
-|    6    |   110  |
-|    7    |   111  |
-|    8    |  1000  |
-|    9    |  1001  |
-|    10   |  1010  |
-|    11   |  1011  |
-|    12   |  1100  |
-|    13   |  1101  |
-|    14   |  1110  |
-|    15   |  1111  |
-
-
-High level languages tend to spoil the user with many programs, functions, and data types. The computer doesn't see it that way. From the silicon's perspective, everything is binary numbers. A string such as "Hello World!" is actually a long binary number, the computer doesn't know what 'H' is, only it's binary representation.
-
-Every photo, song, text, and piece of code is actually just a long list of 1's and 0's!
-
 ### Other Number Systems
 
 Another counting system regually used is Hexadecimal, or Base-16. Because we only have 10 numbers, the letters A-F are also used. A = 11, B = 12, C = 13, etc...
@@ -134,6 +108,32 @@ A3F =
 = 2623
 
 Hexadecimal is used because it neatly condenses binary numbers, a 4 digit binary number can be compressed into a single hexadecimal digit
+
+A counting example is provided below to show what counting in different bases looks like:
+
+| Base-10 | Binary | Hexadecimal |
+| ------- | ------ | ----------- |
+|    0    |    0   |      0      |
+|    1    |    1   |      1      |
+|    2    |   10   |      2      |
+|    3    |   11   |      3      |
+|    4    |   100  |      4      |
+|    5    |   101  |      5      |
+|    6    |   110  |      6      |
+|    7    |   111  |      7      |
+|    8    |  1000  |      8      |
+|    9    |  1001  |      9      |
+|    10   |  1010  |      A      |
+|    11   |  1011  |      B      |
+|    12   |  1100  |      C      |
+|    13   |  1101  |      D      |
+|    14   |  1110  |      E      |
+|    15   |  1111  |      F      |
+
+High level languages tend to spoil the user with many programs, functions, and data types. The computer doesn't see it that way. From the silicon's perspective, everything is binary numbers. A string such as "Hello World!" is actually a long binary number, the computer doesn't know what 'H' is, only it's binary representation.
+
+Every photo, song, text, and piece of code is actually just a long list of 1's and 0's!
+
 
 ### How can I tell the difference?
 
