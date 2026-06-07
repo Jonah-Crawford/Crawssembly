@@ -5,9 +5,11 @@
 ## Assembly; What's the deal?
 
 Computers are an amazing product of the information age. Billions of computers are running around the world all doing imporant, or not-so-important, tasks. But how do the computers know what to do?
-Programming languages are used to tell the computer what to do, but the issue is that there are so many to choose from. There's around 8 000 differnt ways to tell a computer what to do! How can they keep up with the different syntax, styles, and methods? The secret? All languages basically boil down to a single language, Assembly.
+Programming languages are used to tell the computer how to work, but the issue is that there are so many to choose from. There's around 8 000 different languages to speak to the device! How can computers keep up with the different syntax, styles, and methods? The secret? All languages basically boil down to a single language, Machine Code.
 
+Machine code is the raw binary that the computer executes. Assembly is the language that represents machine code. A line of assembly equals a line of machine code, compared to a 'higher' language where a line could equal upwards of thousands of lines.
 
+Learning assembly is a great way to internalise how computers work, as by learning assembly you learn how a computer 'thinks'. 
 
 ## Why does Crawssembly exist?
 
