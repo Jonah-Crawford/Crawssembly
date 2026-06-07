@@ -5,6 +5,7 @@
 ## Why does Crawssembly exist?
 
 Crawssembly is an educational assembly-like language designed to teach how computers work from the ground up.
+
 Traditional assembly languages such as x86 and ARM are powerful, but often overwhelming for beginners.
 Crawssembly removes much of the complexity while preserving the core ideas:
 - Registers
@@ -18,10 +19,13 @@ The goal is to help you understand what high-level languages are really doing be
 ## Binary
 
 Getting your head around binary (also known as Base-2) is perhaps the most important skill when working with low-level computing. However, the need for binary thinking has diminished with the massive rise of high-level languages like Python, Java, and Swift. A programmer can create amazing tools, games, and projects without ever actually needing to know what binary is.
+
 For those who don't know what binary is, this guide go through the basics, but for more information, Wikipedia is always a great place to start!
 
 Binary, simply, is just another way to use numbers. We humans use the Base-10 system, meaning that we have 10 seperate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
+
 At their core, computers are a bunch of transistors, very small switches that can only be in two states; On or Off. This is because two-state switches are very realiable and can change state quickly.
+
 Think about a car's gearstick, it would be easier to use if there were only 2 gears rather than the 6 or more in reality.
 
 So how does binary get used? It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
@@ -53,6 +57,7 @@ The example above shows how the number 83072 is equal to
 2 * 1
 
 For binary, only 2 digits are used. These are 0 for 'Off', and 1 for 'On'. Because only 2 symbols are used, place value works based on 2, not 10.
+
 So a '1' could represent 1 1's, 1 2's, 1 4's, 1 8's, 1 16's, etc... depending on where it is in the number.
 
 | Place Value | 16 | 8 | 4 | 2 | 1 |
@@ -72,6 +77,7 @@ We can see that the binary number 10110 is the same as
 0 * 1
 
 Which, when calcualted, equals 22. So 10110 in Binary is the exact same as 22 in Base-10
+
 A counting example is provided below to show what counting in binary looks like
 
 | Base-10 | Binary |
@@ -95,6 +101,7 @@ A counting example is provided below to show what counting in binary looks like
 
 
 High level languages tend to spoil the user with many programs, functions, and data types. The computer doesn't see it that way. From the silicon's perspective, everything is binary numbers. A string such as "Hello World!" is actually a long binary number, the computer doesn't know what 'H' is, only it's binary representation.
+
 Every photo, song, text, and piece of code is actually just a long list of 1's and 0's.
 
 ## The Basics
@@ -102,10 +109,22 @@ Every photo, song, text, and piece of code is actually just a long list of 1's a
 > A small warning before beginning; Because assembly works directly with the computer's processor, you can easily break something if working alongside important data, such as an Operating System like Windows. For this reason, Crawssembly is kept within reasonable hardware limits. Removing these limits, while condoned in the name of learning and curiosity, should only be done if you are confident that your programs won't overwrite data that really shouldn't be overwritten.
 
 If you've used high-level programming languages before, you'll know that telling a computer how to work is quite different than telling another person what to do.
+
 For example, asking your friend to get a drink from the kitchen is a simple matter, but getting a computer to do this requires you to define a drink, where the ktichen is, the precise steps needed to move to the drink's location, how to pick up the drink, the movements needed to take the drink back to you while not dropping or crushing the cup, etc...
+
 The computer will do what it's told exactlly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your skin into bread to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical; ambiguity kills the machine.
 
 ### Registers
+
+The most basic instruction is storing values. 
+
+
+
+
+
+
+
+
 
 
 
