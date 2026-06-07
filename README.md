@@ -19,8 +19,9 @@ The goal is to help you understand what high-level languages are really doing be
 ## Binary
 
 Getting your head around binary (also known as Base-2) is perhaps the most important skill when working with low-level computing. However, the need for binary thinking has diminished with the massive rise of high-level languages like Python, Java, and Swift. A programmer can create amazing tools, games, and projects without ever actually needing to know what binary is.
-
 For those who don't know what binary is, this guide go through the basics, but for more information, Wikipedia is always a great place to start!
+
+### What is Bianry?
 
 Binary, simply, is just another way to use numbers. We humans use the Base-10 system, meaning that we have 10 seperate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
 
@@ -28,7 +29,8 @@ At their core, computers are a bunch of transistors, very small switches that ca
 
 Think about a car's gearstick, it would be easier to use if there were only 2 gears rather than the 6 or more in reality.
 
-So how does binary get used? It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
+### So how does binary get used?
+It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
 
 9 + 1 becomes 10
 
