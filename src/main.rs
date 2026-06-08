@@ -27,22 +27,141 @@ type Instr = u32;
 
 fn main() {
   let args: Vec<String> = std::env::args().collect();
-  
-  let dump = args.iter().any(|a| a == "--dump");
-  let dump_decoded = args.iter().any(|a| a == "--dump-decoded");
 
-  if args.iter().any(|a| a  == "--decode") {
+  if args.iter().any(|a| a == "--help" || a == "-h") {
+    print_help();
+    return;
+  }
+
+  if args.iter().any(|a| a == "--decode") {
     decode_interactive();
     return;
   }
 
-  if args.iter().any(|a| a == "--run") {
-    vm::run_vm().expect("VM failed");
-    return;
+  let dump = args.iter().any(|a| a == "--dump");
+  let dump_decoded = args.iter().any(|a| a == "--dump-decoded");
+  let debug = args.iter().any(|a| a == "--debug");
+  let plain = !args.iter().any(|a| a == "--tui");
+  let show_stats = debug || args.iter().any(|a| a == "--stats");
+
+  let command = args
+    .iter()
+    .skip(1)
+    .find(|a| !a.starts_with("--"))
+    .map(|s| s.as_str());
+
+  match command {
+    Some("compile") => {
+      let Some(input_path) = positional_after(&args, "compile") else {
+        eprintln!("Missing input file.\n");
+        print_help();
+        std::process::exit(1);
+      };
+
+      if let Err(e) = assemble_file(&input_path, "program.bin", dump, dump_decoded) {
+        eprintln!("{e}");
+        std::process::exit(1);
+      }
+    }
+
+    Some("run") => {
+      let input_path = positional_after(&args, "run");
+
+      if let Some(path) = input_path {
+        if let Err(e) = assemble_file(&path, "program.bin", dump, dump_decoded) {
+          eprintln!("{e}");
+          std::process::exit(1);
+        }
+      }
+
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, -1, vec![0], true, show_stats) {
+        eprintln!("VM failed: {e}");
+        std::process::exit(1);
+      }
+    }
+
+    Some("debug") => {
+      let Some(input_path) = positional_after(&args, "debug") else {
+        eprintln!("Missing input file.\n");
+        print_help();
+        std::process::exit(1);
+      };
+
+      if let Err(e) = assemble_file(&input_path, "program.bin", dump, dump_decoded) {
+        eprintln!("{e}");
+        std::process::exit(1);
+      }
+
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, -1, vec![0], true, true) {
+        eprintln!("VM failed: {e}");
+        std::process::exit(1);
+      }
+    }
+
+    Some("check") => {
+      let Some(input_path) = positional_after(&args, "check") else {
+        eprintln!("Missing input file.\n");
+        print_help();
+        std::process::exit(1);
+      };
+
+      if let Err(e) = check_file(&input_path, dump, dump_decoded) {
+        eprintln!("{e}");
+        std::process::exit(1);
+      }
+    }
+
+    Some(path) => {
+      if let Err(e) = assemble_file(&path, "program.bin", dump, dump_decoded) {
+        eprintln!("{e}");
+        std::process::exit(1);
+      }
+
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, -1, vec![0], true, show_stats) {
+        eprintln!("VM failed: {e}");
+        std::process::exit(1);
+      }
+    }
+
+    None => {
+      if args.iter().any(|a| a == "--run") {
+        if let Err(e) = vm::run_vm() {
+          eprintln!("VM failed: {e}");
+          std::process::exit(1);
+        }
+        return;
+      }
+
+      if let Err(e) = assemble_file("assembly.craw", "program.bin", dump, dump_decoded) {
+        eprintln!("{e}");
+        std::process::exit(1);
+      }
+    }
+  }
+}
+
+fn positional_after(args: &[String], command: &str) -> Option<String> {
+  let mut seen_command = false;
+
+  for arg in args.iter().skip(1) {
+    if arg == command {
+      seen_command = true;
+      continue;
+    }
+
+    if !seen_command || arg.starts_with("--") {
+      continue;
+    }
+
+    return Some(arg.clone());
   }
 
-  let src = fs::read_to_string("assembly.craw")
-    .expect("Failed to read assembly.craw");
+  None
+}
+
+fn assemble_file(input_path: &str, output_path: &str, dump: bool, dump_decoded: bool) -> Result<(), String> {
+  let src = fs::read_to_string(input_path)
+    .map_err(|e| format!("Failed to read {input_path}: {e}"))?;
 
   let lines: Vec<String> = src.lines().map(|s| s.to_string()).collect();
 
@@ -52,16 +171,54 @@ fn main() {
         dump_program(&lines, &program, dump_decoded);
       }
 
-      write_program_bin("program.bin", &program)
-        .expect("Failed to write program.bin");
+      write_program_bin(output_path, &program)
+        .map_err(|e| format!("Failed to write {output_path}: {e}"))?;
 
-      println!("Assembled {} instructions -> program.bin", program.len());
+      println!("Assembled {} instructions -> {}", program.len(), output_path);
+      Ok(())
     }
-    Err(e) => {
-      eprintln!("Assembly failed:\n{e}");
-      std::process::exit(1);
-    }
+
+    Err(e) => Err(format!("Assembly failed:\n{e}"))
   }
+}
+
+fn check_file(input_path: &str, dump: bool, dump_decoded: bool) -> Result<(), String> {
+  let src = fs::read_to_string(input_path)
+    .map_err(|e| format!("Failed to read {input_path}: {e}"))?;
+
+  let lines: Vec<String> = src.lines().map(|s| s.to_string()).collect();
+  let program = assemble(&lines)?;
+
+  if dump {
+    dump_program(&lines, &program, dump_decoded);
+  }
+
+  println!("OK: {} instructions", program.len());
+  Ok(())
+}
+
+fn print_help() {
+  println!("Crawssembly");
+  println!();
+  println!("Usage:");
+  println!("  craw <file.craw>              Assemble and run a file");
+  println!("  craw run <file.craw>          Assemble and run a file");
+  println!("  craw compile <file.craw>      Assemble to program.bin only");
+  println!("  craw check <file.craw>        Check that a file assembles");
+  println!("  craw debug <file.craw>        Run with VM stats shown");
+  println!();
+  println!("Options:");
+  println!("  --dump                        Show assembled instructions");
+  println!("  --dump-decoded                Show decoded instruction fields with --dump");
+  println!("  --stats                       Show VM speed/tick statistics after running");
+  println!("  --tui                         Use alternate-screen terminal mode");
+  println!("  --decode                      Open the instruction decoder");
+  println!("  --help                        Show this help message");
+  println!();
+  println!("Examples:");
+  println!("  craw hello.craw");
+  println!("  craw debug hello.craw");
+  println!("  craw compile hello.craw --dump");
 }
 
 fn dump_program(src_lines: &[String], program: &[Instr], decoded: bool) {
@@ -853,7 +1010,7 @@ fn parse_reg(tok: &str) -> Result<u8, String> {
   }
   let t = tok.to_ascii_lowercase();
   u8::from_str_radix(&t[1..], 16).map_err(|_| format!("Bad register '{tok}'"))
-}	
+}
 
 fn parse_alu(tok: &str) -> Result<AluOp, String> {
   match tok.to_ascii_lowercase().as_str() {

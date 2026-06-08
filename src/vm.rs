@@ -55,8 +55,6 @@ const IO_SCREEN_OUT_OF_BOUNDS: i32 = 0x10;
 const SPEAKER_COUNT: usize = 8;
 
 pub fn run_vm() -> Result<(), String> {
-  print!("{esc}[2J{esc}[1;1H", esc = 27 as char); // clear screen
-
   let program = load_program("program.bin")?;
   let decoded = predecode(&program);
 
@@ -68,10 +66,31 @@ pub fn run_vm() -> Result<(), String> {
 
   let (speed, input_list, looped) = startup()?;
 
-  print!("{esc}[2J{esc}[1;1H", esc = 27 as char);  // clear screen
+  let mut cpu = Cpu::new();
+  cpu.execute_interactive(&decoded, speed, &input_list, looped, false, true);
+
+  Ok(())
+}
+
+pub fn run_vm_with_options(
+  program_path: &str,
+  plain: bool,
+  speed: i32,
+  input_list: Vec<i32>,
+  looped: bool,
+  show_stats: bool
+) -> Result<(), String> {
+  let program = load_program(program_path)?;
+  let decoded = predecode(&program);
+
+  let args: Vec<String> = std::env::args().collect();
+  if let Some(iters) = parse_bench_iters(&args) {
+    run_bench(&decoded, iters);
+    return Ok(());
+  }
 
   let mut cpu = Cpu::new();
-  cpu.execute_interactive(&decoded, speed, &input_list, looped);
+  cpu.execute_interactive(&decoded, speed, &input_list, looped, plain, show_stats);
 
   Ok(())
 }
@@ -972,7 +991,7 @@ impl Cpu {
     }
   }
 
-  fn execute_interactive(&mut self, program: &[Decoded], speed: i32, input: &[i32], looped: bool) {
+  fn execute_interactive(&mut self, program: &[Decoded], speed: i32, input: &[i32], looped: bool, plain: bool, show_stats: bool) {
     use std::time::Duration;
 
     self.begin_run();
@@ -991,13 +1010,16 @@ impl Cpu {
     let _ = self.load_disk(DISK_PATH);
 
     let _ = terminal::enable_raw_mode();
-    let _ = execute!(
-      stdout,
-      terminal::EnterAlternateScreen,
-      EnableMouseCapture,
-      cursor::Hide,
-      terminal::Clear(ClearType::All)
-    );
+
+    if !plain {
+      let _ = execute!(
+        stdout,
+        terminal::EnterAlternateScreen,
+        EnableMouseCapture,
+        cursor::Hide,
+        terminal::Clear(ClearType::All)
+      );
+    }
 
     let key_state = self.last_key.clone();
     let mouse_state = self.mouse.clone();
@@ -1164,23 +1186,36 @@ impl Cpu {
 
     if let Some(trace) = trace.as_mut() { trace.flush().ok(); }
 
-    let _ = execute!(
-      stdout,
-      ResetColor,
-      cursor::Show,
-      DisableMouseCapture,
-      terminal::LeaveAlternateScreen
-    );
     let _ = terminal::disable_raw_mode();
 
-    let hz = if dt > 0.0 { (tick as f64) / dt } else { 0.0 };
-    let ns_per = (dt * 1e9) / (tick as f64);
-    let cycles_per_instruction = cpu_hz / hz;
+    if plain {
+      let _ = execute!(
+        stdout,
+        ResetColor,
+        cursor::Show,
+        DisableMouseCapture
+      );
+    } else {
+      let _ = execute!(
+        stdout,
+        ResetColor,
+        cursor::Show,
+        DisableMouseCapture,
+        terminal::LeaveAlternateScreen
+      );
+    }
 
-    println!("Done: ticks={} time={:.10}s 0xFF={}", tick, dt, self.regs[0xFF]);
-    println!("Clock speed was revealed to be {:.3} Hz = ~{:.3} MHz", hz, hz / 1_000_000.0);
-    println!("~{:.3} ns / instruction", ns_per);
-    println!( "Estimated vm cost: {:.2} host CPU cycles / instruction", cycles_per_instruction);
+    if show_stats {
+      let hz = if dt > 0.0 { (tick as f64) / dt } else { 0.0 };
+      let ns_per = if tick > 0 { (dt * 1e9) / (tick as f64) } else { 0.0 };
+      let cycles_per_instruction = if hz > 0.0 { cpu_hz / hz } else { 0.0 };
+
+      println!();
+      println!("Done: ticks={} time={:.10}s 0xFF={}", tick, dt, self.regs[0xFF]);
+      println!("Clock speed was revealed to be {:.3} Hz = ~{:.3} MHz", hz, hz / 1_000_000.0);
+      println!("~{:.3} ns / instruction", ns_per);
+      println!("Estimated vm cost: {:.2} host CPU cycles / instruction", cycles_per_instruction);
+    }
 
     if self.disk_dirty { let _ = self.save_disk(DISK_PATH); }
 
@@ -1455,12 +1490,12 @@ impl Cpu {
         match command {
 
           // channel
-          0x0 => { 
+          0x0 => {
             if value < 0 || value as usize >= SPEAKER_COUNT {
-              self.regs[REG_IO_STATUS] = IO_BAD_VALUE; 
+              self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
             } else {
               self.speaker_channel = value as usize;
-            } 
+            }
           }
 
           // freq
@@ -1474,7 +1509,7 @@ impl Cpu {
 
           // volume
           0x2 => {
-            speakers[self.speaker_channel].vol = value.clamp(0, 100) as f32 / 100.0; 
+            speakers[self.speaker_channel].vol = value.clamp(0, 100) as f32 / 100.0;
           }
 
           // wave
@@ -1482,7 +1517,7 @@ impl Cpu {
             if value < 0 || value > (SPEAKER_COUNT as i32) {
               self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
             } else {
-              speakers[self.speaker_channel].wave = value; } 
+              speakers[self.speaker_channel].wave = value; }
           }
 
           // on
@@ -1613,7 +1648,7 @@ impl Cpu {
       (total - n) as f32 / release as f32
     } else {
      1.0
-    } 
+    }
   }
 
   fn speech_speak(&mut self) {

@@ -20,6 +20,20 @@ The goal is to help you understand what high-level languages are really doing be
 
 > Because Crawssembly assumes near-zero knowledge, there might be concepts you already know. Feel free to skip over them if you are familar with anything shown!
 
+## How to install Crawssembly
+
+> Present versions have only been tested on Linux systems. Errors are likely if you are not using a Linux OS.
+
+To install Crawssembly, run these commands
+
+```
+git clone https://github.com/Jonah-Crawford/Crawssembly.git
+cd Crawssembly
+cargo install --path .
+```
+
+To run a Crawssembly file (These are `.craw` files), simply run `craw <file.craw>` and swap `<file.craw>` with the name of the Crawssembly file you wish to edit.
+
 ### What will I learn?
 
 By the end of this guide you will understand:
