@@ -2,6 +2,8 @@
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
+Written By Jonah Crawford. [Help support my projects!](https://buymeacoffee.com/jonah_crawford)
+
 ## Why does Crawssembly exist?
 
 **Crawssembly** is an educational assembly-like language designed to teach how computers work from the ground up.
@@ -43,7 +45,21 @@ To run a Crawssembly file (These are `.craw` files), simply run `craw <file.craw
 
 Use `craw --help` to display helpful use information
 
-### What will I learn?
+## Your First Program
+
+Create a file called `hello.craw` and write the following:
+
+```
+sav 72 ref
+sav 105 ref
+stp
+```
+
+Run this file using `craw hello.craw`
+
+Congratulations, you are taking the first steps to learning assembly!
+
+## What will I learn?
 
 By the end of this guide you will understand:
 
@@ -103,6 +119,7 @@ At their core, computers are a bunch of transistors, very small switches that ca
 Think about a car's gear stick, it would be easier to use if there were only 2 gears rather than the 6 or more in reality.
 
 ### How does binary get used?
+
 It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
 
 9 + 1 becomes 10
@@ -256,9 +273,9 @@ So the example instruction `sav 10 r01` saves the literal value `10` into regist
 
 Most registers are ready and raring to hold your numbers. But some registers do other functions. The 3 most important ones are `r00`, `ref`, and `rff`. These are the *1st*, *240th*, and *256th* registers respectively.
 
-- Register 0x00: The first register is **read-only**. This means that you can look at what's inside the register, but you can't save a value to it. This is because `r00` is used for input data, such as a file or a list of numbers.
-- Register 0xEF: This register is the **ASCII** register. Any value that is saved to this register is converted to a letter and is shown to the terminal screen. Visit [this page](https://www.asciitable.com/) to see what ASCII numbers relate to what letter.
-- Register 0xFF: The last register is **write-only**. This means that you can save a value to the register, but you can't look at what's inside. This is because `rff` is used for the computer output, like the result of a maths problem the computer has solved.
+- Register 0x00 (`r00`): The first register is **read-only**. This means that you can look at what's inside the register, but you can't save a value to it. This is because `r00` is used for input data, such as a file or a list of numbers.
+- Register 0xEF (`ref`): This register is the **ASCII** register. Any value that is saved to this register is converted to a letter and is shown to the terminal screen. Visit [this page](https://www.asciitable.com/) to see what ASCII numbers relate to what letter.
+- Register 0xFF (`rff`): The last register is **write-only**. This means that you can save a value to the register, but you can't look at what's inside. This is because `rff` is used for the computer output, like the result of a maths problem the computer has solved.
 
 In addition, registers from `rf0` to `rfe` already contain values. These represent constants such as pi, Euler's number, some roots, and certain logarithms. There is more on these later on.
 
