@@ -40,6 +40,19 @@ By the end of this guide you will understand:
 
 ✓ The fundamentals of CPU architecture
 
+## Why not just learn real assembly?
+
+Real assembly is designed to be run, not explained. Crawssembly does not aim to be a replacement for real assembly languages, rather a teaching tool.
+Just like riding a bike, you practise using the slower stabiliser wheels before riding off into the sunset by yourself.
+
+| Feature | x86 | ARM | Crawssembly |
+| ------- | --- | --- | ----------- |
+| Beginner Friendly | X | X | ✓ |
+| Small Instruction Set | X | ✓ | ✓ |
+| Direct Hardware Concepts | ✓ | ✓ | ✓ |
+| Easy Toolchain | X | ✓ | ✓ |
+| Educational Focus | X | X | ✓ |
+
 ## Assembly; What's the deal?
 
 Computers are an amazing product of the information age. Billions of computers are running around the world all doing important, or not-so-important, tasks. But how do the computers know what to do?
@@ -133,7 +146,7 @@ B3F =
 
 = 2623
 
-Hexadecimal is used because it neatly condenses binary numbers, a 4 digit binary number can be compressed into a single hexadecimal digit
+Hexadecimal is used because it neatly condenses binary numbers, a 4 digit binary number can be compressed into a single hexadecimal digit.
 
 A counting example is provided below to show what counting in different bases looks like:
 
@@ -189,13 +202,14 @@ The most basic instruction is storing data, which is stored as numbers, which is
 Crawssembly provides 256 registers for quick storage, most of which can be used to store data. Here is an example of how to save data to one of these registers:
 
 ```
-sav 10 r01
+sav 10 r01 ; this saves '10' to register 1
 ```
 
 This example has 3 parts:
 - `sav`
 - `10`
 - `r01`
+- `;`
 
 `sav` is the **save** command. It 'Saves A Value' to a register.
 
@@ -203,13 +217,13 @@ This example has 3 parts:
 
 `r01` is a register. Every register has a code like this, with the register number in **Hexadecimal**. Registers are indexed **starting at 0**, so the first register is actually `r00`, because the codes start at 0. This *0 indexing* is commonplace in programming, and a usual stumbling block for beginners.
 
+`;` is a **comment**, anything after it doesn't get run. It's the best way to talk about and annotate the program to help explain it's function.
+
 Register codes include:
 
-`r01` is regsiter 1, the *2nd* regsiter available
-
-`r0a` is register 10, the *11th* register available
-
-`r10` is register 16, the *17th* register available
+- `r01` is regsiter 1, the *2nd* regsiter available
+- `r0a` is register 10, the *11th* register available
+- `r10` is register 16, the *17th* register available
 
 As there are 256 registers available in Crawssembly, the codes range from `r00` to `rff`, since the register at 0xff is the *256th* register available
 
@@ -217,11 +231,9 @@ So the example instruction `sav 10 r01` saves the literal value `10` into regist
 
 Most registers are ready and raring to hold your numbers. But some registers do other functions. The 3 most important ones are `r00`, `ref`, and `rff`. These are the *1st*, *240th*, and *256th* registers respectively.
 
-Register 0x00: The first register is **read-only**. This means that you can look at what's inside the register, but you can't save a value to it. This is because `r00` is used for input data, such as a file or a list of numbers.
-
-Register 0xEF: This register is the **ASCII** register. Any value that is saved to this register is converted to a letter and is shown to the terminal screen. Visit [this page](https://www.asciitable.com/) to see what ASCII numbers relate to what letter.
-
-Register 0xFF: The last register is **write-only**. This means that you can save a value to the register, but you can't look at what's inside. This is because `rff` is used for the computer output, like the result of a maths problem the computer has solved.
+- Register 0x00: The first register is **read-only**. This means that you can look at what's inside the register, but you can't save a value to it. This is because `r00` is used for input data, such as a file or a list of numbers.
+- Register 0xEF: This register is the **ASCII** register. Any value that is saved to this register is converted to a letter and is shown to the terminal screen. Visit [this page](https://www.asciitable.com/) to see what ASCII numbers relate to what letter.
+- Register 0xFF: The last register is **write-only**. This means that you can save a value to the register, but you can't look at what's inside. This is because `rff` is used for the computer output, like the result of a maths problem the computer has solved.
 
 In addition, registers from `rf0` to `rfe` already contain values. These represent constants such as pi, Euler's number, some roots, and certain logarithms. There is more on these later on.
 
@@ -230,11 +242,11 @@ In addition, registers from `rf0` to `rfe` already contain values. These represe
 Because `ref` can be used to output characters to the screen, see if you can use this beginner input/output instruction to show any text you desire.
 
 ```
-sav 72 ref
-sav 101 ref
-sav 108 ref
-sav 108 ref
-sav 111 ref
+sav 72 ref	; 72 = 'H'
+sav 101 ref	; 101 = 'e'
+sav 108 ref	; 108 = 'l'
+sav 108 ref	; 108 = 'l'
+sav 111 ref	; 111 = 'o'
 ```
 
 This program shows "Hello". Try to add to this program, using [this page](https://www.asciitable.com/) as a reference, to get "Hello World!" to be shown.
@@ -260,8 +272,8 @@ Crawssembly is no exception, dynamically storing values is as easy as removing t
 Example:
 
 ```
-sav 10 r01
-sav r01 r02
+sav 10 r01	; saves 10 to register 1
+sav r01 r02	; saves value of register 1 to register 2
 ```
 
 See how the literal value in the second line was replaced by `r02`? This program saves the literal value `10` into `r01`, and the next instruction saves whatever value is in `r01` into the register `r02`.
@@ -327,7 +339,15 @@ You can imagine NOT to be like a button toggle, pressing changes the state and p
 
 #### SHIFT
 
-A **SHIFT** is a special type of 
+A **SHIFT** is a special type of operation, where it moves the bits to the left or right.
+
+Example:
+
+0b1010 shifted 1 unit to the left is 0b10100
+0b1010 shifted 1 unit to the right is 0b101
+
+#### Additional Operations
+
 
 
 
