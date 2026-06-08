@@ -160,7 +160,6 @@ High level languages tend to spoil the user with many programs, functions, and d
 
 Every photo, song, text, and piece of code is actually just a long list of 1's and 0's!
 
-
 ### How can I tell the difference?
 
 Because the number '100' could be in weird and wonderful base, it's neccessary to show what number system is being used if Base-10 has moved aside for a moment.
@@ -175,7 +174,7 @@ If you've used high-level programming languages before, you'll know that telling
 
 For example, asking your friend to get a drink from the kitchen is a simple matter, but getting a computer to do this requires you to define a drink, where the ktichen is, the precise steps needed to move to the drink's location, how to pick up the drink, the movements needed to take the drink back to you while not dropping or crushing the cup, etc...
 
-The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your skin into bread to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical: "Ambiguity kills the machine, precision keeps it running."
+The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your skin into bread to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical. The first truth about computers:  "Ambiguity kills the machine, precision keeps it running."
 
 To use Crawssembly, these practises are no different. 
 
@@ -226,11 +225,9 @@ Register 0xFF: The last register is **write-only**. This means that you can save
 
 In addition, registers from `rf0` to `rfe` already contain values. These represent constants such as pi, Euler's number, some roots, and certain logarithms. There is more on these later on.
 
-### Outputs
+### Activity: Outputs
 
 Because `ref` can be used to output characters to the screen, see if you can use this beginner input/output instruction to show any text you desire.
-
-Example:
 
 ```
 sav 72 ref
@@ -241,6 +238,120 @@ sav 111 ref
 ```
 
 This program shows "Hello". Try to add to this program, using [this page](https://www.asciitable.com/) as a reference, to get "Hello World!" to be shown.
+
+### More about 'literals'
+
+Literals in Crawssembly can be positive or negative, however they can only be between -128 and 127.
+
+Why these values? Because, of course, binary.
+
+Like other assembly languages, every possible instruction is encoded as a binary number. In Crawssembly's case, each instruction is 21 numbers, or **bits**.
+Because each line has this fixed size, literal values can only be so high. The literal in a `sav` command is given 8 bits, also known as a **byte**.
+
+More details about how Crawssembly encodes data will be explained in later sections.
+
+### More about `sav`
+
+One of the best things about computers is one that often goes unnoticed; dynamicity. A vast amount of tasks would be nigh on impossible if the machines of the modern world were to become entirely hard-coded.
+If you hardcoded everything, then there would be little point for computing languages, logical abstraction, and computers as a whole. If you know the result, why build a machine to express the program?
+
+Crawssembly is no exception, dynamically storing values is as easy as removing the literal value in-place for another register
+
+Example:
+
+```
+sav 10 r01
+sav r01 r02
+```
+
+See how the literal value in the second line was replaced by `r02`? This program saves the literal value `10` into `r01`, and the next instruction saves whatever value is in `r01` into the register `r02`.
+The computer has no clue what `r01` actually contains, just that it should copy whatever may be inside `r01` into `r02`. This reveals another key truth about computers; "The machine is blind."
+
+## Maths
+
+Any good programmer must have a good mathematical brain, computers are large heaps of silicon held together by electricity and maths. Just as a hardware engineer needs to know about the electron, the software programmer needs to know about **bitwise operations**
+
+Because of the binary representation of values, they can be manipulated in many ways to acheive a result.
+
+### Boolean Logic
+
+A **boolean** is a fancy name for something that is either in one particular state or another particular state, very similar to the binary On or Off.
+Because of a boolean's nature, you can use a type of maths called **bitwise operations**.
+
+There are 4 core operations used:
+
+- AND
+- OR
+- NOT
+- SHIFT
+
+From these, all of computing can be derived. Apart from SHIFT, these are all examples of **Logic Gates**
+
+#### AND
+
+The **AND** operator takes 2 inputs, and returns a single output.
+If both inputs are *On*, then the output is *On*. Else AND outputs *Off*.
+
+| A | B | Out |
+| - | - | --- |
+| Off | Off | Off |
+| Off | On | Off |
+| On | Off | Off |
+| On | On | On |
+
+You can image AND to be like a padlock that needs 2 keys to open.
+
+#### OR
+
+The **OR** operator is like AND, but it only needs 1 input to be *On* to also return *On*.
+
+| A | B | Out |
+| - | - | --- |
+| Off | Off | Off |
+| Off | On | On |
+| On | Off | On |
+| On | On | On |
+
+You can imagine OR to be like a bulb connected to two light switches, flipping either one will turn on the light.
+
+#### NOT
+
+The **NOT** operator takes only 1 input, and reverses it. *On* outputs *Off*, and *Off* outputs *On*.
+
+| A | Out |
+| - | --- |
+| Off | On |
+| On | Off |
+
+You can imagine NOT to be like a button toggle, pressing changes the state and pressing again returns to the original state.
+
+#### SHIFT
+
+A **SHIFT** is a special type of 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
