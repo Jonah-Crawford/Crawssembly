@@ -23,13 +23,21 @@ The goal is to help you understand what high-level languages are really doing be
 By the end of this guide you will understand:
 
 ✓ Binary and hexadecimal
+
 ✓ Registers
+
 ✓ Memory
+
 ✓ Variables
+
 ✓ Arithmetic
+
 ✓ Program flow
+
 ✓ Input and output
+
 ✓ How high-level languages work underneath
+
 ✓ The fundamentals of CPU architecture
 
 ## Assembly; What's the deal?
@@ -71,7 +79,7 @@ It's clear that place value works in 10's, the number '8' could represent 8 1's,
 
 | Place Value | 10 000 | 1 000 | 100 | 10 | 1 |
 | ----------- | ------ | ----- | --- | -- | - |
-|   Number    |        |   3   |  0  |  7 | 2 |
+|   Number    |    8   |   3   |  0  |  7 | 2 |
 
 The example above shows how the number 83072 is equal to
 
