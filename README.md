@@ -1,4 +1,4 @@
-# Crawssembly: A beginner entry-point to Assembly Languages
+# Crawssembly: A beginner entry-point to assembly languages
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
@@ -41,7 +41,7 @@ cargo install --path .
 
 To run a Crawssembly file (These are `.craw` files), simply run `craw <file.craw>` and swap `<file.craw>` with the name of the Crawssembly file you wish to edit.
 
-> Unless stated otherwise
+Use `craw --help` to display helpful use information
 
 ### What will I learn?
 
@@ -395,7 +395,7 @@ You can imagine the XOR gate as an odd-number detector, it only likes an odd num
 
 By wiring up these operations, you can also add numbers together, this is denoted as ADD.
 
-#### Use
+#### How to use
 
 Calculation using these operations uses the `cal` instruction. All `cal` results get saved to register 1 (`r01`).
 
@@ -403,7 +403,7 @@ Example:
 
 ```
 sav 10 r01	; saves 10 into register 1
-cal add 5 r01	; adds 5 to value in register 1
+cal add 5 r01	; adds 5 to the value in register 1
 ```
 
 This example adds `10` to `5`, resulting in `r01` having a value of `15`
@@ -411,17 +411,33 @@ This example adds `10` to `5`, resulting in `r01` having a value of `15`
 Because of the nature of commands, the first value can be a register or literal, but the second vaule **must** be a register value. `cal add 1 1` would not work. This is why in the example, `10` must be saved to a register.
 More information will be given for why this is the case later on.
 
+Like `sav`, the first value can be swapped for a register code.
 
+Example:
 
+```
+sav 10 r01		; saves 10 to register 1
+sav 20 r02		; saves 20 to register 2
+cal xor r01 r02		; XORs 10 and 20, result saves to r01
+```
 
+#### Activity: Addition
 
+```
+sav 50 r01
+```
 
+Add to this program to triple the value, `50`, stored in `r01`.
 
+#### Advanced Activity: Bit Masking
 
+```
+sav 12 r01
+```
 
+Add to this program to get the last 2 bits of the value, `12`, stored in `r01`.
 
-
-
+> Hint: Use of `cal and 1 r01` can extact the last bit in r01
 
 
 
