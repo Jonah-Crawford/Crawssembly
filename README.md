@@ -199,9 +199,19 @@ This example has 3 parts:
 - `r01`
 
 `sav` is the **save** command. It 'Saves A Value' to a register.
+
 `10` is the value that we are saving. We call this value a **literal**, since we have explicitly told Crawssembly what value to save.
 
+`r01` is a register. Every register has a code like this, with the register number in **Hexadecimal**. Registers are indexed **starting at 0**, so the first register is actually `r00`, because the codes start at 0.
 
+**Example register codes**
+#### Example register codes
+
+`r01` is regsiter 1, the **second** regsiter available
+
+`r0a` is register 10, the *eleventh* register available
+
+`r10` is register 16, the **seventeenth** register available
 
 
 
