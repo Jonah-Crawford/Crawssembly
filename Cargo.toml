@@ -11,3 +11,7 @@ sysinfo = "0.37"
 
 [profile.release]
 debug = false
+
+[[bin]]
+name = "craw"
+path = "src/main.rs"
