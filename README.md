@@ -16,7 +16,7 @@ Crawssembly removes much of the complexity while preserving the core ideas:
 
 The goal is to help you understand what high-level languages are really doing behind the scenes.
 
-> Don't worry if some of the concepts in this guide seem unfamiliar at first. Computers are suprisingly simple once you break them into smaller pieces, and we'll build up the ideas one step at a time.
+> Don't worry if some of the concepts in this guide seem unfamiliar at first. Computers are surprisingly simple once you break them into smaller pieces, and we'll build up the ideas one step at a time.
 
 ### What will I learn?
 
@@ -42,7 +42,7 @@ By the end of this guide you will understand:
 
 ## Assembly; What's the deal?
 
-Computers are an amazing product of the information age. Billions of computers are running around the world all doing imporant, or not-so-important, tasks. But how do the computers know what to do?
+Computers are an amazing product of the information age. Billions of computers are running around the world all doing important, or not-so-important, tasks. But how do the computers know what to do?
 Programming languages are used to tell the computer how to work, but the issue is that there are so many to choose from. There's around **8 000** different languages to speak to the device!
 How can computers keep up with the different syntax, styles, and methods? The secret? All languages basically boil down to a single language, Machine Code.
 
@@ -58,11 +58,11 @@ For those who don't know what binary is, this guide go through the basics, but f
 
 ### What is Binary?
 
-Binary, simply, is just another way to use numbers. We humans use the Base-10 (A.K.A Decimal) system, meaning that we have 10 seperate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
+Binary, simply, is just another way to use numbers. We humans use the Base-10 (A.K.A Decimal) system, meaning that we have 10 separate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
 
-At their core, computers are a bunch of transistors, very small switches that can only be in two states; On or Off. This is because two-state switches are very realiable and can change state quickly.
+At their core, computers are a bunch of transistors, very small switches that can only be in two states; On or Off. This is because two-state switches are very reliable and can change state quickly.
 
-Think about a car's gearstick, it would be easier to use if there were only 2 gears rather than the 6 or more in reality.
+Think about a car's gear stick, it would be easier to use if there were only 2 gears rather than the 6 or more in reality.
 
 ### How does binary get used?
 It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
