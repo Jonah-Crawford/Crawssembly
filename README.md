@@ -202,16 +202,48 @@ This example has 3 parts:
 
 `10` is the value that we are saving. We call this value a **literal**, since we have explicitly told Crawssembly what value to save.
 
-`r01` is a register. Every register has a code like this, with the register number in **Hexadecimal**. Registers are indexed **starting at 0**, so the first register is actually `r00`, because the codes start at 0.
+`r01` is a register. Every register has a code like this, with the register number in **Hexadecimal**. Registers are indexed **starting at 0**, so the first register is actually `r00`, because the codes start at 0. This *0 indexing* is commonplace in programming, and a usual stumbling block for beginners.
 
-**Example register codes**
-#### Example register codes
+Register codes include:
 
-`r01` is regsiter 1, the **second** regsiter available
+`r01` is regsiter 1, the *2nd* regsiter available
 
-`r0a` is register 10, the *eleventh* register available
+`r0a` is register 10, the *11th* register available
 
-`r10` is register 16, the **seventeenth** register available
+`r10` is register 16, the *17th* register available
+
+As there are 256 registers available in Crawssembly, the codes range from `r00` to `rff`, since the register at 0xff is the *256th* register available
+
+So the example instruction `sav 10 r01` saves the literal value `10` into register 1, which is the *2nd* register available.
+
+Most registers are ready and raring to hold your numbers. But some registers do other functions. The 3 most important ones are `r00`, `ref`, and `rff`. These are the *1st*, *240th*, and *256th* registers respectively.
+
+Register 0x00: The first register is **read-only**. This means that you can look at what's inside the register, but you can't save a value to it. This is because `r00` is used for input data, such as a file or a list of numbers.
+
+Register 0xEF: This register is the **ASCII** register. Any value that is saved to this register is converted to a letter and is shown to the terminal screen. Visit [this page](https://www.asciitable.com/) to see what ASCII numbers relate to what letter.
+
+Register 0xFF: The last register is **write-only**. This means that you can save a value to the register, but you can't look at what's inside. This is because `rff` is used for the computer output, like the result of a maths problem the computer has solved.
+
+In addition, registers from `rf0` to `rfe` already contain values. These represent constants such as pi, Euler's number, some roots, and certain logarithms. There is more on these later on.
+
+### Outputs
+
+Because `ref` can be used to output characters to the screen, see if you can use this beginner input/output instruction to show any text you desire.
+
+Example:
+
+```
+sav 72 ref
+sav 101 ref
+sav 108 ref
+sav 108 ref
+sav 111 ref
+```
+
+This program shows "Hello". Try to add to this program, using [this page](https://www.asciitable.com/) as a reference, to get "Hello World!" to be shown.
+
+
+
 
 
 
