@@ -59,7 +59,7 @@ fn main() {
         std::process::exit(1);
       };
 
-      if let Err(e) = assemble_file(input_path, "program.bin", dump, dump_decoded) {
+      if let Err(e) = assemble_file(&input_path, "program.bin", dump, dump_decoded) {
         eprintln!("{e}");
         std::process::exit(1);
       }
@@ -69,7 +69,7 @@ fn main() {
       let input_path = positional_after(&args, "run");
 
       if let Some(path) = input_path {
-        if let Err(e) = assemble_file(path, "program.bin", dump, dump_decoded) {
+        if let Err(e) = assemble_file(&path, "program.bin", dump, dump_decoded) {
           eprintln!("{e}");
           std::process::exit(1);
         }
@@ -88,7 +88,7 @@ fn main() {
         std::process::exit(1);
       };
 
-      if let Err(e) = assemble_file(input_path, "program.bin", dump, dump_decoded) {
+      if let Err(e) = assemble_file(&input_path, "program.bin", dump, dump_decoded) {
         eprintln!("{e}");
         std::process::exit(1);
       }
@@ -106,7 +106,7 @@ fn main() {
         std::process::exit(1);
       };
 
-      if let Err(e) = check_file(input_path, dump, dump_decoded) {
+      if let Err(e) = check_file(&input_path, dump, dump_decoded) {
         eprintln!("{e}");
         std::process::exit(1);
       }
