@@ -24,6 +24,13 @@ The goal is to help you understand what high-level languages are really doing be
 
 > Present versions have only been tested on Linux systems. Errors are likely if you are not using a Linux OS.
 
+If you don't have Rust installed, download it by running these commands
+
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
+```
+
 To install Crawssembly, run these commands
 
 ```
@@ -33,6 +40,8 @@ cargo install --path .
 ```
 
 To run a Crawssembly file (These are `.craw` files), simply run `craw <file.craw>` and swap `<file.craw>` with the name of the Crawssembly file you wish to edit.
+
+> Unless stated otherwise
 
 ### What will I learn?
 
