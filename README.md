@@ -18,6 +18,8 @@ The goal is to help you understand what high-level languages are really doing be
 
 > Don't worry if some of the concepts in this guide seem unfamiliar at first. Computers are surprisingly simple once you break them into smaller pieces, and we'll build up the ideas one step at a time.
 
+> Because Crawssembly assumes near-zero knowledge, there might be concepts you already know. Feel free to skip over them if you are familar with anything shown!
+
 ### What will I learn?
 
 By the end of this guide you will understand:
@@ -187,7 +189,7 @@ If you've used high-level programming languages before, you'll know that telling
 
 For example, asking your friend to get a drink from the kitchen is a simple matter, but getting a computer to do this requires you to define a drink, where the ktichen is, the precise steps needed to move to the drink's location, how to pick up the drink, the movements needed to take the drink back to you while not dropping or crushing the cup, etc...
 
-The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your skin into bread to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical. The first truth about computers:  "Ambiguity kills the machine, precision keeps it running."
+The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your hair into cheese, to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical. The first truth about computers:  "Ambiguity kills the machine, precision keeps it running."
 
 To use Crawssembly, these practises are no different. 
 
@@ -292,12 +294,23 @@ Because of a boolean's nature, you can use a type of maths called **bitwise oper
 
 There are 4 core operations used:
 
+- NOT
 - AND
 - OR
-- NOT
 - SHIFT
 
 From these, all of computing can be derived. Apart from SHIFT, these are all examples of **Logic Gates**
+
+#### NOT
+
+The **NOT** operator takes 1 input, and reverses it. *On* outputs *Off*, and *Off* outputs *On*.
+
+| A | Out |
+| - | --- |
+| Off | On |
+| On | Off |
+
+You can imagine NOT to be like a button toggle, pressing changes the state and pressing again returns to the original state.
 
 #### AND
 
@@ -326,17 +339,6 @@ The **OR** operator is like AND, but it only needs 1 input to be *On* to also re
 
 You can imagine OR to be like a bulb connected to two light switches, flipping either one will turn on the light.
 
-#### NOT
-
-The **NOT** operator takes only 1 input, and reverses it. *On* outputs *Off*, and *Off* outputs *On*.
-
-| A | Out |
-| - | --- |
-| Off | On |
-| On | Off |
-
-You can imagine NOT to be like a button toggle, pressing changes the state and pressing again returns to the original state.
-
 #### SHIFT
 
 A **SHIFT** is a special type of operation, where it moves the bits to the left or right.
@@ -346,18 +348,45 @@ Example:
 0b1010 shifted 1 unit to the left is 0b10100
 0b1010 shifted 1 unit to the right is 0b101
 
+SHIFT is split into 3 subcatagories:
+- Logical Shift Left (SHL)
+- Logical Shift Right (SHR)
+- Arithmetic Shift Right (SAR)
+
+Because the sign of numbers is stored in the last bit of the binary numbers, shifting to the right can change the sign chaotically. Arithmetic Shift Right preserves the sign of the number.
+
 #### Additional Operations
 
+Using a combination of ANDs, ORs, and NOTs, another important operation called **XOR** can be used.
 
+XOR is very similar to OR, but it needs **exactly** 1 input to be *On* for the output to be *On*, else the output will be *Off*.
 
+| A | B | Out |
+| - | - | --- |
+| Off | Off | Off |
+| Off | On | On |
+| On | Off | On |
+| On | On | Off |
 
+You can imagine the XOR gate as an odd-number detector, it only likes an odd number of *On* values.
 
+By wiring up these operations, you can also add numbers together, this is denoted as ADD.
 
+#### Use
 
+Calculation using these operations uses the `cal` instruction. All `cal` results get saved to register 1 (`r01`).
 
+Example:
 
+```
+sav 10 r01	; saves 10 into register 1
+cal add 5 r01	; adds 5 to value in register 1
+```
 
+This example adds `10` to `5`, resulting in `r01` having a value of `15`
 
+Because of the nature of commands, the first value can be a register or literal, but the second vaule **must** be a register value. `cal add 1 1` would not work. This is why in the example, `10` must be saved to a register.
+More information will be given for why this is the case later on.
 
 
 
