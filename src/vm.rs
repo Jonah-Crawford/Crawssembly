@@ -66,7 +66,7 @@ pub fn run_vm() -> Result<(), String> {
 
   let (speed, input_list, looped) = startup()?;
 
-  let mut cpu = Cpu::new();
+  let mut cpu = Cpu::new(true);
   cpu.execute_interactive(&decoded, speed, &input_list, looped, false, true);
 
   Ok(())
@@ -75,6 +75,7 @@ pub fn run_vm() -> Result<(), String> {
 pub fn run_vm_with_options(
   program_path: &str,
   plain: bool,
+  audio: bool,
   speed: i32,
   input_list: Vec<i32>,
   looped: bool,
@@ -89,7 +90,7 @@ pub fn run_vm_with_options(
     return Ok(());
   }
 
-  let mut cpu = Cpu::new();
+  let mut cpu = Cpu::new(audio);
   cpu.execute_interactive(&decoded, speed, &input_list, looped, plain, show_stats);
 
   Ok(())
@@ -112,7 +113,7 @@ fn parse_bench_iters(args: &[String]) -> Option<u64> {
 }
 
 fn run_bench(program: &[Decoded], iters: u64) {
-  let mut cpu = Cpu::new();
+  let mut cpu = Cpu::new(false);
 
   let mut sys = System::new_all();
   sys.refresh_cpu_all();
@@ -640,7 +641,7 @@ struct Cpu {
 }
 
 impl Cpu {
-  fn new() -> Self {
+  fn new(audio_enabled: bool) -> Self {
     let mut regs = [0i32; 256];
 
     regs[0xF0] = 314159265;
@@ -663,13 +664,13 @@ impl Cpu {
 
     let speech_samples = Arc::new(Mutex::new(VecDeque::new()));
 
-    let audio = match start_audio(Arc::clone(&speakers), Arc::clone(&speech_samples)) {
-      Ok(handle) => {
-        Some(handle)
+    let audio = if audio_enabled {
+      match start_audio(Arc::clone(&speakers), Arc::clone(&speech_samples)) {
+        Ok(handle) => Some(handle),
+        Err(_err) => None,
       }
-      Err(_err) => {
-        None
-      }
+    } else {
+      None
     };
 
     Self {
@@ -1205,12 +1206,13 @@ impl Cpu {
       );
     }
 
+    println!();
+
     if show_stats {
       let hz = if dt > 0.0 { (tick as f64) / dt } else { 0.0 };
       let ns_per = if tick > 0 { (dt * 1e9) / (tick as f64) } else { 0.0 };
       let cycles_per_instruction = if hz > 0.0 { cpu_hz / hz } else { 0.0 };
 
-      println!();
       println!("Done: ticks={} time={:.10}s 0xFF={}", tick, dt, self.regs[0xFF]);
       println!("Clock speed was revealed to be {:.3} Hz = ~{:.3} MHz", hz, hz / 1_000_000.0);
       println!("~{:.3} ns / instruction", ns_per);

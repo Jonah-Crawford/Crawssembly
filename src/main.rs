@@ -42,6 +42,7 @@ fn main() {
   let dump_decoded = args.iter().any(|a| a == "--dump-decoded");
   let debug = args.iter().any(|a| a == "--debug");
   let plain = !args.iter().any(|a| a == "--tui");
+  let audio = args.iter().any(|a| a == "--audio");
   let show_stats = debug || args.iter().any(|a| a == "--stats");
 
   let command = args
@@ -58,7 +59,7 @@ fn main() {
         std::process::exit(1);
       };
 
-      if let Err(e) = assemble_file(&input_path, "program.bin", dump, dump_decoded) {
+      if let Err(e) = assemble_file(input_path, "program.bin", dump, dump_decoded) {
         eprintln!("{e}");
         std::process::exit(1);
       }
@@ -68,13 +69,13 @@ fn main() {
       let input_path = positional_after(&args, "run");
 
       if let Some(path) = input_path {
-        if let Err(e) = assemble_file(&path, "program.bin", dump, dump_decoded) {
+        if let Err(e) = assemble_file(path, "program.bin", dump, dump_decoded) {
           eprintln!("{e}");
           std::process::exit(1);
         }
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, -1, vec![0], true, show_stats) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, show_stats) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -87,12 +88,12 @@ fn main() {
         std::process::exit(1);
       };
 
-      if let Err(e) = assemble_file(&input_path, "program.bin", dump, dump_decoded) {
+      if let Err(e) = assemble_file(input_path, "program.bin", dump, dump_decoded) {
         eprintln!("{e}");
         std::process::exit(1);
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, -1, vec![0], true, true) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, true) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -105,19 +106,19 @@ fn main() {
         std::process::exit(1);
       };
 
-      if let Err(e) = check_file(&input_path, dump, dump_decoded) {
+      if let Err(e) = check_file(input_path, dump, dump_decoded) {
         eprintln!("{e}");
         std::process::exit(1);
       }
     }
 
     Some(path) => {
-      if let Err(e) = assemble_file(&path, "program.bin", dump, dump_decoded) {
+      if let Err(e) = assemble_file(path, "program.bin", dump, dump_decoded) {
         eprintln!("{e}");
         std::process::exit(1);
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, -1, vec![0], true, show_stats) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, show_stats) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -212,6 +213,7 @@ fn print_help() {
   println!("  --dump-decoded                Show decoded instruction fields with --dump");
   println!("  --stats                       Show VM speed/tick statistics after running");
   println!("  --tui                         Use alternate-screen terminal mode");
+  println!("  --audio                       Enable speaker/speech audio output");
   println!("  --decode                      Open the instruction decoder");
   println!("  --help                        Show this help message");
   println!();
