@@ -2,18 +2,9 @@
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
-## Assembly; What's the deal?
-
-Computers are an amazing product of the information age. Billions of computers are running around the world all doing imporant, or not-so-important, tasks. But how do the computers know what to do?
-Programming languages are used to tell the computer how to work, but the issue is that there are so many to choose from. There's around 8 000 different languages to speak to the device! How can computers keep up with the different syntax, styles, and methods? The secret? All languages basically boil down to a single language, Machine Code.
-
-Machine code is the raw binary that the computer executes. Assembly is the language that represents machine code. A line of assembly equals a line of machine code, compared to a 'higher' language where a line could equal upwards of thousands of lines.
-
-Learning assembly is a great way to internalise how computers work, as by learning assembly you learn how a computer 'thinks'. 
-
 ## Why does Crawssembly exist?
 
-Crawssembly is an educational assembly-like language designed to teach how computers work from the ground up.
+**Crawssembly** is an educational assembly-like language designed to teach how computers work from the ground up.
 
 Traditional assembly languages such as x86 and ARM are powerful, but often overwhelming for beginners.
 Crawssembly removes much of the complexity while preserving the core ideas:
@@ -24,6 +15,33 @@ Crawssembly removes much of the complexity while preserving the core ideas:
 - Input and Output
 
 The goal is to help you understand what high-level languages are really doing behind the scenes.
+
+> Don't worry if some of the concepts in this guide seem unfamiliar at first. Computers are suprisingly simple once you break them into smaller pieces, and we'll build up the ideas one step at a time.
+
+### What will I learn?
+
+By the end of this guide you will understand:
+
+✓ Binary and hexadecimal
+✓ Registers
+✓ Memory
+✓ Variables
+✓ Arithmetic
+✓ Program flow
+✓ Input and output
+✓ How high-level languages work underneath
+✓ The fundamentals of CPU architecture
+
+## Assembly; What's the deal?
+
+Computers are an amazing product of the information age. Billions of computers are running around the world all doing imporant, or not-so-important, tasks. But how do the computers know what to do?
+Programming languages are used to tell the computer how to work, but the issue is that there are so many to choose from. There's around **8 000** different languages to speak to the device!
+How can computers keep up with the different syntax, styles, and methods? The secret? All languages basically boil down to a single language, Machine Code.
+
+**Machine code** is the raw binary that the computer executes. **Assembly languages** are human-readable representations of this machine code.
+In many assembly languages, including crawssembly, a single instruction usually corresponds closely to a machine code instruction, compared to a 'higher' language where a line could equal upwards of thousands of lines.
+
+Learning assembly is a great way to internalise how computers work, as by learning assembly you learn how a computer 'thinks'. 
 
 ## Binary
 
@@ -53,7 +71,7 @@ It's clear that place value works in 10's, the number '8' could represent 8 1's,
 
 | Place Value | 10 000 | 1 000 | 100 | 10 | 1 |
 | ----------- | ------ | ----- | --- | -- | - |
-|   Number    |   8    |   3   |  0  | 7  | 2 |
+|   Number    |        |   3   |  0  |  7 | 2 |
 
 The example above shows how the number 83072 is equal to
 
@@ -67,13 +85,13 @@ The example above shows how the number 83072 is equal to
 
 2 * 1
 
-For binary, only 2 digits are used. These are 0 for 'Off', and 1 for 'On'. Because only 2 symbols are used, place value works based on 2, not 10.
+For binary, only **2 digits** are used. These are 0 for 'Off', and 1 for 'On'. Because only 2 symbols are used, place value works based on 2, not 10.
 
 So a '1' could represent 1 1's, 1 2's, 1 4's, 1 8's, 1 16's, etc... depending on where it is in the number.
 
 | Place Value | 16 | 8 | 4 | 2 | 1 |
 | ----------- | -- | - | - | - | - |
-|   Binary    | 1  | 0 | 1 | 1 | 0 |
+|   Binary    |  1 | 0 | 1 | 1 | 0 |
 
 We can see that the binary number 10110 is the same as
 
@@ -87,17 +105,17 @@ We can see that the binary number 10110 is the same as
 
 0 * 1
 
-Which, when calcualted, equals 22. So 10110 in binary is the exact same as 22 in Base-10
+Which, when calcualted, equals 22. So 10110 in binary is the exact same as 22 in Base-10. Every number that can be made in Base-10, can be made in Base-2. There are no gaps.
 
 ### Other Number Systems
 
-Another counting system regually used is Hexadecimal, or Base-16. Because we only have 10 numbers, the letters A-F are also used. A = 11, B = 12, C = 13, etc...
+Another counting system regually used is **Hexadecimal**, also called  Base-16. Because we only have 10 numbers, the letters A-F are also used. A = 10, B = 11, C = 12, etc...
 
 | Place Value | 256 | 16 | 1 |
 | ----------- | --- | -- | - |
-| Hexadecimal |  A  |  3 | F |
+| Hexadecimal |  B  |  3 | F |
 
-A3F =
+B3F =
 
 11 * 256 + 
 
@@ -141,10 +159,9 @@ Because the number '100' could be in weird and wonderful base, it's neccessary t
 
 If the number is in binary, it's usually prefaced with '0b', so if you saw '0b100' then you can be sure that's binary, equal to 4 in Base-10. If you see '0x', that's hexadecimal. So '0x100' would be 256 in Base-10.
 
-
 ## The Basics
 
-> A small warning before beginning; Because assembly works directly with the computer's processor, you can easily break something if working alongside important data, such as an Operating System like Windows. For this reason, Crawssembly is kept within reasonable hardware limits. Removing these limits, while condoned in the name of learning and curiosity, should only be done if you are confident that your programs won't overwrite data that really shouldn't be overwritten.
+> Real assembly languages can interact directly with hardware and operating systems. Mistakes can sometimes crash software or corrupt data. Crawssembly runs inside a virtual machine, allowing you to experiment safely while still learning the same fundamental concepts.
 
 If you've used high-level programming languages before, you'll know that telling a computer how to work is quite different than telling another person what to do.
 
@@ -152,20 +169,29 @@ For example, asking your friend to get a drink from the kitchen is a simple matt
 
 The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your skin into bread to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical: "Ambiguity kills the machine, precision keeps it running."
 
+To use Crawssembly, these practises are no different. 
+
+### Instructions
+
+Every line of Crawssembly is a dedicated instruction. Every line is executed one after another in the exact order the program is written in. The computer reads each line, converts the instruction into a binary number, and executes the command. This is the **Fetch-Decode-Execute** loop, the fundemental process of the computer's Central Processing Unit (CPU)
+
 ### Registers
 
-The most basic instruction is storing data, which is stored as numbers, which is stored in cells. Each storage cell, which is called a register, holds a value, much like a variable in a higher language.
+The most basic instruction is storing data, which is stored as numbers, which is stored in cells. Each storage cell, which is called a **register**, holds a value, much like a variable in a higher language.
 
-Crawssembly provides 256 registers for quick storage
+Crawssembly provides 256 registers for quick storage, most of which can be used to store data. Here is an example of how to save data to one of these registers:
 
+```
+sav 10 r01
+```
 
+This example has 3 parts:
+- `sav`
+- `10`
+- `r01`
 
-
-
-
-
-
-
+`sav` is the **save** command. It 'Saves A Value' to a register.
+`10` is the value that we are saving. We call this value a **literal**, since we have explicitly told Crawssembly what value to save.
 
 
 
