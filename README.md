@@ -41,14 +41,14 @@ The goal is to help you understand what high-level languages are really doing be
 
 > Present versions have been confirmed to work on Linux and Windows. Mac OS has not been tested, errors may occur.
 
-If you don't have Rust installed, download it by running these commands
+If you don't have Rust installed, download it by running these commands:
 
 ```
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
 ```
 
-To install Crawssembly, run these commands
+To install Crawssembly, run these commands:
 
 ```
 git clone https://github.com/Jonah-Crawford/Crawssembly.git
@@ -58,7 +58,7 @@ cargo install --path .
 
 To run a Crawssembly file (These are `.craw` files), simply run `craw <file.craw>` and swap `<file.craw>` with the name of the Crawssembly file you wish to edit.
 
-Use `craw --help` to display helpful use information
+Use `craw --help` to display helpful use information.
 
 ## Your First Program
 
