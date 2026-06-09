@@ -261,7 +261,8 @@ Crawssembly provides 256 registers for quick storage, most of which can be used 
 Example
 
 ```
-sav 10 r01 ; this saves '10' to register 1
+
+sav 10 r01      ; this saves '10' to register 1
 stp
 ```
 
@@ -305,11 +306,11 @@ In addition, registers from `rf0` to `rfe` already contain values. These represe
 Because `ref` can be used to output characters to the screen, see if you can use this beginner input/output instruction to show any text you desire.
 
 ```
-sav 72 ref	; 72 = 'H'
-sav 101 ref	; 101 = 'e'
-sav 108 ref	; 108 = 'l'
-sav 108 ref	; 108 = 'l'
-sav 111 ref	; 111 = 'o'
+sav 72 ref      ; 72 = 'H'
+sav 101 ref     ; 101 = 'e'
+sav 108 ref     ; 108 = 'l'
+sav 108 ref     ; 108 = 'l'
+sav 111 ref     ; 111 = 'o'
 ```
 
 This program shows "Hello". Try to add to this program, using [this page](https://www.asciitable.com/) as a reference, to get "Hello World!" to be shown.
@@ -335,8 +336,8 @@ Crawssembly is no exception, dynamically storing values is as easy as removing t
 Example
 
 ```
-sav 10 r01	; saves 10 to register 1
-sav r01 r02	; saves value of register 1 to register 2
+sav 10 r01              ; saves 10 to register 1
+sav r01 r02             ; saves value of register 1 to register 2
 ```
 
 See how the literal value in the second line was replaced by `r02`? This program saves the literal value `10` into `r01`, and the next instruction saves whatever value is in `r01` into the register `r02`.
@@ -440,8 +441,8 @@ Calculation using these operations uses the `cal` instruction. All `cal` results
 Example
 
 ```
-sav 10 r01	; saves 10 into register 1
-cal add 5 r01	; adds 5 to the value in register 1
+sav 10 r01              ; saves 10 into register 1
+cal add 5 r01           ; adds 5 to the value in register 1
 ```
 
 This example adds `10` to `5`, resulting in `r01` having a value of `15`
@@ -454,9 +455,10 @@ Like `sav`, the first value can be swapped for a register code.
 Example
 
 ```
-sav 10 r01	; saves 10 to register 1
-sav 20 r02	; saves 20 to register 2
-cal xor r01 r02	; XORs 10 and 20, result saves to r01
+sav 10 r01              ; saves 10 to register 1
+sav 20 r02              ; saves 20 to register 2
+
+cal xor r01 r02         ; XORs 10 and 20, result saves to r01
 ```
 
 ### Activity: Addition
@@ -467,15 +469,13 @@ sav 50 r01
 
 Add to this program to triple the value, `50`, stored in `r01`.
 
-### Advanced Activity: Bit Masking
+Feel free to add outputs to your programs to test if your program works.
 
-```
-sav 12 r01
-```
+### Advanced Activity: Doubling
 
-Add to this program to get the last 2 bits of the value, `12`, stored in `r01`.
+**Without using `cal add`**, write a program to double a number.
 
-> Hint: Use of `cal and 1 r01` can extact the last bit in r01, use this to help you!
+> Hint: Multiplying numbers by 10 is easy, just add a 0 to the end. What is the parallel to binary?
 
 ## Loops
 
@@ -504,8 +504,8 @@ Loop labels
 Example
 
 ```
-1	; creates the label '1' pointing to the first instruction
-10	; creates the label '10' pointing to the second instruction
+1       ; creates the label '1' pointing to the first instruction
+10      ; creates the label '10' pointing to the second instruction
 ```
 
 Remember that annoying immediate limit from `sav` and `cal`? With labels the range is bigger, since negative numbers arn't used and the entire instuction is just the number.
@@ -531,6 +531,20 @@ Example
 
 It's much easier to see that the label `10000` points to line `7` with line numbers! And for longer programs, a must.
 
+### Removing Labels
+
+To remove a label pointer, use `rmv`.
+
+Example
+
+```
+1	10              ; label 10 points to line 1
+2	20              ; label 20 points to line 2
+3
+4	rmv 10          ; removes label 10
+5	10              ; label 10 now points to line 5
+```
+
 ### Jumping
 
 So you've got a label pointing to a line you want to execute many times. How do you get it to run again?
@@ -540,11 +554,11 @@ Simply use the **jump** command `jmp`, followed by the pointer label.
 Example
 
 ```
-1	sav 10 r01	; saves literal value 10 into register 1
-2	1		; creates a label, pointing to line 2
-3	cal add 1 r01	; adds 1 to value inside register 1, saving it to register 1
-4	jmp 1		; jumps to the line number that label 1 is pointing to (i.e. line 2)
-5	stp	; end the program
+1	sav 10 r01      ; saves literal value 10 into register 1
+2	1               ; creates a label, pointing to line 2
+3	cal add 1 r01   ; adds 1 to value inside register 1, saving it to register 1
+4	jmp 1           ; jumps to the line number that label 1 is pointing to (i.e. line 2)
+5	stp             ; end the program
 ```
 
 This program adds increases the value in `r01`, being `10` in this example, every loop. This program is an example of an **infinate loop**, it will never reach the `stp` command.
@@ -565,10 +579,10 @@ There are 3 conditional jump commands:
 Example
 
 ```
-1	sav 5 r01	; Saves 5 to register 1
-2	1	; creates a label pointer to line 2
-3	jmg 1	; if register 1 holds a >0 value, jump
-4	stp	; the program stops
+1	sav 5 r01       ; saves the value '5' into register 1
+2	1               ; creates a label pointer to line 2
+3	jmg 1           ; if register 1 holds a >0 value, jump
+4	stp             ; the program stops
 ```
 
 Above is another example of an **infinite loop**, but the loop is only entered if the starting value in `r01` is greater than zero, thanks to the `jmg` command.
@@ -576,15 +590,15 @@ Above is another example of an **infinite loop**, but the loop is only entered i
 Example
 
 ```
-1	sav 10 r02	; saves 10 to register 2, used as the 'loop count' value
-2	sav 0 r03	; '0' here is the starting value of the 'increment' vaule
-3	1	; creats a label pointing to line 3
-4	sav r01 r02	; updates 'loop count' value
-5	cal add 1 r03	; increases the 'increment' value
-6	sav r01 r03	; saves the new 'increment' value to register 3
-7	cal add -1 r02	; decreases the 'loop count' to show another loop happened
-8	jmg 1	; if 'loop count' equals 0, stop the loop
-9	stp	; end the program
+1	sav 10 r02
+2	sav 0 r03
+3	1
+4	cal add 1 r03
+5	sav r01 r03
+6	cal add -1 r02
+7	sav r01 r02
+8	jmg 1
+9	stp
 ```
 
 Let's read through each line in detail:
@@ -592,12 +606,121 @@ Let's read through each line in detail:
 1. `sav 10 r02`: This saves the literal value `10` into register 2. This value is used for the number of times the loop will run. In this case, 10 times.
 2. `sav 0 r03`: This is the initial value of the 'increment' register. This value is increased by `1` every loop cycle.
 3. `1`: This is the loop label, it points to line 3.
-4. `sav r01 r02`: This line takes the last calculation result (this would be line `7` once executed) and saves it to `r02`, where the loop count is stored.
-5. `cal add 1 r03`: This adds `1` to the value inside `r03`, that being the 'increment' value.
-6. `sav r01 r03`: This saves the +1 calculation step back into `r03`.
-7. `cal add -1 r02`: This minuses `1` from the loop count, indicating that a loop has taken place.
-8. `jmp 1`: Because the -1 step just happened, the result is stored in `r01`. If this >=0, the loops doesn't run.
+4. `cal add 1 r03`: This adds `1` to the value inside `r03`, that being the 'increment' value.
+5. `sav r01 r03`: This saves the +1 calculation step back into `r03`.
+6. `cal add -1 r02`: This minuses `1` from the loop count, indicating that a loop has taken place.
+7. `sav r01 r02`: This line updates `r02`, where the loop count is stored.
+8. `jmp 1`: Because the -1 step happened, the result is still stored in `r01`. If this >=0, the loops doesn't run.
 9. `stp`: The program ends, resulting in 10 loops being executed.
+
+### Activity: Letter Loops
+
+Write a program that loops over every uppercase letter and prints it to the screen
+
+> Hint: Uppercase letters start at `65`. Use [this page](https://www.asciitable.com/) for reference!
+
+### Advanced Acitvity: Double Loops
+
+Update your 'Letter Loops' activity program to contain a **nested loop** that prints
+`AA AB AC AD AE AF AG` etc... `AX AY AZ BA BB BC BD` etc... `ZX ZY ZZ`
+
+> Hint: Both loops take similar forms, but take care to not mix register values together, seperate the 1st loop from the 2nd loop clearly., and reset the inner-loop values in the outer loop.
+
+### More about jumping
+
+Sometimes you don't want a label to be used. If you want to jump to a line once and you know where it is, don't bother with making a label pointer!
+
+If you know where you want the Crawssembly executioner to jump to, use `fgo` (Force GO).
+
+Example
+
+```
+1	sav 10 r01      ; saves value 10 to register 1
+2	cal add 1 r01   ; adds 1 to value inside register 1
+3	fgo 2           ; jumps directly to line 2
+```
+
+This is an example of using `fgo` for an infinite loop.
+
+#### Dynamic `fgo`
+
+Keen-eyed readers will have noticed that line numbers *dont't start at 0* like registers do. This is because `fgo 0` doesn't go to the first line number, rather `fgo` jumps to whatever line number is stored in `r01`.
+
+Example
+
+```
+1	sav 5 r01
+2	fgo 0
+3	1 
+4	jmp 1
+5
+6	stp
+```
+
+`fgo 0` above skips over the evil infinite loop, since `r01` contains `5`.
+
+## Branching
+
+Let's say you wanted to only run a piece of code if a certain condition was met. You could use labels and jumps in what is called the **Jump-Then-Execute** format.
+
+```
+1	sav 7 r02               ; saves 7, which is where execution jumps to after label 1 is defined
+2	1                       ; label 1 points to line 2
+3	sav r02 r01             ; readies the line number into register 1, so 'fgo' can jump past the code below
+4	fgo 0                   ; the first execution jumps to line 7, the second execution jumps to line 5
+5	2                       ; label 2 points to line 5
+6	jmp 2                   ; jumps back to the label 2 pointer, an infinite loop
+7
+8	sav 50 r01              ; sets '50' as the test value
+9	sav 5 r02               ; sets the next fgo line number to '5', if the check succeeds this executes the instructions under label 1
+10	jmz 1                   ; if the test value is zero, activate the infinate loop
+```
+
+JTE is complex, and luckily, there is a better way. You cna use the `if` group of commands to execute code depending on the value in `r01`:
+
+- `ifg`: Continues IF Greater (`r01` > 0)
+- `ifz`: Continues IF Zero (`r01` = 0)
+- `ifl`: Continues IF Less (`r01` < 0)
+
+The `if` group also works on label pointers. To end the `if` command, use `rmv` on the label.
+
+Example
+
+```
+1	sav 50 r01              ; sets '50' as the test value
+2	ifz 1                   ; if branch using label 1 for test value = 0
+3	2                       ; label 2 points to 3
+4	jmp 2                   ; jumps back to label 2, an infiniate loop
+5	rmv 1                   ; ends the if branch using label 1
+```
+This format is much cleaner than JTE.
+
+### Activity: Even Numbers
+
+Write a program that loops from 0 to 10, and outputs 'e' if the number is even, and 'o' if the number is odd.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
