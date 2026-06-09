@@ -70,7 +70,7 @@ stp
 
 Run this file using `craw hello.craw`
 
-Congratulations, you are taking the first steps to learning assembly!
+Congratulations, you are taking the first steps to learning Crawssembly!
 
 ## What will I learn?
 
@@ -233,6 +233,8 @@ Every photo, song, text, and piece of code is actually just a long list of 1's a
 Because the number '100' could be in weird and wonderful base, it's neccessary to show what number system is being used if Base-10 has moved aside for a moment.
 
 If the number is in binary, it's usually prefaced with '0b', so if you saw '0b100' then you can be sure that's binary, equal to 4 in Base-10. If you see '0x', that's hexadecimal. So '0x100' would be 256 in Base-10.
+
+![Documentation In Construction](https://img.shields.io/badge/Documentation-In-Construction-blue)
 
 ## The Basics
 
@@ -498,7 +500,7 @@ Example
 10	; creates the label '10' pointing to the second instruction
 ```
 
-
+Remember that we said 
 
 
 
