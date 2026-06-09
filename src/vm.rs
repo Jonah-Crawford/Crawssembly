@@ -79,7 +79,7 @@ pub fn run_vm() -> Result<(), String> {
 
   let (speed, input_list, looped) = startup()?;
 
-  let mut cpu = Cpu::new(true);
+  let mut cpu = Cpu::new(true, VmConfig::default());
   cpu.execute_interactive(&decoded, speed, &input_list, looped, false, true);
 
   Ok(())
@@ -92,7 +92,8 @@ pub fn run_vm_with_options(
   speed: i32,
   input_list: Vec<i32>,
   looped: bool,
-  show_stats: bool
+  show_stats: bool,
+  config: VmConfig,
 ) -> Result<(), String> {
   let program = load_program(program_path)?;
   let decoded = predecode(&program);
@@ -103,39 +104,10 @@ pub fn run_vm_with_options(
     return Ok(());
   }
 
-  let mut cpu = Cpu::new(audio);
+  let mut cpu = Cpu::new(audio, config);
   cpu.execute_interactive(&decoded, speed, &input_list, looped, plain, show_stats);
 
   Ok(())
-}
-
-fn parse_screen_size(args: &[String]) -> Result<(usize, usize), String> {
-  let mut width = 64;
-  let mut height = 64;
-
-  for i in 0..args.len() {
-    if args[i] == "--screen" {
-      let Some(size) = args.get(i + 1) else {
-        return Err("--screen expects a value like 128x64".to_string());
-      };
-
-      let Some((w, h)) = size.split_once('x') else {
-        return Err("--screen expects a value like 128x64".to_string());
-      };
-
-      width = w.parse::<usize>()
-        .map_err(|_| format!("Bad screen width: {w}"))?;
-
-      height = h.parse::<usize>()
-        .map_err(|_| format!("Bad screen height: {h}"))?;
-    }
-  }
-
-  if width == 0 || height == 0 { return Err("Screen width and height must be greater than 0".to_string()); }
-
-  if height % 2 != 0 { return Err("Screen height must be even for terminal rendering".to_string()); }
-
-  Ok((width, height))
 }
 
 fn parse_bench_iters(args: &[String]) -> Option<u64> {
@@ -155,7 +127,7 @@ fn parse_bench_iters(args: &[String]) -> Option<u64> {
 }
 
 fn run_bench(program: &[Decoded], iters: u64) {
-  let mut cpu = Cpu::new(false);
+  let mut cpu = Cpu::new(false, VmConfig::default());
 
   let mut sys = System::new_all();
   sys.refresh_cpu_all();
@@ -716,8 +688,6 @@ impl Cpu {
     } else {
       None
     };
-
-    if (config.screen_h % 2) != 0 { return Err("Screen height must be even for terminal rendering".to_string()); }
 
     Self {
       regs,

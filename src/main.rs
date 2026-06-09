@@ -45,13 +45,22 @@ fn main() {
   let audio = args.iter().any(|a| a == "--audio");
   let show_stats = debug || args.iter().any(|a| a == "--stats");
 
-  let command = args
-    .iter()
-    .skip(1)
-    .find(|a| !a.starts_with("--"))
-    .map(|s| s.as_str());
+  let (screen_w, screen_h) = match parse_screen_size(&args) {
+    Ok(size) => size,
+    Err(e) => {
+      eprintln!("{e}");
+      std::process::exit(1);
+    }
+  };
 
-  match command {
+  let vm_config = vm::VmConfig {
+    screen_w,
+    screen_h,
+  };
+
+  let command = first_positional(&args);
+
+  match command.as_deref() {
     Some("compile") => {
       let Some(input_path) = positional_after(&args, "compile") else {
         eprintln!("Missing input file.\n");
@@ -75,7 +84,7 @@ fn main() {
         }
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, show_stats) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, show_stats, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -93,7 +102,7 @@ fn main() {
         std::process::exit(1);
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, true) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, true, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -118,7 +127,7 @@ fn main() {
         std::process::exit(1);
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, show_stats) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, show_stats, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -141,16 +150,19 @@ fn main() {
   }
 }
 
-fn positional_after(args: &[String], command: &str) -> Option<String> {
-  let mut seen_command = false;
+fn first_positional(args: &[String]) -> Option<String> {
+  let mut i = 1;
 
-  for arg in args.iter().skip(1) {
-    if arg == command {
-      seen_command = true;
+  while i < args.len() {
+    let arg = &args[i];
+
+    if is_option_with_value(arg) {
+      i += 2;
       continue;
     }
 
-    if !seen_command || arg.starts_with("--") {
+    if arg.starts_with("--") {
+      i += 1;
       continue;
     }
 
@@ -158,6 +170,43 @@ fn positional_after(args: &[String], command: &str) -> Option<String> {
   }
 
   None
+}
+
+fn positional_after(args: &[String], command: &str) -> Option<String> {
+  let mut seen_command = false;
+  let mut i = 1;
+
+  while i < args.len() {
+    let arg = &args[i];
+
+    if is_option_with_value(arg) {
+      i += 2;
+      continue;
+    }
+
+    if arg.starts_with("--") {
+      i += 1;
+      continue;
+    }
+
+    if arg == command {
+      seen_command = true;
+      i += 1;
+      continue;
+    }
+
+    if seen_command {
+      return Some(arg.clone());
+    }
+
+    i += 1;
+  }
+
+  None
+}
+
+fn is_option_with_value(arg: &str) -> bool {
+  matches!(arg, "--screen")
 }
 
 fn assemble_file(input_path: &str, output_path: &str, dump: bool, dump_decoded: bool) -> Result<(), String> {
@@ -213,6 +262,7 @@ fn print_help() {
   println!("  --stats                       Show VM speed/tick statistics after running");
   println!("  --tui                         Use alternate-screen terminal mode");
   println!("  --audio                       Enable speaker/speech audio output");
+  println!("  --screen <WIDTHxHEIGHT>       Set virtual screen size, e.g. 128x128");
   println!("  --decode                      Open the instruction decoder");
   println!("  --help                        Show this help message");
   println!();
@@ -220,6 +270,48 @@ fn print_help() {
   println!("  craw hello.craw");
   println!("  craw debug hello.craw");
   println!("  craw compile hello.craw --dump");
+  println!("  craw graphics.craw --screen 128x128 --tui");
+}
+
+fn parse_screen_size(args: &[String]) -> Result<(usize, usize), String> {
+  let mut width = 64;
+  let mut height = 64;
+
+  for i in 0..args.len() {
+    if args[i] == "--screen" {
+      let Some(size) = args.get(i + 1) else {
+        return Err("--screen expects a value like 128x64".to_string());
+      };
+
+      let Some((w, h)) = size.split_once('x').or_else(|| size.split_once('X')) else {
+        return Err("--screen expects a value like 128x64".to_string());
+      };
+
+      width = w.parse::<usize>()
+        .map_err(|_| format!("Bad screen width: {w}"))?;
+
+      height = h.parse::<usize>()
+        .map_err(|_| format!("Bad screen height: {h}"))?;
+    }
+  }
+
+  if width == 0 || height == 0 {
+    return Err("Screen width and height must be greater than 0".to_string());
+  }
+
+  if width > u16::MAX as usize {
+    return Err(format!("Screen width must be <= {} for terminal rendering", u16::MAX));
+  }
+
+  if height > u16::MAX as usize {
+    return Err(format!("Screen height must be <= {} for terminal rendering", u16::MAX));
+  }
+
+  if height % 2 != 0 {
+    return Err("Screen height must be even for terminal rendering".to_string());
+  }
+
+  Ok((width, height))
 }
 
 fn dump_program(src_lines: &[String], program: &[Instr], decoded: bool) {
