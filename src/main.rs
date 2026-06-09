@@ -175,7 +175,6 @@ fn assemble_file(input_path: &str, output_path: &str, dump: bool, dump_decoded: 
       write_program_bin(output_path, &program)
         .map_err(|e| format!("Failed to write {output_path}: {e}"))?;
 
-      println!("Assembled {} instructions -> {}", program.len(), output_path);
       Ok(())
     }
 
