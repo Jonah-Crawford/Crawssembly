@@ -234,7 +234,7 @@ Because the number '100' could be in weird and wonderful base, it's neccessary t
 
 If the number is in binary, it's usually prefaced with '0b', so if you saw '0b100' then you can be sure that's binary, equal to 4 in Base-10. If you see '0x', that's hexadecimal. So '0x100' would be 256 in Base-10.
 
-![Documentation In Construction](https://img.shields.io/badge/Documentation-In-Construction-blue)
+![Documentation In Construction](https://img.shields.io/badge/Documenation-In_Construction-blue)
 
 ## The Basics
 
