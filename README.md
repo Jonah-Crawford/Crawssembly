@@ -2,7 +2,7 @@
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
-Written By Jonah Crawford. [Help support Crawssembly!](https://buymeacoffee.com/jonah_crawford)
+Written By J.D. Crawford. [Help support Crawssembly!](https://buymeacoffee.com/jonah_crawford)
 
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
