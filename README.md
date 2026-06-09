@@ -829,7 +829,44 @@ Write one program that saves a piece of data to disk. Then write a new program t
 
 Write one program to loop over the numbers from 0 to 10, saving each to a disk address. Then write a new program to read these vaules in reverse order, and output each one.
 
+### What high-level programs do
 
+High-level programs use memory all the time. When you type somthing like `5 + 10` the computer has no clue how large that result will be without executing it. So the program allocates memory for `5`, `10`, and the result.
+
+Arrays (or lists) are just a group of memory addresses
+
+For example, an array like `[1, 2, 3]` is really just a set of memory addresses.
+
+Possible representation:
+
+`[1, 2, 3]`
+
+=
+
+```
+0x00000000: 1
+0x00000001: 2
+0x00000002: 3
+```
+
+=
+
+```
+sav 0 r01
+sav 1 r02
+io mem addr r01
+io mem write r02
+
+sav 0 r01
+sav 1 r02
+io mem addr r01
+io mem write r02
+
+sav 0 r01
+sav 1 r02
+io mem addr r01
+io mem write r02
+```
 
 
 
