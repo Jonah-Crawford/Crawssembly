@@ -676,7 +676,7 @@ Let's say you wanted to only run a piece of code if a certain condition was met.
 10	jmz 1                   ; if the test value is zero, activate the infinate loop
 ```
 
-JTE is complex, and luckily, there is a better way. You cna use the `if` group of commands to execute code depending on the value in `r01`:
+JTE is complex, and luckily, there is a better way. You can use the `if` group of commands to execute code depending on the value in `r01`:
 
 - `ifg`: Continues IF Greater (`r01` > 0)
 - `ifz`: Continues IF Zero (`r01` = 0)
@@ -695,13 +695,13 @@ Example
 ```
 This format is much cleaner than JTE.
 
-### Activity: Even Numbers
+### Activity: Even Looper
 
 Write a program that loops from 0 to 10, and outputs 'e' if the number is even, and 'o' if the number is odd.
 
+### Advanced Activity: Even Checker
 
-
-
+Edit your program for 'Even Looper', so that instead of outputting 'e' or 'o', it outputs the number if it's even, and doesn't output anything if the number is odd.
 
 
 
