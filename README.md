@@ -94,6 +94,8 @@ By the end of this guide you will understand:
 
 ✓ How high-level languages work underneath
 
+✓ Key computing concepts
+
 ✓ The fundamentals of CPU architecture
 
 ## Why not just learn real assembly?
@@ -309,20 +311,20 @@ In addition, registers from `rf0` to `rfe` already contain values. These represe
 
 You can imagine the registers as boxes inside the computer:
 
-┌─────┬────────┐
-│ r00 │  Input │
-├─────┼────────┤
-│ r01 │   10   │
-├─────┼────────┤
-│ r02 │   20   │
-├─────┼────────┤
-│ ... │   ...  │
-├─────┼────────┤
-│ ref │  Text  │
-├─────┼────────┤
-│ ... │   ...  │
-├─────┼────────┤
-│ rff │ Output │
+┌─────┬────────┐  
+│ r00 │  Input │  
+├─────┼────────┤  
+│ r01 │   10   │  
+├─────┼────────┤  
+│ r02 │   20   │  
+├─────┼────────┤  
+│ ... │   ...  │  
+├─────┼────────┤  
+│ ref │  Text  │  
+├─────┼────────┤  
+│ ... │   ...  │  
+├─────┼────────┤  
+│ rff │ Output │  
 └─────┴────────┘
 
 ### Activity: Outputs
@@ -727,14 +729,25 @@ Write a program that loops from 0 to 10, and outputs 'e' if the number is even, 
 
 Edit your program for 'Even Looper', so that instead of outputting 'e' or 'o', it outputs the number if it's even, and doesn't output anything if the number is odd.
 
+## Storage
 
+Computers use two different systems for storing data. **Memory** and **Disk**.
 
+- Memory: A fast way to temporarily store data. It is where active data which is being used is stored. Memory is cleared when the computer resets, called **volitile**.
+- Disk: Long-term storage, used for files, apps, operating systems, and more. The disk is usually slower than memory, which is why only long-term data is stored. Because data is kept, it is called **non-volitile**.
 
+Registers are the fastest type of data storage, but the relative data they can hold is tiny. Crawssembly registers can hold a little over a kilobyte in register storage, but can access around 17 million kilobytes in memory!
 
+| Storage Medium | Storage Length | Size | Speed |
+| -------------- | -------------- | ---- | ----- |
+| Registers | Very Short | Very Small | Very Fast |
+| Memory | Short | Large | Fast |
+| Disk | Indefinite | Very Large | Slow |
 
+### Memory
 
-
-
+You've probably heard of RAM, or Random Access Memory. RAM is a type of memory used by computers for large amounts of data.
+It's called Random Access because the computer can read and write to any piece of data in any order. This makes RAM fast and efficient compared to older storage methods.
 
 
 
