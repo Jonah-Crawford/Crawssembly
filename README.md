@@ -763,8 +763,6 @@ Because registers can hold values between `- 2^31` and `2^31 - 1`, the largest a
 You've probably heard of RAM, or Random Access Memory. RAM is a type of memory used by computers for large amounts of data.
 It's called 'Random Access' because the computer can read and write to any piece of data in any order. This makes RAM fast and efficient compared to older storage methods.
 
-#### How to use
-
 Like registers, memory is empty on startup. To write to a memory address, you must use a command in the `io` group.
 
 `io` is the largest group of commands, used to interact with data outside of the CPU, such as speakers, keyboards, and storage. All `io` commands take a register value as input, never an immediate value.
@@ -806,7 +804,6 @@ Disk commands follow the exact same form as memory commands
 
 Example
 
-
 ```
 sav 10 r01              ; saves 10 to register 1
 sav 20 r02              ; saves 20 to register 2
@@ -823,6 +820,21 @@ io disk read ref        ; reads the disk address contents into the text output r
 `io disk write` sets the value of the active disk address to whatever is in the input register.
 
 `io disk read` saves the value of the active disk address to the given register.
+
+#### Activity: Long Live The Data
+
+Write one program that saves a piece of data to disk. Then write a new program to read that data from the disk, and output it.
+
+#### Advanced Activity: My Long List
+
+Write one program to loop over the numbers from 0 to 10, saving each to a disk address. Then write a new program to read these vaules in reverse order, and output each one.
+
+
+
+
+
+
+
 
 
 
