@@ -624,7 +624,7 @@ Write a program that loops over every uppercase letter and prints it to the scre
 Update your 'Letter Loops' activity program to contain a **nested loop** that prints
 `AA AB AC AD AE AF AG` etc... `AX AY AZ BA BB BC BD` etc... `ZX ZY ZZ`
 
-> Hint: Both loops take similar forms, but take care to not mix register values together, seperate the 1st loop from the 2nd loop clearly., and reset the inner-loop values in the outer loop.
+> Hint: Both loops take similar forms, but take care to not mix register values together, seperate the 1st loop from the 2nd loop clearly, and reset the inner-loop values in the outer loop.
 
 ### More about jumping
 
