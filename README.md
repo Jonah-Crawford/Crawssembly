@@ -118,6 +118,12 @@ In many assembly languages, including crawssembly, a single instruction usually 
 
 Learning assembly is a great way to internalise how computers work, as by learning assembly you learn how a computer 'thinks'. 
 
+## How Crawssembly compares to higher languages
+
+Higher languages, like C++, Python, and Java, hide how the computer thinks behind layers of abstraction.
+
+In Python you might type `print("Hello World!")` but that doesn't show how the computer splits the function and the string, or the buffer memory storing a copy of "Hello World!", or how the text gets to the screen. Python hides the instructions, Crawssembly exposes them.
+
 ## Binary
 
 Getting your head around binary (also known as Base-2) is perhaps the most important skill when working with low-level computing. However, the need for binary thinking has diminished with the massive rise of high-level languages like Python, Java, and Swift. A programmer can create amazing tools, games, and projects without ever actually needing to know what binary is.
