@@ -1,5 +1,7 @@
 # Crawssembly: A beginner entry-point to assembly languages
 
+![Documentation In Construction](https://img.shields.io/badge/Documenation-In_Construction-blue)
+
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
 Written By J.D. Crawford. [Help support Crawssembly!](https://buymeacoffee.com/jonah_crawford)
@@ -239,8 +241,6 @@ Every photo, song, text, and piece of code is actually just a long list of 1's a
 Because the number '100' could be in weird and wonderful base, it's necessary to show what number system is being used if Base-10 has moved aside for a moment.
 
 If the number is in binary, it's usually prefaced with '0b', so if you saw '0b100' then you can be sure that's binary, equal to 4 in Base-10. If you see '0x', that's hexadecimal. So '0x100' would be 256 in Base-10.
-
-![Documentation In Construction](https://img.shields.io/badge/Documenation-In_Construction-blue)
 
 ## The Basics
 
