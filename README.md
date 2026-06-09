@@ -800,7 +800,7 @@ Write a program to loop over the numbers 1 to 10, saving each number to it's own
 
 Disk space is used for data you don't want to lose. These can be results of a long program, long files, photos, videos, soundbytes, etc...
 
-Disk commands follow the exact same form as memory commands
+Disk commands follow the same form as memory commands.
 
 Example
 
@@ -833,8 +833,7 @@ Write one program to loop over the numbers from 0 to 10, saving each to a disk a
 
 High-level programs use memory all the time. When you type somthing like `5 + 10` the computer has no clue how large that result will be without executing it. So the program allocates memory for `5`, `10`, and the result.
 
-Arrays (or lists) are just a group of memory addresses
-
+Arrays (or lists) are just a group of memory addresses.
 For example, an array like `[1, 2, 3]` is really just a set of memory addresses.
 
 Possible representation:
@@ -857,13 +856,13 @@ sav 1 r02
 io mem addr r01
 io mem write r02
 
-sav 0 r01
-sav 1 r02
+sav 1 r01
+sav 2 r02
 io mem addr r01
 io mem write r02
 
-sav 0 r01
-sav 1 r02
+sav 2 r01
+sav 3 r02
 io mem addr r01
 io mem write r02
 ```
