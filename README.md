@@ -7,6 +7,7 @@ Written By Jonah Crawford. [Help support my projects!](https://buymeacoffee.com/
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
+![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
 
 ## Why does Crawssembly exist?
 
@@ -25,6 +26,10 @@ The goal is to help you understand what high-level languages are really doing be
 > Don't worry if some of the concepts in this guide seem unfamiliar at first. Computers are surprisingly simple once you break them into smaller pieces, and we'll build up the ideas one step at a time.
 
 > Because Crawssembly assumes near-zero knowledge, there might be concepts you already know. Feel free to skip over them if you are familar with anything shown!
+
+![Registers](https://img.shields.io/badge/Registers-256-blue)
+![Instruction%20Width](https://img.shields.io/badge/Instruction-21--bit-orange)
+![Learn CPUs](https://img.shields.io/badge/Learn-CPU%20Architecture-blueviolet)
 
 ## How to install Crawssembly
 
