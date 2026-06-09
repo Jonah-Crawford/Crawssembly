@@ -4,6 +4,10 @@
 
 Written By Jonah Crawford. [Help support my projects!](https://buymeacoffee.com/jonah_crawford)
 
+![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
+![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
+![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
+
 ## Why does Crawssembly exist?
 
 **Crawssembly** is an educational assembly-like language designed to teach how computers work from the ground up.
@@ -26,6 +30,7 @@ The goal is to help you understand what high-level languages are really doing be
 
 ![Linux](https://img.shields.io/badge/Linux-Tested-green)
 ![Windows](https://img.shields.io/badge/Windows-Tested-green)
+![macOS](https://img.shields.io/badge/macOS-Untested-lightgrey)
 
 > Present versions have been confirmed to work on Linux and Windows. Mac OS has not been tested, errors may occur.
 
