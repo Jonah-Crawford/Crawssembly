@@ -25,7 +25,7 @@ The goal is to help you understand what high-level languages are really doing be
 
 > Don't worry if some of the concepts in this guide seem unfamiliar at first. Computers are surprisingly simple once you break them into smaller pieces, and we'll build up the ideas one step at a time.
 
-> Because Crawssembly assumes near-zero knowledge, there might be concepts you already know. Feel free to skip over them if you are familar with anything shown!
+> Because Crawssembly assumes near-zero knowledge, there might be concepts you already know. Feel free to skip over them if you are familiar with anything shown!
 
 ![Registers](https://img.shields.io/badge/Registers-256-blue)
 ![Instruction%20Width](https://img.shields.io/badge/Instruction-21--bit-orange)
@@ -181,11 +181,11 @@ We can see that the binary number 10110 is the same as
 
 0 * 1
 
-Which, when calcualted, equals 22. So 10110 in binary is the exact same as 22 in Base-10. Every number that can be made in Base-10, can be made in Base-2. There are no gaps.
+Which, when calculated, equals 22. So 10110 in binary is the exact same as 22 in Base-10. Every number that can be made in Base-10, can be made in Base-2. There are no gaps.
 
 ### Other Number Systems
 
-Another counting system regually used is **Hexadecimal**, also called  Base-16. Because we only have 10 numbers, the letters A-F are also used. A = 10, B = 11, C = 12, etc...
+Another counting system regularly used in computing is **Hexadecimal**, also called  Base-16. Because we only have 10 numbers, the letters A-F are also used. A = 10, B = 11, C = 12, etc...
 
 | Place Value | 256 | 16 | 1 |
 | ----------- | --- | -- | - |
@@ -230,7 +230,7 @@ Every photo, song, text, and piece of code is actually just a long list of 1's a
 
 ### How can I tell the difference?
 
-Because the number '100' could be in weird and wonderful base, it's neccessary to show what number system is being used if Base-10 has moved aside for a moment.
+Because the number '100' could be in weird and wonderful base, it's necessary to show what number system is being used if Base-10 has moved aside for a moment.
 
 If the number is in binary, it's usually prefaced with '0b', so if you saw '0b100' then you can be sure that's binary, equal to 4 in Base-10. If you see '0x', that's hexadecimal. So '0x100' would be 256 in Base-10.
 
@@ -281,7 +281,7 @@ This program has 5 parts:
 
 `;` is a **comment character**, anything after the `;` doesn't get run. It's the best way to talk about and annotate the program to help explain an instruction's function.
 
-`stp` is a new instuction, as it occupies a new line in the file. `stp` forces the end of the program, but if the end of the file is reached it's not neccessary.
+`stp` is a new instuction, as it occupies a new line in the file. `stp` forces the end of the program, but if the end of the file is reached it's not necessary.
 
 Register codes include:
 
@@ -567,7 +567,7 @@ This program adds increases the value in `r01`, being `10` in this example, ever
 
 Infinate loops, while nice in languages like Python and Java, are usually very unhelpful in assembly. Since the program is so close to the hardware, an infinite loop can't be stopped, save a full power cycle or in-built reset.
 
-Making a loop run a set amount of times, or some number depending on values, is almost always neccessary for loops.
+Making a loop run a set amount of times, or some number depending on values, is almost always necessary for loops.
 
 Like other commands, conditional jumps work on the `r01` register.
 
