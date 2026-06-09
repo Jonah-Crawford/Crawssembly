@@ -224,8 +224,8 @@ fn print_help() {
 }
 
 fn dump_program(src_lines: &[String], program: &[Instr], decoded: bool) {
-  println!("LINE | BIN(21)                   | HEX     | SOURCE");
-  println!("-----+---------------------------+---------+------------------------------");
+  println!("LINE   BIN(21)              HEX       SOURCE");
+  println!("-------------------------------------------------------------");
 
   let width = (program.len().max(1) as f64).log10().floor() as usize + 1;
 
