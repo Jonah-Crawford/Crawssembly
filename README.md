@@ -433,12 +433,12 @@ Like `sav`, the first value can be swapped for a register code.
 Example:
 
 ```
-sav 10 r01		; saves 10 to register 1
-sav 20 r02		; saves 20 to register 2
-cal xor r01 r02		; XORs 10 and 20, result saves to r01
+sav 10 r01	; saves 10 to register 1
+sav 20 r02	; saves 20 to register 2
+cal xor r01 r02	; XORs 10 and 20, result saves to r01
 ```
 
-#### Activity: Addition
+### Activity: Addition
 
 ```
 sav 50 r01
@@ -446,7 +446,7 @@ sav 50 r01
 
 Add to this program to triple the value, `50`, stored in `r01`.
 
-#### Advanced Activity: Bit Masking
+### Advanced Activity: Bit Masking
 
 ```
 sav 12 r01
@@ -454,7 +454,48 @@ sav 12 r01
 
 Add to this program to get the last 2 bits of the value, `12`, stored in `r01`.
 
-> Hint: Use of `cal and 1 r01` can extact the last bit in r01
+> Hint: Use of `cal and 1 r01` can extact the last bit in r01, use this to help you!
+
+## Loops
+
+Say you wanted to do a very similar, or exact, set of instructions multiple times.
+
+```
+sav 1 r01
+cal add 1 r01
+cal add 1 r01
+cal add 1 r01
+cal add 1 r01
+cal add 1 r01
+cal add 1 r01
+cal add 1 r01
+```
+
+This gets tiresome quickly! This type of code has a name; **boilerplate code**. It wastes time, and increases the chance of human error.
+
+A much better way is to loop over the code you want to repeat, rather than copying it out over and over again.
+
+Loops are defined using a **label**. A label is a pointer to a instruction number. The line number is stored under this label. Simply state the label value as an instruction.
+Loop labels 
+
+Example
+
+```
+1	; creates the label '1' pointing to the first instruction
+10	; creates the label '10' pointing to the second instruction
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
