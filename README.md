@@ -258,15 +258,19 @@ The most basic instruction is storing data, which is stored as numbers, which is
 
 Crawssembly provides 256 registers for quick storage, most of which can be used to store data. Here is an example of how to save data to one of these registers:
 
+Example
+
 ```
 sav 10 r01 ; this saves '10' to register 1
+stp
 ```
 
-This example has 3 parts:
+This program has 5 parts:
 - `sav`
 - `10`
 - `r01`
-- `;`
+- `; this saves '10' to register 1`
+- `stp`
 
 `sav` is the **save** command. It 'Saves A Value' to a register.
 
@@ -274,7 +278,9 @@ This example has 3 parts:
 
 `r01` is a register. Every register has a code like this, with the register number in **Hexadecimal**. Registers are indexed **starting at 0**, so the first register is actually `r00`, because the codes start at 0. This *0 indexing* is commonplace in programming, and a usual stumbling block for beginners.
 
-`;` is a **comment**, anything after it doesn't get run. It's the best way to talk about and annotate the program to help explain it's function.
+`;` is a **comment character**, anything after the `;` doesn't get run. It's the best way to talk about and annotate the program to help explain an instruction's function.
+
+`stp` is a new instuction, as it occupies a new line in the file. `stp` forces the end of the program, but if the end of the file is reached it's not neccessary.
 
 Register codes include:
 
@@ -326,7 +332,7 @@ If you hardcoded everything, then there would be little point for computing lang
 
 Crawssembly is no exception, dynamically storing values is as easy as removing the literal value in-place for another register
 
-Example:
+Example
 
 ```
 sav 10 r01	; saves 10 to register 1
@@ -398,7 +404,7 @@ You can imagine OR to be like a bulb connected to two light switches, flipping e
 
 A **SHIFT** is a special type of operation, where it moves the bits to the left or right.
 
-Example:
+Example
 
 0b1010 shifted 1 unit to the left is 0b10100
 0b1010 shifted 1 unit to the right is 0b101
@@ -431,7 +437,7 @@ By wiring up these operations, you can also add numbers together, this is denote
 
 Calculation using these operations uses the `cal` instruction. All `cal` results get saved to register 1 (`r01`).
 
-Example:
+Example
 
 ```
 sav 10 r01	; saves 10 into register 1
@@ -445,7 +451,7 @@ More information will be given for why this is the case later on.
 
 Like `sav`, the first value can be swapped for a register code.
 
-Example:
+Example
 
 ```
 sav 10 r01	; saves 10 to register 1
@@ -490,6 +496,8 @@ This gets tiresome quickly! This type of code has a name; **boilerplate code**. 
 
 A much better way is to loop over the code you want to repeat, rather than copying it out over and over again.
 
+### Labels
+
 Loops are defined using a **label**. A label is a pointer to a instruction number. The line number is stored under this label. Simply state the label value as an instruction.
 Loop labels 
 
@@ -500,8 +508,96 @@ Example
 10	; creates the label '10' pointing to the second instruction
 ```
 
-Remember that we said 
+Remember that annoying immediate limit from `sav` and `cal`? With labels the range is bigger, since negative numbers arn't used and the entire instuction is just the number.
 
+**The range for labels is `0 - 65535`**
+
+### Line Numbers
+
+At this point it's a good idea to write Crawssembly with line numbers turned on. This is because, unlike most higher-level languages, the position of the instruction matters almost as much as what the instruction does. 
+
+Example
+
+```
+1	10
+2	20
+3	100
+4	200
+5	1000
+6	2000
+7	10000
+8	20000
+```
+
+It's much easier to see that the label `10000` points to line `7` with line numbers! And for longer programs, a must.
+
+### Jumping
+
+So you've got a label pointing to a line you want to execute many times. How do you get it to run again?
+
+Simply use the **jump** command `jmp`, followed by the pointer label.
+
+Example
+
+```
+1	sav 10 r01	; saves literal value 10 into register 1
+2	1		; creates a label, pointing to line 2
+3	cal add 1 r01	; adds 1 to value inside register 1, saving it to register 1
+4	jmp 1		; jumps to the line number that label 1 is pointing to (i.e. line 2)
+5	stp	; end the program
+```
+
+This program adds increases the value in `r01`, being `10` in this example, every loop. This program is an example of an **infinate loop**, it will never reach the `stp` command.
+
+### Dynamic Jumping
+
+Infinate loops, while nice in languages like Python and Java, are usually very unhelpful in assembly. Since the program is so close to the hardware, an infinite loop can't be stopped, save a full power cycle or in-built reset.
+
+Making a loop run a set amount of times, or some number depending on values, is almost always neccessary for loops.
+
+Like other commands, conditional jumps work on the `r01` register.
+
+There are 3 conditional jump commands:
+- `jmg` - JuMp if Greater (Jumps to label pointer if `r01` > 0)
+- `jmz` - JuMp if Zero (Jumps to label pointer if `r01` = 0)
+- `jml` - JuMp if Less (Jumps to label pointer if `r01` < 0)
+
+Example
+
+```
+1	sav 5 r01	; Saves 5 to register 1
+2	1	; creates a label pointer to line 2
+3	jmg 1	; if register 1 holds a >0 value, jump
+4	stp	; the program stops
+```
+
+Above is another example of an **infinite loop**, but the loop is only entered if the starting value in `r01` is greater than zero, thanks to the `jmg` command.
+
+Example
+
+```
+1	sav 10 r02	; saves 10 to register 2, used as the 'loop count' value
+2	sav 0 r03	; '0' here is the starting value of the 'increment' vaule
+3	1	; creats a label pointing to line 3
+4	sav r01 r02	; updates 'loop count' value
+5	cal add 1 r03	; increases the 'increment' value
+6	sav r01 r03	; saves the new 'increment' value to register 3
+7	cal add -1 r02	; decreases the 'loop count' to show another loop happened
+8	jmg 1	; if 'loop count' equals 0, stop the loop
+9	stp	; end the program
+```
+
+Let's read through each line in detail:
+
+1. `sav 10 r02`: This saves the literal value `10` into register 2. This value is used for the number of times the loop will run. In this case, 10 times.
+2. `sav 0 r03`: This is the initial value of the 'increment' register. This value is increased by `1` every loop cycle.
+3. `1`: This is the loop label, it points to line 3.
+4. `sav r01 r02`: This line takes the last calculation result (this would be line `7` once executed) and saves it to `r02`, where the loop count is stored.
+5. `cal add 1 r03`: This adds `1` to the value inside `r03`, that being the 'increment' value.
+6. `sav r01 r03`: This saves the +1 calculation step back into `r03`.
+7. `cal add -1 r02`: This minuses `1` from the loop count, indicating that a loop has taken place.
+8. `jmp 1`: Because the -1 step just happened, the result is stored in `r01`. If this >=0, the loops doesn't run.
+9. `stp`: The program ends, resulting in 10 loops being executed.
 
 
 
