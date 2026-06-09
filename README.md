@@ -1,10 +1,10 @@
 # Crawssembly: A beginner entry-point to assembly languages
 
-![Documentation In Construction](https://img.shields.io/badge/Documenation-In_Construction-blue)
+![Documentation In Construction](https://img.shields.io/badge/Documentation-In_Construction-blue)
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
-Written By J.D. Crawford. [Help support Crawssembly!](https://buymeacoffee.com/jonah_crawford)
+Developed By J.D. Crawford. [Help support Crawssembly!](https://buymeacoffee.com/jonah_crawford)
 
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
@@ -843,6 +843,8 @@ Possible representation:
 =
 
 ```
+Memory addresses
+
 0x00000000: 1
 0x00000001: 2
 0x00000002: 3
@@ -867,23 +869,26 @@ io mem addr r01
 io mem write r02
 ```
 
+All variables are like this behind the fancy symbols and abstraction, just a group of memory addresses.
 
+## Input
 
+If you've ever learnt a higher programming langauge, chances are they taught you how to get user input very early on. This is sensible, as the user gets near-instant gratification from adding thier own name to a greeting program, or telling the computer how old they are to get a semi-personalised message.
+So why is user input so far in the learning path for Crawssembly?
 
+Because input uses the keyboard and mouse, there is a hidden layer between what you type, and that data being processed by the CPU. Much like storage, the keyboard is a seperate device to the core computer. Because of this, input handling builds upon what you already know about more basic data manipulation.
 
+### The Keyboard
 
+Crawssembly provides direct keyboard access using `io keyboard`. The main command in this group is `io keyboard poll`, which gets the last key pressed as a key code.
 
-
-
-
-
-
-
-
-
-
-
-
+Key Codes:
+- 0: No key pressed
+- -1: up arrow
+- -2: down arrow
+- -3: left arrow
+- -4: right arrow
+- other: ASCII code ([See this chart for more](https://www.asciitable.com/))
 
 
 *Crawssembly is a product of CRAW SYSTEMS (C) 2026*
