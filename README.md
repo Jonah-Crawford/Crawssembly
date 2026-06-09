@@ -542,7 +542,7 @@ Remember that annoying immediate limit from `sav` and `cal`? With labels the ran
 
 ### Line Numbers
 
-At this point it's a good idea to write Crawssembly with line numbers turned on. This is because, unlike most higher-level languages, the position of the instruction matters almost as much as what the instruction does. 
+At this point it's a good idea to write Crawssembly with line numbers turned on. This is because, unlike most higher-level languages, the position of the instruction matters almost as much as what the instruction does.
 
 Example
 
@@ -558,6 +558,8 @@ Example
 ```
 
 It's much easier to see that the label `10000` points to line `7` with line numbers! And for longer programs, a must.
+
+For this reason, code examples in this section will be provided with line numbers to aid understanding.
 
 ### Removing Labels
 
@@ -746,27 +748,81 @@ Registers are the fastest type of data storage, but the relative data they can h
 | Memory | Short | Large | Fast |
 | Disk | Indefinite | Very Large | Slow |
 
+#### Addresses
+
+Much like registers, every cell in storage has a number based on it's position. This number is called the **address**.
+
+Like registers, the first cell has an address of 0, the second cell has an address of 1, etc...
+
+Storage addresses are commonly given in **hexadecimal** format, such as `0xF58`. This is because hex perfectly matches how computer hardware is layed out, while keeping the address short enough for humans to read.
+
+Because registers can hold values between `- 2^31` and `2^31 - 1`, the largest address is **0xFFFFFFFF**. That's over 4 billion addresses available!
+
 ### Memory
 
 You've probably heard of RAM, or Random Access Memory. RAM is a type of memory used by computers for large amounts of data.
-It's called Random Access because the computer can read and write to any piece of data in any order. This makes RAM fast and efficient compared to older storage methods.
+It's called 'Random Access' because the computer can read and write to any piece of data in any order. This makes RAM fast and efficient compared to older storage methods.
+
+#### How to use
+
+Like registers, memory is empty on startup. To write to a memory address, you must use a command in the `io` group.
+
+`io` is the largest group of commands, used to interact with data outside of the CPU, such as speakers, keyboards, and storage. All `io` commands take a register value as input, never an immediate value.
+
+For using mamory, we must use `io mem`.
+
+Example
+
+```
+sav 10 r01              ; saves 10 to register 1
+sav 20 r02              ; saves 20 to register 2
+io mem addr r01         ; sets the active memory address to the value in r01 (i.e. 10)
+io mem write r02        ; writes the value of r02 (i.e. 20) into the active memory address
+
+sav 20 r01              ; saves 20 to register 1
+io mem addr r01         ; sets the active memory address to the value in r01 (i.e. 20)
+io mem read ref         ; reads the memory address contents into the text output register
+```
+
+`io mem addr` sets the active memory address that Crawssembly is considering. All `io mem` commands act on this address.
+
+`io mem write` sets the value of the active memory address to whatever is in the input register.
+
+`io mem read` saves the value of the active memory address to the given register.
+
+#### Activity: Read/Write Cycle
+
+Write a program to write the codes for 'A', 'B', and 'C' to memory, then read them back from memory in reverse order.
+
+#### Advanced Activity: Save Arrays
+
+Write a program to loop over the numbers 1 to 10, saving each number to it's own memory address.
+
+### Disk
+
+Disk space is used for data you don't want to lose. These can be results of a long program, long files, photos, videos, soundbytes, etc...
+
+Disk commands follow the exact same form as memory commands
+
+Example
 
 
+```
+sav 10 r01              ; saves 10 to register 1
+sav 20 r02              ; saves 20 to register 2
+io disk addr r01        ; sets the active disk address to the value in r01 (i.e. 10)
+io disk write r02       ; writes the value of r02 (i.e. 20) into the active disk address
 
+sav 20 r01              ; saves 20 to register 1
+io disk addr r01        ; sets the active disk address to the value in r01 (i.e. 20)
+io disk read ref        ; reads the disk address contents into the text output register
+```
 
+`io disk addr` sets the active disk address that Crawssembly is considering. All `io disk` commands act on this address.
 
+`io disk write` sets the value of the active disk address to whatever is in the input register.
 
-
-
-
-
-
-
-
-
-
-
-
+`io disk read` saves the value of the active disk address to the given register.
 
 
 
@@ -783,3 +839,4 @@ It's called Random Access because the computer can read and write to any piece o
 
 
 *Crawssembly is a product of CRAW SYSTEMS (C) 2026*
+
