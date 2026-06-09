@@ -24,7 +24,10 @@ The goal is to help you understand what high-level languages are really doing be
 
 ## How to install Crawssembly
 
-> Present versions have only been tested on Linux systems. Errors are likely if you are not using a Linux OS.
+![Linux](https://img.shields.io/badge/Linux-Tested-green)
+![Windows](https://img.shields.io/badge/Windows-Tested-green)
+
+> Present versions have been confirmed to work on Linux and Windows. Mac OS has not been tested, errors may occur.
 
 If you don't have Rust installed, download it by running these commands
 
