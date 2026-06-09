@@ -48,9 +48,22 @@ const IO_BAD_VALUE: i32 = 3;
 const IO_UNAVAILABLE: i32 = 4;
 
 // screen
-const SCREEN_W: usize = 64; // <-------------------------------- SCREEN_W
-const SCREEN_H: usize = 64; // <-------------------------------- SCREEN_H
 const IO_SCREEN_OUT_OF_BOUNDS: i32 = 0x10;
+
+#[derive(Clone, Copy)]
+pub struct VmConfig {
+  pub screen_w: usize,
+  pub screen_h: usize,
+}
+
+impl Default for VmConfig {
+  fn default() -> Self {
+    Self {
+      screen_w: 64,
+      screen_h: 64,
+    }
+  }
+}
 
 const SPEAKER_COUNT: usize = 8;
 
@@ -94,6 +107,35 @@ pub fn run_vm_with_options(
   cpu.execute_interactive(&decoded, speed, &input_list, looped, plain, show_stats);
 
   Ok(())
+}
+
+fn parse_screen_size(args: &[String]) -> Result<(usize, usize), String> {
+  let mut width = 64;
+  let mut height = 64;
+
+  for i in 0..args.len() {
+    if args[i] == "--screen" {
+      let Some(size) = args.get(i + 1) else {
+        return Err("--screen expects a value like 128x64".to_string());
+      };
+
+      let Some((w, h)) = size.split_once('x') else {
+        return Err("--screen expects a value like 128x64".to_string());
+      };
+
+      width = w.parse::<usize>()
+        .map_err(|_| format!("Bad screen width: {w}"))?;
+
+      height = h.parse::<usize>()
+        .map_err(|_| format!("Bad screen height: {h}"))?;
+    }
+  }
+
+  if width == 0 || height == 0 { return Err("Screen width and height must be greater than 0".to_string()); }
+
+  if height % 2 != 0 { return Err("Screen height must be even for terminal rendering".to_string()); }
+
+  Ok((width, height))
 }
 
 fn parse_bench_iters(args: &[String]) -> Option<u64> {
@@ -609,6 +651,8 @@ struct Cpu {
   screen_blue: u8,
   last_present: Instant,
   target_frame_ms: u128,
+  screen_w: usize,
+  screen_h: usize,
 
   // keyboard
   last_key: Arc<Mutex<i32>>,
@@ -641,7 +685,7 @@ struct Cpu {
 }
 
 impl Cpu {
-  fn new(audio_enabled: bool) -> Self {
+  fn new(audio_enabled: bool, config: VmConfig) -> Self {
     let mut regs = [0i32; 256];
 
     regs[0xF0] = 314159265;
@@ -673,6 +717,8 @@ impl Cpu {
       None
     };
 
+    if (config.screen_h % 2) != 0 { return Err("Screen height must be even for terminal rendering".to_string()); }
+
     Self {
       regs,
       sleep_times: 0.0,
@@ -688,13 +734,15 @@ impl Cpu {
       input_pos: 0,
       call_stack: Vec::new(),
       blocks: Vec::new(),
-      screen: vec![[0, 0, 0]; SCREEN_W * SCREEN_H],
-      last_screen: vec![[255, 255, 255]; SCREEN_W * SCREEN_H],
+      screen: vec![[0, 0, 0]; config.screen_w * config.screen_h],
+      last_screen: vec![[255, 255, 255];  config.screen_w * config.screen_h],
       screen_x: 0,
       screen_y: 0,
       screen_red: 255,
       screen_green: 255,
       screen_blue: 255,
+      screen_w: config.screen_w,
+      screen_h: config.screen_h,
       last_present: Instant::now(),
       target_frame_ms: 20, // <-<-<-<-<-<-<- FRAME RATE -<-<-<-<-<-<-<
       last_key: Arc::new(Mutex::new(0)),
@@ -823,11 +871,11 @@ impl Cpu {
     let x = x as usize;
     let y = y as usize;
 
-    if x >= SCREEN_W || y >= SCREEN_H {
+    if x >= self.screen_w || y >= self.screen_h {
       return None;
     }
 
-    Some(y * SCREEN_W + x)
+    Some(y * self.screen_w + x)
   }
 
   fn signed_to_rgb(value: i32) -> Option<u8> {
@@ -860,13 +908,13 @@ impl Cpu {
 
 
   fn screen_dump(&self) {
-    let mut out = String::with_capacity((SCREEN_W + 1) * SCREEN_H + 1);
+    let mut out = String::with_capacity((self.screen_w + 1) * self.screen_h + 1);
 
     out.push('\n');
 
-    for y in 0..SCREEN_H {
-      for x in 0..SCREEN_W {
-        let [r, g, b] = self.screen[y * SCREEN_W + x];
+    for y in 0..self.screen_h {
+      for x in 0..self.screen_w {
+        let [r, g, b] = self.screen[y * self.screen_w + x];
 
         let brightness = (r as u16 + g as u16 + b as u16) / 3;
 
@@ -927,10 +975,10 @@ impl Cpu {
 
     let mut stdout = io::stdout();
 
-    for y_pair in 0..(SCREEN_H / 2) {
-      for x in 0..SCREEN_W {
-        let top_i = (y_pair * 2) * SCREEN_W + x;
-        let bottom_i = (y_pair * 2 + 1) * SCREEN_W + x;
+    for y_pair in 0..(self.screen_h / 2) {
+      for x in 0..self.screen_w {
+        let top_i = (y_pair * 2) * self.screen_w + x;
+        let bottom_i = (y_pair * 2 + 1) * self.screen_w + x;
 
         let top = self.screen[top_i];
         let bottom = self.screen[bottom_i];
