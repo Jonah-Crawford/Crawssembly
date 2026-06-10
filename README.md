@@ -1,4 +1,4 @@
-Crawssembly: The beginner's gateway to low-level thinking.
+# Crawssembly: The beginner's gateway to low-level thinking.
 
 ![Documentation In Construction](https://img.shields.io/badge/Documentation-In_Construction-blue)
 
@@ -1096,6 +1096,34 @@ sav r01 r03
 ```
 
 This example unpacks the bitfield, stored in `r04` into `r01` (Left Button), `r02` (Right Button), and `r03` (Middle Button)
+
+## Output
+
+Inputting values into your program is all well and good, but it's pretty useless if you can't get anythin meaningful back. Crawssembly can control both your screen, and your speakers.
+
+### Screen
+
+The screen is a great all-purpose viewing device. Not only can it show text, it can show graphics and symbols. The `io screen` group of commands controls screen outputs inside your terminal.
+
+> Crawssembly's screen is contained within the terminal. This is to protect your screen's contents outside of the terminal, and to allow outputs to be easily seen.
+
+#### Text
+
+Before now, program outputs have used the `ref` register to send raw ASCII codes to the screen. While useful for debugging, this isn't the best way to get a program output. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
