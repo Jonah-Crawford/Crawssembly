@@ -1038,9 +1038,22 @@ The `io mouse` command group captures mouse events using 3 commands:
 - `io mouse y`: extracts current mouse Y position, relative to the screen's top-left corner
 - `io mouse btn`: creates a **bitfield** for the left, right, and middle buttons in the order.
 
-#### Bitfields
+#### Position
 
-A bitfield is a binary value which encodes multiple values. Instead of using a single bit for if the left mouse button is being pressed, another for the right button being pressed, and another again for the middle button, we can merge these 3 numbers into a single number.
+The mouse's position can be extracted using `io mouse x` and `io mouse y`.
+
+Example
+
+```
+io mouse x r01
+io mouse y r02
+```
+
+This example stores the (x, y) location as (`r01`, `r02`).
+
+#### Button Bitfield
+
+A **bitfield** is a single binary number which encodes multiple values. Instead of using a single bit for if the left mouse button is being pressed, another for the right button being pressed, and another again for the middle button, we can merge these 3 numbers into a single number.
 
 | Left Button | Right Button | Middle Button | Bitfield | Base-10 Number |
 | ----------- | ------------ | ------------- | -------- | -------------- |
@@ -1053,7 +1066,36 @@ A bitfield is a binary value which encodes multiple values. Instead of using a s
 | Pressed | Pressed | Not Pressed | 0b110 | 6 |
 | Pressed | Pressed | Pressed | 0b111 | 7 |
 
+You can extract each button using bit masks.
 
+Example
+
+```
+io mouse btn r01
+cal and 1 r01
+```
+
+This program extracts the *left mouse* button into `r01`.
+
+> We covered bit masks earlier on when talking about binary operations.
+
+Bit masks can be used to expand the mouse bitfield into seperate registers.
+
+Example
+
+```
+io mouse btn r04
+
+io cal and 1 r04
+
+io cal and 2 r04
+sav r01 r02
+
+io cal and 4 r04
+sav r01 r03
+```
+
+This example unpacks the bitfield, stored in `r04` into `r01` (Left Button), `r02` (Right Button), and `r03` (Middle Button)
 
 
 
