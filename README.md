@@ -1108,6 +1108,14 @@ sav r01 r03
 
 This example unpacks the bitfield, stored in `r04` into `r01` (Left Button), `r02` (Right Button), and `r03` (Middle Button)
 
+#### Activity: Clicking Away
+
+Write a program to show "Click" when a mouse button is pressed.
+
+#### Advanced Activity: Mouse Dump
+
+Write a program that shows "L" if the left button is pressed, "R" if the right button is being pressed, and "M" if the middle button is being pressed.
+
 ## Output
 
 Inputting values into your program is all well and good, but it's pretty useless if you can't get anythin meaningful back. Crawssembly can control both your screen, and your speakers.
@@ -1121,12 +1129,34 @@ The screen is a great all-purpose viewing device. Not only can it show text, it 
 #### Text
 
 Before now, program outputs have used the `ref` register to send raw ASCII codes to the screen. While useful for debugging, this isn't the best way to get a program output. This uses the `io text` group of commands.
-- `io text char`: Shows that ASCII code to the screen, the more *idiomatic* version of using `ref`
-- 
 
+- `io text char`: Shows the ASCII code stored in the input register to the screen, the more *idiomatic* version of using `ref`.
+- `io text int`: Shows the actual value inside the input register.
+- `io text newline`: Shorthand for moving the text cursor to a new line.
+- `io text hex`: Shows the hex value stored inside the input register.
 
+Example
 
+```
+sav 100 r01
 
+io text char r01
+io text newline rff
+
+io text int r01
+io text newline rff
+
+io text hex r01
+io text newline rff
+```
+
+Output
+
+```
+d
+100
+64
+```
 
 
 
