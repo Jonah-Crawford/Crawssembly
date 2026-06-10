@@ -1,10 +1,10 @@
-https://stardance.space/r-szvjc# Crawssembly: A beginner entry-point to assembly languages
+Crawssembly: The beginner's gateway to low-level thinking.
 
 ![Documentation In Construction](https://img.shields.io/badge/Documentation-In_Construction-blue)
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
-Developed By J.D. Crawford. [Help support Crawssembly!](https://buymeacoffee.com/jonah_crawford)
+Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
 
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
@@ -193,6 +193,26 @@ We can see that the binary number 10110 is the same as
 
 Which, when calculated, equals 22. So 10110 in binary is the exact same as 22 in Base-10. Every number that can be made in Base-10, can be made in Base-2. There are no gaps.
 
+### Two's complement
+
+Binary numbers like talked about above can only store postitive numbers. Inside computers though, negative numbers are used all the time. So how do we get numbers like -1 or -42?
+
+Inside computers, and Crawssembly, the **sign** of the number is represented with the leftmost bit. Where `0` means the number is positive, and `1` means the number is negative. Because negative numbers work in reverse (i.e. `-1` is greater than `-42`, while `1` is smaller than `42`), negative binary numbers also work in reverse. This system is called **Two's Complement**.
+
+Because Crawssembly stores all numbers as **32-bit** values, meaning that each number has 32 bits, `-1` is represented by a string of `1`s with length 32.
+
+| Decimal Value | Binary |
+| ------------- | ------ |
+| 10 | 00000000 00000000 00000000 00001010 |
+| 2 | 00000000 00000000 00000000 00000010 |
+| 1 | 00000000 00000000 00000000 00000001 |
+| 0 | 00000000 00000000 00000000 00000000 |
+| -1 | 11111111 11111111 11111111 11111111 |
+| -2 | 11111111 11111111 11111111 11111110 |
+| -10 | 11111111 11111111 11111111 11110110 |
+
+A way to convert a positive value is by inversing all the bit values, then adding 1. We will go into more detail about this when we talk about binary operations.
+
 ### Other Number Systems
 
 Another counting system regularly used in computing is **Hexadecimal**, also called  Base-16. Because we only have 10 numbers, the letters A-F are also used. A = 10, B = 11, C = 12, etc...
@@ -269,7 +289,6 @@ Crawssembly provides 256 registers for quick storage, most of which can be used 
 Example
 
 ```
-
 sav 10 r01      ; this saves '10' to register 1
 stp
 ```
@@ -353,6 +372,17 @@ Like other assembly languages, every possible instruction is encoded as a binary
 Because each line has this fixed size, literal values can only be so high. The literal in a `sav` command is given 8 bits, also known as a **byte**.
 
 More details about how Crawssembly encodes data will be explained in later sections.
+
+Unlike the raw register values, **Two's Complement** used in the literal values are **8-bit**, not **32-bit**.
+
+| Decimal Value | Binary |
+| ------------- | ------ |
+| 10 | 00001010 |
+| 1 | 00000001 |
+| 0 | 00000000 |
+| -1 | 11111111 |
+| -2 | 11111110 |
+| -10 | 11110110 |
 
 ### More about `sav`
 
@@ -504,6 +534,95 @@ Feel free to add outputs to your programs to test if your program works.
 **Without using `cal add`**, write a program to double a number.
 
 > Hint: Multiplying numbers by 10 is easy, just add a 0 to the end. What is the parallel to binary?
+
+### Bit masking
+
+Bit masking is a technique to extract or modify specific bits within a binary number. Masking is very efficient as binary operations are some of the easiest tasks for computers to execute.
+
+#### Extraction
+
+If you had the number `0b01100100` (i.e. 100) stored in `r01` and you only wanted the last 4 bits, you would use the AND operator with `0b01100100` and `0b00001111` (i.e. 15, called the **mask value**)  as inputs.
+
+Example
+
+```
+sav 100 r01             ; 0b01100100
+cal and 15 r01          ; 0b01100100 AND 0b00001111 = 0b00000100 (i.e. 4)
+```
+
+This works because AND needs both values to be `1`. Any value not included in the **mask value** is set to `0`, and any `1` value included in the **mas value** is set to `1`.
+
+#### Turning On
+
+To force a particular bit to be `1`, then use OR with the mask value being the bit position you desire. The following example changes `0b01100100` to `0b01100110` using a bit mask of `0b00000010` (i.e. 2).
+
+Example
+
+```
+sav 100 r01             ; 0b01100100
+cal or 2 r01            ; 0b01100100 OR 0b00000010 = 0b01100110 (i.e. 102)
+```
+
+This works because any `1` value present will remain a `1`, so if the mask value contians a `1`, the result will also contain a `1` regardless of the other value.
+
+> You can set multiple bits in this mask, if you really wanted to you could make a mask of 0b11111111 to set **every** bit to `1`!
+
+#### Turning Off
+
+To force a particular bit to be `0`, you must use AND with a mask value of all `1`s apart from the bit you want to set to `0`. The following example changes `0b01100100` to `0b01000100` using a bit mask of `0b11011111` (i.e. -33).
+
+Example
+
+```
+sav 100 r01             ; 0b01100100
+cal and -33 r01         ; 0b01100100 AND 0b011011111 = 0b01000100 (i.e. 68)
+```
+
+This works because all bits are untouched in AND, apart from the missing bits which are turned off, because AND needs both to be `1`.
+
+> Like using OR, you can set multiple bits off using this method.
+
+#### Toggling
+
+Toggling a bit uses the combined XOR calculation, with a mask value of the same form as AND, where each `1` represents the bit to flip. The following example changes `0b01100100` into `0b01000110` using a mask value of `0b00100010` (i.e. 34).
+
+Example
+
+```
+sav 100 r01             ; 0b01100100
+cal xor 34 r01          ; 0b01100100 XOR 0b00100010 = 0b01000110 (i.e. 70)
+```
+
+This works because XOR outputs `1` when a difference in inputs is found. If an 'active' bit is `0`, there is a difference so `1` is outputted. If the 'active' bit is `1`, there is no difference so `0` is outputted.
+
+> Like OR again, you can toggle multiple bits using this method.
+
+#### Negation
+
+To turn a value into it's negative version, you must **flip the bits and add 1**. You can do this using NOT and then ADD. The following example turns 100 into -100 (`0b01100100` into `0b10011100`)
+
+Example
+
+```
+sav 100 r01             ; 0b01100100
+cal not r01 rff         ; NOT 0b01100100 = 0b10011011 (i.e. -101)
+cal add 1 r01           ; 0b10011011 + 1 = 0b10011100 (i.e. -100)
+```
+
+> `rff` was used here to indicate that NOT doesn't take another input, because `rff` can't be read from.
+
+### Symbols
+
+You're likely to see symbols in-place of words like AND or XOR. The most common symbols are shown below.
+
+| Operation Name | Possible Symbols |
+| -------------- | ---------------- |
+| AND | & or && |
+| OR | | or || |
+| NOT | ~ or ¬ or ! |
+| XOR | ^ |
+| Left Shift | << |
+| Right Shift | >> |
 
 ## Loops
 
@@ -904,10 +1023,35 @@ stp                             ; stops the program if the key code is exactlly 
 
 This program shows the last key printed by outputting to `ref`, and ends the loop when `Esc` is pressed.
 
+> Remember, `ref` outpus the [ASCII code](https://www.asciitable.com/) of the key pressed, not the real raw value of that key. Pressing Enter won't print 'Enter' to the screen!
 
+### The Mouse
 
+Almost all basic mice output 4 streams of data:
+- Position
+- Left Button
+- Middle Button
+- Right Button
 
+The `io mouse` command group captures mouse events using 3 commands:
+- `io mouse x`: extracts current mouse X positon, relative to the screen's top-left corner
+- `io mouse y`: extracts current mouse Y position, relative to the screen's top-left corner
+- `io mouse btn`: creates a **bitfield** for the left, right, and middle buttons in the order.
 
+#### Bitfields
+
+A bitfield is a binary value which encodes multiple values. Instead of using a single bit for if the left mouse button is being pressed, another for the right button being pressed, and another again for the middle button, we can merge these 3 numbers into a single number.
+
+| Left Button | Right Button | Middle Button | Bitfield | Base-10 Number |
+| ----------- | ------------ | ------------- | -------- | -------------- |
+| Not Pressed | Not Pressed | Not Pressed | 0b000 | 0 |
+| Not Pressed | Not Pressed | Pressed | 0b001 | 1 |
+| Not Pressed | Pressed | Not Pressed | 0b010 | 2 |
+| Not Pressed | Pressed | Pressed | 0b011 | 3 |
+| Pressed | Not Pressed | Not Pressed | 0b100 | 4 |
+| Pressed | Not Pressed | Pressed | 0b101 | 5 |
+| Pressed | Pressed | Not Pressed | 0b110 | 6 |
+| Pressed | Pressed | Pressed | 0b111 | 7 |
 
 
 
