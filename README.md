@@ -852,6 +852,19 @@ Write a program that loops from 0 to 10, and outputs 'e' if the number is even, 
 
 Edit your program for 'Even Looper', so that instead of outputting 'e' or 'o', it outputs the number if it's even, and doesn't output anything if the number is odd.
 
+## Devices
+
+`io` is the largest group of commands, used to interact with data outside of the CPU, such as speakers, keyboards, and storage. All `io` commands take a register value as input, never an immediate value.
+
+Because `io` comamnds are dependant on other devices, commands might fail if there is an issue. This is why register `ree` is used for *error codes*
+
+| Code | Name | Description |
+| ---- | ---- | ----------- |
+| 0 | IO_OK | Operation completed successfully |
+| 1 | IO_INVALID_COMMAND | Invalid device command |
+| 2 | IO_BAD_VALUE | Value outside valid range |
+| 3 | IO_UNAVAILABLE | Device unavailable |
+
 ## Storage
 
 Computers use two different systems for storing data. **Memory** and **Disk**.
@@ -875,7 +888,7 @@ Like registers, the first cell has an address of 0, the second cell has an addre
 
 Storage addresses are commonly given in **hexadecimal** format, such as `0xF58`. This is because hex perfectly matches how computer hardware is layed out, while keeping the address short enough for humans to read.
 
-Because registers can hold values between `- 2^31` and `2^31 - 1`, the largest address is **0xFFFFFFFF**. That's over 4 billion addresses available!
+Because registers can hold values between `- 2^31` and `2^31 - 1` (This is the *signed 32-bit limit*), the largest address is **0xFFFFFFFF**. That's over 4 billion addresses available!
 
 ### Memory
 
@@ -883,8 +896,6 @@ You've probably heard of RAM, or Random Access Memory. RAM is a type of memory u
 It's called 'Random Access' because the computer can read and write to any piece of data in any order. This makes RAM fast and efficient compared to older storage methods.
 
 Like registers, memory is empty on startup. To write to a memory address, you must use a command in the `io` group.
-
-`io` is the largest group of commands, used to interact with data outside of the CPU, such as speakers, keyboards, and storage. All `io` commands take a register value as input, never an immediate value.
 
 For using mamory, we must use `io mem`.
 
@@ -1101,18 +1112,17 @@ This example unpacks the bitfield, stored in `r04` into `r01` (Left Button), `r0
 
 Inputting values into your program is all well and good, but it's pretty useless if you can't get anythin meaningful back. Crawssembly can control both your screen, and your speakers.
 
-### Screen
+### The Screen
 
-The screen is a great all-purpose viewing device. Not only can it show text, it can show graphics and symbols. The `io screen` group of commands controls screen outputs inside your terminal.
+The screen is a great all-purpose viewing device. Not only can it show text, it can show graphics and symbols.
 
 > Crawssembly's screen is contained within the terminal. This is to protect your screen's contents outside of the terminal, and to allow outputs to be easily seen.
 
 #### Text
 
-Before now, program outputs have used the `ref` register to send raw ASCII codes to the screen. While useful for debugging, this isn't the best way to get a program output. 
-
-
-
+Before now, program outputs have used the `ref` register to send raw ASCII codes to the screen. While useful for debugging, this isn't the best way to get a program output. This uses the `io text` group of commands.
+- `io text char`: Shows that ASCII code to the screen, the more *idiomatic* version of using `ref`
+- 
 
 
 
