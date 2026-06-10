@@ -1,4 +1,4 @@
-# Crawssembly: A beginner entry-point to assembly languages
+https://stardance.space/r-szvjc# Crawssembly: A beginner entry-point to assembly languages
 
 ![Documentation In Construction](https://img.shields.io/badge/Documentation-In_Construction-blue)
 
@@ -880,7 +880,7 @@ Because input uses the keyboard and mouse, there is a hidden layer between what 
 
 ### The Keyboard
 
-Crawssembly provides direct keyboard access using `io keyboard`. The main command in this group is `io keyboard poll`, which gets the last key pressed as a key code.
+Crawssembly provides direct keyboard access using `io keyboard`. The main command in this group is `io keyboard poll`, which gets the last key pressed as a key code into the input register.
 
 Key Codes:
 - 0: No key pressed
@@ -888,18 +888,21 @@ Key Codes:
 - -2: down arrow
 - -3: left arrow
 - -4: right arrow
+- 27: Escape
 - other: ASCII code ([See this chart for more](https://www.asciitable.com/))
 
+Example
 
+```
+1                               ; Label pointing to line 1
+io keyboard poll ref            ; Gets the last key and stores into the output register
+cal add -27 ref                 ; Finds key - 27, the result is saved to register 1
+jmg 1                           ; continues the loop if the key code is greater than 26
+jml 1                           ; continues the loop if the key code is less than 27
+stp                             ; stops the program if the key code is exactlly 27
+```
 
-
-
-
-
-
-
-
-
+This program shows the last key printed by outputting to `ref`, and ends the loop when `Esc` is pressed.
 
 
 
