@@ -891,5 +891,31 @@ Key Codes:
 - other: ASCII code ([See this chart for more](https://www.asciitable.com/))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 *Crawssembly is a product of CRAW SYSTEMS (C) 2026*
 
