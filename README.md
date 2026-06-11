@@ -703,6 +703,8 @@ Example
 
 This program adds increases the value in `r01`, being `10` in this example, every loop. This program is an example of an **infinite loop**, it will never reach the `stp` command.
 
+Because this program is an infinite loop, you have to **force-exit** the program, you can do this by pressing `CTRL` and `c` at the same time.
+
 ### Dynamic Jumping
 
 Infinite loops, while nice in languages like Python and Java, are usually very unhelpful in assembly. Since the program is so close to the hardware, an infinite loop can't be stopped, save a full power cycle or in-built reset.
