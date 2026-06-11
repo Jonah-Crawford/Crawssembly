@@ -1017,7 +1017,7 @@ Example
 ```
 1                               ; Label pointing to line 1
 io keyboard poll ref            ; Gets the last key and stores into the output register
-cal add -27 ref                 ; Finds key - 27, the result is saved to register 1
+cal add -27 rff                 ; Finds key - 27, the result is saved to register 1
 jmg 1                           ; continues the loop if the key code is greater than 26
 jml 1                           ; continues the loop if the key code is less than 27
 stp                             ; stops the program if the key code is exactlly 27
