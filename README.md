@@ -1286,15 +1286,26 @@ Write a program that plays every note in an octave. You can use [this wikipedia 
 
 > Real musical/piano notes increase by the twelfth-root of 2. Because Crawssembly can't use fractional numbers, the frequency values have to be rounded to the nearest whole number.
 
+## Time
 
+It's common, in larger programs, that the current time should be known. In computers, this is maintained though a CMOS battery. This keeps the internal clock running on the machine when the computer is turned off.
 
+To use time commands, you would use the `io time` group. We already discussed `io time sleep` in the speakers section.
+- `io time sleep`: pauses execution for a set period in milliseconds
+- `io time unix`: outputs the current **UNIX timestamp**
+- `io time low`: outputs the last 31 bits of the **UNIX timestamp**
 
+### UNIX Timestamp
 
+The **UNIX timestamp**, or **UNIX Epoch** is the starting point for measuring time in computer systems. It's defined exactly as the **1st January 1970, at 00:00:00 UTC**.
 
+This time was selected as a nice round start point for the early development of the UNIX operating system in the 1970's, the direct ancestor of the most dominant modern operating systems in use today.
 
+`io time low` is a seperate command due to binary limits. If you were alive before 2000, you would have remembered the *Y2K* bug, where early programs that used only 2 digits for the year (e.g. '99' for '1999') would fail in the new millennium. A similar, but different issue occurs because of the limit of binary numbers.
 
+Because lots of systems are **32-bit**, meaning that the data length in the CPU is 32-bits of binary, the largest positive number this can take is around 2.15 billion. The UNIX timestamp reaches this number of seconds early in 2038. Once we go over that point, the timestamp will roll over into negative numbers. This is an example of **underflow**. This causes the timestamp to point to December 1901.
 
-
+This is called the **2038 problem**, or **Y2K38**. And because it affects many more systems than Y2K, it's actually more dangerous, and harder to fix as low-level systems are used everywhere. But Crawssembly is prepared. Using `io time low`, only the value bits are extracted, not the sign. So the time can be used witout worrying about negative time.
 
 
 
