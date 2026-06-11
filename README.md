@@ -999,6 +999,8 @@ So why is user input so far in the learning path for Crawssembly?
 
 Because input uses the keyboard and mouse, there is a hidden layer between what you type, and that data being processed by the CPU. Much like storage, the keyboard is a seperate device to the core computer. Because of this, input handling builds upon what you already know about more basic data manipulation.
 
+> To get input and output devices working, you almost always need to use `craw myprogram.craw --tui`, since this sends event data like mouse position and graphics to your screen.
+
 ### The Keyboard
 
 Crawssembly provides direct keyboard access using `io keyboard`. The main command in this group is `io keyboard poll`, which gets the last key pressed as a key code into the input register.
