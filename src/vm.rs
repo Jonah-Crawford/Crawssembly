@@ -1050,14 +1050,12 @@ impl Cpu {
         match event::read() {
           Ok(Event::Key(k)) => {
 
-            if tick % 10_000 == 0 {
-              if k.code == KeyCode::Char('c')
-                && k.modifiers.contains(event::KeyModifiers::CONTROL)
-              {
-                interrupted_thread.store(true, std::sync::atomic::Ordering::SeqCst);
-                println!("\nExecution terminated by user.");
-                continue;
-              }
+            if k.code == KeyCode::Char('c')
+              && k.modifiers.contains(event::KeyModifiers::CONTROL)
+            {
+              interrupted_thread.store(true, std::sync::atomic::Ordering::SeqCst);
+              println!("\nExecution terminated by user.");
+              continue;
             }
 
             let code = match k.code {

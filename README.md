@@ -1171,7 +1171,7 @@ Write a program that stores a 3 letter name from the keyboard, and then output `
 
 Unlike text output, graphics allow programs to control induvidual pixels. Crawssembly provides a virtual screen using the `io screen` command group.
 
-There are 8 commands in the `io screen` group:
+There are 8 main commands in the `io screen` group:
 - `io screen x`: sets the current active X coordinate
 - `io screen y`: sets the current active Y coordinate
 - `io screen red`: sets the current red colour value
@@ -1212,15 +1212,83 @@ Write a program that outputs a smiley face.
 
 Add to your program in "Smiling Screen" to make each pixel a different colour.
 
-### Audio
+#### Extra Screen Commands
+
+There are some additional commands that are lesser used, but still useful:
+- `io screen dump`: prints a low-quality dump of the current screen output
+- `io screen erase`: clears a single pixel from the buffer
+- `io screen erasecell`: clears both the top and bottom of the active **terminal cell**
+
+> Crawssembly uses a faux-graphics system, which is actually coloured unicode blocks. Because of this, each line of the graphics output is actually 1 half of a terminal character. So running `io screen erasecell` clears the entire cell, not just one of the halfs.
+
+### Speakers
 
 Making your computer 'speak' is one of the funnest ways to get a program output. Crawssembly provides many commands to take control of your speakers using `io speaker`.
 
-The basic commands are
-- `io speaker channel`: sets the active speaker channel
-- `io speaker freq`: sets the active channel's frequency
-- `io speaker volume`: sets the active channel's volume
-- `io speaker wave`: sets the wave type of that channel ()
+The commands are:
+- `io speaker channel`: sets the active speaker channel. There are 4 channels in Crawssembly to play sounds from.
+- `io speaker freq`: sets the active channel's frequency, in Hertz
+- `io speaker volume`: sets the active channel's volume, from 0 to 100
+- `io speaker wave`: sets the wave type of that channel
+- `io speaker on`: turns on the active channel
+- `io speaker off`: turns off the active channel
+- `io speaker toggle`: toggles the on/off state of the active channel
+
+The *wave type* is a number to tell the channel what type of sound to make.
+
+| Wave Type | Wave Name | Sounds Like? |
+| --------- | --------- | ------------ |
+| 0 | Square Wave | Retro/Arcade like chords |
+| 1 | Sine Wave | Pure sound, no texture |
+| 2 | Triangle Wave | Flute-like tones |
+| 3 | Sawtooth Wave | Aggressive, harsh beeps |
+| 4 | Random Noise | Great for sound effects |
+
+Because sound is very time-dependant, you'll want to play sounds for a set period of time. You cna do this by pausing the program using `io time sleep`.
+
+> `io time sleep` pauses Crawssembly's execution for the inputted length in **milliseconds**. There are other `io time` commands which will be convered later on.
+
+Example
+
+```
+sav 100 r02             ; saves 100 to register 2, used as the sleep length in milliseconds
+
+sav 125 r01             ; saves 125 to register 1
+cal add 125 r01         ; 125 + 125 = 250
+sav r01 r03             ; saves 250 to register 3, used as the frequency value
+
+sav 0 r01               ; saves 0 to register 1, used as the speaker channel
+
+io speaker channel r01  ; sets active speaker channel to '0'
+io speaker freq r03     ; sets active speaker to 250Hz
+
+io speaker on rff       ; turns on speaker
+io time sleep r01       ; waits 100ms
+
+io speaker off rff      ; turns off speaker
+io time sleep r01       ; waits 100ms
+
+io speaker on rff       ; turns on speaker
+io time sleep r01       ; waits 100mm
+
+io speaker off rff      ; turns off speaker
+```
+
+> All speakers stop playing when the program ends or is forcefully quit.
+
+#### Activity: Piano Notes
+
+Write a program to play a 440Hz tone for 1 second (1000 milliseconds).
+
+#### Advanced Activity: Scales
+
+Write a program that plays every note in an octave. You can use [this wikipedia article](https://en.wikipedia.org/wiki/Piano_key_frequencies) to find the frequencies.
+
+> Real musical/piano notes increase by the twelfth-root of 2. Because Crawssembly can't use fractional numbers, the frequency values have to be rounded to the nearest whole number.
+
+
+
+
 
 
 
