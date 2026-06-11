@@ -1,17 +1,2 @@
-sav 127 r01
-sav 1 r02
-io screen clear rff
-io screen x r02
-io screen y r02
-io screen r r01
-io screen g r01
-io screen b r01
-io screen pixel rff
-io screen present rff
-
 1
-io keyboard poll r01
-cal add -27 r01
-jml 1
-jmg 1
-stp
+jmp 1

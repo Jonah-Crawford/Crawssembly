@@ -7,11 +7,10 @@ use std::fs::{File, OpenOptions};
 use std::io::{BufWriter, Read, Seek, SeekFrom, Write};
 use std::thread;
 use std::collections::VecDeque;
-use ctrlc;
 use std::sync::{
   Arc,
   Mutex,
-  atomic::{AtomicBool, Ordering},
+  atomic::AtomicBool,
 };
 
 use crossterm::{
@@ -1040,6 +1039,9 @@ impl Cpu {
       );
     }
 
+    let interrupted = Arc::new(AtomicBool::new(false));
+    let interrupted_thread = interrupted.clone();
+
     let key_state = self.last_key.clone();
     let mouse_state = self.mouse.clone();
 
@@ -1047,6 +1049,17 @@ impl Cpu {
       loop {
         match event::read() {
           Ok(Event::Key(k)) => {
+
+            if tick % 10_000 == 0 {
+              if k.code == KeyCode::Char('c')
+                && k.modifiers.contains(event::KeyModifiers::CONTROL)
+              {
+                interrupted_thread.store(true, std::sync::atomic::Ordering::SeqCst);
+                println!("\nExecution terminated by user.");
+                continue;
+              }
+            }
+
             let code = match k.code {
               KeyCode::Up => -1,
               KeyCode::Down => -2,
@@ -1113,13 +1126,6 @@ impl Cpu {
       }
     });
 
-    let running = Arc::new(AtomicBool::new(true));
-    let running_for_handler = Arc::clone(&running);
-
-    ctrlc::set_handler(move || {
-      running_for_handler.store(false, Ordering::SeqCst);
-    }).expect("failed to set Ctrl+C handler");
-
     let mut sys = System::new_all();
     sys.refresh_cpu_all();
 
@@ -1152,6 +1158,11 @@ impl Cpu {
 
     loop {
       let len = self.prog_len(program, prog);
+
+      if tick % 10_000 == 0 {
+        if interrupted.load(std::sync::atomic::Ordering::SeqCst) { break; }
+      }
+
       if pc < 0 || pc >= len {
         break;
       }
@@ -1163,23 +1174,6 @@ impl Cpu {
         let _ = read_line();
       } else if speed > 0 {
         std::thread::sleep(Duration::from_secs_f64(1.0 / speed as f64));
-      }
-
-      if tick % 10_000 == 0 {
-        if let Ok(true) = event::poll(std::time::Duration::from_millis(0)) {
-          if let Ok(event::Event::Key(event::KeyEvent { code, modifiers, .. })) = event::read() {
-            let ctrl_c_combo =
-              code == KeyCode::Char('c') && modifiers.contains(event::KeyModifiers::CONTROL);
-
-            let raw_ctrl_c_byte =
-              code == KeyCode::Char('\u{3}');
-
-            if ctrl_c_combo || raw_ctrl_c_byte {
-              println!("\nExcecution interrupted by CTRL+C");
-              running.store(false, Ordering::SeqCst);
-            }
-          }
-        }
       }
 
       if let Some(trace) = trace.as_mut() {
@@ -1196,7 +1190,7 @@ impl Cpu {
       prog = next_prog;
       pc = next_pc;
 
-      if did_stop || !running.load(Ordering::SeqCst) {
+      if did_stop {
         break;
       }
     }
