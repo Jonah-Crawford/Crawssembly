@@ -78,25 +78,23 @@ Congratulations, you are taking the first steps to learning Crawssembly!
 
 By the end of this guide you will understand:
 
-✓ Binary and hexadecimal
+✅ Binary and hexadecimal
 
-✓ Registers
+✅ Registers
 
-✓ Memory
+✅ Memory
 
-✓ Variables
+✅ Arithmetic
 
-✓ Arithmetic
+✅ Program flow
 
-✓ Program flow
+✅ Input and output
 
-✓ Input and output
+✅ How high-level languages work underneath
 
-✓ How high-level languages work underneath
+✅ Key computing concepts
 
-✓ Key computing concepts
-
-✓ The fundamentals of CPU architecture
+✅ The fundamentals of CPU architecture
 
 ## Why not just learn real assembly?
 
@@ -105,11 +103,11 @@ Just like riding a bike, you practise using the slower stabiliser wheels before 
 
 | Feature | x86 | ARM | Crawssembly |
 | ------- | --- | --- | ----------- |
-| Beginner Friendly | X | X | ✓ |
-| Small Instruction Set | X | ✓ | ✓ |
-| Direct Hardware Concepts | ✓ | ✓ | ✓ |
-| Easy Toolchain | X | ✓ | ✓ |
-| Educational Focus | X | X | ✓ |
+| Beginner Friendly | ❌ | ❌ | ✅ |
+| Small Instruction Set | ❌ | ✅ | ✅ |
+| Direct Hardware Concepts | ✅ | ✅ | ✅ |
+| Easy Toolchain | ❌ | ✅ | ✅ |
+| Educational Focus | ❌ | ❌ | ✅ |
 
 ## Assembly; What's the deal?
 
@@ -145,12 +143,9 @@ Think about a car's gear stick, it would be easier to use if there were only 2 g
 
 It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
 
-9 + 1 becomes 10
-
-99 + 1 becomes 100
-
-999 + 1 becomes 1000
-
+9 + 1 becomes 10  
+99 + 1 becomes 100  
+999 + 1 becomes 1000  
 etc...
 
 It's clear that place value works in 10's, the number '8' could represent 8 1's, 8 10's 8 100's, 8 1000's etc... depending on where it is in the number.
@@ -161,14 +156,10 @@ It's clear that place value works in 10's, the number '8' could represent 8 1's,
 
 The example above shows how the number 83072 is equal to
 
-8 * 10 000 +
-
-3 * 1 000 +
-
-0 * 100 + 
-
-7 * 10 +
-
+8 * 10 000 +  
+3 * 1 000 +  
+0 * 100 +  
+7 * 10 +  
 2 * 1
 
 For binary, only **2 digits** are used. These are 0 for 'Off', and 1 for 'On'. Because only 2 symbols are used, place value works based on 2, not 10.
@@ -181,14 +172,10 @@ So a '1' could represent 1 1's, 1 2's, 1 4's, 1 8's, 1 16's, etc... depending on
 
 We can see that the binary number 10110 is the same as
 
-1 * 16 +
-
-0 * 8 +
-
-1 * 4 +
-
-1 * 2 +
-
+1 * 16 +  
+0 * 8 +  
+1 * 4 +  
+1 * 2 +  
 0 * 1
 
 Which, when calculated, equals 22. So 10110 in binary is the exact same as 22 in Base-10. Every number that can be made in Base-10, can be made in Base-2. There are no gaps.
@@ -212,6 +199,23 @@ Because Crawssembly stores all numbers as **32-bit** values, meaning that each n
 | -10 | 11111111 11111111 11111111 11110110 |
 
 A way to convert a positive value is by inversing all the bit values, then adding 1. We will go into more detail about this when we talk about binary operations.
+
+Another way to think about it is setting the last place value as a negative. Below is an example with Two's Complement being used on an *8-bit value*.
+
+| Place Value | -128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+| ----------- | ---- | -- | -- | -- | - | - | - | - |
+| Binary Number | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 0 |
+
+The binary number here, `11001110` is equal to
+
+1 * -127 +  
+1 * 64 +  
+0 * 32 +  
+0 * 16 +  
+1 * 8 +  
+1 * 4 +  
+1 * 2 +  
+0 * 1 = -50
 
 ### Other Number Systems
 
