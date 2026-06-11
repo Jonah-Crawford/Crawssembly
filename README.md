@@ -1153,6 +1153,22 @@ d
 64
 ```
 
+#### Activity: The New Way To Talk
+
+Write a program that prints the key you press, and make it so when `Esc` is pressed, the program ends.
+
+#### Advanced Activity: Arcade Leaderboard Name
+
+Write a program that stores a 3 letter name from the keyboard, and then output `Hello, ` followed by that name.
+
+
+
+
+
+
+
+
+
 
 
 
