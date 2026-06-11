@@ -101,6 +101,12 @@ Just like riding a bike, you practise using the slower stabiliser wheels before 
 | Easy Toolchain | ❌ | ✅ | ✅ |
 | Educational Focus | ❌ | ❌ | ✅ |
 
+## About This Document
+
+This guide is made to help you learn the basics of Crawssembly, you cna read it in any order, skip over any parts you don't like, or read the entire thing before writing a single piece of code.
+
+> Most ideas build upon eachother, so it's smart, if you're skipping around, to take a look at some important bits you may have missed that link to a later topic. (e.g. *bitfields* require you knowing about *bit masking*)
+
 ## Assembly; What's the deal?
 
 Computers are an amazing product of the information age. Billions of computers are running around the world all doing important, or not-so-important, tasks. But how do the computers know what to do?
@@ -1161,16 +1167,50 @@ Write a program that prints the key you press, and make it so when `Esc` is pres
 
 Write a program that stores a 3 letter name from the keyboard, and then output `Hello, ` followed by that name.
 
+### Graphics
 
+Unlike text output, graphics allow programs to control induvidual pixels. Crawssembly provides a virtual screen using the `io screen` command group.
 
+There are 8 commands in the `io screen` group:
+- `io screen x`: sets the current active X coordinate
+- `io screen y`: sets the current active Y coordinate
+- `io screen red`: sets the current red colour value
+- `io screen green`: sets the current green colour value
+- `io screen blue`: sets the current blue colour value
+- `io screen pixel`: updates the graphic sbuffer at (X,Y)
+- `io screen present`: sends the graphics buffer to the screen
+- `io screen clear`: clears the screen buffer
 
+> RGB values are mapped from -128 to 127, so `-128` is no colour, `0` is some colour, and `127` is all colour. This is so all colours can be made with immediate values for ease of use.
 
+> You commonly see RGB values in **Hexadecimal**, so 0xFFFFFF would be white, 0xFF0000 would be red, 0x00FF00 would be green, 0x0000FF would be blue, and 0x000000 would be black.
 
+Example:
 
+```
+sav 5 r01               ; saves 5 into register 1, used for the pixel position
+sav 127 r02             ; saves 127 into register 2, used for colouring the pixle
+io screen x r01         ; sets the X coordinate to 5
+io screen y r01         ; sets the Y coordinate to 5
 
+io screen red r02       ; sets the red colour to 127, making the colour 0xFF0000
+io screen green r02     ; sets the green colour to 127, making the colour 0xFFFF00
+io screen blue r02      ; sets the blue colour to 127, making the colour 0xFFFFFF
 
+io screen pixel         ; updates the graphics buffer, pixel at (5,5) now has a colour of 0xFFFFFF (i.e. pure white)
 
+io screen present       ; sends the graphics buffer to the screen
+```
 
+> Because graphics are being used, `craw myfile.craw --tui` should be used for best results. You can also set the size of the graphics screen using `craw myfile.craw --tui --screen WIDTHxHEIGHT`, and replace `WIDTHxHEIGHT` with your screen dimensions.
+
+#### Activity: Smiling Screen
+
+Write a program that outputs a smiley face.
+
+#### Advanced Activity: Colourful Terminal
+
+Add to your program in "Smiling Screen" to make each pixel a different colour.
 
 
 
