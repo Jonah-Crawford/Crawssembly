@@ -58,7 +58,7 @@ cargo install --path .
 
 To run a Crawssembly file (These are `.craw` files), simply run `craw <file.craw>` and swap `<file.craw>` with the name of the Crawssembly file you wish to edit.
 
-Use `craw --help` to display helpful use information.
+Use `craw --help` to display helpful use information about the different ways to run Crawssembly files.
 
 ## Your First Program
 
