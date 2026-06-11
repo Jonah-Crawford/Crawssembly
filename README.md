@@ -1135,6 +1135,7 @@ Before now, program outputs have used the `ref` register to send raw ASCII codes
 - `io text int`: Shows the actual value inside the input register.
 - `io text newline`: Shorthand for moving the text cursor to a new line.
 - `io text hex`: Shows the hex value stored inside the input register.
+- `io text error`: Shows the error code, which is stored in `ree`.
 
 Example
 
@@ -1307,8 +1308,35 @@ Because lots of systems are **32-bit**, meaning that the data length in the CPU 
 
 This is called the **2038 problem**, or **Y2K38**. And because it affects many more systems than Y2K, it's actually more dangerous, and harder to fix as low-level systems are used everywhere. But Crawssembly is prepared. Using `io time low`, only the value bits are extracted, not the sign. So the time can be used witout worrying about negative time.
 
+## Register Constants
 
+Like mentioned before, registers from `rf0` to `rfe` have pre-loaded constants.
 
+All constants are scaled by **100 million** to preserve their decimal places. 314159265‎ is much more useful as pi than 3.
+
+| Register | Value | Constant |
+| -------- | ----- | -------- |
+| `rf0` | 314159265 | π |
+| `rf1` | 271828182 | e |
+| `rf2` | 30102999 | log₁₀(2) |
+| `rf3` | 47712125 | log₁₀(3) |
+| `rf4` | 69897000 | log₁₀(5) |
+| `rf5` | 69314718 | ln(2) |
+| `rf6` | 109861228 | ln(3) |
+| `rf7` | 160943791 | ln(5) |
+| `rf8` | 141421356 | √2 |
+| `rf9` | 173205080 | √3 |
+| `rfa` | 223606797 | √5 |
+| `rfb` | 125992105 | ∛2 |
+| `rfc` | 144224957 | ∛3 |
+| `rfd` | 170997594 | ∛5 |
+| `rfe` | 2147483647 | 2^31 - 1 |
+
+> Remember, 2^31 -1 is the largest positive number that can be stored in **32-bit** values, like what Crawssembly uses.
+
+## Congratulations!
+
+You've learnt all the Crawssembly instructions! That's no small feat, especially for a beginner. Great job!
 
 
 
