@@ -78,22 +78,14 @@ Congratulations, you are taking the first steps to learning Crawssembly!
 
 By the end of this guide you will understand:
 
-✅ Binary and hexadecimal
-
-✅ Registers
-
-✅ Memory
-
-✅ Arithmetic
-
-✅ Program flow
-
-✅ Input and output
-
-✅ How high-level languages work underneath
-
-✅ Key computing concepts
-
+✅ Binary and hexadecimal  
+✅ Registers  
+✅ Memory  
+✅ Arithmetic  
+✅ Program flow  
+✅ Input and output  
+✅ How high-level languages work underneath  
+✅ Key computing concepts  
 ✅ The fundamentals of CPU architecture
 
 ## Why not just learn real assembly?
@@ -225,15 +217,10 @@ Another counting system regularly used in computing is **Hexadecimal**, also cal
 | ----------- | --- | -- | - |
 | Hexadecimal |  B  |  3 | F |
 
-B3F =
-
-11 * 256 + 
-
-3 * 16 +
-
-15 * 1
-
-= 2623
+B3F =  
+11 * 256 +  
+3 * 16 +  
+15 * 1 = 2623
 
 Hexadecimal is used because it neatly condenses binary numbers, a 4 digit binary number can be compressed into a single hexadecimal digit.
 
