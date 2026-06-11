@@ -1212,6 +1212,20 @@ Write a program that outputs a smiley face.
 
 Add to your program in "Smiling Screen" to make each pixel a different colour.
 
+### Audio
+
+Making your computer 'speak' is one of the funnest ways to get a program output. Crawssembly provides many commands to take control of your speakers using `io speaker`.
+
+The basic commands are
+- `io speaker channel`: sets the active speaker channel
+- `io speaker freq`: sets the active channel's frequency
+- `io speaker volume`: sets the active channel's volume
+- `io speaker wave`: sets the wave type of that channel ()
+
+
+
+
+
 
 
 
@@ -1226,4 +1240,3 @@ Add to your program in "Smiling Screen" to make each pixel a different colour.
 
 
 *Crawssembly is a product of CRAW SYSTEMS (C) 2026*
-
