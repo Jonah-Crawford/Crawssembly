@@ -88,6 +88,12 @@ By the end of this guide you will understand:
 ✅ Key computing concepts  
 ✅ The fundamentals of CPU architecture
 
+The biggest thing you will learn is
+
+**Programming Languages Are A Lie**
+
+Because computers don't actually know what your typing. In reality, computers only know 2 things: On, and Off. Crawssembly will help you learn why this is, and how people have turned a collection of switches into one of the most complex man-made objects in the universe.
+
 ## Why not just learn real assembly?
 
 Real assembly is designed to be run, not explained. Crawssembly does not aim to be a replacement for real assembly languages, rather a teaching tool.
@@ -103,9 +109,9 @@ Just like riding a bike, you practise using the slower stabiliser wheels before 
 
 ## About This Document
 
-This guide is made to help you learn the basics of Crawssembly, you cna read it in any order, skip over any parts you don't like, or read the entire thing before writing a single piece of code.
+This guide is made to help you learn the basics of Crawssembly, you can read it in any order, skip over any parts you don't like, or read the entire thing before writing a single piece of code.
 
-> Most ideas build upon eachother, so it's smart, if you're skipping around, to take a look at some important bits you may have missed that link to a later topic. (e.g. *bitfields* require you knowing about *bit masking*)
+> Most ideas build upon each other, so it's smart, if you're skipping around, to take a look at some important bits you may have missed that link to a later topic. (e.g. *bitfields* require you knowing about *bit masking*)
 
 ## Assembly; What's the deal?
 
@@ -206,7 +212,7 @@ Another way to think about it is setting the last place value as a negative. Bel
 
 The binary number here, `11001110` is equal to
 
-1 * -127 +  
+1 * -128 +  
 1 * 64 +  
 0 * 32 +  
 0 * 16 +  
@@ -277,6 +283,8 @@ To use Crawssembly, these practises are no different.
 
 Every line of Crawssembly is a dedicated instruction. Every line is executed one after another in the exact order the program is written in. The computer reads each line, converts the instruction into a binary number, and executes the command. This is the **Fetch-Decode-Execute** loop, the fundamental process of the computer's Central Processing Unit (CPU)
 
+The simplest instruction is `nop`. Typing this into a file and running doesn't do anything because this is the **no operation** instruction. It doesn't do anything. Every empty line compiles to a `nop` command when the `.craw` file is compiled.
+
 ### Registers
 
 The most basic instruction is storing data, which is stored as numbers, which is stored in cells. Each storage cell, which is called a **register**, holds a value, much like a variable in a higher language.
@@ -309,7 +317,7 @@ This program has 5 parts:
 
 Register codes include:
 
-- `r01` is regsiter 1, the *2nd* regsiter available
+- `r01` is register 1, the *2nd* regsiter available
 - `r0a` is register 10, the *11th* register available
 - `r10` is register 16, the *17th* register available
 
@@ -889,6 +897,8 @@ Storage addresses are commonly given in **hexadecimal** format, such as `0xF58`.
 
 Because registers can hold values between `- 2^31` and `2^31 - 1` (This is the *signed 32-bit limit*), the largest address is **0xFFFFFFFF**. That's over 4 billion addresses available!
 
+> Addresses can theoretically range up to 0xFFFFFFFF, although the VM may provide less memory in practice. If your computer has 8GB of RAM, Crawssembly would take all of it, and would crash your machine!
+
 ### Memory
 
 You've probably heard of RAM, or Random Access Memory. RAM is a type of memory used by computers for large amounts of data.
@@ -931,6 +941,11 @@ Disk space is used for data you don't want to lose. These can be results of a lo
 
 Disk commands follow the same form as memory commands.
 
+- `io disk addr` sets the active disk address that Crawssembly is considering. All `io disk` commands act on this address.
+- `io disk write` sets the value of the active disk address to whatever is in the input register.
+- `io disk read` saves the value of the active disk address to the given register.
+- `io disk save` forces the disk file to update, this can take a while so only do this if you suspect the program won't exit cleanly.
+
 Example
 
 ```
@@ -944,11 +959,7 @@ io disk addr r01        ; sets the active disk address to the value in r01 (i.e.
 io disk read ref        ; reads the disk address contents into the text output register
 ```
 
-`io disk addr` sets the active disk address that Crawssembly is considering. All `io disk` commands act on this address.
-
-`io disk write` sets the value of the active disk address to whatever is in the input register.
-
-`io disk read` saves the value of the active disk address to the given register.
+> Disk data is saved to the file `storage.bin`, deleting this file will cause any saved data to be removed, so take care during file cleanup!
 
 #### Activity: Long Live The Data
 
@@ -1135,7 +1146,6 @@ Before now, program outputs have used the `ref` register to send raw ASCII codes
 - `io text int`: Shows the actual value inside the input register.
 - `io text newline`: Shorthand for moving the text cursor to a new line.
 - `io text hex`: Shows the hex value stored inside the input register.
-- `io text error`: Shows the error code, which is stored in `ree`.
 
 Example
 
@@ -1337,6 +1347,116 @@ All constants are scaled by **100 million** to preserve their decimal places. 31
 ## Congratulations!
 
 You've learnt all the Crawssembly instructions! That's no small feat, especially for a beginner. Great job!
+
+The rest of this section is used as quick-reference and help.
+
+### Quick Reference
+
+`sav IMMEDIATE REGISTER` or `sav REGISTER REGISTER`: Saves the value of the first argument to the register in the second argument.  
+`cal OPERATION IMMEDIATE REGISTER` or `cal OPERATION REGISTER REGISTER`: Calculates 'VALUE/REGISTER OPERATION REGISTER', and saves the result to `r01`.  
+`LABEL`: Creates a label with that value pointing to that line number.  
+`jmp LABEL`: Jumps unconditionally to LABEL.  
+`jmg LABEL`: Jumps to LABEL if `r01` is greater than 0.  
+`jmz LABEL`: Jumps to LABEL if `r01` is equal to 0.  
+`jml LABEL`: Jumps to LABEL if `r01` is less than 0.  
+`ifg LABEL`: Continues if `r01` is greater than 0.  
+`ifz LABEL`: Continues if `r01` is equal to 0.  
+`ifl LABEL`: Continues if `r01` is less than 0.  
+`rmv LABEL`: Removes the label from memory, and ends any `if` commands.  
+`fgo IMMEDIATE`: Jumps to the line number, if `0` used, jump to value in `r01`.  
+`stp`: Stops the program.  
+`nop`: Does nothing.
+
+`io text`
+- `io text char`: Shows the character code stored in the input register.
+- `io text int`: Shows the integer value stored in the input register.
+- `io text newline`: Drops the text cursor to the next terminal line.
+- `io text hex`: Shows the value of the input register as a Hexadecimal value.
+
+`io time`
+- `io time unix`: Extracts the current UNIX timestamp into the input register.
+- `io time low`: Extracts the value-only bits of the UNIX timestamp, avoids potential negative values.
+- `io time sleep`: Pauses execution for the inputted number of milliseconds.
+
+`io screen`
+- `io screen x`: Sets the current active X coordinate.
+- `io screen y`: Sets the current active Y coordinate.
+- `io screen pixel`: Updates the active pixel in the graphics buffer.
+- `io screen clear`: Wipes the graphics buffer clean.
+- `io screen dump`: Print the current screen as a simple character field.
+- `io screen present`: Sends the graphics buffer to the screen.
+- `io screen red`: Sets the red RGB code of the active pixel.
+- `io screen green`: Sets the green RGB code of the active pixel.
+- `io screen blue`: Sets the blue RGB code of the active pixel.
+- `io screen erase`: Clears the active pixel from the graphics buffer.
+- `io screen erasecell`: Clears the terminal cell from the graphics buffer.
+
+`io keyboard`
+- `io keyboard poll`: Gets the last key pressed as a code into the input register.
+
+`io mouse`
+- `io mouse x`: Gets the mouse X coordinate into the input register.
+- `io mouse y`: Gets the mouse Y coordinate into the input register.
+- `io mouse btn`: Gets the bitfield of Left, Right, and Middle buttons into the input register.
+
+`io speaker`
+- `io speaker channel`: Sets the active channel (0-3) to the value in the input register.
+- `io speaker freq`: Sets the active channel's frequency, in Hertz, to the value in the input register.
+- `io speaker volume`: Sets the active channel's volume from, 0-100, to the value in the input register.
+- `io speaker wave`: Sets the active channel's wave type from Square, Sine, Triangle, Sawtooth, or Noise.
+- `io speaker on`: Turns on the active speaker channel.
+- `io speaker off`: Turns off the active speaker channel.
+- `io speaker toggle`: Toggles the on/off state of the active speaker channel.
+
+`io mem`
+- `io mem addr`: Sets the active memory address to the value in the input register.
+- `io mem read`: Reads the value of the active memory address into the input register.
+- `io mem write`: Writes the value of the input register into the active memory address.
+
+`io disk`
+- `io disk addr`: Sets the active disk address to the value in the input register.
+- `io disk read`: Reads the value of the active disk address into the input register.
+- `io disk write`: Writes the value of the input register into the active disk address.
+- `io disk save`: Forces the `storage.bin` file to update it's contents.
+
+### Common Mistakes
+
+- Registers start at `r00`, not `r01`
+- ref outputs [ASCII](https://asciitable.com/), not numbers
+- Screen updates need `io screen present`
+- Labels are not variables, they are line pointers
+- Literals must be between `-128` and `127`
+- Infinite loops require CTRL+C to break
+- Memory and disk are different, memory is volitile while disk is permanent
+
+You can stop at this point and you'd be fine. But to *really* understand what computers do, we have to peel back another abstraction layer.
+
+## Sorry, Crawssembly is a lie.
+
+Remember how one of the first things that was said was that programming languages are a lie? That goes for Crawssembly too. The computer has no idea what `sav` or `cal` is, what it means, or how it works.
+
+In reality, all programming languages compile to assembly, which then translate to raw binary. This was mentioned before, but now we'll actually get into the nitty gritty.
+
+Crawssembly instructions all translate to a binary number of length **21**, so there are **2^21** possible Crawssembly commands, this accounts for all the various combinations of register codes and immediate values.
+
+### Binary Breakdown
+
+| Binary Bit Range | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
