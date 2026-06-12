@@ -1010,9 +1010,9 @@ This program saves 'Hi' to `output.bin`.
 
 ## Devices
 
-`io` is the largest group of commands, used to interact with data outside of the CPU, such as speakers, keyboards, and storage. All `io` commands take a register value as input, never an immediate value.
+`io` is the largest group of commands, used to interact with data outside the CPU, such as speakers, keyboards, and storage. All `io` commands take a register value as input, never an immediate value.
 
-Because `io` comamnds are dependant on other devices, commands might fail if there is an issue. This is why register `ree` is used for *error codes*
+Because `io` commands are dependent on other devices, commands might fail if there is an issue. This is why register `ree` is used for *error codes*
 
 | Code | Name | Description |
 | ---- | ---- | ----------- |
@@ -1042,7 +1042,7 @@ Much like registers, every cell in storage has a number based on it's position. 
 
 Like registers, the first cell has an address of 0, the second cell has an address of 1, etc...
 
-Storage addresses are commonly given in **hexadecimal** format, such as `0xF58`. This is because hex perfectly matches how computer hardware is layed out, while keeping the address short enough for humans to read.
+Storage addresses are commonly given in **hexadecimal** format, such as `0xF58`. This is because hex perfectly matches how computer hardware is laid out, while keeping the address short enough for humans to read.
 
 Because registers can hold values between `- 2^31` and `2^31 - 1` (This is the *signed 32-bit limit*), the largest address is **0xFFFFFFFF**. That's over 4 billion addresses available!
 
@@ -1055,7 +1055,7 @@ It's called 'Random Access' because the computer can read and write to any piece
 
 Like registers, memory is empty on startup. To write to a memory address, you must use a command in the `io` group.
 
-For using mamory, we must use `io mem`.
+For using memory, we must use `io mem`.
 
 Example
 
@@ -1086,7 +1086,7 @@ Write a program to loop over the numbers 1 to 10, saving each number to it's own
 
 ### Disk
 
-Disk space is used for data you don't want to lose. These can be results of a long program, long files, photos, videos, soundbytes, etc...
+Disk space is used for data you don't want to lose. These can be results of a long program, long files, photos, videos, etc...
 
 Disk commands follow the same form as memory commands.
 
@@ -1116,11 +1116,11 @@ Write one program that saves a piece of data to disk. Then write a new program t
 
 #### Advanced Activity: My Long List
 
-Write one program to loop over the numbers from 0 to 10, saving each to a disk address. Then write a new program to read these vaules in reverse order, and output each one.
+Write one program to loop over the numbers from 0 to 10, saving each to a disk address. Then write a new program to read these values in reverse order, and output each one.
 
 ### What high-level programs do
 
-High-level programs use memory all the time. When you type somthing like `5 + 10` the computer has no clue how large that result will be without executing it. So the program allocates memory for `5`, `10`, and the result.
+High-level programs use memory all the time. When you type something like `5 + 10` the computer has no clue how large that result will be without executing it. So the program allocates memory for `5`, `10`, and the result.
 
 Arrays (or lists) are just a group of memory addresses.
 For example, an array like `[1, 2, 3]` is really just a set of memory addresses.
@@ -1162,7 +1162,7 @@ All variables are like this behind the fancy symbols and abstraction, just a gro
 
 ## Input
 
-If you've ever learnt a higher programming langauge, chances are they taught you how to get user input very early on. This is sensible, as the user gets near-instant gratification from adding thier own name to a greeting program, or telling the computer how old they are to get a semi-personalised message.
+If you've ever learnt a higher programming language, chances are they taught you how to get user input very early on. This is sensible, as the user gets near-instant gratification from adding their own name to a greeting program, or telling the computer how old they are to get a semi-personalised message.
 So why is user input so far in the learning path for Crawssembly?
 
 Because input uses the keyboard and mouse, there is a hidden layer between what you type, and that data being processed by the CPU. Much like storage, the keyboard is a seperate device to the core computer. Because of this, input handling builds upon what you already know about more basic data manipulation.
@@ -1195,7 +1195,7 @@ stp                             ; stops the program if the key code is exactlly 
 
 This program shows the last key printed by outputting to `ref`, and ends the loop when `Esc` is pressed.
 
-> Remember, `ref` outpus the [ASCII code](https://www.asciitable.com/) of the key pressed, not the real raw value of that key. Pressing Enter won't print 'Enter' to the screen!
+> Remember, `ref` outputs the [ASCII code](https://www.asciitable.com/) of the key pressed, not the real raw value of that key. Pressing Enter won't print 'Enter' to the screen!
 
 ### The Mouse
 
@@ -1206,7 +1206,7 @@ Almost all basic mice output 4 streams of data:
 - Right Button
 
 The `io mouse` command group captures mouse events using 3 commands:
-- `io mouse x`: extracts current mouse X positon, relative to the screen's top-left corner
+- `io mouse x`: extracts current mouse X position, relative to the screen's top-left corner
 - `io mouse y`: extracts current mouse Y position, relative to the screen's top-left corner
 - `io mouse btn`: creates a **bitfield** for the left, right, and middle buttons in the order.
 
@@ -1223,9 +1223,9 @@ io mouse y r02
 
 This example stores the (x, y) location as (`r01`, `r02`).
 
-#### Button Bitfield
+#### Button Bit field
 
-A **bitfield** is a single binary number which encodes multiple values. Instead of using a single bit for if the left mouse button is being pressed, another for the right button being pressed, and another again for the middle button, we can merge these 3 numbers into a single number.
+A **bit field** is a single binary number which encodes multiple values. Instead of using a single bit for if the left mouse button is being pressed, another for the right button being pressed, and another again for the middle button, we can merge these 3 numbers into a single number.
 
 | Left Button | Right Button | Middle Button | Bitfield | Base-10 Number |
 | ----------- | ------------ | ------------- | -------- | -------------- |
@@ -1251,7 +1251,7 @@ This program extracts the *left mouse* button into `r01`.
 
 > We covered bit masks earlier on when talking about binary operations.
 
-Bit masks can be used to expand the mouse bitfield into seperate registers.
+Bit masks can be used to expand the mouse bit field into separate registers.
 
 Example
 
@@ -1279,13 +1279,13 @@ Write a program that shows "L" if the left button is pressed, "R" if the right b
 
 ## Output
 
-Inputting values into your program is all well and good, but it's pretty useless if you can't get anythin meaningful back. Crawssembly can control both your screen, and your speakers.
+Inputting values into your program is all well and good, but it's pretty useless if you can't get anything meaningful back. Crawssembly can control both your screen, and your speakers.
 
 ### The Screen
 
 The screen is a great all-purpose viewing device. Not only can it show text, it can show graphics and symbols.
 
-> Crawssembly's screen is contained within the terminal. This is to protect your screen's contents outside of the terminal, and to allow outputs to be easily seen.
+> Crawssembly's screen is contained within the terminal. This is to protect your screen's contents outside the terminal, and to allow outputs to be easily seen.
 
 #### Text
 
@@ -1337,7 +1337,7 @@ There are 8 main commands in the `io screen` group:
 - `io screen red`: sets the current red colour value
 - `io screen green`: sets the current green colour value
 - `io screen blue`: sets the current blue colour value
-- `io screen pixel`: updates the graphic sbuffer at (X,Y)
+- `io screen pixel`: updates the graphics buffer at (X,Y)
 - `io screen present`: sends the graphics buffer to the screen
 - `io screen clear`: clears the screen buffer
 
@@ -1349,7 +1349,7 @@ Example:
 
 ```
 sav 5 r01               ; saves 5 into register 1, used for the pixel position
-sav 127 r02             ; saves 127 into register 2, used for colouring the pixle
+sav 127 r02             ; saves 127 into register 2, used for colouring the pixel
 io screen x r01         ; sets the X coordinate to 5
 io screen y r01         ; sets the Y coordinate to 5
 
@@ -1379,7 +1379,7 @@ There are some additional commands that are lesser used, but still useful:
 - `io screen erase`: clears a single pixel from the buffer
 - `io screen erasecell`: clears both the top and bottom of the active **terminal cell**
 
-> Crawssembly uses a faux-graphics system, which is actually coloured unicode blocks. Because of this, each line of the graphics output is actually 1 half of a terminal character. So running `io screen erasecell` clears the entire cell, not just one of the halfs.
+> Crawssembly uses a faux-graphics system, which is actually coloured Unicode blocks. Because of this, each line of the graphics output is actually 1 half of a terminal character. So running `io screen erasecell` clears the entire cell, not just one of the halfs.
 
 ### Speakers
 
@@ -1404,9 +1404,9 @@ The *wave type* is a number to tell the channel what type of sound to make.
 | 3 | Sawtooth Wave | Aggressive, harsh beeps |
 | 4 | Random Noise | Great for sound effects |
 
-Because sound is very time-dependant, you'll want to play sounds for a set period of time. You cna do this by pausing the program using `io time sleep`.
+Because sound is very time-dependent, you'll want to play sounds for a set period of time. You cna do this by pausing the program using `io time sleep`.
 
-> `io time sleep` pauses Crawssembly's execution for the inputted length in **milliseconds**. There are other `io time` commands which will be convered later on.
+> `io time sleep` pauses Crawssembly's execution for the inputted length in **milliseconds**. There are other `io time` commands which will be covered shortly.
 
 Example
 
@@ -1442,7 +1442,7 @@ Write a program to play a 440Hz tone for 1 second (1000 milliseconds).
 
 #### Advanced Activity: Scales
 
-Write a program that plays every note in an octave. You can use [this wikipedia article](https://en.wikipedia.org/wiki/Piano_key_frequencies) to find the frequencies.
+Write a program that plays every note in an octave. You can use [this ikipedia article](https://en.wikipedia.org/wiki/Piano_key_frequencies) to find the frequencies.
 
 > Real musical/piano notes increase by the twelfth-root of 2. Because Crawssembly can't use fractional numbers, the frequency values have to be rounded to the nearest whole number.
 
@@ -1461,15 +1461,15 @@ The **UNIX timestamp**, or **UNIX Epoch** is the starting point for measuring ti
 
 This time was selected as a nice round start point for the early development of the UNIX operating system in the 1970's, the direct ancestor of the most dominant modern operating systems in use today.
 
-`io time low` is a seperate command due to binary limits. If you were alive before 2000, you would have remembered the *Y2K* bug, where early programs that used only 2 digits for the year (e.g. '99' for '1999') would fail in the new millennium. A similar, but different issue occurs because of the limit of binary numbers.
+`io time low` is a separate command due to binary limits. If you were alive before 2000, you would have remembered the *Y2K* bug, where early programs that used only 2 digits for the year (e.g. '99' for '1999') would fail in the new millennium. A similar, but different issue occurs because of the limit of binary numbers.
 
 Because lots of systems are **32-bit**, meaning that the data length in the CPU is 32-bits of binary, the largest positive number this can take is around 2.15 billion. The UNIX timestamp reaches this number of seconds early in 2038. Once we go over that point, the timestamp will roll over into negative numbers. This is an example of **underflow**. This causes the timestamp to point to December 1901.
 
-This is called the **2038 problem**, or **Y2K38**. And because it affects many more systems than Y2K, it's actually more dangerous, and harder to fix as low-level systems are used everywhere. But Crawssembly is prepared. Using `io time low`, only the value bits are extracted, not the sign. So the time can be used witout worrying about negative time.
+This is called the **2038 problem**, or **Y2K38**. And because it affects many more systems than Y2K, it's actually more dangerous, and harder to fix as low-level systems are used everywhere. But Crawssembly is prepared. Using `io time low`, only the value bits are extracted, not the sign. So the time can be used without worrying about negative time.
 
 ## Register Constants
 
-Like mentioned before, registers from `rf0` to `rfe` have pre-loaded constants.
+Like mentioned before, registers from `rf0` to `rfe` have preloaded constants.
 
 All constants are scaled by **100 million** to preserve their decimal places. 314159265‎ is much more useful as pi than 3.
 
@@ -1495,7 +1495,7 @@ All constants are scaled by **100 million** to preserve their decimal places. 31
 
 ## Congratulations!
 
-You've learnt all the Crawssembly instructions! That's no small feat, especially for a beginner. Great job!
+You've learned all the Crawssembly instructions! That's no small feat, especially for a beginner. Great job!
 
 The rest of this section is used as quick-reference and help.
 
@@ -1674,10 +1674,10 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io screen blue` | `0010` | `1000` | `01110 0010 1000 rrrrrrrr` | Sets the blue colour value of the active coordinates of the graphics buffer |
 | `io screen erase` | `0010` | `1001` | `01110 0010 1001 rrrrrrrr` | Clears the pixel in the graphics buffer at the active coordinates |
 | `io screen erasecell` | `0010` | `1010` | `01110 0010 1010 rrrrrrrr` | Clears the entire terminal cell of the active coordinates in the graphics buffer |
-| `io keyboard poll` | `0011` | `0000` | `01110 0011 0000 rrrrrrrr` | Extracts the last keycode pressed into input register |
+| `io keyboard poll` | `0011` | `0000` | `01110 0011 0000 rrrrrrrr` | Extracts the last key code pressed into input register |
 | `io mouse x` | `0100` | `0000` | `01110 0100 0000 rrrrrrrr` | Extracts current mouse X coordinate into input register |
 | `io mouse y` | `0100` | `0001` | `01110 0100 0001 rrrrrrrr` | Extracts current mouse Y coordinate into input register |
-| `io mouse btn` | `0100` | `0010` | `01110 0100 0010 rrrrrrrr` | Extracts button bitfield into input register (Left, Right, Middle) |
+| `io mouse btn` | `0100` | `0010` | `01110 0100 0010 rrrrrrrr` | Extracts button bit field into input register (Left, Right, Middle) |
 | `io speaker channel` | `0101` | `0000` | `01110 0101 0000 rrrrrrrr` | Sets the active speaker channel to the value in input register |
 | `io speaker freq` | `0101` | `0001` | `01110 0101 0001 rrrrrrrr` | Sets active speaker frequency to value in input register |
 | `io speaker volume` | `0101` | `0010` | `01110 0101 0010 rrrrrrrr` | Sets volume (0-100) of active speaker to value in input register |
@@ -1697,7 +1697,7 @@ Most instructions follow the form of `00 000 00000000 00000000`
 
 Crawssembly isn't real assembly, since your real CPU can't understand the raw binary. So Crawssembly runs in it's own **VM (Virtual Machine)**.
 
-The VM is programmed in **Rust**, a language that focuses on speed and safety. Because of those qualities, it was chosen for Crawssembly to create fast, but safe, programs. The perfect testing/learning environemnt to explore low-level thinking.
+The VM is programmed in **Rust**, a language that focuses on speed and safety. Because of those qualities, it was chosen for Crawssembly to create fast, but safe, programs. The perfect testing/learning environment to explore low-level thinking.
 
 #### The Pipeline
 
@@ -1705,7 +1705,7 @@ The VM is in two parts, the **Compiler** and the **Executioner**.
 
 The Compiler goes through each line of the program, and converts it from Crawssembly to the binary machine code.
 
-The Executioner reads each binary code, decodes it into seperate blocks, and executes the instuction, in the **Fetch-Decode-Execute** cycle.
+The Executioner reads each binary code, decodes it into separate blocks, and executes the instruction, in the **Fetch-Decode-Execute** cycle.
 
 ```
                            ┌───────────────── Executioner ─────────────────┐
