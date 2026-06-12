@@ -1,7 +1,5 @@
 # Crawssembly: The beginner's gateway to low-level thinking.
 
-![Documentation In Construction](https://img.shields.io/badge/Documentation-In_Construction-blue)
-
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
 Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
