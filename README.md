@@ -1482,7 +1482,7 @@ Let's use `sav 5 r01` as an example. Now we know that it means to save the value
 
 #### Core Instruction Codes
 
-| Instruction      |             Binary pattern | Meaning                                       |
+| Instruction      |                    Pattern | Meaning                                       |
 | ---------------- | -------------------------: | --------------------------------------------- |
 | `nop`            |    `000000000000000000000` | No operation                                  |
 | `inp`            |    `011000000000000000000` | Advance input                                 |
@@ -1522,7 +1522,50 @@ Let's use `sav 5 r01` as an example. Now we know that it means to save the value
 | `io`             | `01110` | `01110 dddd cccc rrrrrrrr` |
 | label definition | `01111` | `01111 llllllllllllllll`   |
 
+#### `io` Device Codes
 
+| Instruction | Device | 
+
+#### `io` Command Codes
+
+| Instruction           | Device | Command | Binary                     |
+| --------------------- | ------ | ------- | -------------------------- |
+| `io text char`        | `0000` | `0000`  | `01110 0000 0000 rrrrrrrr` |
+| `io text int`         | `0000` | `0001`  | `01110 0000 0001 rrrrrrrr` |
+| `io text newline`     | `0000` | `0010`  | `01110 0000 0010 rrrrrrrr` |
+| `io text hex`         | `0000` | `0011`  | `01110 0000 0011 rrrrrrrr` |
+| `io time unix`        | `0001` | `0000`  | `01110 0001 0000 rrrrrrrr` |
+| `io time low`         | `0001` | `0001`  | `01110 0001 0001 rrrrrrrr` |
+| `io time sleep`       | `0001` | `0010`  | `01110 0001 0010 rrrrrrrr` |
+| `io screen x`         | `0010` | `0000`  | `01110 0010 0000 rrrrrrrr` |
+| `io screen y`         | `0010` | `0001`  | `01110 0010 0001 rrrrrrrr` |
+| `io screen pixel`     | `0010` | `0010`  | `01110 0010 0010 rrrrrrrr` |
+| `io screen clear`     | `0010` | `0011`  | `01110 0010 0011 rrrrrrrr` |
+| `io screen dump`      | `0010` | `0100`  | `01110 0010 0100 rrrrrrrr` |
+| `io screen present`   | `0010` | `0101`  | `01110 0010 0101 rrrrrrrr` |
+| `io screen red`       | `0010` | `0110`  | `01110 0010 0110 rrrrrrrr` |
+| `io screen green`     | `0010` | `0111`  | `01110 0010 0111 rrrrrrrr` |
+| `io screen blue`      | `0010` | `1000`  | `01110 0010 1000 rrrrrrrr` |
+| `io screen erase`     | `0010` | `1001`  | `01110 0010 1001 rrrrrrrr` |
+| `io screen erasecell` | `0010` | `1010`  | `01110 0010 1010 rrrrrrrr` |
+| `io keyboard poll`    | `0011` | `0000`  | `01110 0011 0000 rrrrrrrr` |
+| `io mouse x`          | `0100` | `0000`  | `01110 0100 0000 rrrrrrrr` |
+| `io mouse y`          | `0100` | `0001`  | `01110 0100 0001 rrrrrrrr` |
+| `io mouse btn`        | `0100` | `0010`  | `01110 0100 0010 rrrrrrrr` |
+| `io speaker channel`  | `0101` | `0000`  | `01110 0101 0000 rrrrrrrr` |
+| `io speaker freq`     | `0101` | `0001`  | `01110 0101 0001 rrrrrrrr` |
+| `io speaker volume`   | `0101` | `0010`  | `01110 0101 0010 rrrrrrrr` |
+| `io speaker wave`     | `0101` | `0011`  | `01110 0101 0011 rrrrrrrr` |
+| `io speaker on`       | `0101` | `0100`  | `01110 0101 0100 rrrrrrrr` |
+| `io speaker off`      | `0101` | `0101`  | `01110 0101 0101 rrrrrrrr` |
+| `io speaker toggle`   | `0101` | `0110`  | `01110 0101 0110 rrrrrrrr` |
+| `io mem addr`         | `0110` | `0000`  | `01110 0110 0000 rrrrrrrr` |
+| `io mem read`         | `0110` | `0001`  | `01110 0110 0001 rrrrrrrr` |
+| `io mem write`        | `0110` | `0010`  | `01110 0110 0010 rrrrrrrr` |
+| `io disk addr`        | `0111` | `0000`  | `01110 0111 0000 rrrrrrrr` |
+| `io disk read`        | `0111` | `0001`  | `01110 0111 0001 rrrrrrrr` |
+| `io disk write`       | `0111` | `0010`  | `01110 0111 0010 rrrrrrrr` |
+| `io disk save`        | `0111` | `0011`  | `01110 0111 0011 rrrrrrrr` |
 
 
 
