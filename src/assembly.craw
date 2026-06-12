@@ -1,2 +1,19 @@
 sav 72 rff
+
+
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+cal add 127 r01
+
+io time sleep r01
+
 sav 105 rff

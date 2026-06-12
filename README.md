@@ -883,7 +883,15 @@ sav r00 ref
 
 This program gets the first three bytes of the input values, and outputs that ASCII code to the screen.
 
+Writing to `rff` appends the **lowest 8 bits** of the value to the output buffer, stored as `output.bin`.
 
+Example
+
+65  -> 0x41
+300 -> 0x2C
+-1  -> 0xFF
+
+Because file writing is slow, the output file is only written after the program has ended.
 
 
 
