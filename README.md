@@ -1476,8 +1476,6 @@ In reality, all programming languages compile to assembly, which then translate 
 
 Crawssembly instructions all translate to a binary number of length **21**, so there are **2^21** possible Crawssembly commands, this accounts for all the various combinations of register codes and immediate values.
 
-Let's use `sav 5 r01` as an example. Now we know that it means to save the value `5` into register `r01`. Simple stuff, but the computer has no clue what it means. So we break it down into the only thing it can understand, binary.
-
 ### Binary Breakdown
 
 Below are the tables for what Crawssembly instructions look like to the machine.
@@ -1571,17 +1569,17 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io speaker channel` | `0101` | `0000` | `01110 0101 0000 rrrrrrrr` | Sets the active speaker channel to the value in input register |
 | `io speaker freq` | `0101` | `0001` | `01110 0101 0001 rrrrrrrr` | Sets active speaker frequency to value in input register |
 | `io speaker volume` | `0101` | `0010` | `01110 0101 0010 rrrrrrrr` | Sets volume (0-100) of active speaker to value in input register |
-| `io speaker wave` | `0101` | `0011` | `01110 0101 0011 rrrrrrrr` |
-| `io speaker on` | `0101` | `0100` | `01110 0101 0100 rrrrrrrr` |
-| `io speaker off` | `0101` | `0101` | `01110 0101 0101 rrrrrrrr` |
-| `io speaker toggle` | `0101` | `0110` | `01110 0101 0110 rrrrrrrr` |
-| `io mem addr` | `0110` | `0000` | `01110 0110 0000 rrrrrrrr` |
-| `io mem read` | `0110` | `0001` | `01110 0110 0001 rrrrrrrr` |
-| `io mem write` | `0110` | `0010` | `01110 0110 0010 rrrrrrrr` |
-| `io disk addr` | `0111` | `0000` | `01110 0111 0000 rrrrrrrr` |
-| `io disk read` | `0111` | `0001` | `01110 0111 0001 rrrrrrrr` |
-| `io disk write` | `0111` | `0010` | `01110 0111 0010 rrrrrrrr` |
-| `io disk save` | `0111` | `0011` | `01110 0111 0011 rrrrrrrr` |
+| `io speaker wave` | `0101` | `0011` | `01110 0101 0011 rrrrrrrr` | Sets the active speaker's wave type to value in input register |
+| `io speaker on` | `0101` | `0100` | `01110 0101 0100 rrrrrrrr` | Turns on the active speaker |
+| `io speaker off` | `0101` | `0101` | `01110 0101 0101 rrrrrrrr` | Turns off the active speaker |
+| `io speaker toggle` | `0101` | `0110` | `01110 0101 0110 rrrrrrrr` | Toggles the active speaker on/off |
+| `io mem addr` | `0110` | `0000` | `01110 0110 0000 rrrrrrrr` | Sets the active memory address to the value in input register |
+| `io mem read` | `0110` | `0001` | `01110 0110 0001 rrrrrrrr` | Extracts the value of the active memory address into input register |
+| `io mem write` | `0110` | `0010` | `01110 0110 0010 rrrrrrrr` | Sets the active memory address's value to the value in the input register |
+| `io disk addr` | `0111` | `0000` | `01110 0111 0000 rrrrrrrr` | Sets the active disk address to value in input register |
+| `io disk read` | `0111` | `0001` | `01110 0111 0001 rrrrrrrr` | Extracts the active disk address's value into input register |
+| `io disk write` | `0111` | `0010` | `01110 0111 0010 rrrrrrrr` | Sets the active disk address's value to value in input register |
+| `io disk save` | `0111` | `0011` | `01110 0111 0011 rrrrrrrr` | Forces the disk file to reload and update |
 
 
 
