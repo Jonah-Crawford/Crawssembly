@@ -11,106 +11,6 @@ Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!]
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
 ![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
 
-## Contents
-
-1. Why does Crawssembly exist?
-2. How to install Crawssembly
-3. Your First Program
-4. What will I learn?
-5. Why not just learn real assembly?
-6. About This Document
-7. Assembly; What's the deal?
-8. How Crawssembly compares to higher languages
-9. Binary
-	1. What is Binary?
-	2. How does binary get used?
-	3. Two's Complement
-	4. Other Number Systems
-	5. How can I tell the difference?
-10. The Basics
-	1. Instructions
-	2. Registers
-	3. Activity: Outputs
-	4. More about 'literals'
-	5. More about `sav`
-11. Maths
-	1. Boolean Logic
-		1. NOT
-		2. AND
-		3. OR
-		4. SHIFT
-		5. Additional Operations
-		6. How to use
-	2. Activity: Addition
-	3. Advanced Activity: Doubling
-	4. Bit masking
-		1. Extraction
-		2. Turning On
-		3. Turning Off
-		4. Toggling
-		5. Negation
-	5. Symbols
-12. Loops
-	1. Labels
-	2. Line Numbers
-	3. Removing Labales
-	4. Jumping
-	5. Dynamic Jumping
-	6. Activity: Letter Loops
-	7. Advanced Activity: Double Loops
-	8. More about jumping
-		1. Dynamic `fgo`
-13. Branching
-	1. Activity: Even Looper
-	2. Advanced Activity: Even Checker
-14. Files
-15. Devices
-16. Storage
-	1. Addresses
-	2. Memory
-		1. Activity: Read/Write Cycle
-		2. Advanced Activity: Save Arrays
-	3. Disk
-		1. Activity: Long Live The Data
-		2. Advanced Activity: My Long List
-	4. What high-level programs do
-17. Input
-	1. The Keyboard
-	2. The Mouse
-		1. Position
-		2. Button Bit field
-		3. Activity: Clicking Away
-		4. Advanced Activity: Mouse Dump
-18. Output
-	1. The Screen
-		1. Text
-		2. Activity: The New Way To Talk
-		3. Advanced Activity: Arcade Leaderboard Name
-	2. Graphics
-		1. Activity: Smiling Screen
-		2. Advanced Activity: Colourful Terminal
-		3. Extra Screen Commands
-	3. Speakers
-		1. Activity: Piano Notes
-		2. Advanced Activity: Scales
-19. Time
-	1. UNIX Timestamp
-20. Register Constants
-21. Congratulations!
-	1. Quick Reference
-	2. Common Mistakes
-22. Sorry, Crawssembly is a lie.
-	1. Binary Breakdown
-		1. Core Instruction Patterns
-		2. `cal` Operation Codes
-		3. Control Instruction Patterns
-		4. `io` Device Codes
-		5. `io` Command Codes
-	2. The VM
-		1. The Pipeline
-23. What's Next?
-24. Legal
-
 ## Why does Crawssembly exist?
 
 **Crawssembly** is an educational assembly-like language designed to teach how computers work from the ground up.
@@ -122,18 +22,6 @@ Crawssembly removes much of the complexity while preserving the core ideas:
 - Arithmetic
 - Program Flow
 - Input and Output
-
-Crawssembly is not:
-
-❌ A replacement for x86  
-❌ A replacement for ARM  
-❌ A production language
-
-Crawssembly is:
-
-✅ A teaching language  
-✅ A CPU simulator  
-✅ A bridge between lower-level thinking and higher-level programming
 
 The goal is to help you understand what high-level languages are really doing behind the scenes.
 
@@ -240,12 +128,12 @@ Learning assembly is a great way to internalise how computers work, as by learni
 
 Higher languages, like C++, Python, and Java, hide how the computer thinks behind layers of abstraction.
 
-In Python, you might type `print("Hello World!")` but that doesn't show how the computer splits the function and the string, or the buffer memory storing a copy of "Hello World!", or how the text gets to the screen. Python hides the instructions, Crawssembly exposes them.
+In Python you might type `print("Hello World!")` but that doesn't show how the computer splits the function and the string, or the buffer memory storing a copy of "Hello World!", or how the text gets to the screen. Python hides the instructions, Crawssembly exposes them.
 
 ## Binary
 
 Getting your head around binary (also known as Base-2) is perhaps the most important skill when working with low-level computing. However, the need for binary thinking has diminished with the massive rise of high-level languages like Python, Java, and Swift. A programmer can create amazing tools, games, and projects without ever actually needing to know what binary is.
-For those who don't know what binary is, this guide goes through the basics, but for more information, Wikipedia is always a great place to start!
+For those who don't know what binary is, this guide go through the basics, but for more information, Wikipedia is always a great place to start!
 
 ### What is Binary?
 
@@ -314,7 +202,7 @@ Because Crawssembly stores all numbers as **32-bit** values, meaning that each n
 | -2 | 11111111 11111111 11111111 11111110 |
 | -10 | 11111111 11111111 11111111 11110110 |
 
-A way to convert a positive value is by flipping all the bit values, then adding 1. We will go into more detail about this when we talk about binary operations.
+A way to convert a positive value is by inversing all the bit values, then adding 1. We will go into more detail about this when we talk about binary operations.
 
 Another way to think about it is setting the last place value as a negative. Below is an example with Two's Complement being used on an *8-bit value*.
 
@@ -389,7 +277,7 @@ For example, asking your friend to get a drink from the kitchen is a simple matt
 
 The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your hair into cheese, to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical. The first truth about computers:  "Ambiguity kills the machine, precision keeps it running."
 
-To use Crawssembly, these practices are no different. 
+To use Crawssembly, these practises are no different. 
 
 ### Instructions
 
@@ -425,7 +313,7 @@ This program has 5 parts:
 
 `;` is a **comment character**, anything after the `;` doesn't get run. It's the best way to talk about and annotate the program to help explain an instruction's function.
 
-`stp` is a new instruction, as it occupies a new line in the file. `stp` forces the end of the program, but if the end of the file is reached it's not necessary.
+`stp` is a new instuction, as it occupies a new line in the file. `stp` forces the end of the program, but if the end of the file is reached it's not necessary.
 
 Register codes include:
 
@@ -504,7 +392,7 @@ Unlike the raw register values, **Two's Complement** used in the literal values 
 ### More about `sav`
 
 One of the best things about computers is one that often goes unnoticed; dynamicity. A vast amount of tasks would be nigh on impossible if the machines of the modern world were to become entirely hard-coded.
-If you hard-coded everything, then there would be little point for computing languages, logical abstraction, and computers as a whole. If you know the result, why build a machine to express the program?
+If you hardcoded everything, then there would be little point for computing languages, logical abstraction, and computers as a whole. If you know the result, why build a machine to express the program?
 
 Crawssembly is no exception, dynamically storing values is as easy as removing the literal value in-place for another register
 
@@ -622,7 +510,7 @@ cal add 5 r01           ; adds 5 to the value in register 1
 
 This example adds `10` to `5`, resulting in `r01` having a value of `15`
 
-Because of the nature of commands, the first value can be a register or literal, but the second value **must** be a register value. `cal add 1 1` would not work. This is why in the example, `10` must be saved to a register.
+Because of the nature of commands, the first value can be a register or literal, but the second vaule **must** be a register value. `cal add 1 1` would not work. This is why in the example, `10` must be saved to a register.
 More information will be given for why this is the case later on.
 
 Like `sav`, the first value can be swapped for a register code.
@@ -1036,7 +924,7 @@ Registers are the fastest type of data storage, but the relative data they can h
 | Memory | Short | Large | Fast |
 | Disk | Indefinite | Very Large | Slow |
 
-### Addresses
+#### Addresses
 
 Much like registers, every cell in storage has a number based on it's position. This number is called the **address**.
 
@@ -1588,6 +1476,8 @@ In reality, all programming languages compile to assembly, which then translate 
 
 Crawssembly instructions all translate to a binary number of length **21**, so there are **2^21** possible Crawssembly commands, this accounts for all the various combinations of register codes and immediate values.
 
+Let's use `sav 5 r01` as an example. Now we know that it means to save the value `5` into register `r01`. Simple stuff, but the computer has no clue what it means. So we break it down into the only thing it can understand, binary.
+
 ### Binary Breakdown
 
 Below are the tables for what Crawssembly instructions look like to the machine.
@@ -1681,58 +1571,36 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io speaker channel` | `0101` | `0000` | `01110 0101 0000 rrrrrrrr` | Sets the active speaker channel to the value in input register |
 | `io speaker freq` | `0101` | `0001` | `01110 0101 0001 rrrrrrrr` | Sets active speaker frequency to value in input register |
 | `io speaker volume` | `0101` | `0010` | `01110 0101 0010 rrrrrrrr` | Sets volume (0-100) of active speaker to value in input register |
-| `io speaker wave` | `0101` | `0011` | `01110 0101 0011 rrrrrrrr` | Sets the active speaker's wave type to value in input register |
+| `io speaker wave` | `0101` | `0011` | `01110 0101 0011 rrrrrrrr` | Sets the active speaker's  wave type to value in input register |
 | `io speaker on` | `0101` | `0100` | `01110 0101 0100 rrrrrrrr` | Turns on the active speaker |
 | `io speaker off` | `0101` | `0101` | `01110 0101 0101 rrrrrrrr` | Turns off the active speaker |
 | `io speaker toggle` | `0101` | `0110` | `01110 0101 0110 rrrrrrrr` | Toggles the active speaker on/off |
-| `io mem addr` | `0110` | `0000` | `01110 0110 0000 rrrrrrrr` | Sets the active memory address to the value in input register |
-| `io mem read` | `0110` | `0001` | `01110 0110 0001 rrrrrrrr` | Extracts the value of the active memory address into input register |
-| `io mem write` | `0110` | `0010` | `01110 0110 0010 rrrrrrrr` | Sets the active memory address's value to the value in the input register |
-| `io disk addr` | `0111` | `0000` | `01110 0111 0000 rrrrrrrr` | Sets the active disk address to value in input register |
-| `io disk read` | `0111` | `0001` | `01110 0111 0001 rrrrrrrr` | Extracts the active disk address's value into input register |
-| `io disk write` | `0111` | `0010` | `01110 0111 0010 rrrrrrrr` | Sets the active disk address's value to value in input register |
-| `io disk save` | `0111` | `0011` | `01110 0111 0011 rrrrrrrr` | Forces the disk file to reload and update |
+| `io mem addr` | `0110` | `0000` | `01110 0110 0000 rrrrrrrr` | Set the active volitile storage address to value in input register |
+| `io mem read` | `0110` | `0001` | `01110 0110 0001 rrrrrrrr` | 
+| `io mem write` | `0110` | `0010` | `01110 0110 0010 rrrrrrrr` |
+| `io disk addr` | `0111` | `0000` | `01110 0111 0000 rrrrrrrr` |
+| `io disk read` | `0111` | `0001` | `01110 0111 0001 rrrrrrrr` |
+| `io disk write` | `0111` | `0010` | `01110 0111 0010 rrrrrrrr` |
+| `io disk save` | `0111` | `0011` | `01110 0111 0011 rrrrrrrr` |
 
-### The VM
 
-Crawssembly isn't real assembly, since your real CPU can't understand the raw binary. So Crawssembly runs in it's own **VM (Virtual Machine)**.
 
-The VM is programmed in **Rust**, a language that focuses on speed and safety. Because of those qualities, it was chosen for Crawssembly to create fast, but safe, programs. The perfect testing/learning environemnt to explore low-level thinking.
 
-#### The Pipeline
 
-The VM is in two parts, the **Compiler** and the **Executioner**.
 
-The Compiler goes through each line of the program, and converts it from Crawssembly to the binary machine code.
 
-The Executioner reads each binary code, decodes it into seperate blocks, and executes the instuction, in the **Fetch-Decode-Execute** cycle.
 
-```
-                           ┌───────────────── Executioner ─────────────────┐
-                           │                                               │
-┌────────────── Compiler ──┼─────────────┐                                 │ 
-│                          │             │                                 │
-│ program.craw ----------> │ program.bin │ ----------> Fetched Instruction │
-│                          │             │                     │           │
-└──────────────────────────┼─────────────┘                     │           │
-                           │      ^          FDE Cycle         │           │ 
-                           │      │                            │           │
-                           │      │                            V           │
-                           │  Execution <------------- Decoded Instruction │
-                           │                                               │
-                           └───────────────────────────────────────────────┘
-```
 
-## What's next?
 
-You've done it! Kudo's all around, you've done great work! So what's next?
 
-If you want a challenge, here are some longer programming ideas to get stuck in:
-- Build a calculator.
-- Build [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
-- Build a music player.
-- Build a bitmap viewer.
-- Build a drawing program.
+
+
+
+
+
+
+
+
 
 ## Legal
 
