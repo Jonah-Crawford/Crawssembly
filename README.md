@@ -106,17 +106,9 @@ Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!]
 		3. Control Instruction Patterns
 		4. `io` Device Codes
 		5. `io` Command Codes
-
-
 	2. The VM
-
+		1. The Pipeline
 23. Legal
-
-
-
-
-
-
 
 ## Why does Crawssembly exist?
 
@@ -1706,7 +1698,7 @@ Crawssembly isn't real assembly, since your real CPU can't understand the raw bi
 
 The VM is programmed in **Rust**, a language that focuses on speed and safety. Because of those qualities, it was chosen for Crawssembly to create fast, but safe, programs. The perfect testing/learning environemnt to explore low-level thinking.
 
-#### The Pipline
+#### The Pipeline
 
 The VM is in two parts, the **Compiler** and the **Executioner**.
 
@@ -1729,15 +1721,6 @@ The Executioner reads each binary code, decodes it into seperate blocks, and exe
                            │                                               │
                            └───────────────────────────────────────────────┘
 ```
-
-
-
-
-
-
-
-
-
 
 ## Legal
 
