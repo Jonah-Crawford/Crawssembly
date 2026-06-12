@@ -37,7 +37,7 @@ The goal is to help you understand what high-level languages are really doing be
 
 ![Linux](https://img.shields.io/badge/Linux-Tested-green)
 ![Windows](https://img.shields.io/badge/Windows-Tested-green)
-![macOS](https://img.shields.io/badge/macOS-Untested-lightgrey)
+![macOS](https://img.shields.io/badge/macOS-In_Development-blue)
 
 > Present versions have been confirmed to work on Linux and Windows. Mac OS has not been tested, errors may occur.
 
@@ -1602,7 +1602,9 @@ Most instructions follow the form of `00 000 00000000 00000000`
 
 
 
-## Credits
+## Legal
+
+All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artificial Intelligence) at certain points; all ideas, techniques, and the vast amount of program volume was, and continues to be, written by human hands.
 
 Thank you to **Koy Camerini-Yachdav** who tested Crawssembly on Mac OS, and their amazing work making detailed error reports.
 
