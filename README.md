@@ -22,11 +22,11 @@ Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!]
 7. Assembly; What's the deal?
 8. How Crawssembly compares to higher languages
 9. Binary
-  1. What is Binary?
-  2. How does binary get used?
-  3. Two's Complement
-  4. Other Number Systems
-  5. How can I tell the difference?
+	1. What is Binary?
+	2. How does binary get used?
+	3. Two's Complement
+	4. Other Number Systems
+	5. How can I tell the difference?
 10. The Basics
   1. Instructions
   2. Registers
