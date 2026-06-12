@@ -1,4 +1,4 @@
-w// Crawssembly Assembler (single-file, spec-driven)
+// Crawssembly Assembler (single-file, spec-driven)
 // Reads:  assembly.craw
 // Writes: program.bin  (u32 little-endian per instruction; only low 21 bits used)
 //
