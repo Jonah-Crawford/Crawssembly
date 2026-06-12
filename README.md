@@ -53,7 +53,7 @@ Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!]
 12. Loops
 	1. Labels
 	2. Line Numbers
-	3. Removing Lables
+	3. Removing Labels
 	4. Jumping
 	5. Dynamic Jumping
 	6. Activity: Letter Loops
@@ -168,7 +168,7 @@ cd Crawssembly
 cargo install --path .
 ```
 
-To run a Crawssembly file (These are `.craw` files), simply run `craw <file.craw>` and swap `<file.craw>` with the name of the Crawssembly file you wish to edit.
+To run a Crawssembly file (These are `.craw` files), simply run `craw <file.craw>` and swap `<file.craw>` with the name of the Crawssembly file you wish to run.
 
 Use `craw --help` to display helpful use information about the different ways to run Crawssembly files.
 
@@ -565,7 +565,7 @@ If both inputs are *On*, then the output is *On*. Else AND outputs *Off*.
 | On | Off | Off |
 | On | On | On |
 
-You can image AND to be like a padlock that needs 2 keys to open.
+You can imagine AND to be like a padlock that needs 2 keys to open.
 
 #### OR
 
@@ -696,7 +696,7 @@ Example
 
 ```
 sav 100 r01             ; 0b01100100
-cal and -33 r01         ; 0b01100100 AND 0b011011111 = 0b01000100 (i.e. 68)
+cal and -33 r01         ; 0b01100100 AND 0b11011111 = 0b01000100 (i.e. 68)
 ```
 
 This works because all bits are untouched in AND, apart from the missing bits which are turned off, because AND needs both to be `1`.
@@ -882,7 +882,7 @@ Let's read through each line in detail:
 5. `sav r01 r03`: This saves the +1 calculation step back into `r03`.
 6. `cal add -1 r02`: This minuses `1` from the loop count, indicating that a loop has taken place.
 7. `sav r01 r02`: This line updates `r02`, where the loop count is stored.
-8. `jmp 1`: Because the -1 step happened, the result is still stored in `r01`. If this >=0, the loops doesn't run.
+8. `jmp 1`: Because the -1 step happened, the result is still stored in `r01`. If this >=0, the loop stops running.
 9. `stp`: The program ends, resulting in 10 loops being executed.
 
 ### Activity: Letter Loops
@@ -896,7 +896,7 @@ Write a program that loops over every uppercase letter and prints it to the scre
 Update your 'Letter Loops' activity program to contain a **nested loop** that prints
 `AA AB AC AD AE AF AG` etc... `AX AY AZ BA BB BC BD` etc... `ZX ZY ZZ`
 
-> Hint: Both loops take similar forms, but take care to not mix register values together, seperate the 1st loop from the 2nd loop clearly, and reset the inner-loop values in the outer loop.
+> Hint: Both loops take similar forms, but take care to not mix register values together, separate the 1st loop from the 2nd loop clearly, and reset the inner-loop values in the outer loop.
 
 ### More about jumping
 
@@ -1169,7 +1169,7 @@ All variables are like this behind the fancy symbols and abstraction, just a gro
 If you've ever learnt a higher programming language, chances are they taught you how to get user input very early on. This is sensible, as the user gets near-instant gratification from adding their own name to a greeting program, or telling the computer how old they are to get a semi-personalised message.
 So why is user input so far in the learning path for Crawssembly?
 
-Because input uses the keyboard and mouse, there is a hidden layer between what you type, and that data being processed by the CPU. Much like storage, the keyboard is a seperate device to the core computer. Because of this, input handling builds upon what you already know about more basic data manipulation.
+Because input uses the keyboard and mouse, there is a hidden layer between what you type, and that data being processed by the CPU. Much like storage, the keyboard is a separate device to the core computer. Because of this, input handling builds upon what you already know about more basic data manipulation.
 
 > To get input and output devices working, you almost always need to use `craw myprogram.craw --tui`, since this sends event data like mouse position and graphics to your screen.
 
@@ -1384,11 +1384,11 @@ There are some additional commands that are lesser used, but still useful:
 - `io screen erase`: clears a single pixel from the buffer
 - `io screen erasecell`: clears both the top and bottom of the active **terminal cell**
 
-> Crawssembly uses a faux-graphics system, which is actually coloured Unicode blocks. Because of this, each line of the graphics output is actually 1 half of a terminal character. So running `io screen erasecell` clears the entire cell, not just one of the halfs.
+> Crawssembly uses a faux-graphics system, which is actually coloured Unicode blocks. Because of this, each line of the graphics output is actually 1 half of a terminal character. So running `io screen erasecell` clears the entire cell, not just one of the halves.
 
 ### Speakers
 
-Making your computer 'speak' is one of the funnest ways to get a program output. Crawssembly provides many commands to take control of your speakers using `io speaker`.
+Making your computer 'speak' is one of more enjoyable ways to get a program output. Crawssembly provides many commands to take control of your speakers using `io speaker`.
 
 The commands are:
 - `io speaker channel`: sets the active speaker channel. There are 4 channels in Crawssembly to play sounds from.
@@ -1453,7 +1453,7 @@ Write a program that plays every note in an octave. You can use [this Wikipedia 
 
 ## Time
 
-It's common, in larger programs, that the current time should be known. In computers, this is maintained though a CMOS battery. This keeps the internal clock running on the machine when the computer is turned off.
+It's common, in larger programs, that the current time should be known. In computers, this is maintained through a CMOS battery. This keeps the internal clock running on the machine when the computer is turned off.
 
 To use time commands, you would use the `io time` group. We already discussed `io time sleep` in the speakers section.
 - `io time sleep`: pauses execution for a set period in milliseconds
@@ -1476,7 +1476,7 @@ This is called the **2038 problem**, or **Y2K38**. And because it affects many m
 
 Like mentioned before, registers from `rf0` to `rfe` have preloaded constants.
 
-All constants are scaled by **100 million** to preserve their decimal places. 314159265‎ is much more useful as pi than 3.
+All constants are scaled by **100 million** to preserve their decimal places. 314159265‎ is much more useful as pi than 3 because the decimal places are preserved.
 
 | Register | Value | Constant |
 | -------- | ----- | -------- |
