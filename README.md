@@ -108,6 +108,7 @@ Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!]
 		5. `io` Command Codes
 
 
+	2. The VM
 
 23. Legal
 
@@ -128,6 +129,18 @@ Crawssembly removes much of the complexity while preserving the core ideas:
 - Arithmetic
 - Program Flow
 - Input and Output
+
+Crawssembly is not:
+
+❌ A replacement for x86  
+❌ A replacement for ARM  
+❌ A production language
+
+Crawssembly is:
+
+✅ A teaching language  
+✅ A CPU simulator  
+✅ A bridge between lower-level thinking and higher-level programming
 
 The goal is to help you understand what high-level languages are really doing behind the scenes.
 
@@ -1687,15 +1700,40 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io disk write` | `0111` | `0010` | `01110 0111 0010 rrrrrrrr` | Sets the active disk address's value to value in input register |
 | `io disk save` | `0111` | `0011` | `01110 0111 0011 rrrrrrrr` | Forces the disk file to reload and update |
 
+### The VM
+
+Crawssembly isn't real assembly, since your real CPU can't understand the raw binary. So Crawssembly runs in it's own **VM (Virtual Machine)**.
+
+The VM is programmed in **Rust**, a language that focuses on speed and safety. Because of those qualities, it was chosen for Crawssembly to create fast, but safe, programs. The perfect testing/learning environemnt to explore low-level thinking.
+
+#### The Pipline
+
+The VM is in two parts, the **Compiler** and the **Executioner**.
+
+The Compiler goes through each line of the program, and converts it from Crawssembly to the binary machine code.
+
+The Executioner reads each binary code, decodes it into seperate blocks, and executes the instuction, in the **Fetch-Decode-Execute** cycle.
+
+```
+
+
+                           ┌────────────── Executioner ───────────────────┐
+                           │                                              │
+┌────────────── Compiler ──┼─────────────┐
+│                          │             │
+│ program.craw ----------> │ program.bin │ ----------> Fetched Instruction
+│                          │             │                     │
+└──────────────────────────┼─────────────┘                     │
+                           │      ^          FDE Cycle         │
+                           │      │                            │
+                           │      │                            V
+                           │  Execution <------------- Decoded Instruction
+                           │
+                           └───────────────────────────────────────
 
 
 
-
-
-
-
-
-
+```
 
 
 
