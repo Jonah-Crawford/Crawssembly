@@ -53,7 +53,7 @@ Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!]
 12. Loops
 	1. Labels
 	2. Line Numbers
-	3. Removing Labales
+	3. Removing Lables
 	4. Jumping
 	5. Dynamic Jumping
 	6. Activity: Letter Loops
@@ -204,7 +204,7 @@ The biggest thing you will learn is
 
 **Programming Languages Are A Lie**
 
-Because computers don't actually know what your typing. In reality, computers only know 2 things: On, and Off. Crawssembly will help you learn why this is, and how people have turned a collection of switches into one of the most complex man-made objects in the universe.
+Because computers don't actually know what you're typing. In reality, computers only know 2 things: On, and Off. Crawssembly will help you learn why this is, and how people have turned a collection of switches into one of the most complex man-made objects in the universe.
 
 ## Why not just learn real assembly?
 
@@ -298,7 +298,7 @@ Which, when calculated, equals 22. So 10110 in binary is the exact same as 22 in
 
 ### Two's complement
 
-Binary numbers like talked about above can only store postitive numbers. Inside computers though, negative numbers are used all the time. So how do we get numbers like -1 or -42?
+Binary numbers like talked about above can only store positive numbers. Inside computers though, negative numbers are used all the time. So how do we get numbers like -1 or -42?
 
 Inside computers, and Crawssembly, the **sign** of the number is represented with the leftmost bit. Where `0` means the number is positive, and `1` means the number is negative. Because negative numbers work in reverse (i.e. `-1` is greater than `-42`, while `1` is smaller than `42`), negative binary numbers also work in reverse. This system is called **Two's Complement**.
 
@@ -387,7 +387,9 @@ If you've used high-level programming languages before, you'll know that telling
 
 For example, asking your friend to get a drink from the kitchen is a simple matter, but getting a computer to do this requires you to define a drink, where the kitchen is, the precise steps needed to move to the drink's location, how to pick up the drink, the movements needed to take the drink back to you while not dropping or crushing the cup, etc...
 
-The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your hair into cheese, to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical. The first truth about computers:  "Ambiguity kills the machine, precision keeps it running."
+The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your hair into cheese, to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical. The first truth about computers:
+
+ "Ambiguity kills the machine, precision keeps it running."
 
 To use Crawssembly, these practices are no different. 
 
@@ -429,7 +431,7 @@ This program has 5 parts:
 
 Register codes include:
 
-- `r01` is register 1, the *2nd* regsiter available
+- `r01` is register 1, the *2nd* register available
 - `r0a` is register 10, the *11th* register available
 - `r10` is register 16, the *17th* register available
 
@@ -516,13 +518,15 @@ sav r01 r02             ; saves value of register 1 to register 2
 ```
 
 See how the literal value in the second line was replaced by `r02`? This program saves the literal value `10` into `r01`, and the next instruction saves whatever value is in `r01` into the register `r02`.
-The computer has no clue what `r01` actually contains, just that it should copy whatever may be inside `r01` into `r02`. This reveals another key truth about computers; "The machine is blind."
+The computer has no clue what `r01` actually contains, just that it should copy whatever may be inside `r01` into `r02`. This reveals another key truth about computers:
+
+"The machine is blind."
 
 ## Maths
 
 Any good programmer must have a good mathematical brain, computers are large heaps of silicon held together by electricity and maths. Just as a hardware engineer needs to know about the electron, the software programmer needs to know about **bitwise operations**
 
-Because of the binary representation of values, they can be manipulated in many ways to acheive a result.
+Because of the binary representation of values, they can be manipulated in many ways to achieve a result.
 
 ### Boolean Logic
 
@@ -585,7 +589,7 @@ Example
 0b1010 shifted 1 unit to the left is 0b10100
 0b1010 shifted 1 unit to the right is 0b101
 
-SHIFT is split into 3 subcatagories:
+SHIFT is split into 3 subcategories:
 - Logical Shift Left (SHL)
 - Logical Shift Right (SHR)
 - Arithmetic Shift Right (SAR)
@@ -667,7 +671,7 @@ sav 100 r01             ; 0b01100100
 cal and 15 r01          ; 0b01100100 AND 0b00001111 = 0b00000100 (i.e. 4)
 ```
 
-This works because AND needs both values to be `1`. Any value not included in the **mask value** is set to `0`, and any `1` value included in the **mas value** is set to `1`.
+This works because AND needs both values to be `1`. Any value not included in the **mask value** is set to `0`, and any `1` value included in the **mask value** is set to `1`.
 
 #### Turning On
 
@@ -680,7 +684,7 @@ sav 100 r01             ; 0b01100100
 cal or 2 r01            ; 0b01100100 OR 0b00000010 = 0b01100110 (i.e. 102)
 ```
 
-This works because any `1` value present will remain a `1`, so if the mask value contians a `1`, the result will also contain a `1` regardless of the other value.
+This works because any `1` value present will remain a `1`, so if the mask value contains a `1`, the result will also contain a `1` regardless of the other value.
 
 > You can set multiple bits in this mask, if you really wanted to you could make a mask of 0b11111111 to set **every** bit to `1`!
 
@@ -772,7 +776,7 @@ Example
 10      ; creates the label '10' pointing to the second instruction
 ```
 
-Remember that annoying immediate limit from `sav` and `cal`? With labels the range is bigger, since negative numbers arn't used and the entire instuction is just the number.
+Remember that annoying immediate limit from `sav` and `cal`? With labels the range is bigger, since negative numbers aren't used and the entire instruction is just the number.
 
 **The range for labels is `0 - 65535`**
 
@@ -912,7 +916,7 @@ This is an example of using `fgo` for an infinite loop.
 
 #### Dynamic `fgo`
 
-Keen-eyed readers will have noticed that line numbers *dont't start at 0* like registers do. This is because `fgo 0` doesn't go to the first line number, rather `fgo` jumps to whatever line number is stored in `r01`.
+Keen-eyed readers will have noticed that line numbers *don't start at 0* like registers do. This is because `fgo 0` doesn't go to the first line number, rather `fgo` jumps to whatever line number is stored in `r01`.
 
 Example
 
@@ -958,7 +962,7 @@ Example
 1	sav 50 r01              ; sets '50' as the test value
 2	ifz 1                   ; if branch using label 1 for test value = 0
 3	2                       ; label 2 points to 3
-4	jmp 2                   ; jumps back to label 2, an infiniate loop
+4	jmp 2                   ; jumps back to label 2, an infinite loop
 5	rmv 1                   ; ends the if branch using label 1
 ```
 This format is much cleaner than JTE.
@@ -1025,8 +1029,8 @@ Because `io` commands are dependent on other devices, commands might fail if the
 
 Computers use two different systems for storing data. **Memory** and **Disk**.
 
-- Memory: A fast way to temporarily store data. It is where active data which is being used is stored. Memory is cleared when the computer resets, called **volitile**.
-- Disk: Long-term storage, used for files, apps, operating systems, and more. The disk is usually slower than memory, which is why only long-term data is stored. Because data is kept, it is called **non-volitile**.
+- Memory: A fast way to temporarily store data. It is where active data which is being used is stored. Memory is cleared when the computer resets, called **volatile**.
+- Disk: Long-term storage, used for files, apps, operating systems, and more. The disk is usually slower than memory, which is why only long-term data is stored. Because data is kept, it is called **non-volatile**.
 
 Registers are the fastest type of data storage, but the relative data they can hold is tiny. Crawssembly registers can hold a little over a kilobyte in register storage, but can access around 17 million kilobytes in memory!
 
@@ -1186,11 +1190,12 @@ Example
 
 ```
 1                               ; Label pointing to line 1
-io keyboard poll ref            ; Gets the last key and stores into the output register
-cal add -27 ref                 ; Finds key - 27, the result is saved to register 1
+io keyboard poll r02            ; Gets the last key and stores into register 2
+sav r02 ref                     ; Outputs that key code to the screen
+cal add -27 r02                 ; Finds key - 27, the result is saved to register 1
 jmg 1                           ; continues the loop if the key code is greater than 26
 jml 1                           ; continues the loop if the key code is less than 27
-stp                             ; stops the program if the key code is exactlly 27
+stp                             ; stops the program if the key code is exactly 27
 ```
 
 This program shows the last key printed by outputting to `ref`, and ends the loop when `Esc` is pressed.
@@ -1258,12 +1263,12 @@ Example
 ```
 io mouse btn r04
 
-io cal and 1 r04
+cal and 1 r04
 
-io cal and 2 r04
+cal and 2 r04
 sav r01 r02
 
-io cal and 4 r04
+cal and 4 r04
 sav r01 r03
 ```
 
@@ -1329,7 +1334,7 @@ Write a program that stores a 3 letter name from the keyboard, and then output `
 
 ### Graphics
 
-Unlike text output, graphics allow programs to control induvidual pixels. Crawssembly provides a virtual screen using the `io screen` command group.
+Unlike text output, graphics allow programs to control individual pixels. Crawssembly provides a virtual screen using the `io screen` command group.
 
 There are 8 main commands in the `io screen` group:
 - `io screen x`: sets the current active X coordinate
@@ -1404,7 +1409,7 @@ The *wave type* is a number to tell the channel what type of sound to make.
 | 3 | Sawtooth Wave | Aggressive, harsh beeps |
 | 4 | Random Noise | Great for sound effects |
 
-Because sound is very time-dependent, you'll want to play sounds for a set period of time. You cna do this by pausing the program using `io time sleep`.
+Because sound is very time-dependent, you'll want to play sounds for a set period of time. You can do this by pausing the program using `io time sleep`.
 
 > `io time sleep` pauses Crawssembly's execution for the inputted length in **milliseconds**. There are other `io time` commands which will be covered shortly.
 
@@ -1442,7 +1447,7 @@ Write a program to play a 440Hz tone for 1 second (1000 milliseconds).
 
 #### Advanced Activity: Scales
 
-Write a program that plays every note in an octave. You can use [this ikipedia article](https://en.wikipedia.org/wiki/Piano_key_frequencies) to find the frequencies.
+Write a program that plays every note in an octave. You can use [this Wikipedia article](https://en.wikipedia.org/wiki/Piano_key_frequencies) to find the frequencies.
 
 > Real musical/piano notes increase by the twelfth-root of 2. Because Crawssembly can't use fractional numbers, the frequency values have to be rounded to the nearest whole number.
 
@@ -1576,7 +1581,7 @@ The rest of this section is used as quick-reference and help.
 - Labels are not variables, they are line pointers
 - Literals must be between `-128` and `127`
 - Infinite loops require CTRL+C to break
-- Memory and disk are different, memory is volitile while disk is permanent
+- Memory and disk are different, memory is volatile while disk is permanent
 
 You can stop at this point and you'd be fine. But to *really* understand what computers do, we have to peel back another abstraction layer.
 
@@ -1584,7 +1589,7 @@ You can stop at this point and you'd be fine. But to *really* understand what co
 
 Remember how one of the first things that was said was that programming languages are a lie? That goes for Crawssembly too. The computer has no idea what `sav` or `cal` is, what it means, or how it works.
 
-In reality, all programming languages compile to assembly, which then translate to raw binary. This was mentioned before, but now we'll actually get into the nitty gritty.
+Ultimately, every programming language must be translated into machine code before the CPU can execute it. This was mentioned before, but now we'll actually get into the nitty gritty.
 
 Crawssembly instructions all translate to a binary number of length **21**, so there are **2^21** possible Crawssembly commands, this accounts for all the various combinations of register codes and immediate values.
 
@@ -1594,7 +1599,7 @@ Below are the tables for what Crawssembly instructions look like to the machine.
 
 Most instructions follow the form of `00 000 00000000 00000000`
 - `00`: Core Group, differentiates between `sav` and `cal` immediate values
-- `000`: Instruction Modes for `cal`, or used for control instuctions
+- `000`: Instruction Modes for `cal`, or used for control instructions
 - `00000000`: First input value, or in `io` this contains the device and instruction code.
 - `00000000`: Second input, almost always a register code unless using labels.
 
@@ -1649,8 +1654,8 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io keyboard` | `0011` | Accesses keyboard events |
 | `io mouse` | `0100` | Accesses mouse events |
 | `io speaker` | `0101` | Accesses speaker control |
-| `io memory` | `0110` | Accesses volitile storage |
-| `io disk` | `0111` | Accesses persistant storage |
+| `io memory` | `0110` | Accesses volatile storage |
+| `io disk` | `0111` | Accesses persistent storage |
 
 #### `io` Command Codes
 
@@ -1725,14 +1730,14 @@ The Executioner reads each binary code, decodes it into separate blocks, and exe
 
 ## What's next?
 
-You've done it! Kudo's all around, you've done great work! So what's next?
+You've done it! Kudos all around, you've done great work! So what's next?
 
 If you want a challenge, here are some longer programming ideas to get stuck in:
-- Build a calculator.
-- Build [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
-- Build a music player.
 - Build a bitmap viewer.
+- Build a calculator.
 - Build a drawing program.
+- Build a music player.
+- Build [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
 ## Legal
 
