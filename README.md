@@ -108,7 +108,8 @@ Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!]
 		5. `io` Command Codes
 	2. The VM
 		1. The Pipeline
-23. Legal
+23. What's Next?
+24. Legal
 
 ## Why does Crawssembly exist?
 
@@ -1721,6 +1722,17 @@ The Executioner reads each binary code, decodes it into seperate blocks, and exe
                            │                                               │
                            └───────────────────────────────────────────────┘
 ```
+
+## What's next?
+
+You've done it! Kudo's all around, you've done great work! So what's next?
+
+If you want a challenge, here are some longer programming ideas to get stuck in:
+- Build a calculator.
+- Build [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
+- Build a music player.
+- Build a bitmap viewer.
+- Build a drawing program.
 
 ## Legal
 
