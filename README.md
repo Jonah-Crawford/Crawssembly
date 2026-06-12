@@ -174,6 +174,8 @@ Use `craw --help` to display helpful use information about the different ways to
 
 ## Your First Program
 
+![First Program](https://img.sheilds.io/badge/First_Program-Under_60_seconds-green)
+
 Create a file called `hello.craw` and write the following:
 
 ```
