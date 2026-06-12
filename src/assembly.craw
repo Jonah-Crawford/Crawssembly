@@ -1,2 +1,3 @@
-1
-jmp 1
+sav r00 ref
+inp
+sav r00 ref

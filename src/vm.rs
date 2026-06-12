@@ -1758,12 +1758,23 @@ impl Cpu {
       return (prog, pc + 1, false);
     }
 
+    // inp, gets next file input inside r00
     if d.is_inp {
       if !input.is_empty() {
-        self.input_pos = self.input_pos + 1;
-        if looped { self.input_pos = (self.input_pos + 1) % input.len(); }
-        if self.input_pos >= input.len() { self.regs[0] = 0; } else { self.regs[0] = input[self.input_pos]; }
+        self.input_pos += 1;
+
+        if self.input_pos >= input.len() {
+          if looped {
+            self.input_pos = 0;
+            self.regs[0] = input[self.input_pos];
+          } else {
+            self.regs[0] = 0;
+          }
+        } else {
+          self.regs[0] = input[self.input_pos];
+        }
       }
+
       return (prog, pc + 1, false);
     }
 

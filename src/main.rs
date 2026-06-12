@@ -53,6 +53,16 @@ fn main() {
     }
   };
 
+  let file_input = match parse_input_file(&args) {
+    Ok(input) => input,
+    Err(e) => {
+      eprintln!("{e}");
+      std::process::exit(1);
+    }
+  };
+
+  let input_list = file_input.unwrap_or_else(|| vec![0]);
+
   let vm_config = vm::VmConfig {
     screen_w,
     screen_h,
@@ -84,7 +94,7 @@ fn main() {
         }
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, show_stats, vm_config) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), true, show_stats, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -102,7 +112,7 @@ fn main() {
         std::process::exit(1);
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, true, vm_config) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), true, true, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -127,7 +137,7 @@ fn main() {
         std::process::exit(1);
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, vec![0], true, show_stats, vm_config) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), true, show_stats, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -206,7 +216,7 @@ fn positional_after(args: &[String], command: &str) -> Option<String> {
 }
 
 fn is_option_with_value(arg: &str) -> bool {
-  matches!(arg, "--screen")
+  matches!(arg, "--screen" | "--file")
 }
 
 fn assemble_file(input_path: &str, output_path: &str, dump: bool, dump_decoded: bool) -> Result<(), String> {
@@ -247,30 +257,53 @@ fn check_file(input_path: &str, dump: bool, dump_decoded: bool) -> Result<(), St
 }
 
 fn print_help() {
-  println!("Crawssembly");
+  println!("craw");
   println!();
   println!("Usage:");
   println!("  craw <file.craw>              Assemble and run a file");
-  println!("  craw run <file.craw>          Assemble and run a file");
-  println!("  craw compile <file.craw>      Assemble to program.bin only");
   println!("  craw check <file.craw>        Check that a file assembles");
+  println!("  craw compile <file.craw>      Assemble to program.bin only");
   println!("  craw debug <file.craw>        Run with VM stats shown");
+  println!("  craw run <file.craw>          Assemble and run a file");
   println!();
   println!("Options:");
+  println!("  --audio                       Enable speaker/speech audio output");
+  println!("  --decode                      Open the instruction decoder");
   println!("  --dump                        Show assembled instructions");
   println!("  --dump-decoded                Show decoded instruction fields with --dump");
+  println!("  --help                        Show this help message");
+  println!("  --input <file>                Send file contents to register 0 during execution.");
+  println!("  --screen <widthxheight>       Set virtual screen size, e.g. 128x128");
   println!("  --stats                       Show VM speed/tick statistics after running");
   println!("  --tui                         Use alternate-screen terminal mode");
-  println!("  --audio                       Enable speaker/speech audio output");
-  println!("  --screen <WIDTHxHEIGHT>       Set virtual screen size, e.g. 128x128");
-  println!("  --decode                      Open the instruction decoder");
-  println!("  --help                        Show this help message");
   println!();
   println!("Examples:");
   println!("  craw hello.craw");
   println!("  craw debug hello.craw");
   println!("  craw compile hello.craw --dump");
+  println!("  craw imageviewer.craw --file image.bmp");
   println!("  craw graphics.craw --screen 128x128 --tui");
+}
+
+fn parse_input_file(args: &[String]) -> Result<Option<Vec<i32>>, String> {
+  for i in 0..args.len() {
+    if args[i] == "--file" {
+      let Some(path) = args.get(i + 1) else {
+        return Err("--file expects a filename".to_string());
+      };
+
+      let bytes = fs::read(path)
+        .map_err(|e| format!("Failed to read input file '{path}': {e}"))?;
+
+      let input = bytes.into_iter()
+        .map(|b| b as i32)
+        .collect();
+
+      return Ok(Some(input));
+    }
+  }
+
+  Ok(None)
 }
 
 fn parse_screen_size(args: &[String]) -> Result<(usize, usize), String> {

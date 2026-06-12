@@ -1439,9 +1439,13 @@ In reality, all programming languages compile to assembly, which then translate 
 
 Crawssembly instructions all translate to a binary number of length **21**, so there are **2^21** possible Crawssembly commands, this accounts for all the various combinations of register codes and immediate values.
 
+Let's use `sav 5 r01` as an example. Now we know that it means to save the value `5` into register `r01`. Simple stuff, but the computer has no clue what it means. So we break it down into the only thing it can understand, binary.
+
 ### Binary Breakdown
 
-| Binary Bit Range | 
+| Instruction Part | Field | Binary Code |
+| ---------------- | ----- | ----------- |
+| `sav` | Command | 
 
 
 
