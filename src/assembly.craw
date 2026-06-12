@@ -1,19 +1,11 @@
-sav 72 rff
-
-
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-cal add 127 r01
-
-io time sleep r01
-
-sav 105 rff
+; 5. Screen present / TUI mode
+sav 0 r01
+io screen x r01
+io screen y r01
+sav 127 r01
+io screen red r01
+io screen green r01
+io screen blue r01
+io screen pixel r01
+io screen present r01
+stp

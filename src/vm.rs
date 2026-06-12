@@ -683,7 +683,10 @@ impl Cpu {
     let audio = if audio_enabled {
       match start_audio(Arc::clone(&speakers), Arc::clone(&speech_samples)) {
         Ok(handle) => Some(handle),
-        Err(_err) => None,
+        Err(err) => {
+          eprintln!("Audio unavailable: {err}");
+          None
+        }
       }
     } else {
       None
@@ -714,7 +717,7 @@ impl Cpu {
       screen_blue: 255,
       screen_w: config.screen_w,
       screen_h: config.screen_h,
-      last_present: Instant::now(),
+      last_present: Instant::now() - Duration::from_millis(100),
       target_frame_ms: 20, // <-<-<-<-<-<-<- FRAME RATE -<-<-<-<-<-<-<
       last_key: Arc::new(Mutex::new(0)),
       mouse: Arc::new(Mutex::new(MouseState {

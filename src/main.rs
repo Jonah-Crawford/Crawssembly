@@ -1,4 +1,4 @@
-// Crawssembly Assembler (single-file, spec-driven)
+w// Crawssembly Assembler (single-file, spec-driven)
 // Reads:  assembly.craw
 // Writes: program.bin  (u32 little-endian per instruction; only low 21 bits used)
 //
@@ -271,8 +271,8 @@ fn print_help() {
   println!("  --decode                      Open the instruction decoder");
   println!("  --dump                        Show assembled instructions");
   println!("  --dump-decoded                Show decoded instruction fields with --dump");
+  println!("  --file <file>                 Send file contents to register 0 during execution.");
   println!("  --help                        Show this help message");
-  println!("  --input <file>                Send file contents to register 0 during execution.");
   println!("  --screen <widthxheight>       Set virtual screen size, e.g. 128x128");
   println!("  --stats                       Show VM speed/tick statistics after running");
   println!("  --tui                         Use alternate-screen terminal mode");
