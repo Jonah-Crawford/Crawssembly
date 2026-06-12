@@ -1480,92 +1480,108 @@ Let's use `sav 5 r01` as an example. Now we know that it means to save the value
 
 ### Binary Breakdown
 
-#### Core Instruction Codes
+Below are the tables for what Crawssembly instructions look like to the machine.
 
-| Instruction      |                    Pattern | Meaning                                       |
-| ---------------- | -------------------------: | --------------------------------------------- |
-| `nop`            |    `000000000000000000000` | No operation                                  |
-| `inp`            |    `011000000000000000000` | Advance input                                 |
-| `stp`            |    `011111111111111111111` | Stop program                                  |
-| `sav reg reg`    | `00 000 aaaaaaaa bbbbbbbb` | Save register `a` to register `b`             |
-| `sav imm reg`    | `01 000 iiiiiiii bbbbbbbb` | Save immediate to register `b`                |
+Most instructions follow the form of `00 000 00000000 00000000`
+- `00`: Core Group, differentiates between `sav` and `cal` immediate values
+- `000`: Instruction Modes for `cal`, or used for control instuctions
+- `00000000`: First input value, or in `io` this contains the device and instruction code.
+- `00000000`: Second input, almost always a register code unless using labels.
+
+#### Core Instruction Patterns
+
+| Instruction | Pattern | Meaning |
+| ----------- | ------- | ------- |
+| `nop` | `000000000000000000000` | No operation |
+| `inp` | `011000000000000000000` | Advance input |
+| `stp` | `011111111111111111111` | Stop program |
+| `sav reg reg` | `00 000 aaaaaaaa bbbbbbbb` | Save register `a` to register `b` |
+| `sav imm reg` | `01 000 iiiiiiii bbbbbbbb` | Save immediate to register `b` |
 | `cal op reg reg` | `10 ooo aaaaaaaa bbbbbbbb` | Calculate using register `a` and register `b` |
-| `cal op imm reg` | `11 ooo iiiiiiii bbbbbbbb` | Calculate using immediate and register `b`    |
+| `cal op imm reg` | `11 ooo iiiiiiii bbbbbbbb` | Calculate using immediate and register `b` |
 
 #### `cal` Operation Codes
 
-| Operation | `mode` |
-| --------- | -----: |
-| `not`     |  `000` |
-| `and`     |  `001` |
-| `or`      |  `010` |
-| `xor`     |  `011` |
-| `shl`     |  `100` |
-| `shr`     |  `101` |
-| `sar`     |  `110` |
-| `add`     |  `111` |
+| Operation | Mode | Meaning |
+| --------- | ---- | ------- |
+| `not` | `000` | Flip each bit |
+| `and` | `001` | `1` if both inputs are `1`, else `0` |
+| `or`  | `010` | `1` if any input is `1`, else `0` |
+| `xor` | `011` | `1` if only 1 input is `1`, else `0` |
+| `shl` | `100` | Moves first value to the left |
+| `shr` | `101` | Moves first value to the right |
+| `sar` | `110` | Moves first value to the right, maintains sign |
+| `add` | `111` | Adds two values together |
 
-#### Control Instruction Codes
+#### Control Instruction Patterns
 
-| Instruction      |   `op5` | Pattern                    |
-| ---------------- | ------: | -------------------------- |
-| `jmz`            | `00001` | `00001 llllllllllllllll`   |
-| `jmg`            | `00010` | `00010 llllllllllllllll`   |
-| `ifl`            | `00011` | `00011 llllllllllllllll`   |
-| `jml`            | `00100` | `00100 llllllllllllllll`   |
-| `ifg`            | `00101` | `00101 llllllllllllllll`   |
-| `ifz`            | `00110` | `00110 llllllllllllllll`   |
-| `jmp`            | `00111` | `00111 llllllllllllllll`   |
-| `run`            | `01010` | `01010 bbbbbbbbbbbbbbbb`   |
-| `fgo`            | `01011` | `01011 nnnnnnnnnnnnnnnn`   |
-| `rmv`            | `01101` | `01101 llllllllllllllll`   |
-| `io`             | `01110` | `01110 dddd cccc rrrrrrrr` |
-| label definition | `01111` | `01111 llllllllllllllll`   |
+| Instruction | Code | Pattern | Meaning |
+| ----------- | ---- | ------- | ------- |
+| `jmz` | `00001` | `00001 llllllllllllllll` | Jump to label if `r01` = 0 |
+| `jmg` | `00010` | `00010 llllllllllllllll` | Jump to label if `r01` > 0 |
+| `ifl` | `00011` | `00011 llllllllllllllll` | Continue if `r01` < 0 |
+| `jml` | `00100` | `00100 llllllllllllllll` | Jump to label if `r01` < 0 | 
+| `ifg` | `00101` | `00101 llllllllllllllll` | Continue if `r01` > 0 |
+| `ifz` | `00110` | `00110 llllllllllllllll` | Continue if `r01` = 0 |
+| `jmp` | `00111` | `00111 llllllllllllllll` | Jump to label |
+| `fgo` | `01011` | `01011 nnnnnnnnnnnnnnnn` | Jump to line number, or `r01` if 0 |
+| `rmv` | `01101` | `01101 llllllllllllllll` | Removes/ends label scope |
+| `io`  | `01110` | `01110 dddd cccc rrrrrrrr`| Accesses non-CPU devices |
+| label definition | `01111` | `01111 llllllllllllllll` | Creates a label |
 
 #### `io` Device Codes
 
-| Instruction | Device | 
+| Instruction | Device | Usage |
+| ----------- | ------ | ----- |
+| `io text` | `0000` | Accesses text character printing |
+| `io time` | `0001` | Accesses time-based data |
+| `io screen` | `0010` | Accesses screen graphics |
+| `io keyboard` | `0011` | Accesses keyboard events |
+| `io mouse` | `0100` | Accesses mouse events |
+| `io speaker` | `0101` | Accesses speaker control |
+| `io memory` | `0110` | Accesses volitile storage |
+| `io disk` | `0111` | Accesses persistant storage |
 
 #### `io` Command Codes
 
-| Instruction           | Device | Command | Binary                     |
-| --------------------- | ------ | ------- | -------------------------- |
-| `io text char`        | `0000` | `0000`  | `01110 0000 0000 rrrrrrrr` |
-| `io text int`         | `0000` | `0001`  | `01110 0000 0001 rrrrrrrr` |
-| `io text newline`     | `0000` | `0010`  | `01110 0000 0010 rrrrrrrr` |
-| `io text hex`         | `0000` | `0011`  | `01110 0000 0011 rrrrrrrr` |
-| `io time unix`        | `0001` | `0000`  | `01110 0001 0000 rrrrrrrr` |
-| `io time low`         | `0001` | `0001`  | `01110 0001 0001 rrrrrrrr` |
-| `io time sleep`       | `0001` | `0010`  | `01110 0001 0010 rrrrrrrr` |
-| `io screen x`         | `0010` | `0000`  | `01110 0010 0000 rrrrrrrr` |
-| `io screen y`         | `0010` | `0001`  | `01110 0010 0001 rrrrrrrr` |
-| `io screen pixel`     | `0010` | `0010`  | `01110 0010 0010 rrrrrrrr` |
-| `io screen clear`     | `0010` | `0011`  | `01110 0010 0011 rrrrrrrr` |
-| `io screen dump`      | `0010` | `0100`  | `01110 0010 0100 rrrrrrrr` |
-| `io screen present`   | `0010` | `0101`  | `01110 0010 0101 rrrrrrrr` |
-| `io screen red`       | `0010` | `0110`  | `01110 0010 0110 rrrrrrrr` |
-| `io screen green`     | `0010` | `0111`  | `01110 0010 0111 rrrrrrrr` |
-| `io screen blue`      | `0010` | `1000`  | `01110 0010 1000 rrrrrrrr` |
-| `io screen erase`     | `0010` | `1001`  | `01110 0010 1001 rrrrrrrr` |
-| `io screen erasecell` | `0010` | `1010`  | `01110 0010 1010 rrrrrrrr` |
-| `io keyboard poll`    | `0011` | `0000`  | `01110 0011 0000 rrrrrrrr` |
-| `io mouse x`          | `0100` | `0000`  | `01110 0100 0000 rrrrrrrr` |
-| `io mouse y`          | `0100` | `0001`  | `01110 0100 0001 rrrrrrrr` |
-| `io mouse btn`        | `0100` | `0010`  | `01110 0100 0010 rrrrrrrr` |
-| `io speaker channel`  | `0101` | `0000`  | `01110 0101 0000 rrrrrrrr` |
-| `io speaker freq`     | `0101` | `0001`  | `01110 0101 0001 rrrrrrrr` |
-| `io speaker volume`   | `0101` | `0010`  | `01110 0101 0010 rrrrrrrr` |
-| `io speaker wave`     | `0101` | `0011`  | `01110 0101 0011 rrrrrrrr` |
-| `io speaker on`       | `0101` | `0100`  | `01110 0101 0100 rrrrrrrr` |
-| `io speaker off`      | `0101` | `0101`  | `01110 0101 0101 rrrrrrrr` |
-| `io speaker toggle`   | `0101` | `0110`  | `01110 0101 0110 rrrrrrrr` |
-| `io mem addr`         | `0110` | `0000`  | `01110 0110 0000 rrrrrrrr` |
-| `io mem read`         | `0110` | `0001`  | `01110 0110 0001 rrrrrrrr` |
-| `io mem write`        | `0110` | `0010`  | `01110 0110 0010 rrrrrrrr` |
-| `io disk addr`        | `0111` | `0000`  | `01110 0111 0000 rrrrrrrr` |
-| `io disk read`        | `0111` | `0001`  | `01110 0111 0001 rrrrrrrr` |
-| `io disk write`       | `0111` | `0010`  | `01110 0111 0010 rrrrrrrr` |
-| `io disk save`        | `0111` | `0011`  | `01110 0111 0011 rrrrrrrr` |
+| Instruction | Device | Command | Binary | Meaning |
+| ----------- | ------ | ------- | ------ | ------- |
+| `io text char` | `0000` | `0000` | `01110 0000 0000 rrrrrrrr` | Print inputted character code |
+| `io text int` | `0000` | `0001` | `01110 0000 0001 rrrrrrrr` | Print input register's value |
+| `io text newline` | `0000` | `0010` | `01110 0000 0010 rrrrrrrr` | Moves the text cursor to the next line |
+| `io text hex` | `0000` | `0011` | `01110 0000 0011 rrrrrrrr` | Print input register's value in hexadecimal |
+| `io time unix` | `0001` | `0000` | `01110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
+| `io time low` | `0001` | `0001` | `01110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
+| `io time sleep` | `0001` | `0010` | `01110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |
+| `io screen x` | `0010` | `0000` | `01110 0010 0000 rrrrrrrr` | Sets active x coordinate in the graphics buffer |
+| `io screen y` | `0010` | `0001` | `01110 0010 0001 rrrrrrrr` | Sets active Y coordinate in the graphics buffer |
+| `io screen pixel` | `0010` | `0010` | `01110 0010 0010 rrrrrrrr` | Updates pixel in the graphics buffer at active coordinates |
+| `io screen clear` | `0010` | `0011` | `01110 0010 0011 rrrrrrrr` | Clears the graphics buffer |
+| `io screen dump` | `0010` | `0100` | `01110 0010 0100 rrrrrrrr` | Shows a basic readout of the current screen |
+| `io screen present` | `0010` | `0101` | `01110 0010 0101 rrrrrrrr` | Sends the graphics buffer to the screen |
+| `io screen red` | `0010` | `0110` | `01110 0010 0110 rrrrrrrr` | Sets the red colour value of the active coordinates of the graphics buffer |
+| `io screen green` | `0010` | `0111` | `01110 0010 0111 rrrrrrrr` | Sets the green colour value of the active coordinates of the graphics buffer |
+| `io screen blue` | `0010` | `1000` | `01110 0010 1000 rrrrrrrr` | Sets the blue colour value of the active coordinates of the graphics buffer |
+| `io screen erase` | `0010` | `1001` | `01110 0010 1001 rrrrrrrr` | Clears the pixel in the graphics buffer at the active coordinates |
+| `io screen erasecell` | `0010` | `1010` | `01110 0010 1010 rrrrrrrr` | Clears the entire terminal cell of the active coordinates in the graphics buffer |
+| `io keyboard poll` | `0011` | `0000` | `01110 0011 0000 rrrrrrrr` | Extracts the last keycode pressed into input register |
+| `io mouse x` | `0100` | `0000` | `01110 0100 0000 rrrrrrrr` | Extracts current mouse X coordinate into input register |
+| `io mouse y` | `0100` | `0001` | `01110 0100 0001 rrrrrrrr` | Extracts current mouse Y coordinate into input register |
+| `io mouse btn` | `0100` | `0010` | `01110 0100 0010 rrrrrrrr` | Extracts button bitfield into input register (Left, Right, Middle) |
+| `io speaker channel` | `0101` | `0000` | `01110 0101 0000 rrrrrrrr` | Sets the active speaker channel to the value in input register |
+| `io speaker freq` | `0101` | `0001` | `01110 0101 0001 rrrrrrrr` | Sets active speaker frequency to value in input register |
+| `io speaker volume` | `0101` | `0010` | `01110 0101 0010 rrrrrrrr` | Sets volume (0-100) of active speaker to value in input register |
+| `io speaker wave` | `0101` | `0011` | `01110 0101 0011 rrrrrrrr` |
+| `io speaker on` | `0101` | `0100` | `01110 0101 0100 rrrrrrrr` |
+| `io speaker off` | `0101` | `0101` | `01110 0101 0101 rrrrrrrr` |
+| `io speaker toggle` | `0101` | `0110` | `01110 0101 0110 rrrrrrrr` |
+| `io mem addr` | `0110` | `0000` | `01110 0110 0000 rrrrrrrr` |
+| `io mem read` | `0110` | `0001` | `01110 0110 0001 rrrrrrrr` |
+| `io mem write` | `0110` | `0010` | `01110 0110 0010 rrrrrrrr` |
+| `io disk addr` | `0111` | `0000` | `01110 0111 0000 rrrrrrrr` |
+| `io disk read` | `0111` | `0001` | `01110 0111 0001 rrrrrrrr` |
+| `io disk write` | `0111` | `0010` | `01110 0111 0010 rrrrrrrr` |
+| `io disk save` | `0111` | `0011` | `01110 0111 0011 rrrrrrrr` |
 
 
 
@@ -1582,5 +1598,12 @@ Let's use `sav 5 r01` as an example. Now we know that it means to save the value
 
 
 
+
+
+
+
+## Credits
+
+Thank you to **Koy Camerini-Yachdav** who tested Crawssembly on Mac OS, and their amazing work making detailed error reports.
 
 *Crawssembly is a product of CRAW SYSTEMS (C) 2026*
