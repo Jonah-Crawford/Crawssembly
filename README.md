@@ -859,6 +859,34 @@ Write a program that loops from 0 to 10, and outputs 'e' if the number is even, 
 
 Edit your program for 'Even Looper', so that instead of outputting 'e' or 'o', it outputs the number if it's even, and doesn't output anything if the number is odd.
 
+## Files
+
+As said before, `r00` is the **input register**. You can select what these values are by adding an input file to Crawssembly's execution.
+
+To add a file to the execution, add the `--file` option to `craw`.
+
+Example
+
+`craw program.craw --file input.txt`
+
+This creates a list of **8-bit** (or **1 byte**) values that is stored in `r00`. To access the next byte, use the `inp` instruction.
+
+Example
+
+```
+sav r00 ref
+inp
+sav r00 ref
+inp
+sav r00 ref
+```
+
+This program gets the first three bytes of the input values, and outputs that ASCII code to the screen.
+
+
+
+
+
 ## Devices
 
 `io` is the largest group of commands, used to interact with data outside of the CPU, such as speakers, keyboards, and storage. All `io` commands take a register value as input, never an immediate value.
