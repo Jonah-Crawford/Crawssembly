@@ -1715,24 +1715,19 @@ The Compiler goes through each line of the program, and converts it from Crawsse
 The Executioner reads each binary code, decodes it into seperate blocks, and executes the instuction, in the **Fetch-Decode-Execute** cycle.
 
 ```
-
-
-                           ┌────────────── Executioner ───────────────────┐
-                           │                                              │
-┌────────────── Compiler ──┼─────────────┐
-│                          │             │
-│ program.craw ----------> │ program.bin │ ----------> Fetched Instruction
-│                          │             │                     │
-└──────────────────────────┼─────────────┘                     │
-                           │      ^          FDE Cycle         │
-                           │      │                            │
-                           │      │                            V
-                           │  Execution <------------- Decoded Instruction
-                           │
-                           └───────────────────────────────────────
-
-
-
+                           ┌───────────────── Executioner ─────────────────┐
+                           │                                               │
+┌────────────── Compiler ──┼─────────────┐                                 │ 
+│                          │             │                                 │
+│ program.craw ----------> │ program.bin │ ----------> Fetched Instruction │
+│                          │             │                     │           │
+└──────────────────────────┼─────────────┘                     │           │
+                           │      ^          FDE Cycle         │           │ 
+                           │      │                            │           │
+                           │      │                            V           │
+                           │  Execution <------------- Decoded Instruction │
+                           │                                               │
+                           └───────────────────────────────────────────────┘
 ```
 
 
