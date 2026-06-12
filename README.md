@@ -766,7 +766,7 @@ A much better way is to loop over the code you want to repeat, rather than copyi
 
 ### Labels
 
-Loops are defined using a **label**. A label is a pointer to a instruction number. The line number is stored under this label. Simply state the label value as an instruction.
+Loops are defined using a **label**. A label is a pointer to an instruction number. The line number is stored under this label. Simply state the label value as an instruction.
 Loop labels 
 
 Example
@@ -831,7 +831,7 @@ Example
 5	stp             ; end the program
 ```
 
-This program adds increases the value in `r01`, being `10` in this example, every loop. This program is an example of an **infinite loop**, it will never reach the `stp` command.
+This program increases the value in `r01`, being `10` in this example, every loop. This program is an example of an **infinite loop**, it will never reach the `stp` command.
 
 Because this program is an infinite loop, you have to **force-exit** the program, you can do this by pressing `CTRL` and `c` at the same time.
 
@@ -882,7 +882,7 @@ Let's read through each line in detail:
 5. `sav r01 r03`: This saves the +1 calculation step back into `r03`.
 6. `cal add -1 r02`: This minuses `1` from the loop count, indicating that a loop has taken place.
 7. `sav r01 r02`: This line updates `r02`, where the loop count is stored.
-8. `jmp 1`: Because the -1 step happened, the result is still stored in `r01`. If this >=0, the loop stops running.
+8. `jmg 1`: Because the -1 step happened, the result is still stored in `r01`. If this >=0, the loop stops running.
 9. `stp`: The program ends, resulting in 10 loops being executed.
 
 ### Activity: Letter Loops
