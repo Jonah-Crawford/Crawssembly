@@ -11,6 +11,112 @@ Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!]
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
 ![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
 
+## Contents
+
+1. Why does Crawssembly exist?
+2. How to install Crawssembly
+3. Your First Porgram
+4. What will I learn?
+5. Why not just learn real assembly?
+6. About This Document
+7. Assembly; What's the deal?
+8. How Crawssembly compares to higher languages
+9. Binary
+  1. What is Binary?
+  2. How does binary get used?
+  3. Two's Complement
+  4. Other Number Systems
+  5. How can I tell the difference?
+10. The Basics
+  1. Instructions
+  2. Registers
+  3. Activity: Outputs
+  4. More about 'literals'
+  5. More about `sav`
+11. Maths
+  1. Boolean Logic
+    1. NOT
+    2. AND
+    3. OR
+    4. SHIFT
+    5. Additional Operations
+    6. How to use
+  2. Activity: Addition
+  3. Advanced Activity: Doubling
+  4. Bit masking
+    1. Extraction
+    2. Turning On
+    3. Turning Off
+    4. Toggling
+    5. Negation
+  5. Symbols
+12. Loops
+  1. Labels
+  2. Line Numbers
+  3. Removing Labales
+  4. Jumping
+  5. Dynamic Jumping
+  6. Activity: Letter Loops
+  7. Advanced Activity: Double Loops
+  8. More about jumping
+    1. Dynamic `fgo`
+13. Branching
+  1. Activity: Even Looper
+  2. Advanced Activity: Even Checker
+14. Files
+15. Devices
+16. Storage
+  1. Addresses
+  2. Memory
+    1. Activity: Read/Write Cycle
+    2. Advanced Activity: Save Arrays
+  3. Disk
+    1. Activity: Long Live The Data
+    2. Advanced Activity: My Long List
+  4. What high-level programs do
+17. Input
+  1. The Keyboard
+  2. The Mouse
+    1. Position
+    2. Button Bitfield
+    3. Activity: Clicking Away
+    4. Advanced Activity: Mouse Dump
+18. Output
+  1. The Screen
+    1. Text
+    2. Activity: The New Way To Talk
+    3. Advanced Activity: Arcade Leaderboard Name
+  2. Graphics
+    1. Activity: Smiling Screen
+    2. Advanced Activity: Colourful Terminal
+    3. Extra Screen Commands
+  3. Speakers
+    1. Activity: Piano Notes
+    2. Advanced Activity: Scales
+19. Time
+  1. UNIX Timestamp
+20. Register Constants
+21. Congratulations!
+  1. Quick Reference
+  2. Common Mistakes
+22. Sorry, Crawssembly is a lie.
+  1. Binary Breakdown
+    1. Core Instruction Patterns
+    2. `cal` Operation Codes
+    3. Control Instruction Patterns
+    4. `io` Device Codes
+    5. `io` Command Codes
+
+
+
+23. Legal
+
+
+
+
+
+
+
 ## Why does Crawssembly exist?
 
 **Crawssembly** is an educational assembly-like language designed to teach how computers work from the ground up.
@@ -924,7 +1030,7 @@ Registers are the fastest type of data storage, but the relative data they can h
 | Memory | Short | Large | Fast |
 | Disk | Indefinite | Very Large | Slow |
 
-#### Addresses
+### Addresses
 
 Much like registers, every cell in storage has a number based on it's position. This number is called the **address**.
 
