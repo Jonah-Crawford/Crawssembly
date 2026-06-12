@@ -184,6 +184,12 @@ stp
 
 Run this file using `craw hello.craw`
 
+Expected Output
+
+```
+Hi
+```
+
 Congratulations, you are taking the first steps to learning Crawssembly!
 
 ## What will I learn?
@@ -985,7 +991,7 @@ Example
 
 `craw program.craw --file input.txt`
 
-This creates a list of **8-bit** (or **1 byte**) values that is stored in `r00`. To access the next byte, use the `inp` instruction.
+This creates a list of **8-bit** (or **1 byte**) values that are stored in `r00`. To access the next byte, use the `inp` instruction.
 
 Example
 
@@ -1213,7 +1219,7 @@ Almost all basic mice output 4 streams of data:
 The `io mouse` command group captures mouse events using 3 commands:
 - `io mouse x`: extracts current mouse X position, relative to the screen's top-left corner
 - `io mouse y`: extracts current mouse Y position, relative to the screen's top-left corner
-- `io mouse btn`: creates a **bitfield** for the left, right, and middle buttons in the order.
+- `io mouse btn`: creates a **bitfield** for the middle, right, and left buttons in that order.
 
 #### Position
 
@@ -1232,16 +1238,16 @@ This example stores the (x, y) location as (`r01`, `r02`).
 
 A **bit field** is a single binary number which encodes multiple values. Instead of using a single bit for if the left mouse button is being pressed, another for the right button being pressed, and another again for the middle button, we can merge these 3 numbers into a single number.
 
-| Left Button | Right Button | Middle Button | Bitfield | Base-10 Number |
-| ----------- | ------------ | ------------- | -------- | -------------- |
-| Not Pressed | Not Pressed | Not Pressed | 0b000 | 0 |
-| Not Pressed | Not Pressed | Pressed | 0b001 | 1 |
-| Not Pressed | Pressed | Not Pressed | 0b010 | 2 |
-| Not Pressed | Pressed | Pressed | 0b011 | 3 |
-| Pressed | Not Pressed | Not Pressed | 0b100 | 4 |
-| Pressed | Not Pressed | Pressed | 0b101 | 5 |
-| Pressed | Pressed | Not Pressed | 0b110 | 6 |
-| Pressed | Pressed | Pressed | 0b111 | 7 |
+| Left | Right | Middle | Bitfield | Decimal |
+| ---- | ----- | ------ | -------- | ------- |
+| Off | Off | Off | `0b000` | 0 |
+| On | Off | Off | `0b001` | 1 |
+| Off | On | Off | `0b010` | 2 |
+| On | On | Off | `0b011` | 3 |
+| Off | Off | On | `0b100` | 4 |
+| On | Off | On | `0b101` | 5 |
+| Off | On | On | `0b110` | 6 |
+| On | On | On | `0b111` | 7 |
 
 You can extract each button using bit masks.
 
@@ -1428,13 +1434,13 @@ io speaker channel r01  ; sets active speaker channel to '0'
 io speaker freq r03     ; sets active speaker to 250Hz
 
 io speaker on rff       ; turns on speaker
-io time sleep r01       ; waits 100ms
+io time sleep r02       ; waits 100ms
 
 io speaker off rff      ; turns off speaker
-io time sleep r01       ; waits 100ms
+io time sleep r02       ; waits 100ms
 
 io speaker on rff       ; turns on speaker
-io time sleep r01       ; waits 100mm
+io time sleep r02       ; waits 100mm
 
 io speaker off rff      ; turns off speaker
 ```
@@ -1551,7 +1557,7 @@ The rest of this section is used as quick-reference and help.
 `io mouse`
 - `io mouse x`: Gets the mouse X coordinate into the input register.
 - `io mouse y`: Gets the mouse Y coordinate into the input register.
-- `io mouse btn`: Gets the bitfield of Left, Right, and Middle buttons into the input register.
+- `io mouse btn`: Gets the bitfield of Middle, Right, and Left buttons into the input register.
 
 `io speaker`
 - `io speaker channel`: Sets the active channel (0-3) to the value in the input register.
@@ -1682,7 +1688,7 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io keyboard poll` | `0011` | `0000` | `01110 0011 0000 rrrrrrrr` | Extracts the last key code pressed into input register |
 | `io mouse x` | `0100` | `0000` | `01110 0100 0000 rrrrrrrr` | Extracts current mouse X coordinate into input register |
 | `io mouse y` | `0100` | `0001` | `01110 0100 0001 rrrrrrrr` | Extracts current mouse Y coordinate into input register |
-| `io mouse btn` | `0100` | `0010` | `01110 0100 0010 rrrrrrrr` | Extracts button bit field into input register (Left, Right, Middle) |
+| `io mouse btn` | `0100` | `0010` | `01110 0100 0010 rrrrrrrr` | Extracts button bit field into input register (Middle, Right, Left) |
 | `io speaker channel` | `0101` | `0000` | `01110 0101 0000 rrrrrrrr` | Sets the active speaker channel to the value in input register |
 | `io speaker freq` | `0101` | `0001` | `01110 0101 0001 rrrrrrrr` | Sets active speaker frequency to value in input register |
 | `io speaker volume` | `0101` | `0010` | `01110 0101 0010 rrrrrrrr` | Sets volume (0-100) of active speaker to value in input register |
