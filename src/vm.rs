@@ -598,6 +598,7 @@ struct Cpu {
   pub disk: Vec<i32>,
   pub disk_addr: usize,
   disk_dirty: bool,
+  output_buffer: Vec<u8>,
 
   // Dense labels with generation stamp
   label_pos: Vec<i32>,
@@ -696,6 +697,7 @@ impl Cpu {
       disk: vec![0; 65536],
       disk_addr: 0,
       disk_dirty: false,
+      output_buffer: Vec::new(),
       label_pos: vec![-1; 65536],
       label_epoch: vec![0; 65536],
       epoch: 1,
@@ -1218,6 +1220,13 @@ impl Cpu {
 
     println!();
 
+    if !self.output_buffer.is_empty() {
+      let output_path = "output.bin";
+
+      if let Err(e) = fs::write(output_path, &self.output_buffer) { eprintln!("Failed to write output file: {}", e); }
+
+    }
+
     if show_stats {
       let hz = if dt > 0.0 { (tick as f64) / dt } else { 0.0 };
       let ns_per = if tick > 0 { (dt * 1e9) / (tick as f64) } else { 0.0 };
@@ -1724,6 +1733,12 @@ impl Cpu {
         let _ = io::stdout().flush();
       }
     }
+
+    if dst == 0xFF {
+      self.output_buffer.push((value & 0xFF) as u8);
+      return;
+    }
+
   }
 
   fn step(
