@@ -887,13 +887,14 @@ Writing to `rff` appends the **lowest 8 bits** of the value to the output buffer
 
 Example
 
-65  -> 0x41
-300 -> 0x2C
--1  -> 0xFF
+```
+sav 72 rff              ; 72 = 'H' -> output register
+sav 105 rff             ; 105 = 'i' -> output register
+```
 
-Because file writing is slow, the output file is only written after the program has ended.
+This program saves 'Hi' to `output.bin`.
 
-
+> Because file writing is slow, the output file is only written after the program has ended. Force exiting might not create the entire `output.bin` file.
 
 ## Devices
 
@@ -1479,14 +1480,47 @@ Let's use `sav 5 r01` as an example. Now we know that it means to save the value
 
 ### Binary Breakdown
 
-| Instruction Part | Field | Binary Code |
-| ---------------- | ----- | ----------- |
-| `sav` | Command | 
+#### Core Instruction Codes
 
+| Instruction      |             Binary pattern | Meaning                                       |
+| ---------------- | -------------------------: | --------------------------------------------- |
+| `nop`            |    `000000000000000000000` | No operation                                  |
+| `inp`            |    `011000000000000000000` | Advance input                                 |
+| `stp`            |    `011111111111111111111` | Stop program                                  |
+| `sav reg reg`    | `00 000 aaaaaaaa bbbbbbbb` | Save register `a` to register `b`             |
+| `sav imm reg`    | `01 000 iiiiiiii bbbbbbbb` | Save immediate to register `b`                |
+| `cal op reg reg` | `10 ooo aaaaaaaa bbbbbbbb` | Calculate using register `a` and register `b` |
+| `cal op imm reg` | `11 ooo iiiiiiii bbbbbbbb` | Calculate using immediate and register `b`    |
 
+#### `cal` Operation Codes
 
+| Operation | `mode` |
+| --------- | -----: |
+| `not`     |  `000` |
+| `and`     |  `001` |
+| `or`      |  `010` |
+| `xor`     |  `011` |
+| `shl`     |  `100` |
+| `shr`     |  `101` |
+| `sar`     |  `110` |
+| `add`     |  `111` |
 
+#### Control Instruction Codes
 
+| Instruction      |   `op5` | Pattern                    |
+| ---------------- | ------: | -------------------------- |
+| `jmz`            | `00001` | `00001 llllllllllllllll`   |
+| `jmg`            | `00010` | `00010 llllllllllllllll`   |
+| `ifl`            | `00011` | `00011 llllllllllllllll`   |
+| `jml`            | `00100` | `00100 llllllllllllllll`   |
+| `ifg`            | `00101` | `00101 llllllllllllllll`   |
+| `ifz`            | `00110` | `00110 llllllllllllllll`   |
+| `jmp`            | `00111` | `00111 llllllllllllllll`   |
+| `run`            | `01010` | `01010 bbbbbbbbbbbbbbbb`   |
+| `fgo`            | `01011` | `01011 nnnnnnnnnnnnnnnn`   |
+| `rmv`            | `01101` | `01101 llllllllllllllll`   |
+| `io`             | `01110` | `01110 dddd cccc rrrrrrrr` |
+| label definition | `01111` | `01111 llllllllllllllll`   |
 
 
 
