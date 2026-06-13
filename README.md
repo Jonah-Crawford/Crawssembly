@@ -946,7 +946,7 @@ Not only are higher-level languages, like Python, easier to read, they condense 
 
 A program that would be 100 lines in Crawssembly, would only be a single line in Python.
 
-For instance, writing `mylist = ["Hello", 27.6 + 1, True]` in python means the computer has to allocate memory for the variable, solve the **floating-point** (a name for a non-whole number) calculation, and compress the string into bytes, all while maintaining the OS, data security, encryption, and other background tasks.
+For instance, writing `mylist = ["Hello", 27.6 + 1, True]` in Python means the computer has to allocate memory for the variable, solve the **floating-point** (a name for a non-whole number) calculation, and compress the string into bytes, all while maintaining the OS, data security, encryption, and other background tasks.
 
 It's easy to see why, while powerful, programming in assembly has faded out of fashion among modern-day programmers.
 
@@ -1017,7 +1017,7 @@ Because `io` commands are dependent on other devices, commands might fail if the
 
 ## Storage
 
-Computers use two different systems for storing data. **Memory** and **Disk**.
+Computers use two different systems for storing data; **Memory** and **Disk**.
 
 - Memory: A fast way to temporarily store data. It is where active data which is being used is stored. Memory is cleared when the computer resets, called **volatile**.
 - Disk: Long-term storage, used for files, apps, operating systems, and more. The disk is usually slower than memory, which is why only long-term data is stored. Because data is kept, it is called **non-volatile**.
@@ -1064,11 +1064,9 @@ io mem addr r01         ; sets the active memory address to the value in r01 (i.
 io mem read ref         ; reads the memory address contents into the text output register
 ```
 
-`io mem addr` sets the active memory address that Crawssembly is considering. All `io mem` commands act on this address.
-
-`io mem write` sets the value of the active memory address to whatever is in the input register.
-
-`io mem read` saves the value of the active memory address to the given register.
+- `io mem addr` sets the active memory address that Crawssembly is considering. All `io mem` commands act on this address.
+- `io mem write` sets the value of the active memory address to whatever is in the input register.
+- `io mem read` saves the value of the active memory address to the given register.
 
 #### Activity: Read/Write Cycle
 
@@ -1471,7 +1469,9 @@ The **UNIX timestamp**, or **UNIX Epoch** is the starting point for measuring ti
 
 This time was selected as a nice round start point for the early development of the UNIX operating system in the 1970's, the direct ancestor of the most dominant modern operating systems in use today.
 
-`io time low` is a separate command due to binary limits. If you were alive before 2000, you would have remembered the *Y2K* bug, where early programs that used only 2 digits for the year (e.g. '99' for '1999') would fail in the new millennium. A similar, but different issue occurs because of the limit of binary numbers.
+#### More about `low`
+
+`io time low` is a separate command due to binary limits. If you were alive before 2000, you likely remember the *Y2K* bug, where early programs that used only 2 digits for the year (e.g. '99' for '1999') would fail in the new millennium. A similar, but different issue occurs because of the limit of binary numbers.
 
 Because lots of systems are **32-bit**, meaning that the data length in the CPU is 32-bits of binary, the largest positive number this can take is around 2.15 billion. The UNIX timestamp reaches this number of seconds early in 2038. Once we go over that point, the timestamp will roll over into negative numbers. This is an example of **underflow**. This causes the timestamp to point to December 1901.
 
@@ -1521,20 +1521,20 @@ The rest of this section is used as quick-reference and help.
 
 ### Quick Reference
 
-`sav IMMEDIATE REGISTER` or `sav REGISTER REGISTER`: Saves the value of the first argument to the register in the second argument.
-`cal OPERATION IMMEDIATE REGISTER` or `cal OPERATION REGISTER REGISTER`: Calculates 'VALUE/REGISTER OPERATION REGISTER', and saves the result to `r01`.
-`LABEL`: Creates a label with that value pointing to that line number.
-`jmp LABEL`: Jumps unconditionally to LABEL.
-`jmg LABEL`: Jumps to LABEL if `r01` is greater than 0.
-`jmz LABEL`: Jumps to LABEL if `r01` is equal to 0.
-`jml LABEL`: Jumps to LABEL if `r01` is less than 0.
-`ifg LABEL`: Continues if `r01` is greater than 0.
-`ifz LABEL`: Continues if `r01` is equal to 0.
-`ifl LABEL`: Continues if `r01` is less than 0.
-`rmv LABEL`: Removes the label from memory, and ends any `if` commands.
-`fgo IMMEDIATE`: Jumps to the line number, if `0` used, jump to value in `r01`.
-`stp`: Stops the program.
-`nop`: Does nothing.
+`sav IMMEDIATE REGISTER` or `sav REGISTER REGISTER`: Saves the value of the first argument to the register in the second argument.  
+`cal OPERATION IMMEDIATE REGISTER` or `cal OPERATION REGISTER REGISTER`: Calculates 'VALUE/REGISTER OPERATION REGISTER', and saves the result to `r01`.  
+`LABEL`: Creates a label with that value pointing to that line number.  
+`jmp LABEL`: Jumps unconditionally to LABEL.  
+`jmg LABEL`: Jumps to LABEL if `r01` is greater than 0.  
+`jmz LABEL`: Jumps to LABEL if `r01` is equal to 0.  
+`jml LABEL`: Jumps to LABEL if `r01` is less than 0.  
+`ifg LABEL`: Continues if `r01` is greater than 0.  
+`ifz LABEL`: Continues if `r01` is equal to 0.  
+`ifl LABEL`: Continues if `r01` is less than 0.  
+`rmv LABEL`: Removes the label from memory, and ends any `if` commands.  
+`fgo IMMEDIATE`: Jumps to the line number, if `0` used, jump to value in `r01`.  
+`stp`: Stops the program.  
+`nop`: Does nothing.  
 
 `io text`
 - `io text char`: Shows the character code stored in the input register.
@@ -1747,6 +1747,15 @@ The Executioner reads each binary code, decodes it into separate blocks, and exe
                            │                                               │
                            └───────────────────────────────────────────────┘
 ```
+
+</details>
+
+<details>
+<summary><strong>How you can help Crawssembly</strong></summary>
+
+Eagle-eye's readers will have spotted that not *every* possible binary instruction has a function yet. This is to allow users you yourself to come up with ideas for Crawssembly's next versions!
+
+*CRAW SYSTEMS* is proud to release Crawssembly in open-source format to allow anyone to make their own changes to Crawssembly. If you have any ideas for the Crawssembly team, feel free to contact the project lead **Jonah Crawford** at *jonah@jonahcrawford.com*.
 
 </details>
 
