@@ -4,6 +4,8 @@
 
 Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
 
+Check out the online version with [this link!](https://crawssembly.ultimatecraw.xyz/)
+
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
@@ -136,7 +138,7 @@ Crawssembly is:
 The goal is to help you understand what high-level languages are really doing behind the scenes.
 
 > Don't worry if some of the concepts in this guide seem unfamiliar at first. Computers are surprisingly simple once you break them into smaller pieces, and we'll build up the ideas one step at a time.
-
+> 
 > Because Crawssembly assumes near-zero knowledge, there might be concepts you already know. Feel free to skip over them if you are familiar with anything shown!
 
 ![Registers](https://img.shields.io/badge/Registers-256-blue)
