@@ -60,9 +60,9 @@ const defaultProgram = programs.hello;
 
 try {
   await init();
-  output.textContent = "Crawssembly Online Demo Loaded";
+  output.textContent = "Crawssembly Online loaded";
 } catch (err) {
-  output.textContent = "Crawssembly Online Demo failed to load:\n" + err;
+  output.textContent = "Crawssembly Online failed to load:\n" + err;
 }
 
 examples.onchange = () => {
