@@ -38,14 +38,14 @@ Crawssembly removes much of the complexity while preserving the core ideas:
 
 Crawssembly is not:
 
-❌ A replacement for x86
-❌ A replacement for ARM
+❌ A replacement for x86  
+❌ A replacement for ARM  
 ❌ A production language
 
 Crawssembly is:
 
-✅ A teaching language
-✅ A CPU simulator
+✅ A teaching language  
+✅ A CPU simulator  
 ✅ A bridge between lower-level thinking and higher-level programming
 
 The goal is to help you understand what high-level languages are really doing behind the scenes.
@@ -111,15 +111,15 @@ Congratulations, you are taking the first steps to learning Crawssembly!
 
 By the end of this guide you will understand:
 
-✅ Binary and hexadecimal
-✅ Registers
-✅ Memory
-✅ Arithmetic
-✅ Program flow
-✅ Input and output
-✅ How high-level languages work underneath
-✅ Key computing concepts
-✅ The fundamentals of CPU architecture
+✅ Binary and hexadecimal  
+✅ Registers  
+✅ Memory  
+✅ Arithmetic  
+✅ Program flow  
+✅ Input and output  
+✅ How high-level languages work underneath  
+✅ Key computing concepts  
+✅ The fundamentals of CPU architecture  
 
 The biggest thing you will learn is
 
@@ -208,10 +208,10 @@ It's clear that place value works in 10's, the number '8' could represent 8 1's,
 
 The example above shows how the number 83072 is equal to
 
-8 * 10 000 +
-3 * 1 000 +
-0 * 100 +
-7 * 10 +
+8 * 10 000 +  
+3 * 1 000 +  
+0 * 100 +  
+7 * 10 +  
 2 * 1
 
 For binary, only **2 digits** are used. These are 0 for 'Off', and 1 for 'On'. Because only 2 symbols are used, place value works based on 2, not 10.
@@ -224,10 +224,10 @@ So a '1' could represent 1 1's, 1 2's, 1 4's, 1 8's, 1 16's, etc... depending on
 
 We can see that the binary number 10110 is the same as
 
-1 * 16 +
-0 * 8 +
-1 * 4 +
-1 * 2 +
+1 * 16 +  
+0 * 8 +  
+1 * 4 +  
+1 * 2 +  
 0 * 1
 
 Which, when calculated, equals 22. So 10110 in binary is the exact same as 22 in Base-10. Every number that can be made in Base-10, can be made in Base-2. There are no gaps.
@@ -260,13 +260,13 @@ Another way to think about it is setting the last place value as a negative. Bel
 
 The binary number here, `11001110` is equal to
 
-1 * -128 +
-1 * 64 +
-0 * 32 +
-0 * 16 +
-1 * 8 +
-1 * 4 +
-1 * 2 +
+1 * -128 +  
+1 * 64 +  
+0 * 32 +  
+0 * 16 +  
+1 * 8 +  
+1 * 4 +  
+1 * 2 +  
 0 * 1 = -50
 
 ### Other Number Systems
@@ -277,9 +277,9 @@ Another counting system regularly used in computing is **Hexadecimal**, also cal
 | ----------- | --- | -- | - |
 | Hexadecimal |  B  |  3 | F |
 
-B3F =
-11 * 256 +
-3 * 16 +
+B3F =  
+11 * 256 +  
+3 * 16 +  
 15 * 1 = 2623
 
 Hexadecimal is used because it neatly condenses binary numbers, a 4 digit binary number can be compressed into a single hexadecimal digit.
@@ -930,6 +930,25 @@ Write a program that loops from 0 to 10, and outputs 'e' if the number is even, 
 ### Advanced Activity: Even Checker
 
 Edit your program for 'Even Looper', so that instead of outputting 'e' or 'o', it outputs the number if it's even, and doesn't output anything if the number is odd.
+
+</details>
+
+<details>
+<summary><strong>Turning Complete</strong></summary>
+
+## Turning Complete
+
+If a machine is **Turing Complete**, that means the machine could theoretically solve any computable problem. The instructions shows so far are enough for Crawssembly to be **Turing Complete**.
+
+This means that you could go off now, and make a 3D renderer, a calculator, or calculate pi to a trillion decimal places. But it would be difficult, time-consuming, and not worth the effort. This is a reason high-level languages exist.
+
+Not only are higher-level languages, like Python, easier to read, they condense lots of functionality into a couple of lines.
+
+A program that would be 100 lines in Crawssembly, would only be a single line in Python.
+
+For instance, writing `mylist = ["Hello", 27.6 + 1, True]` in python means the computer has to allocate memory for the variable, solve the **floating-point** (a name for a non-whole number) calculation, and compress the string into bytes, all while maintaining the OS, data security, encryption, and other background tasks.
+
+It's easy to see why, while powerful, programming in assembly has faded out of fashion among modern-day programmers.
 
 </details>
 
