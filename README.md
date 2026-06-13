@@ -13,103 +13,16 @@ Check out the online version with [this link!](https://crawssembly.ultimatecraw.
 
 ## Contents
 
-1. Why does Crawssembly exist?
-2. How to install Crawssembly
-3. Your First Program
-4. What will I learn?
-5. Why not just learn real assembly?
-6. About This Document
-7. Assembly; What's the deal?
-8. How Crawssembly compares to higher languages
-9. Binary
-	1. What is Binary?
-	2. How does binary get used?
-	3. Two's Complement
-	4. Other Number Systems
-	5. How can I tell the difference?
-10. The Basics
-	1. Instructions
-	2. Registers
-	3. Activity: Outputs
-	4. More about 'literals'
-	5. More about `sav`
-11. Maths
-	1. Boolean Logic
-		1. NOT
-		2. AND
-		3. OR
-		4. SHIFT
-		5. Additional Operations
-		6. How to use
-	2. Activity: Addition
-	3. Advanced Activity: Doubling
-	4. Bit masking
-		1. Extraction
-		2. Turning On
-		3. Turning Off
-		4. Toggling
-		5. Negation
-	5. Symbols
-12. Loops
-	1. Labels
-	2. Line Numbers
-	3. Removing Labels
-	4. Jumping
-	5. Dynamic Jumping
-	6. Activity: Letter Loops
-	7. Advanced Activity: Double Loops
-	8. More about jumping
-		1. Dynamic `fgo`
-13. Branching
-	1. Activity: Even Looper
-	2. Advanced Activity: Even Checker
-14. Files
-15. Devices
-16. Storage
-	1. Addresses
-	2. Memory
-		1. Activity: Read/Write Cycle
-		2. Advanced Activity: Save Arrays
-	3. Disk
-		1. Activity: Long Live The Data
-		2. Advanced Activity: My Long List
-	4. What high-level programs do
-17. Input
-	1. The Keyboard
-	2. The Mouse
-		1. Position
-		2. Button Bit field
-		3. Activity: Clicking Away
-		4. Advanced Activity: Mouse Dump
-18. Output
-	1. The Screen
-		1. Text
-		2. Activity: The New Way To Talk
-		3. Advanced Activity: Arcade Leaderboard Name
-	2. Graphics
-		1. Activity: Smiling Screen
-		2. Advanced Activity: Colourful Terminal
-		3. Extra Screen Commands
-	3. Speakers
-		1. Activity: Piano Notes
-		2. Advanced Activity: Scales
-19. Time
-	1. UNIX Timestamp
-20. Register Constants
-21. Congratulations!
-	1. Quick Reference
-	2. Common Mistakes
-22. Sorry, Crawssembly is a lie.
-	1. Binary Breakdown
-		1. Core Instruction Patterns
-		2. `cal` Operation Codes
-		3. Control Instruction Patterns
-		4. `io` Device Codes
-		5. `io` Command Codes
-	2. The VM
-		1. The Pipeline
-23. What's Next?
-24. Legal
+- [Try Crawssembly Online](https://crawssembly.ultimatecraw.xyz/)
+- [Why does Crawssembly exist?](#why-does-crawssembly-exist)
+- [Installation](#how-to-install-crawssembly)
+- [Your First Program](#your-first-program)
+- [Beginner Overview](#what-will-i-learn)
+- [Detailed Guide](#detailed-guide)
+- [Quick Reference](#quick-reference)
+- [Legal](#legal)
+
+> Longer learning sections are collapsed below so this README stays easier to scan. Open whichever section you need.
 
 ## Why does Crawssembly exist?
 
@@ -125,20 +38,20 @@ Crawssembly removes much of the complexity while preserving the core ideas:
 
 Crawssembly is not:
 
-❌ A replacement for x86  
-❌ A replacement for ARM  
+❌ A replacement for x86
+❌ A replacement for ARM
 ❌ A production language
 
 Crawssembly is:
 
-✅ A teaching language  
-✅ A CPU simulator  
+✅ A teaching language
+✅ A CPU simulator
 ✅ A bridge between lower-level thinking and higher-level programming
 
 The goal is to help you understand what high-level languages are really doing behind the scenes.
 
 > Don't worry if some of the concepts in this guide seem unfamiliar at first. Computers are surprisingly simple once you break them into smaller pieces, and we'll build up the ideas one step at a time.
-> 
+>
 > Because Crawssembly assumes near-zero knowledge, there might be concepts you already know. Feel free to skip over them if you are familiar with anything shown!
 
 ![Registers](https://img.shields.io/badge/Registers-256-blue)
@@ -198,14 +111,14 @@ Congratulations, you are taking the first steps to learning Crawssembly!
 
 By the end of this guide you will understand:
 
-✅ Binary and hexadecimal  
-✅ Registers  
-✅ Memory  
-✅ Arithmetic  
-✅ Program flow  
-✅ Input and output  
-✅ How high-level languages work underneath  
-✅ Key computing concepts  
+✅ Binary and hexadecimal
+✅ Registers
+✅ Memory
+✅ Arithmetic
+✅ Program flow
+✅ Input and output
+✅ How high-level languages work underneath
+✅ Key computing concepts
 ✅ The fundamentals of CPU architecture
 
 The biggest thing you will learn is
@@ -233,6 +146,11 @@ This guide is made to help you learn the basics of Crawssembly, you can read it 
 
 > Most ideas build upon each other, so it's smart, if you're skipping around, to take a look at some important bits you may have missed that link to a later topic. (e.g. *bitfields* require you knowing about *bit masking*)
 
+## Detailed Guide
+
+<details>
+<summary><strong>Assembly; What's the deal?</strong></summary>
+
 ## Assembly; What's the deal?
 
 Computers are an amazing product of the information age. Billions of computers are running around the world all doing important, or not-so-important, tasks. But how do the computers know what to do?
@@ -242,13 +160,23 @@ How can computers keep up with the different syntax, styles, and methods? The se
 **Machine code** is the raw binary that the computer executes. **Assembly languages** are human-readable representations of this machine code.
 In many assembly languages, including crawssembly, a single instruction usually corresponds closely to a machine code instruction, compared to a 'higher' language where a line could equal upwards of thousands of lines.
 
-Learning assembly is a great way to internalise how computers work, as by learning assembly you learn how a computer 'thinks'. 
+Learning assembly is a great way to internalise how computers work, as by learning assembly you learn how a computer 'thinks'.
+
+</details>
+
+<details>
+<summary><strong>How Crawssembly compares to higher languages</strong></summary>
 
 ## How Crawssembly compares to higher languages
 
 Higher languages, like C++, Python, and Java, hide how the computer thinks behind layers of abstraction.
 
 In Python, you might type `print("Hello World!")` but that doesn't show how the computer splits the function and the string, or the buffer memory storing a copy of "Hello World!", or how the text gets to the screen. Python hides the instructions, Crawssembly exposes them.
+
+</details>
+
+<details>
+<summary><strong>Binary</strong></summary>
 
 ## Binary
 
@@ -267,9 +195,9 @@ Think about a car's gear stick, it would be easier to use if there were only 2 g
 
 It's basically the same as normal counting. In Base-10, when you reach '9' and you want to go up again, you have to use the next number in the place value, that being 10. Every time you reach the end, you need to reset the count and use the next place value.
 
-9 + 1 becomes 10  
-99 + 1 becomes 100  
-999 + 1 becomes 1000  
+9 + 1 becomes 10
+99 + 1 becomes 100
+999 + 1 becomes 1000
 etc...
 
 It's clear that place value works in 10's, the number '8' could represent 8 1's, 8 10's 8 100's, 8 1000's etc... depending on where it is in the number.
@@ -280,10 +208,10 @@ It's clear that place value works in 10's, the number '8' could represent 8 1's,
 
 The example above shows how the number 83072 is equal to
 
-8 * 10 000 +  
-3 * 1 000 +  
-0 * 100 +  
-7 * 10 +  
+8 * 10 000 +
+3 * 1 000 +
+0 * 100 +
+7 * 10 +
 2 * 1
 
 For binary, only **2 digits** are used. These are 0 for 'Off', and 1 for 'On'. Because only 2 symbols are used, place value works based on 2, not 10.
@@ -296,10 +224,10 @@ So a '1' could represent 1 1's, 1 2's, 1 4's, 1 8's, 1 16's, etc... depending on
 
 We can see that the binary number 10110 is the same as
 
-1 * 16 +  
-0 * 8 +  
-1 * 4 +  
-1 * 2 +  
+1 * 16 +
+0 * 8 +
+1 * 4 +
+1 * 2 +
 0 * 1
 
 Which, when calculated, equals 22. So 10110 in binary is the exact same as 22 in Base-10. Every number that can be made in Base-10, can be made in Base-2. There are no gaps.
@@ -332,13 +260,13 @@ Another way to think about it is setting the last place value as a negative. Bel
 
 The binary number here, `11001110` is equal to
 
-1 * -128 +  
-1 * 64 +  
-0 * 32 +  
-0 * 16 +  
-1 * 8 +  
-1 * 4 +  
-1 * 2 +  
+1 * -128 +
+1 * 64 +
+0 * 32 +
+0 * 16 +
+1 * 8 +
+1 * 4 +
+1 * 2 +
 0 * 1 = -50
 
 ### Other Number Systems
@@ -349,9 +277,9 @@ Another counting system regularly used in computing is **Hexadecimal**, also cal
 | ----------- | --- | -- | - |
 | Hexadecimal |  B  |  3 | F |
 
-B3F =  
-11 * 256 +  
-3 * 16 +  
+B3F =
+11 * 256 +
+3 * 16 +
 15 * 1 = 2623
 
 Hexadecimal is used because it neatly condenses binary numbers, a 4 digit binary number can be compressed into a single hexadecimal digit.
@@ -387,6 +315,11 @@ Because the number '100' could be in weird and wonderful base, it's necessary to
 
 If the number is in binary, it's usually prefaced with '0b', so if you saw '0b100' then you can be sure that's binary, equal to 4 in Base-10. If you see '0x', that's hexadecimal. So '0x100' would be 256 in Base-10.
 
+</details>
+
+<details>
+<summary><strong>The Basics</strong></summary>
+
 ## The Basics
 
 > Real assembly languages can interact directly with hardware and operating systems. Mistakes can sometimes crash software or corrupt data. Crawssembly runs inside a virtual machine, allowing you to experiment safely while still learning the same fundamental concepts.
@@ -399,7 +332,7 @@ The computer will do what it's told exactly as written to the letter. If you tol
 
  "Ambiguity kills the machine, precision keeps it running."
 
-To use Crawssembly, these practices are no different. 
+To use Crawssembly, these practices are no different.
 
 ### Instructions
 
@@ -529,6 +462,11 @@ See how the literal value in the second line was replaced by `r02`? This program
 The computer has no clue what `r01` actually contains, just that it should copy whatever may be inside `r01` into `r02`. This reveals another key truth about computers:
 
 "The machine is blind."
+
+</details>
+
+<details>
+<summary><strong>Maths</strong></summary>
 
 ## Maths
 
@@ -753,6 +691,11 @@ You're likely to see symbols in-place of words like AND or XOR. The most common 
 | Left Shift | << |
 | Right Shift | >> |
 
+</details>
+
+<details>
+<summary><strong>Loops</strong></summary>
+
 ## Loops
 
 Say you wanted to do a very similar, or exact, set of instructions multiple times.
@@ -775,7 +718,7 @@ A much better way is to loop over the code you want to repeat, rather than copyi
 ### Labels
 
 Loops are defined using a **label**. A label is a pointer to an instruction number. The line number is stored under this label. Simply state the label value as an instruction.
-Loop labels 
+Loop labels
 
 Example
 
@@ -795,14 +738,14 @@ At this point it's a good idea to write Crawssembly with line numbers turned on.
 Example
 
 ```
-1	10
-2	20
-3	100
-4	200
-5	1000
-6	2000
-7	10000
-8	20000
+1       10
+2       20
+3       100
+4       200
+5       1000
+6       2000
+7       10000
+8       20000
 ```
 
 It's much easier to see that the label `10000` points to line `7` with line numbers! And for longer programs, a must.
@@ -816,11 +759,11 @@ To remove a label pointer, use `rmv`.
 Example
 
 ```
-1	10              ; label 10 points to line 1
-2	20              ; label 20 points to line 2
+1       10              ; label 10 points to line 1
+2       20              ; label 20 points to line 2
 3
-4	rmv 10          ; removes label 10
-5	10              ; label 10 now points to line 5
+4       rmv 10          ; removes label 10
+5       10              ; label 10 now points to line 5
 ```
 
 ### Jumping
@@ -832,11 +775,11 @@ Simply use the **jump** command `jmp`, followed by the pointer label.
 Example
 
 ```
-1	sav 10 r01      ; saves literal value 10 into register 1
-2	1               ; creates a label, pointing to line 2
-3	cal add 1 r01   ; adds 1 to value inside register 1, saving it to register 1
-4	jmp 1           ; jumps to the line number that label 1 is pointing to (i.e. line 2)
-5	stp             ; end the program
+1       sav 10 r01      ; saves literal value 10 into register 1
+2       1               ; creates a label, pointing to line 2
+3       cal add 1 r01   ; adds 1 to value inside register 1, saving it to register 1
+4       jmp 1           ; jumps to the line number that label 1 is pointing to (i.e. line 2)
+5       stp             ; end the program
 ```
 
 This program increases the value in `r01`, being `10` in this example, every loop. This program is an example of an **infinite loop**, it will never reach the `stp` command.
@@ -859,10 +802,10 @@ There are 3 conditional jump commands:
 Example
 
 ```
-1	sav 5 r01       ; saves the value '5' into register 1
-2	1               ; creates a label pointer to line 2
-3	jmg 1           ; if register 1 holds a >0 value, jump
-4	stp             ; the program stops
+1       sav 5 r01       ; saves the value '5' into register 1
+2       1               ; creates a label pointer to line 2
+3       jmg 1           ; if register 1 holds a >0 value, jump
+4       stp             ; the program stops
 ```
 
 Above is another example of an **infinite loop**, but the loop is only entered if the starting value in `r01` is greater than zero, thanks to the `jmg` command.
@@ -870,15 +813,15 @@ Above is another example of an **infinite loop**, but the loop is only entered i
 Example
 
 ```
-1	sav 10 r02
-2	sav 0 r03
-3	1
-4	cal add 1 r03
-5	sav r01 r03
-6	cal add -1 r02
-7	sav r01 r02
-8	jmg 1
-9	stp
+1       sav 10 r02
+2       sav 0 r03
+3       1
+4       cal add 1 r03
+5       sav r01 r03
+6       cal add -1 r02
+7       sav r01 r02
+8       jmg 1
+9       stp
 ```
 
 Let's read through each line in detail:
@@ -915,9 +858,9 @@ If you know where you want the Crawssembly executioner to jump to, use `fgo` (Fo
 Example
 
 ```
-1	sav 10 r01      ; saves value 10 to register 1
-2	cal add 1 r01   ; adds 1 to value inside register 1
-3	fgo 2           ; jumps directly to line 2
+1       sav 10 r01      ; saves value 10 to register 1
+2       cal add 1 r01   ; adds 1 to value inside register 1
+3       fgo 2           ; jumps directly to line 2
 ```
 
 This is an example of using `fgo` for an infinite loop.
@@ -929,31 +872,36 @@ Keen-eyed readers will have noticed that line numbers *don't start at 0* like re
 Example
 
 ```
-1	sav 5 r01
-2	fgo 0
-3	1 
-4	jmp 1
+1       sav 5 r01
+2       fgo 0
+3       1
+4       jmp 1
 5
-6	stp
+6       stp
 ```
 
 `fgo 0` above skips over the evil infinite loop, since `r01` contains `5`.
+
+</details>
+
+<details>
+<summary><strong>Branching</strong></summary>
 
 ## Branching
 
 Let's say you wanted to only run a piece of code if a certain condition was met. You could use labels and jumps in what is called the **Jump-Then-Execute** format.
 
 ```
-1	sav 7 r02               ; saves 7, which is where execution jumps to after label 1 is defined
-2	1                       ; label 1 points to line 2
-3	sav r02 r01             ; readies the line number into register 1, so 'fgo' can jump past the code below
-4	fgo 0                   ; the first execution jumps to line 7, the second execution jumps to line 5
-5	2                       ; label 2 points to line 5
-6	jmp 2                   ; jumps back to the label 2 pointer, an infinite loop
+1       sav 7 r02               ; saves 7, which is where execution jumps to after label 1 is defined
+2       1                       ; label 1 points to line 2
+3       sav r02 r01             ; readies the line number into register 1, so 'fgo' can jump past the code below
+4       fgo 0                   ; the first execution jumps to line 7, the second execution jumps to line 5
+5       2                       ; label 2 points to line 5
+6       jmp 2                   ; jumps back to the label 2 pointer, an infinite loop
 7
-8	sav 50 r01              ; sets '50' as the test value
-9	sav 5 r02               ; sets the next fgo line number to '5', if the check succeeds this executes the instructions under label 1
-10	jmz 1                   ; if the test value is zero, activate the infinite loop
+8       sav 50 r01              ; sets '50' as the test value
+9       sav 5 r02               ; sets the next fgo line number to '5', if the check succeeds this executes the instructions under label 1
+10      jmz 1                   ; if the test value is zero, activate the infinite loop
 ```
 
 JTE is complex, and luckily, there is a better way. You can use the `if` group of commands to execute code depending on the value in `r01`:
@@ -967,11 +915,11 @@ The `if` group also works on label pointers. To end the `if` command, use `rmv` 
 Example
 
 ```
-1	sav 50 r01              ; sets '50' as the test value
-2	ifz 1                   ; if branch using label 1 for test value = 0
-3	2                       ; label 2 points to 3
-4	jmp 2                   ; jumps back to label 2, an infinite loop
-5	rmv 1                   ; ends the if branch using label 1
+1       sav 50 r01              ; sets '50' as the test value
+2       ifz 1                   ; if branch using label 1 for test value = 0
+3       2                       ; label 2 points to 3
+4       jmp 2                   ; jumps back to label 2, an infinite loop
+5       rmv 1                   ; ends the if branch using label 1
 ```
 This format is much cleaner than JTE.
 
@@ -982,6 +930,11 @@ Write a program that loops from 0 to 10, and outputs 'e' if the number is even, 
 ### Advanced Activity: Even Checker
 
 Edit your program for 'Even Looper', so that instead of outputting 'e' or 'o', it outputs the number if it's even, and doesn't output anything if the number is odd.
+
+</details>
+
+<details>
+<summary><strong>Files</strong></summary>
 
 ## Files
 
@@ -1020,6 +973,11 @@ This program saves 'Hi' to `output.bin`.
 
 > Because file writing is slow, the output file is only written after the program has ended. Force exiting might not create the entire `output.bin` file.
 
+</details>
+
+<details>
+<summary><strong>Devices</strong></summary>
+
 ## Devices
 
 `io` is the largest group of commands, used to interact with data outside the CPU, such as speakers, keyboards, and storage. All `io` commands take a register value as input, never an immediate value.
@@ -1032,6 +990,11 @@ Because `io` commands are dependent on other devices, commands might fail if the
 | 1 | IO_INVALID_COMMAND | Invalid device command |
 | 2 | IO_BAD_VALUE | Value outside valid range |
 | 3 | IO_UNAVAILABLE | Device unavailable |
+
+</details>
+
+<details>
+<summary><strong>Storage</strong></summary>
 
 ## Storage
 
@@ -1172,6 +1135,11 @@ io mem write r02
 
 All variables are like this behind the fancy symbols and abstraction, just a group of memory addresses.
 
+</details>
+
+<details>
+<summary><strong>Input</strong></summary>
+
 ## Input
 
 If you've ever learnt a higher programming language, chances are they taught you how to get user input very early on. This is sensible, as the user gets near-instant gratification from adding their own name to a greeting program, or telling the computer how old they are to get a semi-personalised message.
@@ -1289,6 +1257,11 @@ Write a program to show "Click" when a mouse button is pressed.
 #### Advanced Activity: Mouse Dump
 
 Write a program that shows "L" if the left button is pressed, "R" if the right button is being pressed, and "M" if the middle button is being pressed.
+
+</details>
+
+<details>
+<summary><strong>Output</strong></summary>
 
 ## Output
 
@@ -1459,6 +1432,11 @@ Write a program that plays every note in an octave. You can use [this Wikipedia 
 
 > Real musical/piano notes increase by the twelfth-root of 2. Because Crawssembly can't use fractional numbers, the frequency values have to be rounded to the nearest whole number.
 
+</details>
+
+<details>
+<summary><strong>Time</strong></summary>
+
 ## Time
 
 It's common, in larger programs, that the current time should be known. In computers, this is maintained through a CMOS battery. This keeps the internal clock running on the machine when the computer is turned off.
@@ -1479,6 +1457,11 @@ This time was selected as a nice round start point for the early development of 
 Because lots of systems are **32-bit**, meaning that the data length in the CPU is 32-bits of binary, the largest positive number this can take is around 2.15 billion. The UNIX timestamp reaches this number of seconds early in 2038. Once we go over that point, the timestamp will roll over into negative numbers. This is an example of **underflow**. This causes the timestamp to point to December 1901.
 
 This is called the **2038 problem**, or **Y2K38**. And because it affects many more systems than Y2K, it's actually more dangerous, and harder to fix as low-level systems are used everywhere. But Crawssembly is prepared. Using `io time low`, only the value bits are extracted, not the sign. So the time can be used without worrying about negative time.
+
+</details>
+
+<details>
+<summary><strong>Register Constants</strong></summary>
 
 ## Register Constants
 
@@ -1506,6 +1489,11 @@ All constants are scaled by **100 million** to preserve their decimal places. 31
 
 > Remember, 2^31 -1 is the largest positive number that can be stored in **32-bit** values, like what Crawssembly uses.
 
+</details>
+
+<details>
+<summary><strong>Congratulations!</strong></summary>
+
 ## Congratulations!
 
 You've learned all the Crawssembly instructions! That's no small feat, especially for a beginner. Great job!
@@ -1514,19 +1502,19 @@ The rest of this section is used as quick-reference and help.
 
 ### Quick Reference
 
-`sav IMMEDIATE REGISTER` or `sav REGISTER REGISTER`: Saves the value of the first argument to the register in the second argument.  
-`cal OPERATION IMMEDIATE REGISTER` or `cal OPERATION REGISTER REGISTER`: Calculates 'VALUE/REGISTER OPERATION REGISTER', and saves the result to `r01`.  
-`LABEL`: Creates a label with that value pointing to that line number.  
-`jmp LABEL`: Jumps unconditionally to LABEL.  
-`jmg LABEL`: Jumps to LABEL if `r01` is greater than 0.  
-`jmz LABEL`: Jumps to LABEL if `r01` is equal to 0.  
-`jml LABEL`: Jumps to LABEL if `r01` is less than 0.  
-`ifg LABEL`: Continues if `r01` is greater than 0.  
-`ifz LABEL`: Continues if `r01` is equal to 0.  
-`ifl LABEL`: Continues if `r01` is less than 0.  
-`rmv LABEL`: Removes the label from memory, and ends any `if` commands.  
-`fgo IMMEDIATE`: Jumps to the line number, if `0` used, jump to value in `r01`.  
-`stp`: Stops the program.  
+`sav IMMEDIATE REGISTER` or `sav REGISTER REGISTER`: Saves the value of the first argument to the register in the second argument.
+`cal OPERATION IMMEDIATE REGISTER` or `cal OPERATION REGISTER REGISTER`: Calculates 'VALUE/REGISTER OPERATION REGISTER', and saves the result to `r01`.
+`LABEL`: Creates a label with that value pointing to that line number.
+`jmp LABEL`: Jumps unconditionally to LABEL.
+`jmg LABEL`: Jumps to LABEL if `r01` is greater than 0.
+`jmz LABEL`: Jumps to LABEL if `r01` is equal to 0.
+`jml LABEL`: Jumps to LABEL if `r01` is less than 0.
+`ifg LABEL`: Continues if `r01` is greater than 0.
+`ifz LABEL`: Continues if `r01` is equal to 0.
+`ifl LABEL`: Continues if `r01` is less than 0.
+`rmv LABEL`: Removes the label from memory, and ends any `if` commands.
+`fgo IMMEDIATE`: Jumps to the line number, if `0` used, jump to value in `r01`.
+`stp`: Stops the program.
 `nop`: Does nothing.
 
 `io text`
@@ -1593,6 +1581,11 @@ The rest of this section is used as quick-reference and help.
 
 You can stop at this point and you'd be fine. But to *really* understand what computers do, we have to peel back another abstraction layer.
 
+</details>
+
+<details>
+<summary><strong>Sorry, Crawssembly is a lie.</strong></summary>
+
 ## Sorry, Crawssembly is a lie.
 
 Remember how one of the first things that was said was that programming languages are a lie? That goes for Crawssembly too. The computer has no idea what `sav` or `cal` is, what it means, or how it works.
@@ -1643,7 +1636,7 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `jmz` | `00001` | `00001 llllllllllllllll` | Jump to label if `r01` = 0 |
 | `jmg` | `00010` | `00010 llllllllllllllll` | Jump to label if `r01` > 0 |
 | `ifl` | `00011` | `00011 llllllllllllllll` | Continue if `r01` < 0 |
-| `jml` | `00100` | `00100 llllllllllllllll` | Jump to label if `r01` < 0 | 
+| `jml` | `00100` | `00100 llllllllllllllll` | Jump to label if `r01` < 0 |
 | `ifg` | `00101` | `00101 llllllllllllllll` | Continue if `r01` > 0 |
 | `ifz` | `00110` | `00110 llllllllllllllll` | Continue if `r01` = 0 |
 | `jmp` | `00111` | `00111 llllllllllllllll` | Jump to label |
@@ -1723,18 +1716,23 @@ The Executioner reads each binary code, decodes it into separate blocks, and exe
 ```
                            ┌───────────────── Executioner ─────────────────┐
                            │                                               │
-┌────────────── Compiler ──┼─────────────┐                                 │ 
+┌────────────── Compiler ──┼─────────────┐                                 │
 │                          │             │                                 │
 │ program.craw ----------> │ program.bin │ ----------> Fetched Instruction │
 │                          │             │                     │           │
 └──────────────────────────┼─────────────┘                     │           │
-                           │      ^          FDE Cycle         │           │ 
+                           │      ^          FDE Cycle         │           │
                            │      │                            │           │
                            │      │                            V           │
                            │  Execution <------------- Decoded Instruction │
                            │                                               │
                            └───────────────────────────────────────────────┘
 ```
+
+</details>
+
+<details>
+<summary><strong>What's next?</strong></summary>
 
 ## What's next?
 
@@ -1747,6 +1745,11 @@ If you want a challenge, here are some longer programming ideas to get stuck in:
 - Build a music player.
 - Build [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
+</details>
+
+<details>
+<summary><strong>Legal</strong></summary>
+
 ## Legal
 
 All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artificial Intelligence) at certain points; all ideas, techniques, and the vast amount of program volume was, and continues to be, written by human hands.
@@ -1754,3 +1757,5 @@ All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artifici
 Thank you to **Koy Camerini-Yachdav** who tested Crawssembly on Mac OS, and their amazing work making detailed error reports.
 
 *Crawssembly is a product of CRAW SYSTEMS (C) 2026*
+
+</details>
