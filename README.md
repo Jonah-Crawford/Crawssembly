@@ -2,7 +2,7 @@
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
-Developed By J.D. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
+Project Lead: J.D. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
 
 Check out the online version with [this link!](https://crawssembly.ultimatecraw.xyz/)
 
@@ -1753,6 +1753,8 @@ The Executioner reads each binary code, decodes it into separate blocks, and exe
 <details>
 <summary><strong>How you can help Crawssembly</strong></summary>
 
+## How you can help Crawssembly
+
 Eagle-eye's readers will have spotted that not *every* possible binary instruction has a function yet. This is to allow users you yourself to come up with ideas for Crawssembly's next versions!
 
 *CRAW SYSTEMS* is proud to release Crawssembly in open-source format to allow anyone to make their own changes to Crawssembly. If you have any ideas for the Crawssembly team, feel free to contact the project lead **Jonah Crawford** at *jonah@jonahcrawford.com*.
@@ -1782,7 +1784,10 @@ If you want a challenge, here are some longer programming ideas to get stuck in:
 
 All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artificial Intelligence) at certain points; all ideas, techniques, and the vast amount of program volume was, and continues to be, written by human hands.
 
+### Thanks
+
 Thank you to **Koy Camerini-Yachdav** who tested Crawssembly on Mac OS, and their amazing work making detailed error reports.
+Thank you to the *CRAW SYSTEMS* team for help with programming, especially *@Xytrophico* with testing on Linux systems and providing invaluable help.
 
 *Crawssembly is a product of CRAW SYSTEMS (C) 2026*
 
