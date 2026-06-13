@@ -149,6 +149,46 @@ textarea:focus {
   box-shadow: inset 0 0 0 1px var(--accent-soft);
 }
 
+.docs {
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+  background: rgba(10, 13, 17, 0.94);
+}
+
+.docs h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.docs details {
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.docs summary {
+  padding: 0.65rem 0.8rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.docs summary:hover {
+  background: var(--accent-soft);
+}
+
+.docs p {
+  margin: 0;
+  padding: 0.35rem 0.8rem 0.7rem;
+  color: var(--muted);
+}
+
+.docs code {
+  color: var(--accent);
+}
+
 pre {
   white-space: pre-wrap;
   word-break: break-word;

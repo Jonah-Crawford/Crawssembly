@@ -4,17 +4,16 @@
 
 Project Lead: J.D. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
 
-Check out Crawssembly Online with [this link!](https://crawssembly.ultimatecraw.xyz/)
+Check out the online version with [this link!](https://crawssembly.ultimatecraw.xyz/)
 
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
 ![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
 
-[Dedicated Documentation Website](http://docs-crawssembly.ultimatecraw.xyz)
-
 ## Contents
 
+- [Try Crawssembly Online](https://crawssembly.ultimatecraw.xyz/)
 - [Why does Crawssembly exist?](#why-does-crawssembly-exist)
 - [Installation](#how-to-install-crawssembly)
 - [Your First Program](#your-first-program)
