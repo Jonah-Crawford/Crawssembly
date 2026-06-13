@@ -934,9 +934,9 @@ Edit your program for 'Even Looper', so that instead of outputting 'e' or 'o', i
 </details>
 
 <details>
-<summary><strong>Turning Complete</strong></summary>
+<summary><strong>Turing Complete</strong></summary>
 
-## Turning Complete
+## Turing Complete
 
 If a machine is **Turing Complete**, that means the machine could theoretically solve any computable problem. The instructions shows so far are enough for Crawssembly to be **Turing Complete**.
 
