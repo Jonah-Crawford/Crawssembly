@@ -207,6 +207,7 @@ dependencies = [
  "crossterm",
  "ctrlc",
  "sysinfo",
+ "wasm-bindgen",
 ]
 
 [[package]]

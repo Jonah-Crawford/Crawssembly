@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Crawssembly Demo</title>
+    <link rel="stylesheet" href="style.css?v=5">
+  </head>
+
+  <body>
+    <header>
+      <h1>Crawssembly Demo</h1>
+
+      <div class="controls">
+
+        <div class="button-group">
+          <button id="run">Run</button>
+          <button id="clear">Clear</button>
+          <button id="reset">Reset</button>
+
+          <select id="examples">
+            <option value="">Examples...</option>
+            <option value="hello">Hello World</option>
+            <option value="countdown">Countdown</option>
+            <option value="memory">Memory Demo</option>
+            <option value="hex">Hex Output</option>
+            <option value="loop">Loop Test</option>
+          </select>
+
+          <button id="copy-output">Copy Output</button>
+        </div>
+
+        <span id="status">Ready</span>
+
+      </div>
+
+    </header>
+
+    <main>
+      <textarea id="editor" spellcheck="false">sav 65 r01
+io text char r01
+io text newline r01
+sav 123 r01
+io text int r01
+io text newline r01
+io text hex r01
+stp</textarea>
+
+      <pre id="output"></pre>
+    </main>
+
+    <script type="module" src="main.js?v=4"></script>
+
+  <p class="note">
+    Browser demo supports core instructions, text output, labels, jumps, loops, and memory. 
+    Native-only devices such as keyboard, mouse, audio, disk, and screen rendering are not yet available here.
+  </p>
+
+  </body>
+</html>
