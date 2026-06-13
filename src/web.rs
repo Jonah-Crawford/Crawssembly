@@ -10,7 +10,6 @@ const IO_INVALID_DEVICE: i32 = 1;
 const IO_INVALID_COMMAND: i32 = 2;
 const IO_BAD_VALUE: i32 = 3;
 const IO_UNAVAILABLE: i32 = 4;
-const IO_SCREEN_OUT_OF_BOUNDS: i32 = 0x10;
 
 pub fn run_craw(source: &str) -> String {
   let lines: Vec<String> = source
@@ -32,6 +31,8 @@ pub fn run_craw(source: &str) -> String {
     Err(err) => format!("Runtime error:\n{err}\n\n{}", cpu.output),
   }
 }
+
+#[allow(dead_code)]
 
 #[derive(Clone, Copy)]
 struct Decoded {
