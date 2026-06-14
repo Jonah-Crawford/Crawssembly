@@ -374,6 +374,12 @@ enum TerminalRenderMode {
   FullCell,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum TerminalColourMode {
+  TrueColour,
+  Ansi256,
+}
+
 #[derive(Copy, Clone)]
 enum ProgRef {
   Main,
@@ -622,6 +628,7 @@ struct Cpu {
   // screen
   screen: Vec<[u8; 3]>,
   render_mode: TerminalRenderMode,
+  terminal_colour_mode: TerminalColourMode,
   last_screen: Vec<[u8; 3]>,
   screen_x: i32,
   screen_y: i32,
@@ -719,6 +726,7 @@ impl Cpu {
       screen: vec![[0, 0, 0]; config.screen_w * config.screen_h],
       last_screen: vec![[255, 255, 255];  config.screen_w * config.screen_h],
       render_mode: Self::detect_terminal_render_mode(),
+      terminal_colour_mode: Self::detect_terminal_colour_mode(),
       screen_x: 0,
       screen_y: 0,
       screen_red: 255,
@@ -857,6 +865,16 @@ impl Cpu {
     }
   }
 
+  fn detect_terminal_colour_mode() -> TerminalColourMode {
+    let term_program = std::env::var("TERM_PROGRAM").unwrap_or_default();
+
+    if term_program == "Apple_Terminal" {
+      TerminalColourMode::Ansi256
+    } else {
+      TerminalColourMode::TrueColour
+    }
+  }
+
   fn screen_index(&self, x: i32, y: i32) -> Option<usize> {
     if x < 0 || y < 0 {
       return None;
@@ -880,11 +898,39 @@ impl Cpu {
     Some((value + 128) as u8)
   }
 
-  fn screen_colour_to_terminal(v: [u8; 3]) -> Color {
-    Color::Rgb {
-      r: v[0],
-      g: v[1],
-      b: v[2],
+  fn rgb_to_ansi256(v: [u8; 3]) -> u8 {
+    let r = v[0];
+    let g = v[1];
+    let b = v[2];
+
+    if r == g && g == b {
+      if r < 8 {
+        return 16;
+      }
+
+      if r > 248 {
+        return 231;
+      }
+
+      return 232 + (((r as u16 - 8) * 24 / 247) as u8);
+    }
+
+    let r6 = ((r as u16 * 5 + 127) / 255) as u8;
+    let g6 = ((g as u16 * 5 + 127) / 255) as u8;
+    let b6 = ((b as u16 * 5 + 127) / 255) as u8;
+
+    16 + 36 * r6 + 6 * g6 + b6
+  }
+
+  fn screen_colour_to_terminal_mode(v: [u8; 3], mode: TerminalColourMode) -> Color {
+    match mode {
+      TerminalColourMode::TrueColour => Color::Rgb {
+        r: v[0],
+        g: v[1],
+        b: v[2],
+      },
+
+      TerminalColourMode::Ansi256 => Color::AnsiValue(Self::rgb_to_ansi256(v)),
     }
   }
 
@@ -1028,13 +1074,13 @@ impl Cpu {
           continue;
         }
 
-        let bg = Self::screen_colour_to_terminal(colour);
+        let fg = Self::screen_colour_to_terminal_mode(colour, self.terminal_colour_mode);
 
         queue!(
           stdout,
           cursor::MoveTo((x * 2) as u16, y as u16),
-          SetBackgroundColor(bg),
-          Print("  ")
+          SetForegroundColor(fg),
+          Print("██")
         ).map_err(|e| e.to_string())?;
 
         self.last_screen[i] = colour;
