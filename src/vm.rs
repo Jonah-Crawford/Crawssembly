@@ -1043,6 +1043,13 @@ impl Cpu {
 
     self.screen_force_redraw = false;
 
+    eprintln!(
+      "fullcell present: screen_w={}, screen_h={}, first_white={:?}",
+      self.screen_w,
+      self.screen_h,
+      self.screen.iter().position(|p| *p != [0, 0, 0])
+    );
+
     queue!(stdout, ResetColor).map_err(|e| e.to_string())?;
     stdout.flush().map_err(|e| e.to_string())
   }
