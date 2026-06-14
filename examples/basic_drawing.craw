@@ -1,0 +1,117 @@
+io screen clear rff	; clear screen
+io screen present rff	; initial screen load
+sav 127 r20		; set init high red
+sav 127 r21		; set init high green
+sav 127 r22		; set init high blue
+
+sav 22 r02		; jte line number
+1			; draw code
+sav r02 r01		; load in jte line number
+fgo 0			; jte fgo
+io mouse x r05		; capture mouse x
+io mouse y r06		; capture mouse y
+io screen x r05		; set pixel x
+io screen y r06		; set pixel y
+io screen r r20		; set r colour
+io screen g r21		; set g colour
+io screen b r22		; set b colour
+io screen pixel rff	; show pixel
+io screen present rff	; display screen
+sav r03 r01		; restire return line
+fgo 0			; return to main loop
+
+sav 35 r02		; jte line number
+2			; erase code
+sav r02 r01		; load in jte line number
+fgo 0			; jte fgo
+io mouse x r05		; capture mouse x
+io mouse y r06		; capture mouse y
+io screen x r05		; set pixel x
+io screen y r06		; set pixel y
+io screen erasecell rff	; clear pixel
+io screen present rff	; display screen
+sav r03 r01		; restore return line
+fgo 0			; return to main loop
+
+sav 43 r02		; jte line number
+3			; clear screen code
+sav r02 r01		; load in jte line number
+fgo 0			; jte fgo
+io screen clear rff	; clear screen
+io screen present rff	; display screen
+fgo 114			; return to main code
+
+4			; main loop
+io mouse btn r10	; get mouse button map
+sav 11 r02		; jte line number
+sav 50 r03		; return line number
+cal and 1 r10		; test for left button
+jmg 1			; jump to draw if true
+sav 53 r03		; return line number
+cal and 2 r10		; test for right button
+jmg 1			; jump to draw if true
+sav 57 r03		; return line number
+sav 27 r02		; jte line number
+cal and 4 r10		; test for middle button
+jmg 2			; erase code
+sav 0 r15		; destroy lingering key
+io keyboard poll r15	; get last key
+sav r15 r01		; load code for jump test
+jmz 4			; skip key test if code = 0
+sav 127 r20		; set high red
+sav -128 r21		; set low green
+sav -128 r22		; set low blue
+cal add -49 r15		; test for code 49 for 1
+jmz 4			; 0 found > continue with red
+sav 127 r20		; set high red
+sav 0 r21		; set mid green
+sav -128 r22		; set low blue
+cal add -50 r15		; test for code 50 for 2
+jmz 4			; 0 found > continue with orange
+sav 127 r20		; set high red
+sav 127 r21		; set high green
+sav -128 r22		; set low blue
+cal add -51 r15		; test for code 51 for 3
+jmz 4			; 0 found > continue with yellow
+sav -128 r20		; set low red
+sav 127 r21		; set high green
+sav -128 r22		; set low blue
+cal add -52 r15		; test for code 52 for 4
+jmz 4			; 0 found > continue with green
+sav -128 r20		; set low red
+sav 127 r21		; set high green
+sav 127 r22		; set high blue
+cal add -53 r15		; test for code 53 for 5
+jmz 4			; 0 found > continue with cyan
+sav -128 r20		; set low red
+sav -128 r21		; set high green
+sav 127 r22		; set high blue
+cal add -54 r15		; test for code 54 for 6
+jmz 4			; 0 found > continue with blue
+sav 0 r20		; set mid red
+sav -128 r21		; set low green
+sav 127 r22		; set high blue
+cal add -55 r15		; test for code 55 for 7
+jmz 4			; 0 found > continue with purple
+sav 127 r20		; set high red
+sav 0 r21		; set mid green
+sav 0 r22		; set mid blue
+cal add -56 r15		; test for code 56 for 8
+jmz 4			; 0 found > continue with pink
+sav 0 r20		; set mid red
+sav 0 r21		; set mid green
+sav 0 r22		; set mid blue
+cal add -57 r15		; test for code 57 for 9
+jmz 4			; 0 found > continue with grey
+sav 127 r20		; set high red
+sav 127 r21		; set high green
+sav 127 r22		; set high blue
+cal add -48 r15		; test for code 48 for 0
+jmz 4			; 0 found > continue with white
+cal add -32 r15		; test for code 32 for Space
+sav 37 r02		; jte line number
+jmz 3			; 0 found > jump to clear code
+cal add -27 r15		; test for code 27 for Esc
+jmg 4			; >0 jump to continue
+jml 4			; <0 jump to continue
+stp			; exit program

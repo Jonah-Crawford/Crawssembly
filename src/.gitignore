@@ -2,5 +2,14 @@ __pycache__/
 *.pyc
 target/
 trace.txt
+*.img
+*.txt
 *.swp
+*.swo
 *.save
+working/
+not_working/
+*.bin
+*.bmp
+test.*
+debug.*
