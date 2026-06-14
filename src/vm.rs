@@ -856,9 +856,11 @@ impl Cpu {
   }
 
   fn detect_terminal_render_mode() -> TerminalRenderMode {
-    let term_program = std::env::var("TERM_PROGRAM").unwrap_or_default();
+    let term_program = std::env::var("TERM_PROGRAM")
+      .unwrap_or_default()
+      .to_lowercase();
 
-    if term_program == "Apple_Terminal" {
+    if term_program.contains("apple") {
       TerminalRenderMode::FullCell
     } else {
       TerminalRenderMode::HalfBlock
@@ -866,14 +868,17 @@ impl Cpu {
   }
 
   fn detect_terminal_colour_mode() -> TerminalColourMode {
-    let term_program = std::env::var("TERM_PROGRAM").unwrap_or_default();
+    let term_program = std::env::var("TERM_PROGRAM")
+      .unwrap_or_default()
+      .to_lowercase();
 
-    if term_program == "Apple_Terminal" {
+    if term_program.contains("apple") {
       TerminalColourMode::Ansi256
     } else {
       TerminalColourMode::TrueColour
     }
   }
+
 
   fn screen_index(&self, x: i32, y: i32) -> Option<usize> {
     if x < 0 || y < 0 {
@@ -923,6 +928,8 @@ impl Cpu {
   }
 
   fn screen_colour_to_terminal_mode(v: [u8; 3], mode: TerminalColourMode) -> Color {
+    eprintln!("TERM_PROGRAM={:?}", std::env::var("TERM_PROGRAM"));
+
     match mode {
       TerminalColourMode::TrueColour => Color::Rgb {
         r: v[0],
@@ -1101,6 +1108,12 @@ impl Cpu {
   }
 
   fn screen_present_terminal(&mut self) -> Result<(), String> {
+    eprintln!(
+      "render_mode={:?}, colour_mode={:?}",
+      self.render_mode,
+      self.terminal_colour_mode
+    );
+
     match self.render_mode {
       TerminalRenderMode::HalfBlock => self.screen_present_halfblock(),
       TerminalRenderMode::FullCell => self.screen_present_fullcell(),
