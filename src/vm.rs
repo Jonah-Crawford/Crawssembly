@@ -1081,13 +1081,13 @@ impl Cpu {
           continue;
         }
 
-        let fg = Self::screen_colour_to_terminal_mode(colour, self.terminal_colour_mode);
+        let bg = Self::screen_colour_to_terminal_mode(colour, self.terminal_colour_mode);
 
         queue!(
           stdout,
           cursor::MoveTo((x * 2) as u16, y as u16),
-          SetForegroundColor(fg),
-          Print("██")
+          SetbackgroundColor(bg),
+          Print("  ")
         ).map_err(|e| e.to_string())?;
 
         self.last_screen[i] = colour;
