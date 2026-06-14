@@ -1,0 +1,25 @@
+sav 7 r01			; 0b111 into register 1
+sav 7 r02			; 7 into register 2
+cal shl r01 r02			; 0b111 << 7 = 0b1110000000 (896)
+cal add 104 r01			; 896 + 104 = 1000
+sav r01 r04			; store sleep time in register 4
+
+sav 3 r01			; 0b11 into register 1
+sav 7 r02			; 7 into register 2
+cal shl r01 r02			; 0b11 << 7 = 0b110000000 (384)
+cal add 56 r01			; 384 + 56 = 440
+sav r01 r03			; store frequency value in register 3
+
+sav 1 r01			; readies speaker channel value
+io speaker channel r01		; set active speaker channel
+
+sav 50 r01			; readies speaker volume value
+io speaker volume r01		; sets speaker volume to 50%
+
+io speaker freq r03		; sets speaker frequency to 440Hz
+
+io speaker on rff		; turns on speaker
+
+io time sleep r04		; pauses for 1000ms (1s)
+
+io speaker off rff		; turns off speaker

@@ -1,0 +1,8 @@
+sav 0 r01			; saves 0 into register 1 for memory address
+sav 123 r02			; saves 123 into register 2 for memory value
+
+io mem addr r01			; sets active memory address to '0'
+io mem write r02		; writes '123' to memory address
+
+io mem read r03			; reads back value inside memory address
+io text int r03			; outputs that address's value

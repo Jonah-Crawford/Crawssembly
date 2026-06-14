@@ -1440,6 +1440,16 @@ impl Cpu {
           }
         }
 
+        // clear
+        0x5 => {
+         let _ =  execute!(
+            io::stdout(),
+            terminal::Clear(ClearType::All),
+            cursor::MoveTo(0, 0)
+          );
+
+        }
+
         _ => {
           self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
         }
@@ -1462,7 +1472,7 @@ impl Cpu {
           let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap_or_default()
-            .as_millis();
+            .as_secs();
 
           self.write_reg(r, (now & 0x7FFF_FFFF) as i32);
         }
@@ -1471,6 +1481,17 @@ impl Cpu {
         0x2 => {
           thread::sleep(Duration::from_millis(value as u64));
           self.sleep_times += value as f64 / 1000.0
+        }
+
+        // milli
+        0x3 => {
+          let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis();
+
+          self.write_reg(r, (now & 0x7FFF_FFFF) as i32);
+
         }
 
         _ => {

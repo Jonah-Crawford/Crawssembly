@@ -1,21 +1,8 @@
-sav 5 r01
-sav 127 r02
-
-io screen clear rff
-
-io screen x r01
-io screen y r01
-
-io screen r r02
-io screen g r02
-io screen b r02
-
-io screen pixel rff
-io screen present rff
-
 1
+io text clear rff
+io time milli r01
+io text int r01
 io keyboard poll r01
 cal add -27 r01
 jmg 1
 jml 1
-stp

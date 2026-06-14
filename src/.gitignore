@@ -2,8 +2,6 @@ __pycache__/
 *.pyc
 target/
 trace.txt
-../web-docs/
-../web-demo/
 *.py
 *.img
 *.crisp

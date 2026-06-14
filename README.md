@@ -62,9 +62,9 @@ The goal is to help you understand what high-level languages are really doing be
 
 ![Linux](https://img.shields.io/badge/Linux-Tested-green)
 ![Windows](https://img.shields.io/badge/Windows-Tested-green)
-![macOS](https://img.shields.io/badge/macOS-Some_Functionality-yellow)
+![macOS](https://img.shields.io/badge/macOS-Tested-green)
 
-> Present versions have been confirmed to work on Linux and Windows. macOS has been tested to work to the same standard as [Crawssembly Online](https://crawssembly.ultimatecraw.xyz/).
+> CRAW SYSTEMS can not garentee *every version* of your system will react the same way to Crawssembly, please make a [**Github Issue**](https://github.com/Jonah-Crawford/Crawssembly/issues/new) if something doesn't work on your machine.
 
 If you don't have Rust installed, download it by running these commands:
 
@@ -1298,6 +1298,7 @@ Before now, program outputs have used the `ref` register to send raw ASCII codes
 - `io text int`: Shows the actual value inside the input register.
 - `io text newline`: Shorthand for moving the text cursor to a new line.
 - `io text hex`: Shows the hex value stored inside the input register.
+- `io text clear`: Clears the terminal, is usually quite slow.
 
 Example
 
@@ -1691,9 +1692,11 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io text int` | `0000` | `0001` | `01110 0000 0001 rrrrrrrr` | Print input register's value |
 | `io text newline` | `0000` | `0010` | `01110 0000 0010 rrrrrrrr` | Moves the text cursor to the next line |
 | `io text hex` | `0000` | `0011` | `01110 0000 0011 rrrrrrrr` | Print input register's value in hexadecimal |
+| `io text clear` | `0000` | `0100` | `01110 0000 0100 rrrrrrrr` | Clears the terminal, can be slow |
 | `io time unix` | `0001` | `0000` | `01110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
 | `io time low` | `0001` | `0001` | `01110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
 | `io time sleep` | `0001` | `0010` | `01110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |
+| `io time milli` | `0001` | `0011` | `01110 0001 0011 rrrrrrrr` | Stores the `low` time in milliseconds |
 | `io screen x` | `0010` | `0000` | `01110 0010 0000 rrrrrrrr` | Sets active x coordinate in the graphics buffer |
 | `io screen y` | `0010` | `0001` | `01110 0010 0001 rrrrrrrr` | Sets active Y coordinate in the graphics buffer |
 | `io screen pixel` | `0010` | `0010` | `01110 0010 0010 rrrrrrrr` | Updates pixel in the graphics buffer at active coordinates |

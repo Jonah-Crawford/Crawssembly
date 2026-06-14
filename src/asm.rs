@@ -353,6 +353,8 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
       "int" => Ok(0x1),
       "newline" | "nl" => Ok(0x2),
       "hex" => Ok(0x3),
+      "error" | "err" => Ok(0x4),
+      "clear" => Ok(0x5),
       _ => Err(format!("Unknown text command '{tok}'"))
     },
 
@@ -361,6 +363,7 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
       "unix" => Ok(0x0),
       "low" => Ok(0x01),
       "sleep" | "slp" => Ok(0x2),
+      "milli" | "millis" => Ok(0x3),
       _ => Err(format!("Unknown time command '{tok}'"))
     },
 
