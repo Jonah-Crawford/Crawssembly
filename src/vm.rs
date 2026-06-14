@@ -632,6 +632,7 @@ struct Cpu {
   target_frame_ms: u128,
   screen_w: usize,
   screen_h: usize,
+  screen_force_redraw: bool,
 
   // keyboard
   last_key: Arc<Mutex<i32>>,
@@ -725,6 +726,7 @@ impl Cpu {
       screen_blue: 255,
       screen_w: config.screen_w,
       screen_h: config.screen_h,
+      screen_force_redraw: true,
       last_present: Instant::now() - Duration::from_millis(100),
       target_frame_ms: 20, // <-<-<-<-<-<-<- FRAME RATE -<-<-<-<-<-<-<
       last_key: Arc::new(Mutex::new(0)),
@@ -896,6 +898,7 @@ impl Cpu {
 
   fn screen_clear(&mut self) {
     self.screen.fill([0, 0, 0]);
+    self.screen_force_redraw = true;
   }
 
   fn screen_dump(&self) {
@@ -977,7 +980,7 @@ impl Cpu {
         let old_top = self.last_screen[top_i];
         let old_bottom = self.last_screen[bottom_i];
 
-        if top == old_top && bottom == old_bottom {
+        if !self.screen_force_redraw && top == old_top && bottom == old_bottom {
           continue;
         }
 
@@ -996,6 +999,8 @@ impl Cpu {
         self.last_screen[bottom_i] = bottom;
       }
     }
+
+    self.screen_force_redraw = false;
 
     queue!(stdout, ResetColor).map_err(|e| e.to_string())?;
     stdout.flush().map_err(|e| e.to_string())
@@ -1019,7 +1024,7 @@ impl Cpu {
         let colour = self.screen[i];
         let old_colour = self.last_screen[i];
 
-        if colour == old_colour {
+        if !self.screen_force_redraw && colour == old_colour {
           continue;
         }
 
@@ -1035,6 +1040,8 @@ impl Cpu {
         self.last_screen[i] = colour;
       }
     }
+
+    self.screen_force_redraw = false;
 
     queue!(stdout, ResetColor).map_err(|e| e.to_string())?;
     stdout.flush().map_err(|e| e.to_string())
