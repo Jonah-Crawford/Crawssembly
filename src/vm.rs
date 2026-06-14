@@ -717,7 +717,7 @@ impl Cpu {
       blocks: Vec::new(),
       screen: vec![[0, 0, 0]; config.screen_w * config.screen_h],
       last_screen: vec![[255, 255, 255];  config.screen_w * config.screen_h],
-      render_mode: Self::detech_terminal_render_mode(),
+      render_mode: Self::detect_terminal_render_mode(),
       screen_x: 0,
       screen_y: 0,
       screen_red: 255,
