@@ -1086,7 +1086,7 @@ impl Cpu {
         queue!(
           stdout,
           cursor::MoveTo((x * 2) as u16, y as u16),
-          SetbackgroundColor(bg),
+          SetBackgroundColor(bg),
           Print("  ")
         ).map_err(|e| e.to_string())?;
 
