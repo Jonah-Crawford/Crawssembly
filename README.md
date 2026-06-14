@@ -4,14 +4,13 @@
 
 Project Lead: J.D. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
 
-Check out Crawssembly Online with [this link!](https://crawssembly.ultimatecraw.xyz/)
+Check out Crawssembly Online with [this link!](https://crawssembly.ultimatecraw.xyz/)  
+[Dedicated Documentation Website](http://docs-crawssembly.ultimatecraw.xyz)
 
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
 ![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
-
-[Dedicated Documentation Website](http://docs-crawssembly.ultimatecraw.xyz)
 
 ## Contents
 
@@ -1165,8 +1164,6 @@ So why is user input so far in the learning path for Crawssembly?
 
 Because input uses the keyboard and mouse, there is a hidden layer between what you type, and that data being processed by the CPU. Much like storage, the keyboard is a separate device to the core computer. Because of this, input handling builds upon what you already know about more basic data manipulation.
 
-> To get input and output devices working, you almost always need to use `craw myprogram.craw --tui`, since this sends event data like mouse position and graphics to your screen.
-
 ### The Keyboard
 
 Crawssembly provides direct keyboard access using `io keyboard`. The main command in this group is `io keyboard poll`, which gets the last key pressed as a key code into the input register.
@@ -1345,8 +1342,10 @@ There are 8 main commands in the `io screen` group:
 - `io screen present`: sends the graphics buffer to the screen
 - `io screen clear`: clears the screen buffer
 
+> To get graphics working properly, you almost always need to use `craw myprogram.craw --tui`, since this sends event data to Crawssembly. When using `--tui`, the terminal screen clears when the program ends. A good way to stop this is by making a loop at the end of the program, that pressing a keyboard key exits from and ends the program once you've finished looking at the output.
+>
 > RGB values are mapped from -128 to 127, so `-128` is no colour, `0` is some colour, and `127` is all colour. This is so all colours can be made with immediate values for ease of use.
-
+>
 > You commonly see RGB values in **Hexadecimal**, so 0xFFFFFF would be white, 0xFF0000 would be red, 0x00FF00 would be green, 0x0000FF would be blue, and 0x000000 would be black.
 
 Example:
@@ -1718,6 +1717,17 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io disk read` | `0111` | `0001` | `01110 0111 0001 rrrrrrrr` | Extracts the active disk address's value into input register |
 | `io disk write` | `0111` | `0010` | `01110 0111 0010 rrrrrrrr` | Sets the active disk address's value to value in input register |
 | `io disk save` | `0111` | `0011` | `01110 0111 0011 rrrrrrrr` | Forces the disk file to reload and update |
+
+Because Crawssembly translates to raw binary, you can use binary (or hexadecimal!) in your programs.
+
+Example
+
+```
+010000011010000000001           ; Translates to 'sav 100 r01'
+io text int r01
+```
+
+Running the above will result in the exact same functionality as if your replaced `010000011010000000001` with `sav 100 r01`
 
 ### The VM
 

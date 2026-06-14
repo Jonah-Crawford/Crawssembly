@@ -1,0 +1,20 @@
+name = "crawssembly-release"
+
+include = [
+  "README.md",
+  "LICENSE",
+  "Cargo.toml",
+  "Cargo.lock",
+  "src/",
+  "examples/",
+  "docs/"
+]
+
+exclude = [
+  "src/test.craw",
+  "trace.txt",
+  "**/*.swp",
+  "**/__pycache__",
+  "**/target",
+  "not_working/"
+]

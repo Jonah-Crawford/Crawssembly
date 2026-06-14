@@ -1,0 +1,7 @@
+1				; main loop label
+io keyboard poll r01		; gets last pressed key
+io text char r01		; outputs key char code
+cal add -27 r01			; test for code = 27 for Esc
+jmg 1				; code > 27, continue loop
+jml 1				; code < 27, continue loop
+stp				; code = 27, end program

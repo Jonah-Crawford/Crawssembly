@@ -1,0 +1,16 @@
+sav 7 r01			; loads 0b111 for shift value
+sav 7 r02			; loads byte length for shift amount
+cal shl r01 r02			; 0b111 << 7 = 0b1110000000 (896)
+cal add 104 r01			; 896 + 104 = 1000
+sav r01 r03			; saves 1000 into sleep register
+
+sav 10 r02			; timer start value
+
+1				; main timer loop
+io text int r02			; output value to screen
+io text newline rff		; drops down to a new line
+io time sleep r03		; pauses for 1000ms (1 second)
+cal add -1 r02			; decrement timer value
+sav r01 r02			; update timer value in register 2
+jmg 1				; continue loop if not finished
+stp				; stops program if timer = 0

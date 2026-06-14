@@ -1162,9 +1162,7 @@ impl Cpu {
     loop {
       let len = self.prog_len(program, prog);
 
-      if tick % 10_000 == 0 {
-        if interrupted.load(std::sync::atomic::Ordering::SeqCst) { break; }
-      }
+      if interrupted.load(std::sync::atomic::Ordering::SeqCst) { break; }
 
       if pc < 0 || pc >= len {
         break;
