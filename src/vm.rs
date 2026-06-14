@@ -1030,8 +1030,8 @@ impl Cpu {
           continue;
         }
 
-        let fg = Self::screen_colour_to_terminal(top);
-        let bg = Self::screen_colour_to_terminal(bottom);
+        let fg = Self::screen_colour_to_terminal_mode(top, self.terminal_colour_mode);
+        let bg = Self::screen_colour_to_terminal_mode(bottom, self.terminal_colour_mode);
 
         queue!(
           stdout,
