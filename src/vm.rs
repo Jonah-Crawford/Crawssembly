@@ -928,8 +928,6 @@ impl Cpu {
   }
 
   fn screen_colour_to_terminal_mode(v: [u8; 3], mode: TerminalColourMode) -> Color {
-    eprintln!("TERM_PROGRAM={:?}", std::env::var("TERM_PROGRAM"));
-
     match mode {
       TerminalColourMode::TrueColour => Color::Rgb {
         r: v[0],
@@ -1096,24 +1094,11 @@ impl Cpu {
 
     self.screen_force_redraw = false;
 
-    eprintln!(
-      "fullcell present: screen_w={}, screen_h={}, first_white={:?}",
-      self.screen_w,
-      self.screen_h,
-      self.screen.iter().position(|p| *p != [0, 0, 0])
-    );
-
     queue!(stdout, ResetColor).map_err(|e| e.to_string())?;
     stdout.flush().map_err(|e| e.to_string())
   }
 
   fn screen_present_terminal(&mut self) -> Result<(), String> {
-    eprintln!(
-      "render_mode={:?}, colour_mode={:?}",
-      self.render_mode,
-      self.terminal_colour_mode
-    );
-
     match self.render_mode {
       TerminalRenderMode::HalfBlock => self.screen_present_halfblock(),
       TerminalRenderMode::FullCell => self.screen_present_fullcell(),
