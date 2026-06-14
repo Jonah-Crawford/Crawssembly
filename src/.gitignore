@@ -2,7 +2,12 @@ __pycache__/
 *.pyc
 target/
 trace.txt
+web-docs/
+web-demo/
+*.py
 *.img
+*.crisp
+*.sh
 *.txt
 *.swp
 *.swo
@@ -13,3 +18,11 @@ not_working/
 *.bmp
 test.*
 debug.*
+crisp
+imm
+perform
+song
+speech
+test
+untest
+

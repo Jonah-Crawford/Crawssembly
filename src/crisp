@@ -1,5 +1,0 @@
-#!/bin/bash
-clear
-edit code.crisp
-python3 crisp.py || { exit 1; }
-./run
