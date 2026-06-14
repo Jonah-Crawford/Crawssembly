@@ -1427,6 +1427,10 @@ sav 0 r01               ; saves 0 to register 1, used as the speaker channel
 io speaker channel r01  ; sets active speaker channel to '0'
 io speaker freq r03     ; sets active speaker to 250Hz
 
+sav 50 r01              ; saves 50 to register 1, used for the speaker volume
+
+io speaker volume r01   ; sets active speaker volume to 50%
+
 io speaker on rff       ; turns on speaker
 io time sleep r02       ; waits 100ms
 
