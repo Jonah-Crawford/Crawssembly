@@ -1189,6 +1189,7 @@ impl Cpu {
               KeyCode::Down => -2,
               KeyCode::Left => -3,
               KeyCode::Right => -4,
+              KeyCode::Enter => -5,
               KeyCode::Esc => 27,
               KeyCode::Char(c) => c as i32,
               _ => 0,

@@ -1172,10 +1172,11 @@ Crawssembly provides direct keyboard access using `io keyboard`. The main comman
 
 Key Codes:
 - 0: No key pressed
-- -1: up arrow
-- -2: down arrow
-- -3: left arrow
-- -4: right arrow
+- -1: Up Arrow
+- -2: Down Arrow
+- -3: Left Arrow
+- -4: Right Arrow
+- -5: Enter
 - 27: Escape
 - other: ASCII code ([See this chart for more](https://www.asciitable.com/))
 
@@ -1183,9 +1184,11 @@ Example
 
 ```
 1                               ; Label pointing to line 1
-io keyboard poll r02            ; Gets the last key and stores into register 2
-sav r02 ref                     ; Outputs that key code to the screen
-cal add -27 r02                 ; Finds key - 27, the result is saved to register 1
+sav 0 r01                       ; Resets last keycode to get most recent
+io keyboard poll r01            ; Gets the last key and stores into register 2
+jmz 1                           ; If no key pressed, don't print
+sav r01 ref                     ; Outputs that key code to the screen
+cal add -27 r01                 ; Finds key - 27, the result is saved to register 1
 jmg 1                           ; continues the loop if the key code is greater than 26
 jml 1                           ; continues the loop if the key code is less than 27
 stp                             ; stops the program if the key code is exactly 27
