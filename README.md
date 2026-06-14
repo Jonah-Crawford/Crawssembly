@@ -1068,6 +1068,8 @@ io mem read ref         ; reads the memory address contents into the text output
 - `io mem write` sets the value of the active memory address to whatever is in the input register.
 - `io mem read` saves the value of the active memory address to the given register.
 
+> Crawssembly's VM is limited to just over 65,000 (2^16) addresses, as more might break the computer's OS or other memory-heavy background programs.
+
 #### Activity: Read/Write Cycle
 
 Write a program to write the codes for 'A', 'B', and 'C' to memory, then read them back from memory in reverse order.
