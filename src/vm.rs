@@ -368,6 +368,12 @@ fn predecode(program: &[Instr]) -> Vec<Decoded> {
 
 // ---------- CPU ----------
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum TerminalRenderMode {
+  HalfBlock,
+  FullCell,
+}
+
 #[derive(Copy, Clone)]
 enum ProgRef {
   Main,
@@ -615,6 +621,7 @@ struct Cpu {
 
   // screen
   screen: Vec<[u8; 3]>,
+  render_mode: TerminalRenderMode,
   last_screen: Vec<[u8; 3]>,
   screen_x: i32,
   screen_y: i32,
@@ -710,6 +717,7 @@ impl Cpu {
       blocks: Vec::new(),
       screen: vec![[0, 0, 0]; config.screen_w * config.screen_h],
       last_screen: vec![[255, 255, 255];  config.screen_w * config.screen_h],
+      render_mode: Self::detech_terminal_render_mode(),
       screen_x: 0,
       screen_y: 0,
       screen_red: 255,
@@ -837,6 +845,16 @@ impl Cpu {
     }
   }
 
+  fn detect_terminal_render_mode() -> TerminalRenderMode {
+    let term_program = std::env::var("TERM_PROGRAM").unwrap_or_default();
+
+    if term_program == "Apple_Terminal" {
+      TerminalRenderMode::FullCell
+    } else {
+      TerminalRenderMode::HalfBlock
+    }
+  }
+
   fn screen_index(&self, x: i32, y: i32) -> Option<usize> {
     if x < 0 || y < 0 {
       return None;
@@ -879,7 +897,6 @@ impl Cpu {
   fn screen_clear(&mut self) {
     self.screen.fill([0, 0, 0]);
   }
-
 
   fn screen_dump(&self) {
     let mut out = String::with_capacity((self.screen_w + 1) * self.screen_h + 1);
@@ -938,7 +955,7 @@ impl Cpu {
     self.screen_erase_pixel_at(self.screen_x, bottom_y);
   }
 
-  fn screen_present_terminal(&mut self) -> Result<(), String> {
+  fn screen_present_halfblock(&mut self) -> Result<(), String> {
     let elapsed = self.last_present.elapsed().as_millis();
 
     if elapsed < self.target_frame_ms {
@@ -982,6 +999,52 @@ impl Cpu {
 
     queue!(stdout, ResetColor).map_err(|e| e.to_string())?;
     stdout.flush().map_err(|e| e.to_string())
+  }
+
+  fn screen_present_fullcell(&mut self) -> Result<(), String> {
+    let elapsed = self.last_present.elapsed().as_millis();
+
+    if elapsed < self.target_frame_ms {
+      return Ok(());
+    }
+
+    self.last_present = Instant::now();
+
+    let mut stdout = io::stdout();
+
+    for y in 0..self.screen_h {
+      for x in 0..self.screen_w {
+        let i = y * self.screen_w + x;
+
+        let colour = self.screen[i];
+        let old_colour = self.last_screen[i];
+
+        if colour == old_colour {
+          continue;
+        }
+
+        let bg = Self::screen_colour_to_terminal(colour);
+
+        queue!(
+          stdout,
+          cursor::MoveTo((x * 2) as u16, y as u16),
+          SetBackgroundColor(bg),
+          Print("  ")
+        ).map_err(|e| e.to_string())?;
+
+        self.last_screen[i] = colour;
+      }
+    }
+
+    queue!(stdout, ResetColor).map_err(|e| e.to_string())?;
+    stdout.flush().map_err(|e| e.to_string())
+  }
+
+  fn screen_present_terminal(&mut self) -> Result<(), String> {
+    match self.render_mode {
+      TerminalRenderMode::HalfBlock => self.screen_present_halfblock(),
+      TerminalRenderMode::FullCell => self.screen_present_fullcell(),
+    }
   }
 
   fn label_get(&self, id: u16) -> i32 {
