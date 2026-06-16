@@ -1,0 +1,614 @@
+sav 1 r01				; ready active speaker channel value
+io speaker channel r01			; set active speaker channel
+
+sav 50 r01				; ready speaker volume value
+io speaker volume r01			; set speaker volume
+
+sav 100 r03				; set pause time in-between notes
+
+sav 127 r04				; 127 value for addition
+
+sav 7 r05				; 7 value for bit shifts
+
+sav 28 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 29 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 31 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 33 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 35 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 37 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 39 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 41 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 44 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 46 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 49 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 52 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 55 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 58 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 62 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 65 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 69 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 73 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 78 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 82 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 87 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 92 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 98 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 104 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 110 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 117 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 123 r01				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 4 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 12 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 20 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 29 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 38 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 48 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 58 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 69 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 81 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 93 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 106 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 120 r04				; ready note frequency value
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 8 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 23 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 40 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 57 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 76 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 95 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 116 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 127 r01
+cal add 11 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 127 r01
+cal add 34 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 127 r01
+cal add 59 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 127 r01
+cal add 85 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+cal add 127 r04				; ready note frequency value
+cal add 127 r01
+cal add 113 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 4 r01				; ready note frequency value
+cal shl r01 r05
+cal add 11 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 4 r01				; ready note frequency value
+cal shl r01 r05
+cal add 110 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 5 r01				; ready note frequency value
+cal shl r01 r05
+cal add 19 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 4 r01				; ready note frequency value
+cal shl r01 r05
+cal add 58 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 4 r01				; ready note frequency value
+cal shl r01 r05
+cal add 100 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 6 r01				; ready note frequency value
+cal shl r01 r05
+cal add 16 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 6 r01				; ready note frequency value
+cal shl r01 r05
+cal add 63 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 4 r01				; ready note frequency value
+cal shl r01 r05
+cal add 112 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 7 r01				; ready note frequency value
+cal shl r01 r05
+cal add 36 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 7 r01				; ready note frequency value
+cal shl r01 r05
+cal add 92 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 8 r01				; ready note frequency value
+cal shl r01 r05
+cal add 23 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 8 r01				; ready note frequency value
+cal shl r01 r05
+cal add 85 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 9 r01				; ready note frequency value
+cal shl r01 r05
+cal add 23 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 9 r01				; ready note frequency value
+cal shl r01 r05
+cal add 7 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 10 r01				; ready note frequency value
+cal shl r01 r05
+cal add 39 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 10 r01				; ready note frequency value
+cal shl r01 r05
+cal add 117 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 11 r01				; ready note frequency value
+cal shl r01 r05
+cal add 72 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 12 r01				; ready note frequency value
+cal shl r01 r05
+cal add 32 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 12 r01				; ready note frequency value
+cal shl r01 r05
+cal add 125 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 13 r01				; ready note frequency value
+cal shl r01 r05
+cal add 96 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 14 r01				; ready note frequency value
+cal shl r01 r05
+cal add 73 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 15 r01				; ready note frequency value
+cal shl r01 r05
+cal add 56 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 16 r01				; ready note frequency value
+cal shl r01 r05
+cal add 45 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 17 r01				; ready note frequency value
+cal shl r01 r05
+cal add 41 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 18 r01				; ready note frequency value
+cal shl r01 r05
+cal add 45 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 19 r01				; ready note frequency value
+cal shl r01 r05
+cal add 57 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 20 r01				; ready note frequency value
+cal shl r01 r05
+cal add 77 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 21 r01				; ready note frequency value
+cal shl r01 r05
+cal add 106 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 23 r01				; ready note frequency value
+cal shl r01 r05
+cal add 16 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 24 r01				; ready note frequency value
+cal shl r01 r05
+cal add 64 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 25 r01				; ready note frequency value
+cal shl r01 r05
+cal add 122 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 27 r01				; ready note frequency value
+cal shl r01 r05
+cal add 64 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 29 r01				; ready note frequency value
+cal shl r01 r05
+cal add 17 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 30 r01				; ready note frequency value
+cal shl r01 r05
+cal add 111 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker
+
+sav 32 r01				; ready note frequency value
+cal shl r01 r05
+cal add 90 r01
+io speaker freq r01			; set speaker frequency value
+io speaker on rff			; turn on active speaker
+io time sleep r03			; pause for a moment
+io speaker off rff			; turn off active speaker

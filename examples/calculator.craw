@@ -1,7 +1,302 @@
+io text clear rff			; Clears the screen
 
+sav 69 r01				; "Enter a number, then press Enter\n"
+io text char r01
+sav 110 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 117 r01
+io text char r01
+sav 109 r01
+io text char r01
+sav 98 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 44 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 104 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 112 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 115 r01
+io text char r01
+sav 115 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 69 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 114 r01
+io text char r01
+io text newline rff
 
+1					; first number loop
+  sav 0 r02				; reset keycode
+  io keyboard poll r02			; get last key
+  cal add 5 r02				; test for enter
+  ifg 2					; continues if code > -5
 
+    cal add -48 r02			; test for code < numbers
+    jml 1				; don't continue if not number
+    cal add -57 r02			; test for code > numbers
+    jmg 1				; don't continue
 
+    io text char r02			; show digit
 
+    cal add -48 r02			; normalise key code
+    sav r01 r03				; save new units digit
+    cal add r05 r05			; 2N
+    cal add r01 r01			; 4N
+    cal add r01 r01			; 8N
+    cal add r01 r05			; 9N
+    cal add r01 r05			; 10N
+    cal add r03 r01			; 10N + new key code = new N
+    sav r01 r05				; update new N
 
+    jmp 1				; continue loop
 
+  rmv 2					; ends code < -5 branch
+  ifl 2					; continues if code < -5
+
+    cal add -48 r02			; test for code < numbers
+    jml 1				; don't continue if not number
+    cal add -57 r02			; test for code > numbers
+    jmg 1				; don't continue
+
+    io text char r02			; show digit
+
+    cal add -48 r02			; normalise key code
+    sav r01 r03				; save new units digit
+    cal add r05 r05			; 2N
+    cal add r01 r01			; 4N
+    cal add r01 r01			; 8N
+    cal add r01 r05			; 9N
+    cal add r01 r05			; 10N
+    cal add r03 r01			; 10N + new key code = new N
+    sav r01 r05				; update new N
+
+    jmp 1				; continue loop
+
+  rmv 2					; ends code < -5 branch
+rmv 1					; remove loop 1 from labels
+
+io text newline rff			; "\n(a)dd or (s)ubtract?\n"
+sav 40 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 41 r01
+io text char r01
+sav 100 r01
+io text char r01
+sav 100 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 111 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 40 r01
+io text char r01
+sav 115 r01
+io text char r01
+sav 41 r01
+io text char r01
+sav 117 r01
+io text char r01
+sav 98 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 99 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 63 r01
+io text char r01
+io text newline rff
+
+1					; operation loop
+  io keyboard poll r02
+  cal add -97 r02			; check for code = 97 for 'a'
+
+  ifz 2					; if code = 97 ('a')
+    sav 0 r07				; sat operation mode to 0
+  rmv 2					; end code = 97 branch
+
+  cal add -115 r02			; check for code = 115 for 's'
+
+  ifz 2					; if code = 115 ('s')
+    sav 1 r07				; set operation mode to 1
+  rmv 2					; end code = 115 branch 
+
+  ifg 2					; if code > 115 check
+    jmp 1				; continue loop
+  rmv 2					; end code > 115 branch
+
+  ifl 2					; if code < 115
+    cal add -97 r02			; recheck for code = 97
+    ifg 3				; 97 < code < 115 check
+      jmp 1				; continue loop
+    rmv 3				; end 97 < code < 115 check
+    ifl 3				; code < 97 check
+      jmp 1				; continue loop
+    rmv 3				; end code < 97 check
+  rmv 2					; end code < 115 check
+
+rmv 1					; end operation loop
+
+io text char r02
+
+io text newline rff			; "\nEnter another number\n"
+sav 69 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 111 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 104 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 117 r01
+io text char r01
+sav 109 r01
+io text char r01
+sav 98 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 114 r01
+io text char r01
+io text newline rff
+
+sav 0 r06				; reset second number
+
+1					; first number loop
+  sav 0 r02				; reset keycode
+  io keyboard poll r02			; get last key
+  cal add 5 r02				; test for enter
+  ifg 2					; continues if code > -5
+
+    cal add -48 r02			; test for code < numbers
+    jml 1				; don't continue if not number
+    cal add -57 r02			; test for code > numbers
+    jmg 1				; don't continue
+
+    io text char r02			; show digit
+
+    cal add -48 r02			; normalise key code
+    sav r01 r03				; save new units digit
+    cal add r06 r06			; 2N
+    cal add r01 r01			; 4N
+    cal add r01 r01			; 8N
+    cal add r01 r06			; 9N
+    cal add r01 r06			; 10N
+    cal add r03 r01			; 10N + new key code = new N
+    sav r01 r06				; update new N
+
+    jmp 1				; continue loop
+
+  rmv 2					; ends code < -5 branch
+  ifl 2					; continues if code < -5
+
+    cal add -48 r02			; test for code < numbers
+    jml 1				; don't continue if not number
+    cal add -57 r02			; test for code > numbers
+    jmg 1				; don't continue
+
+    io text char r02			; show digit
+
+    cal add -48 r02			; normalise key code
+    sav r01 r03				; save new units digit
+    cal add r06 r06			; 2N
+    cal add r01 r01			; 4N
+    cal add r01 r01			; 8N
+    cal add r01 r06			; 9N
+    cal add r01 r06			; 10N
+    cal add r03 r01			; 10N + new key code = new N
+    sav r01 r06				; update new N
+
+    jmp 1				; continue loop
+
+  rmv 2					; ends code < -5 branch
+rmv 1					; removes loop label
+
+sav r07 r01				; ready calculation mode
+ifg 1					; if mode > 0 (subtract)
+  cal not r06 rff			; 1st step of negation
+  cal add 1 r01				; 2nd step of negation
+rmv 1
+ifz 1					; if mode = 0 (addition)
+  sav r06 r01				; ready second number into register 1
+rmv 1
+
+cal add r01 r05				; solve calculation
+
+io text newline rff			; drop down the text cursor
+io text newline rff			; drop down the text cursor
+io text int r01				; show calculation result

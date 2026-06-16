@@ -61,10 +61,10 @@ The goal is to help you understand what high-level languages are really doing be
 ## How to install Crawssembly
 
 ![Linux](https://img.shields.io/badge/Linux-Tested-green)
-![Windows](https://img.shields.io/badge/Windows-Tested-green)
+![Windows 11](https://img.shields.io/badge/Windows_11-Tested-green)
 ![macOS](https://img.shields.io/badge/macOS-Tested-green)
 
-> CRAW SYSTEMS can not garentee *every version* of your system will react the same way to Crawssembly, please make a [**Github Issue**](https://github.com/Jonah-Crawford/Crawssembly/issues/new) if something doesn't work on your machine.
+> CRAW SYSTEMS can not guarantee *every version* of your system will react the same way to Crawssembly, please make a [**Github Issue**](https://github.com/Jonah-Crawford/Crawssembly/issues/new) if something doesn't work on your machine.
 
 If you don't have Rust installed, download it by running these commands:
 
@@ -334,11 +334,13 @@ The computer will do what it's told exactly as written to the letter. If you tol
 
 To use Crawssembly, these practices are no different.
 
+> Crawssembly comes with a folder full of example programs, each documented. Take a look at them for ideas!
+
 ### Instructions
 
 Every line of Crawssembly is a dedicated instruction. Every line is executed one after another in the exact order the program is written in. The computer reads each line, converts the instruction into a binary number, and executes the command. This is the **Fetch-Decode-Execute** loop, the fundamental process of the computer's Central Processing Unit (CPU)
 
-The simplest instruction is `nop`. Typing this into a file and running doesn't do anything because this is the **no operation** instruction. It doesn't do anything. Every empty line compiles to a `nop` command when the `.craw` file is compiled.
+The simplest instruction is `nop`. Typing this into a file and running doesn't do anything because this is the **no operation** instruction; it doesn't do anything. Every empty line compiles to a `nop` command when the `.craw` file is compiled.
 
 ### Registers
 
@@ -931,6 +933,44 @@ Write a program that loops from 0 to 10, and outputs 'e' if the number is even, 
 
 Edit your program for 'Even Looper', so that instead of outputting 'e' or 'o', it outputs the number if it's even, and doesn't output anything if the number is odd.
 
+### Indentation
+
+For longer programs, it can be difficult to see what branch label links to what code, you can make it easier for yourself by using **indentation**. This is whitespace before instructions to imply their scope, which is ignored by the Crawssembly compiler.
+
+Example
+
+```
+ifg 1
+    ifz 2
+      cal add r01 r02
+    rmv 2
+    ifg 2
+      ifz 3
+        cal not r01 rff
+      rmv 3
+    rmv 2
+rmv 1
+```
+
+The above program is easier to read than
+
+```
+ifg 1
+ifz 2
+cal add r01 r02
+rmv 2
+ifg 2
+ifz 3
+cal not r01 rff
+rmv 3
+rmv 2
+rmv 1
+```
+
+But both do the exact same function. 
+
+> Indentation does not imply scope, that's determined my `rmv`. If there is no `rmv` command, the code will keep running no matter how much indentation you use. It is simply a visual hint.
+
 </details>
 
 <details>
@@ -1184,14 +1224,14 @@ Example
 
 ```
 1                               ; Label pointing to line 1
-sav 0 r01                       ; Resets last keycode to get most recent
-io keyboard poll r01            ; Gets the last key and stores into register 2
-jmz 1                           ; If no key pressed, don't print
-sav r01 ref                     ; Outputs that key code to the screen
-cal add -27 r01                 ; Finds key - 27, the result is saved to register 1
-jmg 1                           ; continues the loop if the key code is greater than 26
-jml 1                           ; continues the loop if the key code is less than 27
-stp                             ; stops the program if the key code is exactly 27
+  sav 0 r01                     ; Resets last keycode to get most recent
+  io keyboard poll r01          ; Gets the last key and stores into register 2
+  jmz 1                         ; If no key pressed, don't print
+  sav r01 ref                   ; Outputs that key code to the screen
+  cal add -27 r01               ; Finds key - 27, the result is saved to register 1
+  jmg 1                         ; continues the loop if the key code is greater than 26
+  jml 1                         ; continues the loop if the key code is less than 27
+  stp                           ; stops the program if the key code is exactly 27
 ```
 
 This program shows the last key printed by outputting to `ref`, and ends the loop when `Esc` is pressed.
@@ -1395,13 +1435,15 @@ There are some additional commands that are lesser used, but still useful:
 Making your computer 'speak' is one of more enjoyable ways to get a program output. Crawssembly provides many commands to take control of your speakers using `io speaker`.
 
 The commands are:
-- `io speaker channel`: sets the active speaker channel. There are 4 channels in Crawssembly to play sounds from.
+- `io speaker channel`: sets the active speaker channel. There are 8 channels in Crawssembly to play sounds from.
 - `io speaker freq`: sets the active channel's frequency, in Hertz
 - `io speaker volume`: sets the active channel's volume, from 0 to 100
 - `io speaker wave`: sets the wave type of that channel
 - `io speaker on`: turns on the active channel
 - `io speaker off`: turns off the active channel
 - `io speaker toggle`: toggles the on/off state of the active channel
+
+> Crawssembly might not be able to access every channel your machine exposes. Because of this, audio is the most tempermental functions of Crawssembly as it's entirely dependent on the host, not the Crawssembly VM. If you encounter issues, please raise a [**Github Issue**](https://github.com/Jonah-Crawford/Crawssembly/issues/new) with the details!
 
 The *wave type* is a number to tell the channel what type of sound to make.
 

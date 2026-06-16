@@ -1,0 +1,25 @@
+io time milli r02
+
+1
+  sav 7 r01
+  cal shl r02 r01
+  cal xor r02 r01
+  sav r01 r02
+
+  sav 9 r01
+  cal shr r02 r01
+  cal xor r02 r01
+  sav r01 r02
+
+  sav 8 r01
+  cal shl r02 r01
+  cal xor r02 r01
+  sav r01 r02
+
+  io text int r01
+  io text newline rff
+
+  sav 100 r01
+  io time sleep r01
+
+  jmp 1

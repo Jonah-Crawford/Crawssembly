@@ -1,24 +1,24 @@
-sav 72 r01			; 72 = 'H'
+sav 72 r01				; 72 = 'H'
 io text char r01
-sav 101 r01			; 101 = 'e'
+sav 101 r01				; 101 = 'e'
 io text char r01
-sav 108 r01			; 108 = 'l'
+sav 108 r01				; 108 = 'l'
 io text char r01
-sav 108 r01			; 108 = 'l'
+sav 108 r01				; 108 = 'l'
 io text char r01
-sav 111 r01			; 111 = 'o'
+sav 111 r01				; 111 = 'o'
 io text char r01
-sav 32 r01			; 32 = ' '
+sav 32 r01				; 32 = ' '
 io text char r01
-sav 87 r01			; 87 = 'W'
+sav 87 r01				; 87 = 'W'
 io text char r01
-sav 111 r01			; 111 = 'o'
+sav 111 r01				; 111 = 'o'
 io text char r01
-sav 114 r01			; 114 = 'r'
+sav 114 r01				; 114 = 'r'
 io text char r01
-sav 108 r01			; 108 = 'l'
+sav 108 r01				; 108 = 'l'
 io text char r01
-sav 100 r01			; 100 = 'd'
+sav 100 r01				; 100 = 'd'
 io text char r01
-sav 33 r01			; 33 = '!'
+sav 33 r01				; 33 = '!'
 io text char r01

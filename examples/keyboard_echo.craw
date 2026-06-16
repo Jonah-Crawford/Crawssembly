@@ -1,12 +1,12 @@
-1				; main loop label
-sav 0 r01			; reset key value
-io keyboard poll r01		; gets last pressed key
-jmz 1				; if code = 0, don't print
-io text char r01		; outputs key char code
-io text newline rff		; drops down the cursor
-io text value r01		; outputs key code value
-io text newline	rff		; drops down the cursor
-cal add -27 r01			; test for code = 27 for Esc
-jmg 1				; code > 27, continue loop
-jml 1				; code < 27, continue loop
-stp				; code = 27, end program
+1					; main loop label
+  sav 0 r01				; reset key value
+  io keyboard poll r01			; gets last pressed key
+  jmz 1					; if code = 0, don't print
+  io text char r01			; outputs key char code
+  io text newline rff			; drops down the cursor
+  io text value r01			; outputs key code value
+  io text newline rff			; drops down the cursor
+  cal add -27 r01			; test for code = 27 for Esc
+  jmg 1					; code > 27, continue loop
+  jml 1					; code < 27, continue loop
+  stp					; code = 27, end program

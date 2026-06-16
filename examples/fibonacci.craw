@@ -1,0 +1,25 @@
+io text clear rff			; clear the screen
+
+sav 1 r02				; first sequence value
+sav 1 r03				; second sequence value
+
+sav 100 r04				; pause time in milliseconds
+
+io text int r02				; shows first value
+io text newline rff			; drops down the cursor
+io time sleep r04			; pause for a moment
+io text int r03				; shows second value
+io text newline rff			; drops down the cursor
+
+1					; main loop
+  io time sleep r04			; pause for a moment
+  cal add r02 r03			; add last 2 values together
+  io text int r01			; show new value
+  io text newline rff			; drop down the cursor
+  sav r02 r03				; update last value
+  sav r01 r02				; update second-to-last value
+  io keyboard poll r01			; get last key press
+  cal add -27 r01			; check for cpde = 27 for Esc
+  jmg 1					; code > 27, continue loop
+  jml 1					; code < 27, continue loop
+  stp					; code = 27, end loop

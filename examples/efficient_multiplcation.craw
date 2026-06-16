@@ -1,50 +1,50 @@
-				; optimsed 127 booster O(log(n)) time, O(1) space
-				; 0x01 is the number of 127 to add
-				; 0x02 is the remainder
-				; 0x03 contains chunk addition
-				; 0x04 contains current bit test
-				; 0x05 is for 0x01 sum accumulator
-				; 0x06 is the test flag storage
-				; 0x07 is for j-t-e line storage
-				; 0x08 is a raw copy of 0x01
-				; 0x09 is temp storage for 0x04 negation
+					; optimsed 127 booster O(log(n)) time, O(1) space
+					; 0x01 is the number of 127 to add
+					; 0x02 is the remainder
+					; 0x03 contains chunk addition
+					; 0x04 contains current bit test
+					; 0x05 is for 0x01 sum accumulator
+					; 0x06 is the test flag storage
+					; 0x07 is for j-t-e line storage
+					; 0x08 is a raw copy of 0x01
+					; 0x09 is temp storage for 0x04 negation
 
-sav r01 r08			; store immutable 0x01 copy into 0x08 for final loop end test
-sav 17 r01			; literal line number to skip over label 1 0x01>=zero check
-1				; label test for malformed 127 count
-fgo 0				; jump-then-execute fgo
-fgo 50				; jump to the remainder addition step
-sav 26 r01			; literal line jump to after label 2
-sav r01 r09			; copies 0x01 into 0x09 to reverse 0x09 swap in label 2 j-t-e
-2				; chunk addition label
-sav r09 r01			; restores continue line number
-fgo 0				; jump-then-execute fgo
-cal add r03 r05			; adds active chunk to 0x01 copy in 0x05
-sav r01 r05			; updates 0x05 total count
-sav r07 r01			; restores line return number
-fgo 0				; returns to main code
-sav 30 r01			; literal line number to skip over label 3 end check
-3				; test to end xor loop
-fgo 0				; jump-then-execute fgo
-fgo 50				; jump to remainder addition step
-sav r08 r01			; restores j-t-e-ish value from 0x08 copy
-sav 127 r03			; sets up chunk register
-sav 1 r04			; sets up bit test register
-4				; main and test loop
-cal and r04 r08			; extracts current test bit
-sav r01 r06			; stores copy of test flag in 0x06
-sav 22 r09			; literal line number to continue to label 2 execution into zero-0x09
-sav 39 r07			; literal line number to return after label 2 execution
-jmg 2				; if test bit is active, add chunk to accumulator
-cal add r03 r03			; doubles chunk value
-sav r01 r03			; updates chunk value register
-cal add r04 r04			; doubles test bit index
-sav r01 r04			; updates test bit index value
-sav r04 r09			; 0x04 copy stored in 0x09 to save destroyed 0x04
-cal not r04 r04			; NOT the value inside 0x04
-cal add 1 r01			; add 1 to form 2-complement of 0x04 (negative 0x04)
-cal add r08 r01			; find difference of bit index and total 127 coefficient
-jml 3				; minus value indicates finished loop, jump to end
-jmz 4				; zero value indicates edge case of finished loop
-jmg 4				; continue and loop
-cal add r05 r02			; finally, add remainder to value	
+sav r01 r08				; store immutable 0x01 copy into 0x08 for final loop end test
+sav 17 r01				; literal line number to skip over label 1 0x01>=zero check
+1					; label test for malformed 127 count
+  fgo 0					; jump-then-execute fgo
+  fgo 50				; jump to the remainder addition step
+  sav 26 r01				; literal line jump to after label 2
+  sav r01 r09				; copies 0x01 into 0x09 to reverse 0x09 swap in label 2 j-t-e
+2					; chunk addition label
+  sav r09 r01				; restores continue line number
+  fgo 0					; jump-then-execute fgo
+  cal add r03 r05			; adds active chunk to 0x01 copy in 0x05
+  sav r01 r05				; updates 0x05 total count
+  sav r07 r01				; restores line return number
+  fgo 0					; returns to main code
+sav 30 r01				; literal line number to skip over label 3 end check
+3					; test to end xor loop
+  fgo 0					; jump-then-execute fgo
+  fgo 50				; jump to remainder addition step
+  sav r08 r01				; restores j-t-e-ish value from 0x08 copy
+  sav 127 r03				; sets up chunk register
+  sav 1 r04				; sets up bit test register
+4					; main and test loop
+  cal and r04 r08			; extracts current test bit
+  sav r01 r06				; stores copy of test flag in 0x06
+  sav 22 r09				; literal line number to continue to label 2 execution into zero-0x09
+  sav 39 r07				; literal line number to return after label 2 execution
+  jmg 2					; if test bit is active, add chunk to accumulator
+  cal add r03 r03			; doubles chunk value
+  sav r01 r03				; updates chunk value register
+  cal add r04 r04			; doubles test bit index
+  sav r01 r04				; updates test bit index value
+  sav r04 r09				; 0x04 copy stored in 0x09 to save destroyed 0x04
+  cal not r04 r04			; NOT the value inside 0x04
+  cal add 1 r01				; add 1 to form 2-complement of 0x04 (negative 0x04)
+  cal add r08 r01			; find difference of bit index and total 127 coefficient
+  jml 3					; minus value indicates finished loop, jump to end
+  jmz 4					; zero value indicates edge case of finished loop
+  jmg 4					; continue and loop
+  cal add r05 r02			; finally, add remainder to value	
