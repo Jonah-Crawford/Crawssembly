@@ -1080,7 +1080,7 @@ Storage addresses are commonly given in **hexadecimal** format, such as `0xF58`.
 
 Because registers can hold values between `- 2^31` and `2^31 - 1` (This is the *signed 32-bit limit*), the largest address is **0xFFFFFFFF**. That's over 4 billion addresses available!
 
-> Addresses can theoretically range up to 0xFFFFFFFF, although the VM may provide less memory in practice. If your computer has 8GB of RAM, Crawssembly would take all of it, and would crash your machine!
+> Addresses can theoretically range up to 0xFFFFFFFF, although the VM provides memory up to 65536 addresses. If your computer has 8GB of RAM, Crawssembly would take all of it, and would crash your machine!
 
 ### Memory
 
@@ -1107,8 +1107,6 @@ io mem read ref         ; reads the memory address contents into the text output
 - `io mem addr` sets the active memory address that Crawssembly is considering. All `io mem` commands act on this address.
 - `io mem write` sets the value of the active memory address to whatever is in the input register.
 - `io mem read` saves the value of the active memory address to the given register.
-
-> Crawssembly's VM is limited to just over 65,000 (2^16) addresses, as more might break the computer's OS or other memory-heavy background programs.
 
 #### Activity: Read/Write Cycle
 
@@ -1268,15 +1266,15 @@ This example stores the (x, y) location as (`r01`, `r02`).
 
 A **bit field** is a single binary number which encodes multiple values. Instead of using a single bit for if the left mouse button is being pressed, another for the right button being pressed, and another again for the middle button, we can merge these 3 numbers into a single number.
 
-| Left | Right | Middle | Bitfield | Decimal |
-| ---- | ----- | ------ | -------- | ------- |
+| Middle | Right | Left | Bit field | Decimal |
+| ------ | ----- | ---- | --------- | ------- |
 | Off | Off | Off | `0b000` | 0 |
-| On | Off | Off | `0b001` | 1 |
+| Off | Off | On | `0b001` | 1 |
 | Off | On | Off | `0b010` | 2 |
-| On | On | Off | `0b011` | 3 |
-| Off | Off | On | `0b100` | 4 |
+| Off | On | On | `0b011` | 3 |
+| On | Off | Off | `0b100` | 4 |
 | On | Off | On | `0b101` | 5 |
-| Off | On | On | `0b110` | 6 |
+| On | On | Off | `0b110` | 6 |
 | On | On | On | `0b111` | 7 |
 
 You can extract each button using bit masks.

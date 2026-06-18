@@ -1,8 +1,13 @@
-1
-io text clear rff
-io time milli r01
-io text int r01
-io keyboard poll r01
-cal add -27 r01
-jmg 1
-jml 1
+fgo 8
+
+sav 65 r02
+io text char r02
+
+
+
+
+sav 66 r02
+io text char r02
+
+sav 67 r02
+io text char r02

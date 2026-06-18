@@ -14,12 +14,11 @@
 // - ALU: not/and/or/xor/shl/shr/sar/add
 // - Control/labels: label defs (name: or name alone), jmp/jmz/jmg/jml, ifz/ifg/ifl, rmv
 // - fgo <line> (16-bit, fgo 0 special)
-// - str <line_start> <block> (8-bit + 8-bit; block 0 => VM uses r01)
-// - run <block> (16-bit; block 0 => VM uses r01)
 // - Raw binary lines: "0b0101..." or 21-bit "0101..." accepted as-is
 
 use std::fs;
 
+mod c_backend;
 mod asm;
 mod vm;
 
@@ -131,6 +130,25 @@ fn main() {
       }
     }
 
+    Some("emit-c") => {
+      let Some(input_path) = positional_after(&args, "emit-c") else {
+        eprintln!("Missing input file.\n");
+        print_help();
+        std::process::exit(1);
+      };
+
+      let output_path = parse_output_file(&args)
+        .unwrap_or_else(|| "out.c".to_string());
+
+      if let Err(e) = emit_c_file(&input_path, &output_path) {
+        eprintln!("{e}");
+        std::process::exit(1);
+      }
+
+      println!("Wrote C output to {output_path}");
+
+    }
+
     Some(path) => {
       if let Err(e) = assemble_file(path, "program.bin", dump, dump_decoded) {
         eprintln!("{e}");
@@ -216,7 +234,32 @@ fn positional_after(args: &[String], command: &str) -> Option<String> {
 }
 
 fn is_option_with_value(arg: &str) -> bool {
-  matches!(arg, "--screen" | "--file")
+  matches!(arg, "--screen" | "--file" | "-o" | "--output")
+}
+
+fn parse_output_file(args: &[String]) -> Option<String> {
+  for i in 0..args.len() {
+    if args[i] == "-o" || args[i] == "--output" {
+      return args.get(i + 1).cloned();
+    }
+  }
+
+ None
+
+}
+
+fn emit_c_file(input_path: &str, output_path: &str) -> Result<(), String> {
+  let src = fs::read_to_string(input_path)
+    .map_err(|e| format!("Failed to read {input_path}: {e}"))?;
+
+  let lines: Vec<String> = src.lines().map(|s| s.to_string()).collect();
+  let c_code = c_backend::emit_c(lines);
+
+  fs::write(output_path, c_code)
+    .map_err(|e| format!("Failed to write {output_path}: {e}"))?;
+
+  Ok(())
+
 }
 
 fn assemble_file(input_path: &str, output_path: &str, dump: bool, dump_decoded: bool) -> Result<(), String> {
@@ -264,6 +307,7 @@ fn print_help() {
   println!("  craw check <file.craw>        Check that a file assembles");
   println!("  craw compile <file.craw>      Assemble to program.bin only");
   println!("  craw debug <file.craw>        Run with VM stats shown");
+  println!("  craw emit-c <file.craw>       Convert Crawssembly to C");
   println!("  craw run <file.craw>          Assemble and run a file");
   println!();
   println!("Options:");
@@ -273,6 +317,7 @@ fn print_help() {
   println!("  --dump-decoded                Show decoded instruction fields with --dump");
   println!("  --file <file>                 Send file contents to register 0 during execution.");
   println!("  --help                        Show this help message");
+  println!("  --o, --output <file>          Set output filename");
   println!("  --screen <widthxheight>       Set virtual screen size, e.g. 128x128");
   println!("  --stats                       Show VM speed/tick statistics after running");
   println!("  --tui                         Use alternate-screen terminal mode");
