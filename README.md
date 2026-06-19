@@ -1667,19 +1667,19 @@ Crawssembly instructions all translate to a binary number of length **21**, so t
 
 Below are the tables for what Crawssembly instructions look like to the machine.
 
-Most instructions follow the form of `00 000 00000000 00000000`
-- `00`: Core Group, differentiates between `sav` and `cal` immediate values
-- `000`: Instruction Modes for `cal`, or used for control instructions
-- `00000000`: First input value, or in `io` this contains the device and instruction code.
-- `00000000`: Second input, almost always a register code unless using labels.
+Most instructions follow the form of `aa bbb cccccccc dddddddd`
+- `aa`: Core Group, differentiates between `sav` and `cal` immediate values
+- `bbb`: Instruction Modes for `cal`, or used for control instructions
+- `cccccccc`: First input value, or in `io` this contains the device and instruction code.
+- `dddddddd`: Second input, almost always a register code unless using labels.
 
 #### Core Instruction Patterns
 
 | Instruction | Pattern | Meaning |
 | ----------- | ------- | ------- |
-| `nop` | `000000000000000000000` | No operation |
-| `inp` | `011000000000000000000` | Advance input |
-| `stp` | `011111111111111111111` | Stop program |
+| `nop` | `00 000 00000000 00000000` | No operation |
+| `inp` | `01 100 00000000 00000000` | Advance input |
+| `stp` | `01 111 11111111 11111111` | Stop program |
 | `sav reg reg` | `00 000 aaaaaaaa bbbbbbbb` | Save register `a` to register `b` |
 | `sav imm reg` | `01 000 iiiiiiii bbbbbbbb` | Save immediate to register `b` |
 | `cal op reg reg` | `10 ooo aaaaaaaa bbbbbbbb` | Calculate using register `a` and register `b` |
@@ -1702,17 +1702,17 @@ Most instructions follow the form of `00 000 00000000 00000000`
 
 | Instruction | Code | Pattern | Meaning |
 | ----------- | ---- | ------- | ------- |
-| `jmz` | `00001` | `00001 llllllllllllllll` | Jump to label if `r01` = 0 |
-| `jmg` | `00010` | `00010 llllllllllllllll` | Jump to label if `r01` > 0 |
-| `ifl` | `00011` | `00011 llllllllllllllll` | Continue if `r01` < 0 |
-| `jml` | `00100` | `00100 llllllllllllllll` | Jump to label if `r01` < 0 |
-| `ifg` | `00101` | `00101 llllllllllllllll` | Continue if `r01` > 0 |
-| `ifz` | `00110` | `00110 llllllllllllllll` | Continue if `r01` = 0 |
-| `jmp` | `00111` | `00111 llllllllllllllll` | Jump to label |
-| `fgo` | `01011` | `01011 nnnnnnnnnnnnnnnn` | Jump to line number, or `r01` if 0 |
-| `rmv` | `01101` | `01101 llllllllllllllll` | Removes/ends label scope |
-| `io`  | `01110` | `01110 dddd cccc rrrrrrrr`| Accesses non-CPU devices |
-| label definition | `01111` | `01111 llllllllllllllll` | Creates a label |
+| `jmz` | `00 001` | `00 001 llllllll llllllll` | Jump to label if `r01` = 0 |
+| `jmg` | `00 010` | `00 010 llllllll llllllll` | Jump to label if `r01` > 0 |
+| `ifl` | `00 011` | `00 011 llllllll llllllll` | Continue if `r01` < 0 |
+| `jml` | `00 100` | `00 100 llllllll llllllll` | Jump to label if `r01` < 0 |
+| `ifg` | `00 101` | `00 101 llllllll llllllll` | Continue if `r01` > 0 |
+| `ifz` | `00 110` | `00 110 llllllll llllllll` | Continue if `r01` = 0 |
+| `jmp` | `00 111` | `00 111 llllllll llllllll` | Jump to label |
+| `fgo` | `01 011` | `01 011 nnnnnnnn nnnnnnnn` | Jump to line number, or `r01` if 0 |
+| `rmv` | `01 101` | `01 101 llllllll llllllll` | Removes/ends label scope |
+| `io`  | `01 110` | `01 110 ddddcccc rrrrrrrr`| Accesses non-CPU devices |
+| label definition | `01 111` | `01 111 llllllll llllllll` | Creates a label |
 
 #### `io` Device Codes
 
@@ -1724,51 +1724,51 @@ Most instructions follow the form of `00 000 00000000 00000000`
 | `io keyboard` | `0011` | Accesses keyboard events |
 | `io mouse` | `0100` | Accesses mouse events |
 | `io speaker` | `0101` | Accesses speaker control |
-| `io memory` | `0110` | Accesses volatile storage |
+| `io mem` | `0110` | Accesses volatile storage |
 | `io disk` | `0111` | Accesses persistent storage |
 
 #### `io` Command Codes
 
 | Instruction | Device | Command | Binary | Meaning |
 | ----------- | ------ | ------- | ------ | ------- |
-| `io text char` | `0000` | `0000` | `01110 0000 0000 rrrrrrrr` | Print inputted character code |
-| `io text int` | `0000` | `0001` | `01110 0000 0001 rrrrrrrr` | Print input register's value |
-| `io text newline` | `0000` | `0010` | `01110 0000 0010 rrrrrrrr` | Moves the text cursor to the next line |
-| `io text hex` | `0000` | `0011` | `01110 0000 0011 rrrrrrrr` | Print input register's value in hexadecimal |
-| `io text clear` | `0000` | `0100` | `01110 0000 0100 rrrrrrrr` | Clears the terminal, can be slow |
-| `io time unix` | `0001` | `0000` | `01110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
-| `io time low` | `0001` | `0001` | `01110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
-| `io time sleep` | `0001` | `0010` | `01110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |
-| `io time milli` | `0001` | `0011` | `01110 0001 0011 rrrrrrrr` | Stores the `low` time in milliseconds |
-| `io screen x` | `0010` | `0000` | `01110 0010 0000 rrrrrrrr` | Sets active x coordinate in the graphics buffer |
-| `io screen y` | `0010` | `0001` | `01110 0010 0001 rrrrrrrr` | Sets active Y coordinate in the graphics buffer |
-| `io screen pixel` | `0010` | `0010` | `01110 0010 0010 rrrrrrrr` | Updates pixel in the graphics buffer at active coordinates |
-| `io screen clear` | `0010` | `0011` | `01110 0010 0011 rrrrrrrr` | Clears the graphics buffer |
-| `io screen dump` | `0010` | `0100` | `01110 0010 0100 rrrrrrrr` | Shows a basic readout of the current screen |
-| `io screen present` | `0010` | `0101` | `01110 0010 0101 rrrrrrrr` | Sends the graphics buffer to the screen |
-| `io screen red` | `0010` | `0110` | `01110 0010 0110 rrrrrrrr` | Sets the red colour value of the active coordinates of the graphics buffer |
-| `io screen green` | `0010` | `0111` | `01110 0010 0111 rrrrrrrr` | Sets the green colour value of the active coordinates of the graphics buffer |
-| `io screen blue` | `0010` | `1000` | `01110 0010 1000 rrrrrrrr` | Sets the blue colour value of the active coordinates of the graphics buffer |
-| `io screen erase` | `0010` | `1001` | `01110 0010 1001 rrrrrrrr` | Clears the pixel in the graphics buffer at the active coordinates |
-| `io screen erasecell` | `0010` | `1010` | `01110 0010 1010 rrrrrrrr` | Clears the entire terminal cell of the active coordinates in the graphics buffer |
-| `io keyboard poll` | `0011` | `0000` | `01110 0011 0000 rrrrrrrr` | Extracts the last key code pressed into input register |
-| `io mouse x` | `0100` | `0000` | `01110 0100 0000 rrrrrrrr` | Extracts current mouse X coordinate into input register |
-| `io mouse y` | `0100` | `0001` | `01110 0100 0001 rrrrrrrr` | Extracts current mouse Y coordinate into input register |
-| `io mouse btn` | `0100` | `0010` | `01110 0100 0010 rrrrrrrr` | Extracts button bit field into input register (Middle, Right, Left) |
-| `io speaker channel` | `0101` | `0000` | `01110 0101 0000 rrrrrrrr` | Sets the active speaker channel to the value in input register |
-| `io speaker freq` | `0101` | `0001` | `01110 0101 0001 rrrrrrrr` | Sets active speaker frequency to value in input register |
-| `io speaker volume` | `0101` | `0010` | `01110 0101 0010 rrrrrrrr` | Sets volume (0-100) of active speaker to value in input register |
-| `io speaker wave` | `0101` | `0011` | `01110 0101 0011 rrrrrrrr` | Sets the active speaker's wave type to value in input register |
-| `io speaker on` | `0101` | `0100` | `01110 0101 0100 rrrrrrrr` | Turns on the active speaker |
-| `io speaker off` | `0101` | `0101` | `01110 0101 0101 rrrrrrrr` | Turns off the active speaker |
-| `io speaker toggle` | `0101` | `0110` | `01110 0101 0110 rrrrrrrr` | Toggles the active speaker on/off |
-| `io mem addr` | `0110` | `0000` | `01110 0110 0000 rrrrrrrr` | Sets the active memory address to the value in input register |
-| `io mem read` | `0110` | `0001` | `01110 0110 0001 rrrrrrrr` | Extracts the value of the active memory address into input register |
-| `io mem write` | `0110` | `0010` | `01110 0110 0010 rrrrrrrr` | Sets the active memory address's value to the value in the input register |
-| `io disk addr` | `0111` | `0000` | `01110 0111 0000 rrrrrrrr` | Sets the active disk address to value in input register |
-| `io disk read` | `0111` | `0001` | `01110 0111 0001 rrrrrrrr` | Extracts the active disk address's value into input register |
-| `io disk write` | `0111` | `0010` | `01110 0111 0010 rrrrrrrr` | Sets the active disk address's value to value in input register |
-| `io disk save` | `0111` | `0011` | `01110 0111 0011 rrrrrrrr` | Forces the disk file to reload and update |
+| `io text char` | `0000` | `0000` | `01 110 0000 0000 rrrrrrrr` | Print inputted character code |
+| `io text int` | `0000` | `0001` | `01 110 0000 0001 rrrrrrrr` | Print input register's value |
+| `io text newline` | `0000` | `0010` | `01 110 0000 0010 rrrrrrrr` | Moves the text cursor to the next line |
+| `io text hex` | `0000` | `0011` | `01 110 0000 0011 rrrrrrrr` | Print input register's value in hexadecimal |
+| `io text clear` | `0000` | `0100` | `01 110 0000 0100 rrrrrrrr` | Clears the terminal, can be slow |
+| `io time unix` | `0001` | `0000` | `01 110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
+| `io time low` | `0001` | `0001` | `01 110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
+| `io time sleep` | `0001` | `0010` | `01 110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |
+| `io time milli` | `0001` | `0011` | `01 110 0001 0011 rrrrrrrr` | Stores the `low` time in milliseconds |
+| `io screen x` | `0010` | `0000` | `01 110 0010 0000 rrrrrrrr` | Sets active x coordinate in the graphics buffer |
+| `io screen y` | `0010` | `0001` | `01 110 0010 0001 rrrrrrrr` | Sets active Y coordinate in the graphics buffer |
+| `io screen pixel` | `0010` | `0010` | `01 110 0010 0010 rrrrrrrr` | Updates pixel in the graphics buffer at active coordinates |
+| `io screen clear` | `0010` | `0011` | `01 110 0010 0011 rrrrrrrr` | Clears the graphics buffer |
+| `io screen dump` | `0010` | `0100` | `01 110 0010 0100 rrrrrrrr` | Shows a basic readout of the current screen |
+| `io screen present` | `0010` | `0101` | `01 110 0010 0101 rrrrrrrr` | Sends the graphics buffer to the screen |
+| `io screen red` | `0010` | `0110` | `01 110 0010 0110 rrrrrrrr` | Sets the red colour value of the active coordinates of the graphics buffer |
+| `io screen green` | `0010` | `0111` | `01 110 0010 0111 rrrrrrrr` | Sets the green colour value of the active coordinates of the graphics buffer |
+| `io screen blue` | `0010` | `1000` | `01 110 0010 1000 rrrrrrrr` | Sets the blue colour value of the active coordinates of the graphics buffer |
+| `io screen erase` | `0010` | `1001` | `01 110 0010 1001 rrrrrrrr` | Clears the pixel in the graphics buffer at the active coordinates |
+| `io screen erasecell` | `0010` | `1010` | `01 110 0010 1010 rrrrrrrr` | Clears the entire terminal cell of the active coordinates in the graphics buffer |
+| `io keyboard poll` | `0011` | `0000` | `01 110 0011 0000 rrrrrrrr` | Extracts the last key code pressed into input register |
+| `io mouse x` | `0100` | `0000` | `01 110 0100 0000 rrrrrrrr` | Extracts current mouse X coordinate into input register |
+| `io mouse y` | `0100` | `0001` | `01 110 0100 0001 rrrrrrrr` | Extracts current mouse Y coordinate into input register |
+| `io mouse btn` | `0100` | `0010` | `01 110 0100 0010 rrrrrrrr` | Extracts button bit field into input register (Middle, Right, Left) |
+| `io speaker channel` | `0101` | `0000` | `01 110 0101 0000 rrrrrrrr` | Sets the active speaker channel to the value in input register |
+| `io speaker freq` | `0101` | `0001` | `01 110 0101 0001 rrrrrrrr` | Sets active speaker frequency to value in input register |
+| `io speaker volume` | `0101` | `0010` | `01 110 0101 0010 rrrrrrrr` | Sets volume (0-100) of active speaker to value in input register |
+| `io speaker wave` | `0101` | `0011` | `01 110 0101 0011 rrrrrrrr` | Sets the active speaker's wave type to value in input register |
+| `io speaker on` | `0101` | `0100` | `01 110 0101 0100 rrrrrrrr` | Turns on the active speaker |
+| `io speaker off` | `0101` | `0101` | `01 110 0101 0101 rrrrrrrr` | Turns off the active speaker |
+| `io speaker toggle` | `0101` | `0110` | `01 110 0101 0110 rrrrrrrr` | Toggles the active speaker on/off |
+| `io mem addr` | `0110` | `0000` | `01 110 0110 0000 rrrrrrrr` | Sets the active memory address to the value in input register |
+| `io mem read` | `0110` | `0001` | `01 110 0110 0001 rrrrrrrr` | Extracts the value of the active memory address into input register |
+| `io mem write` | `0110` | `0010` | `01 110 0110 0010 rrrrrrrr` | Sets the active memory address's value to the value in the input register |
+| `io disk addr` | `0111` | `0000` | `01 110 0111 0000 rrrrrrrr` | Sets the active disk address to value in input register |
+| `io disk read` | `0111` | `0001` | `01 110 0111 0001 rrrrrrrr` | Extracts the active disk address's value into input register |
+| `io disk write` | `0111` | `0010` | `01 110 0111 0010 rrrrrrrr` | Sets the active disk address's value to value in input register |
+| `io disk save` | `0111` | `0011` | `01 110 0111 0011 rrrrrrrr` | Forces the disk file to reload and update |
 
 Because Crawssembly translates to raw binary, you can use binary (or hexadecimal!) in your programs.
 
@@ -1791,13 +1791,15 @@ The VM is programmed in **Rust**, a language that focuses on speed and safety. B
 
 The VM is in two parts, the **Compiler** and the **Executioner**.
 
-The Compiler goes through each line of the program, and converts it from Crawssembly to the binary machine code.
+The Compiler goes through each line of the program, and converts it from Crawssembly to the binary machine code, stored *backwards*, in `program.bin`.
+
+> The backwards binary called *little-endian*, meaning that the smallest bit comes first in order, this mirrors real CPU encoding as little-endian encoding can reduce clock times and increase efficiency by taking mathematical shortcuts.
 
 The Executioner reads each binary code, decodes it into separate blocks, and executes the instruction, in the **Fetch-Decode-Execute** cycle.
 
 ```
                            ┌───────────────── Executioner ─────────────────┐
-                           │                                               │
+                           │                 (Ran in a VM)                 │
 ┌────────────── Compiler ──┼─────────────┐                                 │
 │                          │             │                                 │
 │ program.craw ----------> │ program.bin │ ----------> Fetched Instruction │

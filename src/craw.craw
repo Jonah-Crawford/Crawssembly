@@ -1,0 +1,330 @@
+; Crawssembly compiler in Crawssembly
+
+; r10 = flag for inside line, used to detect `nop` lines
+; r11 = flag for inside literal
+; r12 = flag for inside register
+; r13 = flag for inside label
+
+; r21 = literal value
+; r22 = register value
+; r23 = label value
+
+; r31 = core group store
+; r32 = instruction mode store
+; r33 = first byte input store
+; r34 = second byte input store
+
+; r3a = core complete flag
+; r3b = instruction mode complete flag
+; r3c = first byte complete flag
+; r3d = second byte complete flag
+
+; r40-r4f = token store
+
+1					; main character loop
+
+  sav r00 r0f				; get next character
+  sav r0f r01				; ready character for checks
+
+  ifz 10				; check for eof
+    stp					; char = 0 (eof), stop
+  rmv 10				; end check for eof
+
+  cal add -10 r01			; check for code = 10 for \n
+  ifz 10				; code = 10 for \n
+
+    sav r10 r01				; get inside line flag
+    ifz 20				; flag is false, line empty (nop)
+
+      sav 0 rff				; 00000000
+      sav 0 rff				; 00000000
+      sav 0 rff				; 00000000
+      sav 0 rff				; 00000000
+
+      jmp 1				; continue main loop
+
+    rmv 20				; end inside line flag = false (nop) check
+
+    sav r12 r01				; get reg flag
+    ifg 20				; flag is true, end of reg value
+
+      sav r22 r34			; second byte = register value
+
+      sav 0 r10				; reset inside line flag
+      sav 0 r11				; reset literal flag
+      sav 0 r12				; reset reg flag
+      sav 0 r13				; reset label flag
+
+      jmp 1				; continue main loop
+
+    rmv 20				; end reg flag check
+
+    sav r13 r01				; get label flag
+    ifg 20				; flag is true, end of label
+
+      sav 127 r01			; 0b0..01111111
+      cal add 127 r01			; 0b0..11111110
+      cal add 1 r01			; 0b0..11111111
+
+      cal and r01 r23			; bitmask label with 0b0..11111111
+      sav r01 r34			; save bottom label byte
+
+      sav 8 r01				; ready byte shift value
+      cal shl -1 r01			; 0b11111111 << 8 = 0b0..1111111100000000
+      cal and r01 r23			; bitmask label for
+      sav r01 r33			; save top label byte
+
+      sav 0 r10				; reset inside line flag
+      sav 0 r11				; reset literal flag
+      sav 0 r12				; reset reg flag
+      sav 0 r13				; reset label flag
+
+      jmp 1				; continue main loop
+
+    rmv 20				; end label flag check
+
+    sav 1 r02				; ready single shift amount
+    cal and 1 r34			; get 8th bit of second byte
+    sav r01 r04				; save bit
+    cal shr r34 r02			; push byte value right
+    sav r01 r34				; update second byte store
+    cal shl r04				; push byte value left
+    sav r01 r04				; update reversed second byte
+
+    cal and 1 r34			; get 7th bit of second byte
+    sav r01 r04				; save bit
+    cal shr r34 r02			; push byte value right
+    sav r01 r34				; update second byte store
+    cal shl r04				; push byte value left
+    sav r01 r04				; update reversed second byte
+
+    cal and 1 r34			; get 6th bit of second byte
+    sav r01 r04				; save bit
+    cal shr r34 r02			; push byte value right
+    sav r01 r34				; update second byte store
+    cal shl r04				; push byte value left
+    sav r01 r04				; update reversed second byte
+
+    cal and 1 r34			; get 5th bit of second byte
+    sav r01 r04				; save bit
+    cal shr r34 r02			; push byte value right
+    sav r01 r34				; update second byte store
+    cal shl r04				; push byte value left
+    sav r01 r04				; update reversed second byte
+
+    cal and 1 r34			; get 4th bit of second byte
+    sav r01 r04				; save bit
+    cal shr r34 r02			; push byte value right
+    sav r01 r34				; update second byte store
+    cal shl r04				; push byte value left
+    sav r01 r04				; update reversed second byte
+
+    cal and 1 r34			; get 3rd bit of second byte
+    sav r01 r04				; save bit
+    cal shr r34 r02			; push byte value right
+    sav r01 r34				; update second byte store
+    cal shl r04				; push byte value left
+    sav r01 r04				; update reversed second byte
+
+    cal and 1 r34			; get 2nd bit of second byte
+    sav r01 r04				; save bit
+    cal shr r34 r02			; push byte value right
+    sav r01 r34				; update second byte store
+    cal shl r04				; push byte value left
+    sav r01 r04				; update reversed second byte
+
+    cal and 1 r34			; get 1st bit of second byte
+    sav r01 r04				; save bit
+    cal shr r34 r02			; push byte value right
+    sav r01 r34				; update second byte store
+    cal shl r04				; push byte value left
+    sav r01 r04				; update reversed second byte
+
+    cal and 1 r33			; get 8th bit of first byte
+    sav r01 r04				; save bit
+    cal shr r33 r02			; push byte value right
+    sav r01 r33				; update first byte store
+    cal shl r05				; push byte value left
+    sav r01 r05				; update reversed first byte
+
+    cal and 1 r33			; get 7th bit of first byte
+    sav r01 r04				; save bit
+    cal shr r33 r02			; push byte value right
+    sav r01 r33				; update first byte store
+    cal shl r05				; push byte value left
+    sav r01 r05				; update reversed first byte
+
+    cal and 1 r33			; get 6th bit of first byte
+    sav r01 r04				; save bit
+    cal shr r33 r02			; push byte value right
+    sav r01 r33				; update first byte store
+    cal shl r05				; push byte value left
+    sav r01 r05				; update reversed first byte
+
+    cal and 1 r33			; get 5th bit of first byte
+    sav r01 r04				; save bit
+    cal shr r33 r02			; push byte value right
+    sav r01 r33				; update first byte store
+    cal shl r05				; push byte value left
+    sav r01 r05				; update reversed first byte
+
+    cal and 1 r33			; get 4th bit of first byte
+    sav r01 r04				; save bit
+    cal shr r33 r02			; push byte value right
+    sav r01 r33				; update first byte store
+    cal shl r05				; push byte value left
+    sav r01 r05				; update reversed first byte
+
+    cal and 1 r33			; get 3rd bit of first byte
+    sav r01 r04				; save bit
+    cal shr r33 r02			; push byte value right
+    sav r01 r33				; update first byte store
+    cal shl r05				; push byte value left
+    sav r01 r05				; update reversed first byte
+
+    cal and 1 r33			; get 2nd bit of first byte
+    sav r01 r04				; save bit
+    cal shr r33 r02			; push byte value right
+    sav r01 r33				; update first byte store
+    cal shl r05				; push byte value left
+    sav r01 r05				; update reversed first byte
+
+    cal and 1 r33			; get 1st bit of first byte
+    sav r01 r04				; save bit
+    cal shr r33 r02			; push byte value right
+    sav r01 r33				; update first byte store
+    cal shl r05				; push byte value left
+    sav r01 r05				; update reversed first byte
+
+    cal and 1 r32			; get 3rd bit of mode value
+    sav r01 r04				; save bit
+    cal shr r32 r02			; push value right
+    sav r01 r32				; update mode value store
+    cal shl r06				; push value left
+    sav r01 r06				; update reversed command byte
+
+    cal and 1 r32			; get 2nd bit of mode value
+    sav r01 r04				; save bit
+    cal shr r32 r02			; push value right
+    sav r01 r32				; update mode value store
+    cal shl r06				; push value left
+    sav r01 r06				; update reversed command byte
+
+    cal and 1 r32			; get 1st bit of mode value
+    sav r01 r04				; save bit
+    cal shr r32 r02			; push value right
+    sav r01 r32				; update mode value store
+    cal shl r06				; push value left
+    sav r01 r06				; update reversed command byte
+
+    cal and 1 r31			; get 2nd bit of command value
+    sav r01 r04				; save bit
+    cal shr r32 r02			; push value right
+    sav r01 r32				; update command value store
+    cal shl r06				; push value left
+    sav r01 r06				; update reversed command byte
+
+    cal and 1 r31			; get 1st bit of command value
+    sav r01 r04				; save bit
+    cal shr r32 r02			; push value right
+    sav r01 r32				; update command value store
+    cal shl r06				; push value left
+    sav r01 r06				; update reversed command byte
+
+    sav 3 r02				; remaining 0 store
+    cal shl r06 r02			; fill 5 bits to 8 bits
+
+    sav 0 r10				; reset inside line flag
+    sav 0 r11				; reset literal flag
+    sav 0 r12				; reset reg flag
+    sav 0 r13				; reset label flag
+
+    sav r04 rff				; 0bbbbbbbbb
+    sav r05 rff				; 0baaaaaaaa
+    sav r06 rff				; 0bmmmii000
+    sav 0 rff				; 0b00000000
+
+    jmp 1				; continue main loop
+
+  rmv 10				; end \n check
+
+  cal add -32 r0f			; test for code = 32 for ' '
+  ifz 10				; code = ' ', token split
+
+    sav r11 r01				; ready literal flag        
+    ifg 20				; literal flag is true
+
+      sav 1 r3c				; literal value => byte 1 done
+      sav r21 r33			; store literal value
+
+      cal add -2 r3a			; check core = 0b10
+      igz 30				; core = 0b10
+        sav 3 r3a			; core = 0b11 for cal op imm reg
+      rmv 30				; end core = 0b10 check
+
+      sav r3a r01			; check core = 0b00
+      ifz 30				; core = 0b00
+
+        sav r3b r01			; check mode = 0b000
+        ifz 40				; mode = 0b000 (sav reg reg)
+          sav 1 r3a			; core = 0b01 (sav imm reg)
+        rmv 40				; end mode = 0b000 check
+
+      rmv 30				; end core = 0b00 check
+
+      jmp 1				; continue main loop
+
+    rmv 20				; end literal flag check
+
+    sav r12 r01				; ready register flag
+    ifg 20				; register flag is true
+
+      sav r3c r01			; ready first byte complete flag
+      ifg 30				; first byte complete => second byte
+
+        sav r22 r34			; store second byte register value
+        sav 1 r3d			; second byte complete
+
+        jmp 1				; continue main loop
+
+      rmv 30				; end first byte complete check
+
+      sav r22 r33			; store first byte register value
+      sav 1 r3c				; first byte complete
+
+      jmp 1				; continue main loop
+
+    rmv 20				; end register flag check
+
+    sav r13 r01				; ready label flag
+    ifg 20				; label flag is true
+
+      sav 127 r01			; 0b0..01111111
+      cal add 127 r01			; 0b0..11111110
+      cal add 1 r01			; 0b0..11111111
+
+      cal and r01 r23			; bitmask label with 0b0..11111111
+      sav r01 r34			; save bottom label byte
+
+      sav 8 r01				; ready byte shift value
+      cal shl -1 r01			; 0b11111111 << 8 = 0b0..1111111100000000
+      cal and r01 r23			; bitmask label for
+      sav r01 r33			; save top label byte
+
+      jmp 1				; continue main loop
+
+    rmv 20				; end label flag check
+
+    sav 0 r11				; assumes last value was a string...
+    sav 0 r12				; ...this resets the flags just...
+    sav 0 r13				; ...to be sure execution works...
+    sav 1 r10				; ...as expected to avoid errors
+
+    ; do instruction trie here
+
+
+
+
+
+
+

@@ -1,13 +1,11 @@
-fgo 8
+sav 61 r01
+sav 7 r02
+cal shl r01 r02
+cal add 4 r01
+sav 7 r02
+cal shl r01 r02
+cal add 64 r01
 
-sav 65 r02
-io text char r02
-
-
-
-
-sav 66 r02
-io text char r02
-
-sav 67 r02
-io text char r02
+1
+cal add -1 r01
+jmg 1

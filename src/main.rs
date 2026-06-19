@@ -1,20 +1,13 @@
-// Crawssembly Assembler (single-file, spec-driven)
-// Reads:  assembly.craw
-// Writes: program.bin  (u32 little-endian per instruction; only low 21 bits used)
-//
-// Flags:
-//   --dump         Print assembled instructions alongside source lines
-//   --dump-decoded Print core/mode/A/B decode in dump output too
-//
-// Supports:
-// - Comments with # or ;
-// - Empty/comment-only lines -> nop
-// - Registers r00..rff (hex, case-insensitive)
-// - Immediates: signed-magnitude encoding for imm8 (-128..127) used by sav/cal
-// - ALU: not/and/or/xor/shl/shr/sar/add
-// - Control/labels: label defs (name: or name alone), jmp/jmz/jmg/jml, ifz/ifg/ifl, rmv
-// - fgo <line> (16-bit, fgo 0 special)
-// - Raw binary lines: "0b0101..." or 21-bit "0101..." accepted as-is
+// src/main.rs
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// ██████╗██████╗  █████╗ ██╗    ██╗███████╗███████╗███████╗███╗   ███╗██████╗ ██╗  ██╗   ██╗ //
+//██╔════╝██╔══██╗██╔══██╗██║    ██║██╔════╝██╔════╝██╔════╝████╗ ████║██╔══██╗██║  ╚██╗ ██╔╝ //
+//██║     ██████╔╝███████║██║ █╗ ██║███████╗███████╗█████╗  ██╔████╔██║██████╔╝██║   ╚████╔╝  //
+//██║     ██╔══██╗██╔══██║██║███╗██║╚════██║╚════██║██╔══╝  ██║╚██╔╝██║██╔══██╗██║    ╚██╔╝   //
+//╚██████╗██║  ██║██║  ██║╚███╔███╔╝███████║███████║███████╗██║ ╚═╝ ██║██████╔╝███████╗██║    //
+// ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝    //
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 use std::fs;
 
@@ -43,6 +36,7 @@ fn main() {
   let plain = !args.iter().any(|a| a == "--tui");
   let audio = args.iter().any(|a| a == "--audio");
   let show_stats = debug || args.iter().any(|a| a == "--stats");
+  let looping = args.iter().any(|a| a == "--loop");
 
   let (screen_w, screen_h) = match parse_screen_size(&args) {
     Ok(size) => size,
@@ -93,7 +87,7 @@ fn main() {
         }
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), true, show_stats, vm_config) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), looping, show_stats, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -111,7 +105,7 @@ fn main() {
         std::process::exit(1);
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), true, true, vm_config) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), looping, true, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -155,7 +149,7 @@ fn main() {
         std::process::exit(1);
       }
 
-      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), true, show_stats, vm_config) {
+      if let Err(e) = vm::run_vm_with_options("program.bin", plain, audio, -1, input_list.clone(), looping, show_stats, vm_config) {
         eprintln!("VM failed: {e}");
         std::process::exit(1);
       }
@@ -315,7 +309,7 @@ fn print_help() {
   println!("  --decode                      Open the instruction decoder");
   println!("  --dump                        Show assembled instructions");
   println!("  --dump-decoded                Show decoded instruction fields with --dump");
-  println!("  --file <file>                 Send file contents to register 0 during execution.");
+  println!("  --file <file>                 Send file contents to r00 during execution.");
   println!("  --help                        Show this help message");
   println!("  --o, --output <file>          Set output filename");
   println!("  --screen <widthxheight>       Set virtual screen size, e.g. 128x128");
