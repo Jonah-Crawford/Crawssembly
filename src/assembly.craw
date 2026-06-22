@@ -1,11 +1,13 @@
-sav 61 r01
-sav 7 r02
-cal shl r01 r02
-cal add 4 r01
-sav 7 r02
-cal shl r01 r02
-cal add 64 r01
+sav -1 r01
+ifg 1
 
-1
-cal add -1 r01
-jmg 1
+  sav -1 r01
+  ifl 2
+
+    sav 65 ref
+
+  rmv 2
+
+rmv 1
+
+sav 66 ref

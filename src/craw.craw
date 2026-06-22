@@ -325,7 +325,7 @@
     sav 0 r13					; ...to be sure execution works...
     sav 1 r10					; ...as expected to avoid errors
 
-						; see instruction trie (`trie.svg`)
+; see instruction trie (`trie.svg`)
 
     cal add -115 r40				; 115 = s
     ifz 100					; s branch
@@ -962,6 +962,888 @@
       rmv 101					; end xo branch
     rmv 100					; end x branch
 
+    cal add -106 r40				; 106 = j
+    ifz 100					; j branch
+
+      cal add -109 r41				; 109 = m
+      ifz 101					; jm branch
+
+        cal add -122 r42			; 122 = z
+        ifz 102					; jmz branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; jmz instruction
+
+            sav 0 r31				; jmz = core 0b00
+            sav 1 r32				; jmz = core 0b001
+
+            sav 1 r3a				; core complete
+            sav 1 r3b				; mode complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end jmz instruction
+        rmv 102					; end jmz branch
+
+        cal add -103 r42			; 103 = g
+        ifz 102					; jmg branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; jmg instruction
+
+            sav 0 r31				; jmg = core 0b00
+            sav 2 r32				; jmg = core 0b010
+
+            sav 1 r3a				; core complete
+            sav 1 r3b				; mode complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end jmg instruction
+        rmv 102					; end jmg branch
+
+        cal add -108 r42			; 108 = l
+        ifz 102					; jml branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; jml instruction
+
+            sav 0 r31				; jml = core 0b00
+            sav 4 r32				; jml = core 0b100
+
+            sav 1 r3a				; core complete
+            sav 1 r3b				; mode complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end jml instruction
+        rmv 102					; end jml branch
+
+        cal add -112 r42			; 112 = p
+        ifz 102					; jmp branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; jmp instruction
+
+            sav 0 r31				; jmp = core 0b00
+            sav 7 r32				; jmp = core 0b111
+
+            sav 1 r3a				; core complete
+            sav 1 r3b				; mode complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end jmp instruction
+        rmv 102					; end jmp branch
+      rmv 101					; end jm branch
+    rmv 100					; end j branch
+
+    cal add -102 r40				; 102 = f
+    ifz 100					; f branch
+
+      cal add -114 r41				; 114 = r
+      ifz 101					; fr branch
+
+        cal add -101 r42			; 101 = e
+        ifz 102					; fre branch
+
+          cal add -113 r43			; 114 = q
+          ifz 103				; freq branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; freq instruction
+
+              cal add 1 r33			; freq = command 0b0001
+              sav r01 r33			; update 1st byte
+
+              sav 1 r3c				; 1st byte complete
+
+              jmp 1				; continue main loop
+
+            rmv 104				; end freq instruction
+          rmv 103				; end freq branch
+        rmv 102					; end fre branch
+      rmv 101					; end fr branch
+
+      cal add -103 r41				; 103 = g
+      ifz 101					; fg branch
+
+        cal add -111 r42			; 111 = o
+        ifz 102					; fgo branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; fgo instruction
+
+            sav 1 r31				; fgo = core 0b01
+            sav 3 r32				; fgo = mode 0b011
+
+            sav 1 r3a				; core complete
+            sav 1 r3b				; mode complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end fgo instruction
+        rmv 102					; end fgo branch
+      rmv 101					; end fg branch
+    rmv 100					; end f branch
+
+    cal add -116 r40				; 116 = t
+    ifz 100					; t branch
+
+      cal add -105 r41				; 105 = i
+      ifz 101					; ti branch
+
+        cal add -109 r42			; 109 = m
+        ifz 102					; tim branch
+
+          cal add -101 r43			; 101 = e
+          ifz 103				; time branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; time instruction
+
+              sav 16 r33			; time = device 0b0001
+              jmp 1				; continue main loop
+
+            rmv 104				; end time instruction
+          rmv 103				; end time branch
+        rmv 102					; end tim branch
+      rmv 101					; end ti branch
+
+      cal add -101 r41				; 101 = e
+      ifz 101					; te branch
+
+        cal add -120 r42			; 120 = x
+        ifz 102					; tex branch
+
+          cal add -116 r43			; 116 = t
+          ifz 103				; text branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; text instruction
+
+              sav 0 r33				; text = device 0b000
+              jmp 1				; continue main loop
+
+            rmv 104				; end text instruction
+          rmv 103				; end text branch
+        rmv 102					; end tex branch
+      rmv 101					; end te branch
+
+      cal add -111 r41				; 111 = o
+      ifz 101					; to branch
+
+        cal add -103 r42			; 103 = g
+        ifz 102					; tog branch
+
+          cal add -103 r43			; 103 = g
+          ifz 103				; togg branch
+
+            cal add -108 r44			; 108 = l
+            ifz 104				; toggl branch
+
+              cal add -101 r45			; 101 = e
+              ifz 105				; toggle branch
+
+                sav r46 r01			; 0 = end
+                ifz 106				; toggle instruction
+
+                  cal add 6 r33			; toggle = command 0b0110
+                  sav r01 r33			; update 1st byte
+
+                  sav 1 r3c			; 1st byte complete
+
+                  jmp 1				; continue main loop
+
+                rmv 106				; end toggle instruction
+              rmv 105				; end toggle branch
+            rmv 104				; end toggl branch
+          rmv 103				; end togg branch
+        rmv 102					; end tog branch
+      rmv 101					; end to branch
+    rmv 100					; end t branch
+
+    cal add -107 r40				; 107 = k
+    ifz 100					; k branch
+
+      cal add -101 r41				; 101 = e
+      ifz 101					; ke branch
+
+        cal add -121 r42			; 121 = y
+        ifz 102					; key branch
+
+          cal add -98 r43			; 98 = b
+          ifz 103				; keyb branch
+
+            cal add -111 r44			; 111 = o
+            ifz 104				; keybo branch
+
+              cal add -97 r45			; 97 = a
+              ifz 105				; keyboa branch
+
+                cal add -114 r46		; 114 = r
+                ifz 106				; keyboar branch
+
+                  cal add -100 r47		; 100 = d
+                  ifz 107			; keyboard branch
+
+                    sav r48 r01			; 0 = end
+                    ifz 108			; keyboard instruction
+
+                      sav 3 r33			; keyboard = device 0b0011
+                      jmp 1			; continue main loop
+
+                    rmv 108			; end keyboard instruction
+                  rmv 107			; end keyboard branch
+                rmv 106				; end keyboar branch
+              rmv 105				; end keyboa branch
+            rmv 104				; end keybo branch
+          rmv 103				; end keyb branch
+        rmv 102					; end key branch
+      rmv 101					; end ke branch
+    rmv 100					; end k branch
+
+    cal add -109 r40				; 109 = m
+    ifz 100					; m branch
+
+      cal add -101 r41				; 101 = e
+      ifz 101					; me branch
+
+        cal add -109 r42			; 109 = m
+        ifz 102					; mem branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; mem instruction
+
+            sav 96 r33				; mem = device 0b0110
+            jmp 1				; continue main loop
+
+          rmv 103				; end mem instruction
+        rmv 102					; end mem branch
+      rmv 101					; end me branch
+
+      cal add -111 r41				; 111 = o
+      ifz 101					; mo branch
+
+        cal add -117 r42			; 117 = u
+        ifz 102					; mou branch
+
+          cal add -115 r43			; 115 = s
+          ifz 103				; mous branch
+
+            cal add -101 r44			; 101 = e
+            ifz 104				; mouse branch
+
+              sav r45 r01			; 0 = end
+              ifz 105				; mouse instruction
+
+                sav 64 r33			; mouse = device 0b0100
+                jmp 1				; continue main loop
+
+              rmv 105				; end mouse instruction
+            rmv 104				; end mouse branch
+          rmv 103				; end mous branch
+        rmv 102					; end mou branch
+      rmv 101					; end mo branch
+
+      cal add -105 r41				; 105 = i
+      ifz 101					; mi branch
+
+        cal add -108 r42			; 108 = l
+        ifz 102					; mil branch
+
+          cal add -108 r43			; 108 = l
+          ifz 103				; mill branch
+
+            cal add -105 r44			; 105 = i
+            ifz 104				; milli branch
+
+              sav r45 r01			; 0 = end
+              ifz 105				; milli instruction
+
+                cal add 3 r33			; milli = command 0b0011
+                sav r01 r33			; update 1st byte
+
+                sav 1 r3c			; 1st bte complete
+
+                jmp 1				; continue main loop
+
+              rmv 105				; end milli instruction
+            rmv 104				; end milli branch
+          rmv 103				; end mill branch
+        rmv 102					; end mil branch
+      rmv 101					; end mi branch
+    rmv 100					; end m branch
+
+
+    cal add -100 r40				; 100 = d
+    ifz 100					; d branch
+
+      cal add -105 r41				; 105 = i
+      ifz 101					; di branch
+
+        cal add -115 r42			; 115 = s
+        ifz 102					; dis branch
+
+          cal add -107 r43			; 107 = k
+          ifz 103				; disk branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; disk instruction
+
+              sav 112 r33			; dick = device 0b0111
+              jmp 1				; continue main loop
+
+            rmv 104				; end disk instruction
+          rmv 103				; end disk branch
+        rmv 102					; end dis branch
+      rmv 101					; end di branch
+
+      cal add -117 r41				; 117 = u
+      ifz 101					; du branch
+
+        cal add -109 r42			; 109 = m
+        ifz 102					; dum branch
+
+          cal add -112 r43			; 112 = p
+          ifz 103				; dump branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; dump instruction
+
+              cal add 4 r33			; dump = command 0b0100
+              sav r01 r33			; update 1st byte
+
+              sav 1 r3c				; 1st byte complete
+
+              jmp 1				; continue main loop
+
+            rmv 104				; end dump instruction
+          rmv 103				; end dump branch
+        rmv 102					; end dum branch
+      rmv 101					; end du branch
+    rmv 100					; end d branch
+
+    cal add -104 r40				; 104 = h
+    ifz 100					; h branch
+
+      cal add -101 r41				; 101 = e
+      ifz 101					; he branch
+
+        cal add -120 r42			; 120 = x
+        ifz 102					; hex branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; hex instruction
+
+            cal add 3 r33			; hex = command 0b0011
+            sav r01 r33				; update 1st byte
+
+            sav 1 r3c				; 1st byte complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end hex instruction
+        rmv 102					; end hex branch
+      rmv 101					; end he branch
+    rmv 100					; end h branch
+
+    cal add -117 r40				; 117 = u
+    ifz 100					; u branch
+
+      cal add -110 r41				; 110 = n
+      ifz 101					; un branch
+
+        cal add -105 r42			; 105 = i
+        ifz 102					; uni branch
+
+          cal add -120 r43			; 120 = x
+          ifz 103				; unix branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; unix instruction
+
+              cal add 0 r33			; unix = command 0b0000
+              sav r01 r33			; update 1st byte
+
+              sav 1 r3c				; 1st byte complete
+
+              jmp 1				; continue main loop
+
+            rmv 104				; end unix instruction
+          rmv 103				; end unix branch
+        rmv 102					; end uni branch
+      rmv 101					; end un branch
+    rmv 100					; end u branch
+
+    cal add -108 r40				; 108 = l
+    ifz 100					; l branch
+
+      cal add -111 r41				; 111 = o
+      ifz 101					; lo branch
+
+        cal add -119 r42			; 119 = w
+        ifz 102					; low branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; low instruction
+
+            cal add 1 r33			; low = command 0b0001
+            sav r01 r33				; update 1st byte
+
+            sav 1 r3c				; 1st byte complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end low instruction
+        rmv 102					; end low branch
+      rmv 101					; end lo branch
+    rmv 100					; end l branch
+
+    cal add -121 r40				; 121 = y
+    ifz 100					; y branch
+
+      sav r41 r01				; 0 = end
+      ifz 101					; y instruction
+
+        cal add 1 r33				; y = command 0b0001
+        sav r01 r33				; update 1st byte
+
+        sav 1 r3c				; 1st byte complete
+
+        jmp 1					; continue main loop        
+
+      rmv 101					; end y instruction
+    rmv 100					; end y branch
+
+    cal add -112 r40				; 112 = p
+    ifz 100					; p branch
+
+      cal add -111 r41				; 111 = o
+      ifz 101					; po branch
+
+        cal add -108 r42			; 108 = l
+        ifz 102					; pol branch
+
+          cal add -108 r43			; 108 = l
+          ifz 103				; poll branch
+
+            sav r44 r01				; end = 0
+            ifz 104				; poll instruction
+
+              cal add 0 r33			; poll = command 0b0000
+              sav r01 r33			; update 1st byte
+
+              sav 1 r3c				; 1st byte complete
+
+              jmp 1				; continue main loop
+
+            rmv 104				; end poll instruction
+          rmv 103				; end poll branch
+        rmv 102					; end pol branch
+      rmv 101					; end po branch
+
+      cal add -105 r41				; 105 = i
+      ifz 101					; pi branch
+
+        cal add -120 r42			; 120 = x
+        ifz 102					; pix branch
+
+          cal add -101 r43			; 101 = e
+          ifz 103				; pixe branch
+
+            cal add -108 r44			; 108 = l
+            ifz 104				; pixel branch
+
+              sav r45 r01			; 0 = end
+              ifz 105				; pixel instruction
+
+                cal add 2 r33			; pixel = command 0b0010
+                sav r01 r33			; update 1st byte
+
+                sav 1 r3c			; 1st byte complete
+
+                jmp 1				; continue main loop
+
+              rmv 105				; end pixel instruction
+            rmv 104				; end pixel branch
+          rmv 103				; end pixe branch
+        rmv 102					; end pix branch
+      rmv 101					; end pi branch
+
+      cal add -114 r41				; 114 = r
+      ifz 101					; pr branch
+
+        cal add -101 r42			; 101 = e
+        ifz 102					; pre branch
+
+          cal add -115 r43			; 115 = s
+          ifz 103				; pres branch
+
+            cal add -101 r44			; 101 = e
+            ifz 104				; prese branch
+
+              cal add -110 r45			; 110 = n
+              ifz 105				; presen branch
+
+                cal add -116 r46		; 116 = t
+                ifz 106				; present branch
+
+                  sav r47 r01			; 0 = end
+                  ifz 107			; present instruction
+
+                    cal add 5 r33		; present = command 0b0101
+                    sav r01 r33			; update 1st byte
+
+                    sav 1 r3c			; 1st byte complete
+
+                    jmp 1			; continue main loop
+
+                  rmv 107			; end present instruction
+                rmv 106				; end present branch
+              rmv 105				; end presen branch
+            rmv 104				; end prese branch
+          rmv 103				; end pres branch
+        rmv 102					; end pre branch
+      rmv 101					; end pr branch
+    rmv 100					; end p branch
+
+    cal add -103 r40				; 103 = g
+    ifz 100					; g branch
+
+      cal add -114 r41				; 114 = r
+      ifz 101					; gr branch
+
+        cal add -101 r42			; 101 = e
+        ifz 102					; gre branch
+
+          cal add -101 r43			; 101 = e
+          ifz 103				; gree branch
+
+            cal add -110 r44			; 110 = n
+            ifz 104				; green branch
+
+              sav r45 r01			; 0 = end
+              ifz 105				; green instruction
+
+                cal add 7 r33			; green = command 0b0111
+                sav r01 r33			; update 1st byte
+
+                sav 1 r3c			; 1st byte complete
+
+                jmp 1				; continue main loop
+
+              rmv 105				; end green instruction
+            rmv 104				; end green branch
+          rmv 103				; end gree branch
+        rmv 102					; end gre branch
+      rmv 101					; end gr branch
+    rmv 100					; end g branch
+
+    cal add -98 r40				; 98 = b
+    ifz 100					; b branch
+
+      cal add -108 r41				; 108 = l
+      ifz 101					; bl branch
+
+        cal add -117 r42			; 117 = u
+        ifz 102					; blu branch
+
+          cal add -101 r43			; 101 = e
+          ifz 103				; blue branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; blue instruction
+
+              cal add 8 r33			; blue = command 0b1000
+              sav r01 r33			; update 1st byte
+
+              sav 1 r3c				; 1st byte complete
+
+              jmp 1				; continue main loop
+
+            rmv 104				; end blue instruction
+          rmv 103				; end blue branch
+        rmv 102					; end blu branch
+      rmv 101					; end bl branch
+
+      cal add -116 r41				; 116 = t
+      ifz 101					; bt branch
+
+        cal add -110 r42			; 110 = n
+        ifz 102					; btn branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; btn instruction
+
+            cal add 2 r33			; btn = command 0b0010
+            sav r01 r33				; update 1st byte
+
+            sav 1 r3c				; 1st byte complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end btn instruction
+        rmv 102					; end btn branch
+      rmv 101					; end bt branch
+    rmv 100					; end b branch
+
+    cal add -101 r40				; 101 = e
+    ifz 100					; e branch
+
+      cal add -114 r41				; 114 = r
+      ifz 101					; er branch
+
+        cal add -97 r42				; 97 = a
+        ifz 102					; era branch
+
+          cal add -115 r43			; 115 = s
+          ifz 103				; eras branch
+
+            cal add -101 r44			; 101 = e
+            ifz 104				; erase branch
+
+              sav r45 r01			; 0 = end
+              ifz 105				; erase instruction
+
+                cal add 9 r33			; erase = command 0b1010
+                sav r01 r33			; update 1st byte
+
+                sav 1 r3c			; 1st byte complete
+
+                jmp 1				; continue main loop
+
+              rmv 105				; end erase instruction
+
+              cal add -99 r45			; 99 = c
+              ifz 105				; erasec branch
+
+                cal add -101 r46		; 101 = e
+                ifz 106				; erasece branch
+
+                  cal add -108 r47		; 108 = l
+                  ifz 107			; erasecel branch
+
+                    cal add -108 r48		; 108 = l
+                    ifz 108			; erasecell branch
+
+                      sav r49 r01		; 0 = end
+                      ifz 109			; erasecell instruction
+
+                        cal add 10 r33		; erasecell = command 0b1010
+                        sav r01 r33		; update 1st byte
+
+                        sav 1 r3c		; 1st byte complete
+
+                        jmp 1			; continue main loop
+
+                      rmv 109			; end erasecell instruction
+                    rmv 108			; end erasecell branch
+                  rmv 107			; end erasecel branch
+                rmv 106				; end erasece branch
+              rmv 105				; end erasec branch
+            rmv 104				; end erase branch
+          rmv 103				; end ears branch
+        rmv 102					; end era branch
+      rmv 101					; end er branch
+    rmv 100					; end e branch
+
+    cal add -118 r40				; 118 = v
+    ifz 100					; v branch
+
+      cal add -111 r41				; 111 = o
+      ifz 101					; vo branch
+
+        cal add -108 r42			; 108 = l
+        ifz 102					; vol branch
+
+          cal add -117 r43			; 117 = u
+          ifz 103				; volu branch
+
+            cal add -109 r44			; 109 = m
+            ifz 104				; volum branch
+
+              cal add -101 r45			; 101 = e
+              ifz 105				; volume branch
+
+                sav r46 r01			; 0 = end
+                ifz 106				; volume instruction
+
+                  cal add 2 r33			; volume = command 0b0010
+                  sav r01 r33			; update 1st byte
+
+                  sav 1 r3c			; 1st byte complete
+
+                  jmp 1				; continue main loop
+
+                rmv 106				; end volume instruction
+              rmv 105				; end volume branch
+            rmv 104				; end volum branch
+          rmv 103				; end volu branch
+        rmv 102					; end vol branch
+      rmv 101					; end vo branch
+    rmv 100					; end v branch
+
+    cal add -119 r40				; 119 = w
+    ifz 100					; w branch
+
+      cal add -97 r41				; 97 = a
+      ifz 101					; wa branch
+
+        cal add -118 r42			; 118 = v
+        ifz 102					; wav branch
+
+          cal add -101 r43			; 101 = e
+          ifz 103				; wave branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; wave instruction
+
+              cal add 3 r33			; wave = command 0b0011
+              sav r01 r33			; update 1st byte
+
+              sav 1 r3c				; 1st byte complete
+
+              jmp 1				; continue main loop
+
+            rmv 104				; end wave instruction
+          rmv 103				; end wave branch
+        rmv 102					; end wav branch
+      rmv 101					; end wa branch
+
+      cal add -114 r41				; 114 = r
+      ifz 101					; wr branch
+
+        cal add -105 r42			; 105 = i
+        ifz 102					; wri branch
+
+          cal add -116 r43			; 116 = t
+          ifz 103				; writ branch
+
+            cal add -101 r44			; 101 = e
+            ifz 104				; write branch
+
+              sav r45 r01			; 0 = end
+              ifz 105				; write instruction
+
+                cal add 2 r33			; write = command 0b0010
+                sav r01 r33			; update 1st byte
+
+                sav 1 r3c			; 1st byte complete
+
+                jmp 1				; continue main loop
+
+              rmv 105				; end write instruction
+            rmv 104				; end write branch
+          rmv 103				; end writ branch
+        rmv 102					; end wri branch
+      rmv 101					; end wr branch
+    rmv 100					; end w branch
+
+    cal add -114 r40				; 114 = r
+    ifz 100					; r branch
+
+      cal add -101 r41				; 101 = e
+      ifz 101					; re branch
+
+        cal add -97 r42				; 97 = a
+        ifz 102					; rea branch
+
+          cal add -100 r43			; 100 = d
+          ifz 103				; read branch
+
+            sav r44 r01				; 0 = end
+            ifz 104				; read instruction
+
+              cal add 1 r33			; read = command 0b0001
+              sav r01 r33			; update 1st byte
+
+              sav 1 r3c				; 1st byte complete
+
+              jmp 1				; continue main loop
+
+            rmv 104				; end ready instruction
+          rmv 103				; end read branch
+        rmv 102					; end rea branch
+
+        cal add -100 r42			; 100 = d
+        ifz 102					; red branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; red instruction
+
+            cal add 6 r33			; red = command 0b0110
+            sav r01 r33				; update 1st byte
+
+            sav 1 r3c				; 1st byte complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end red instruction
+        rmv 102					; end red branch
+      rmv 101					; end re branch
+
+      cal add -109 r41				; 109 = m
+      ifz 101					; rm branch
+
+        cal add -118 r42			; 118 = v
+        ifz 102					; rmv branch
+
+          sav r43 r01				; 0 = end
+          ifz 103				; rmv instruction
+
+            sav 1 r31				; rmv = core 0b01
+            sav 5 r32				; rmv = mode 0b101
+
+            sav 1 r3a				; core complete
+            sav 1 r3b				; mode complete
+
+            jmp 1				; continue main loop
+
+          rmv 103				; end rmv instruction
+        rmv 102					; end rmv branch
+      rmv 101					; end rm branch
+
+; register code check (i.e. r00, r01, r1a, rff)
+
+      sav r43 r01				; 0 = end
+      ifg 110					; not rxx instruction
+
+        jmp 1					; continue main loop
+
+      rmv 110					; end not rxx instruction
+      ifl 110					; not rxx instruction
+
+        jmp 1					; continue main loop
+
+      rmv 110					; end not rxx instruction
+
+      sav 4 r02					; load shift amount
+
+      cal add -48 r0f				; int test (48 = 0)
+      ifl 110					; code < 0
+
+        jmp 1					; continue main loop
+
+      rmv 110					; end code < 0
+
+      cal add -57 r0f				; int test (57 = 9)
+      ifg 110					; code > 9
+
+        cal add -97 r0f				; letter test (97 = a)
+        ifl 120					; 9 < code < a (not reg)
+
+          jmp 1					; continue main loop
+
+        rmv 120					; end 9 < code < a test
+
+        cal add -102 r0f			; letter test (102 = f)
+        ifg 120					; code > f (not reg)
+
+          jmp 1					; continue main loop
+
+        rmv 120					; end code > f test
+      rmv 110					; end code > 9
 
 
 
@@ -969,19 +1851,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    rmv 100					; end r branch
 
 
 
