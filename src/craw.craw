@@ -29,6 +29,7 @@
 
   sav r00 r0f					; get next character
   sav r0f r01					; ready character for checks
+  inp						; get next char for next loop
 
   ifz 10					; check for eof
     stp						; char = 0 (eof), stop
@@ -1820,24 +1821,24 @@
 
       sav 4 r02					; load shift amount
 
-      cal add -48 r0f				; int test (48 = 0)
+      cal add -48 r41				; int test (48 = 0)
       ifl 110					; code < 0
 
         jmp 1					; continue main loop
 
       rmv 110					; end code < 0
 
-      cal add -57 r0f				; int test (57 = 9)
+      cal add -57 r41				; int test (57 = 9)
       ifg 110					; code > 9
 
-        cal add -97 r0f				; letter test (97 = a)
+        cal add -97 r41				; letter test (97 = a)
         ifl 120					; 9 < code < a (not reg)
 
           jmp 1					; continue main loop
 
         rmv 120					; end 9 < code < a test
 
-        cal add -102 r0f			; letter test (102 = f)
+        cal add -102 r41			; letter test (102 = f)
         ifg 120					; code > f (not reg)
 
           jmp 1					; continue main loop
@@ -1845,24 +1846,530 @@
         rmv 120					; end code > f test
       rmv 110					; end code > 9
 
+      cal add -96 r41				; secondary letter test
+      ifg 110					; code = a-f
 
+        cal add -87 r41				; normalise code
+        sav r01 r41				; update code
 
+      rmv 110					; end secondary letter test
 
+      cal add -58 r41				; secondary number test
+      ifl 110					; code = 0-9
 
+        cal add -48 r41				; normalise code
+        sav r01 r41				; update code
 
+      rmv 110					; end secondary number test
+
+      cal add -48 r42				; int test (48 = 0)
+      ifl 110					; code < 0
+
+        jmp 1					; continue main loop
+
+      rmv 110					; end code < 0
+
+      cal add -57 r42				; int test (57 = 9)
+      ifg 110					; code > 9
+
+        cal add -97 r42				; letter test (97 = a)
+        ifl 120					; 9 < code < a (not reg)
+
+          jmp 1					; continue main loop
+
+        rmv 120					; end 9 < code < a test
+
+        cal add -102 r42			; letter test (102 = f)
+        ifg 120					; code > f (not reg)
+
+          jmp 1					; continue main loop
+
+        rmv 120					; end code > f test
+      rmv 110					; end code > 9
+
+      cal add -96 r42				; secondary letter test
+      ifg 110					; code = a-f
+
+        cal add -87 r42				; normalise code
+        sav r01 r42				; update code
+
+      rmv 110					; end secondary letter test
+
+      cal add -58 r42				; secondary number test
+      ifl 110					; code = 0-9
+
+        cal add -48 r42				; normalise code
+        sav r01 r42				; update code
+
+      rmv 110					; end secondary number test
+
+      cal shl r41 r02				; 1st code to upper nibble
+      cal add r42 r01				; 2nd code to lower nibble
+      sav r01 r22				; preserve register code
+
+      sav r3c r01				; test if 1st byte complete
+      ifg 110					; 1st byte complete
+
+        sav r22 r34				; reg code = 2nd byte
+        sav 1 r3d				; 2nd byte complete
+
+        jmp 1					; continue main loop
+
+      rmv 110					; end 1st byte complete test
+      igz 110					; 1st byte not complete
+
+        sav r22 r33				; reg code = 1st byte
+        sav 1 r3c				; 1st byte complete
+
+        jmp 1					; continue main loop
+
+      rmv 110					; end 1st byte not complete
 
     rmv 100					; end r branch
 
+    sav 0 r21					; if this point is reached...
+    sav 0 r22					; ...assume it's a number...
+    sav 0 r23					; ...for literal or label
 
+    sav 0 r02					; reset negative flag
 
+    cal add -45 r40				; 45 = '-'
+    ifz 100					; negative number found
 
+      sav 1 r02					; r02 = negative flag
 
+      sav r41 r40				; 2 -> 1
+      sav r42 r41				; 3 -> 2
+      sav r43 r42				; 4 -> 3
+      sav r44 r44				; 5 -> 4
+      sav r45 r44				; 6 -> 5
 
+    rmv 100					; end negative check
 
+    cal add -48 r40				; normalise 1
+    sav r01 r40					; update 1
 
+    cal add -48 r41				; normalise 2
+    sav r01 r41					; update 2
 
+    cal add -48 r42				; normalise 3
+    sav r01 r42					; update 3
 
+    cal add -48 r43				; normalise 4
+    sav r01 r43					; update 4
 
+    cal add -48 r44				; normalise 5
+    sav r01 r44					; update 5
 
+    sav r41 r01					; 1 digit
+    ifz 100					; a found
 
+      sav r13 r01				; inside label flag
+      ifz 200					; inside label
 
+        sav 0 r33				; top byte = 0
+        sav r41 r34				; bottom byte = a
+
+        sav 1 r3c				; 1st byte complete
+        sav 1 r3d				; 2nd byte complete
+
+        sav 0 r13				; label ended
+
+        jmp 1					; continue main loop
+
+      rmv 200					; end inside label check
+
+      sav r33 r01				; 1st byte complete check
+      ifz 200					; 1st byte not complete
+
+        sav r41 r33				; 1st byte = number
+        sav 1 r3c				; 1st byte complete
+
+        jmp 1					; continue main loop
+
+      rmv 200					; end 1st byte not complete
+
+      sav r41 r33				; 1st byte = number
+      sav 1 r3c					; 1st byte complete
+      sav r33 r21				; save number for \n check
+
+      jmp 1					; continue main loop
+
+    rmv 100					; end a check
+
+    sav r42 r01					; 2 digits
+    ifz 100					; ab found
+
+      cal add r40 r40				; 2a
+      cal add r01 r01				; 4a
+      cal add r01 r01				; 8a
+      cal add r40 r01				; 9a
+      cal add r40 r01				; 10a
+      cal add r01 r41				; 10a + b
+      sav r01 r40				; preserve total
+
+      sav r13 r01				; inside label flag
+      ifz 200					; inside label
+
+        sav 0 r33				; top byte = 0
+        sav r40 r34				; bottom byte = 10a + b
+
+        sav 1 r3c				; 1st byte complete
+        sav 1 r3d				; 2nd byte complete
+
+        sav 0 r13				; label ended
+
+        jmp 1					; continue main loop
+
+      rmv 200					; end inside label check
+
+      sav r33 r01				; 1st byte complete check
+      ifz 200					; 1st byte not complete
+
+        sav r41 r33				; 1st byte = number
+        sav 1 r3c				; 1st byte complete
+
+        jmp 1					; continue main loop
+
+      rmv 200					; end 1st byte not complete
+
+      sav r41 r33				; 1st byte = number
+
+        cal add -129 r34			; test for i8 value
+        ifl 300					; value < 129
+
+          sav r02 r01				; get negative flag
+          ifg 400				; negative flag is true
+
+            cal not r40 rff			; negation 1st step
+            cal add 1 r01			; negation 2nd step
+            sav r01 r33				; negate i8 value
+
+          rmv 400				; end negative flag check
+        rmv 300					; end i8 check
+
+      sav 1 r3c					; 1st byte complete
+
+      cal add -129 r34				; test for i8 value
+      ifl 300					; value < 129
+
+        sav r02 r01				; get negative flag
+        ifg 400					; negative flag is true
+
+          cal not r40 rff			; negation 1st step
+          cal add 1 r01				; negation 2nd step
+          sav r01 r34				; negate i8 value
+
+        rmv 400					; end negative flag check
+      rmv 300					; end i8 check
+
+      sav r33 r21				; save number for \n check
+
+      jmp 1					; continue main loop
+
+    rmv 100					; end ab check
+
+    sav r43 r01					; 3 digits
+    ifz 100					; abc found
+
+      cal add r41 r41				; 2b
+      cal add r01 r01				; 4b
+      cal add r01 r01				; 8b
+      cal add r41 r01				; 9b
+      cal add r41 r01				; 10b
+      cal add r01 r42				; 10b + c
+      sav r01 r41				; preserve total
+
+      sav 6 r03					; save shift amount
+      cal shl r40 r03				; 64a
+      sav r01 r09				; preserve 64a
+      sav 5 r03					; save shift amount
+      cal shl r40 r03				; 32a
+      cal add r09 r01				; 96a
+      cal add r40 r01				; 97a
+      cal add r40 r01				; 98a
+      cal add r40 r01				; 99a
+      cal add r40 r01				; 100a
+      cal add r10 r41				; 100a + 10b + c
+
+      sav r13 r01				; inside label flag
+      ifz 200					; inside label
+
+        sav 8 r09				; load shift amount
+        cal shl r40 r09				; get topy byte value
+        sav r01 r33				; save top byte
+
+        sav 127 r01				; 0b0..01111111
+        cal add 127 r01				; 0b0..11111110
+        cal add 1 r01				; 0b0..11111111
+
+        cal and r40 r01				; bitmask bottom byte
+        sav r01 r34				; save bottom byte
+
+        sav 1 r3c				; 1st byte complete
+        sav 1 r3d				; 2nd byte complete
+
+        sav 0 r13				; label ended
+
+        jmp 1					; continue main loop
+
+      rmv 200					; end inside label check
+
+      sav r33 r01				; 1st byte complete check
+      ifz 200					; 1st byte not complete
+
+        sav r41 r33				; 1st byte = number
+
+        sav r33 r01				; test for empty 1st byte
+        ifz 300					; 1st byte is empty
+
+          cal add -129 r34			; test for i8 value
+          ifl 400				; value < 129
+
+            sav r02 r01				; get negative flag
+            ifg 500				; negative flag is true
+
+              cal not r40 rff			; negation 1st step
+              cal add 1 r01			; negation 2nd step
+              sav r01 r34			; negate i8 value
+
+            rmv 500				; end negative flag check
+          rmv 400				; end i8 check
+        rmv 300					; end empty 1st byte check
+
+        sav 1 r3c				; 1st byte complete
+
+        jmp 1					; continue main loop
+
+      rmv 200					; end 1st byte not complete
+
+      sav r41 r33				; 1st byte = number
+      sav 1 r3c					; 1st byte complete
+      sav r33 r21				; save number for \n check
+
+      jmp 1					; continue main loop
+
+    rmv 100					; end abc check
+
+    sav r44 r01					; 4 digits
+    ifz 100					; abcd found
+
+      cal add r42 r42				; 2c
+      cal add r01 r01				; 4c
+      cal add r01 r01				; 8c
+      cal add r42 r01				; 9c
+      cal add r42 r01				; 10c
+      cal add r01 r43				; 10c + d
+      sav r01 r42				; preserve total
+
+      sav 6 r03					; save shift amount
+      cal shl r41 r03				; 64b
+      sav r01 r09				; preserve 64b
+      sav 5 r03					; save shift amount
+      cal shl r41 r03				; 32b
+      cal add r09 r01				; 96b
+      cal add r41 r01				; 97b
+      cal add r41 r01				; 98b
+      cal add r41 r01				; 99b
+      cal add r41 r01				; 100b
+      cal add r01 r42				; 100b + 10c + d
+      sav r01 r41				; preserve total
+
+      sav 10 r09				; load shift amount
+      cal shl r40 r09				; 1024a
+      sav r01 r03				; preserve value
+      cal add r40 r40				; 2a
+      cal add r01 r01				; 4a
+      cal add r01 r01				; 8a
+      sav r01 r04				; preserve value
+      cal add r01 r01				; 16a
+      cal add r04 r01				; 24a
+      cal not r01 rff				; negation 1st step
+      cal add 1 r01				; negation 2nd step (-24a)
+      cal add r01 r03				; 1000a
+      cal add r01 r41				; 1000a + 100b + 10c + d
+
+      sav r01 r40				; update value
+
+      sav 8 r09					; load shift amount
+      cal shl r40 r09				; get top byte value
+      sav r01 r33				; save top byte
+
+      sav 127 r01				; 0b0..01111111
+      cal add 127 r01				; 0b0..11111110
+      cal add 1 r01				; 0b0..11111111
+
+      cal and r40 r01				; bitmask bottom byte
+      sav r01 r34				; save bottom byte
+
+      sav 1 r3c					; 1st byte complete
+      sav 1 r3d					; 2nd byte complete
+
+      sav 0 r13					; label ended
+
+      jmp 1					; continue main loop
+
+    rmv 100					; end abcd check
+
+    sav r45 r01					; 5 digits
+    ifz 100					; abcde found
+
+      cal add r43 r43				; 2d
+      cal add r01 r01				; 4d
+      cal add r01 r01				; 8d
+      cal add r43 r01				; 9d
+      cal add r43 r01				; 10d
+      cal add r01 r44				; 10d + e
+      sav r01 r43				; preserve total
+
+      sav 6 r03					; save shift amount
+      cal shl r42 r03				; 64c
+      sav r01 r09				; preserve 64c
+      sav 5 r03					; save shift amount
+      cal shl r42 r03				; 32c
+      cal add r09 r01				; 96c
+      cal add r42 r01				; 97c
+      cal add r42 r01				; 98c
+      cal add r42 r01				; 99c
+      cal add r42 r01				; 100c
+      cal add r01 r43				; 100c + 10d + e
+      sav r01 r42				; preserve total
+
+      sav 10 r09				; load shift amount
+      cal shl r41 r09				; 1024b
+      sav r01 r03				; preserve value
+      cal add r41 r41				; 2b
+      cal add r01 r01				; 4b
+      cal add r01 r01				; 8b
+      sav r01 r04				; preserve value
+      cal add r01 r01				; 16b
+      cal add r04 r01				; 24b
+      cal not r01 rff				; negation 1st step
+      cal add 1 r01				; negation 2nd step (-24b)
+      cal add r01 r03				; 1000b
+      cal add r01 r42				; 1000b + 100c + 10d + e
+      sav r01 r41				; preserve total
+
+      sav 13 r09				; load shift amount
+      cal shl r40 r09				; 8192a
+      sav r01 r03				; preserve value
+      sav 11 r09				; load shift amount
+      cal shl r40 r09				; 2048a
+      cal add r01 r03				; 10240a
+      sav r01 r03				; preserve value
+      sav 8 r09					; load shift amount
+      cal shl r40 r09				; 256a
+      sav r01 r04				; preserve value
+      cal add r40 r40				; 2a
+      cal add r01 r01				; 4a
+      cal add r01 r01				; 8a
+      cal add r01 r01				; 16a
+      cal not r01 rff				; negation 1st step
+      cal add 1 r01				; negation 2nd step (-16a)
+      cal add r01 r04				; 240a
+      cal not r01 rff				; negation 1st step
+      cal add 1 r01				; negation 2nd step (-240a)
+      cal add r01 r03				; 10000a
+      cal add r01 r41				; 10000a + 1000b + 100c + 10d + e
+
+      sav r01 r40				; update value
+
+      sav 8 r09					; load shift amount
+      cal shl r40 r09				; get top byte value
+      sav r01 r33				; save top byte
+
+      sav 127 r01				; 0b0..01111111
+      cal add 127 r01				; 0b0..11111110
+      cal add 1 r01				; 0b0..11111111
+
+      cal and r40 r01				; bitmask bottom byte
+      sav r01 r34				; save bottom byte
+
+      sav 1 r3c					; 1st byte complete
+      sav 1 r3d					; 2nd byte complete
+
+      sav 0 r13					; label ended
+
+      jmp 1					; continue main loop
+
+    rmv 100					; end abcde check
+
+  rmv 10					; end code = 32 for ' ' test
+
+  sav r40 r01					; test for empty 1st char
+  ifz 20					; empty 1st char
+
+    sav r0f r40					; set 1st char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 1st char
+
+  sav r41 r01					; test for empty 2nd char
+  ifz 20					; empty 2nd char
+
+    sav r0f r41					; set 2nd char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 2nd char
+
+  sav r42 r01					; test for empty 3rd char
+  ifz 20					; empty 3rd char
+
+    sav r0f r42					; set 3rd char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 3rd char
+
+  sav r43 r01					; test for empty 4th char
+  ifz 20					; empty 4th char
+
+    sav r0f r43					; set 4th char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 4th char
+
+  sav r44 r01					; test for empty 5th char
+  ifz 20					; empty 5th char
+
+    sav r0f r44					; set 5th char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 5th char
+
+  sav r45 r01					; test for empty 6th char
+  ifz 20					; empty 6th char
+
+    sav r0f r45					; set 6th char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 6th char
+
+  sav r46 r01					; test for empty 7th char
+  ifz 20					; empty 7th char
+
+    sav r0f r46					; set 7th char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 7th char
+
+  sav r47 r01					; test for empty 8th char
+  ifz 20					; empty 8th char
+
+    sav r0f r47					; set 8th char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 8th char
+
+  sav r48 r01					; test for empty 9th char
+  ifz 20					; empty 9th char
+
+    sav r0f r48					; set 9th char
+    jmp 1					; continue main loop
+
+  rmv 20					; end empty 9th char
+
+  jmp 1						; continue main loop
+
+rmv 1						; end main loop
+
+stp						; end program
