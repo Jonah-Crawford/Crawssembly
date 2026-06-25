@@ -8,6 +8,7 @@ Check out Crawssembly Online with [this link!](https://crawssembly.ultimatecraw.
 [Dedicated Documentation Website](http://docs-crawssembly.ultimatecraw.xyz)
 
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
+![Version](https://img.shields.io/badge/Latest_Release-v1.0.0-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
 ![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
@@ -64,7 +65,7 @@ The goal is to help you understand what high-level languages are really doing be
 ![Windows 11](https://img.shields.io/badge/Windows_11-Tested-green)
 ![macOS](https://img.shields.io/badge/macOS-Tested-green)
 
-> CRAW SYSTEMS can not guarantee *every version* of your system will react the same way to Crawssembly, please make a [**Github Issue**](https://github.com/Jonah-Crawford/Crawssembly/issues/new) if something doesn't work on your machine.
+> CRAW SYSTEMS can't guarantee *every version* of your system will react the same way to Crawssembly, please make a [**Github Issue**](https://github.com/Jonah-Crawford/Crawssembly/issues/new) if something doesn't work on your machine.
 
 If you don't have Rust installed, download it by running these commands:
 
@@ -125,7 +126,7 @@ The biggest thing you will learn is
 
 **Programming Languages Are A Lie**
 
-Because computers don't actually know what you're typing. In reality, computers only know 2 things: On, and Off. Crawssembly will help you learn why this is, and how people have turned a collection of switches into one of the most complex man-made objects in the universe.
+Because computers don't actually know what you're typing. At the hardware level, computers ultimately manipulate electrical states that we usually represent as On and Off. Crawssembly will help you learn why this is, and how people have turned a collection of switches into one of the most complex man-made objects in the universe.
 
 ## Why not just learn real assembly?
 
@@ -149,13 +150,13 @@ This guide is made to help you learn the basics of Crawssembly, you can read it 
 ## Detailed Guide
 
 <details>
-<summary><strong>Assembly; What's the deal?</strong></summary>
+<summary><strong>Assembly; What's the Deal?</strong></summary>
 
 ## Assembly; What's the deal?
 
 Computers are an amazing product of the information age. Billions of computers are running around the world all doing important, or not-so-important, tasks. But how do the computers know what to do?
 Programming languages are used to tell the computer how to work, but the issue is that there are so many to choose from. There's around **8 000** different languages to speak to the device!
-How can computers keep up with the different syntax, styles, and methods? The secret? All languages basically boil down to a single language, Machine Code.
+How can computers keep up with the different syntax, styles, and methods? The secret? All languages basically boil down to machine code.
 
 **Machine code** is the raw binary that the computer executes. **Assembly languages** are human-readable representations of this machine code.
 In many assembly languages, including crawssembly, a single instruction usually corresponds closely to a machine code instruction, compared to a 'higher' language where a line could equal upwards of thousands of lines.
@@ -185,7 +186,7 @@ For those who don't know what binary is, this guide goes through the basics, but
 
 ### What is Binary?
 
-Binary, simply, is just another way to use numbers. We humans use the Base-10 (A.K.A Decimal) system, meaning that we have 10 separate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
+Binary, simply, is just another way to use numbers. Humans typically use the Base-10 (A.K.A Decimal) system, meaning that we have 10 separate symbols for counting (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, and 9). You can make any number using enough of these digits. Computers don't have the luxury of 10 digits though.
 
 At their core, computers are a bunch of transistors, very small switches that can only be in two states; On or Off. This is because two-state switches are very reliable and can change state quickly.
 
@@ -282,7 +283,7 @@ B3F =
 3 * 16 +  
 15 * 1 = 2623
 
-Hexadecimal is used because it neatly condenses binary numbers, a 4 digit binary number can be compressed into a single hexadecimal digit.
+Hexadecimal is used because it neatly condenses binary numbers, every hexadecimal digit represents exactly four binary digits.
 
 A counting example is provided below to show what counting in different bases looks like:
 
@@ -305,7 +306,7 @@ A counting example is provided below to show what counting in different bases lo
 |    14   |  1110  |      E      |
 |    15   |  1111  |      F      |
 
-High level languages tend to spoil the user with many programs, functions, and data types. The computer doesn't see it that way. From the silicon's perspective, everything is binary numbers. A string such as "Hello World!" is actually a long binary number, the computer doesn't know what 'H' is, only it's binary representation.
+High level languages tend to spoil the user with many programs, functions, and data types. The computer doesn't see it that way. From the silicon's perspective, everything is binary numbers. A string such as "Hello World!" is actually a long binary number, the computer doesn't know what 'H' is, only its binary representation.
 
 Every photo, song, text, and piece of code is actually just a long list of 1's and 0's!
 
@@ -382,7 +383,7 @@ As there are 256 registers available in Crawssembly, the codes range from `r00` 
 
 So the example instruction `sav 10 r01` saves the literal value `10` into register 1, which is the *2nd* register available.
 
-Most registers are ready and raring to hold your numbers. But some registers do other functions. The 3 most important ones are `r00`, `ref`, and `rff`. These are the *1st*, *240th*, and *256th* registers respectively.
+Most registers are available for general-purpose storage. But some registers do other functions. The 3 most important ones are `r00`, `ref`, and `rff`. These are the *1st*, *240th*, and *256th* registers respectively.
 
 - Register 0x00 (`r00`): The first register is **read-only**. This means that you can look at what's inside the register, but you can't save a value to it. This is because `r00` is used for input data, such as a file or a list of numbers.
 - Register 0xEF (`ref`): This register is the **ASCII** register. Any value that is saved to this register is converted to a letter and is shown to the terminal screen. Visit [this page](https://www.asciitable.com/) to see what ASCII numbers relate to what letter.
@@ -450,7 +451,7 @@ Unlike the raw register values, **Two's Complement** used in the literal values 
 
 ### More about `sav`
 
-One of the best things about computers is one that often goes unnoticed; dynamicity. A vast amount of tasks would be nigh on impossible if the machines of the modern world were to become entirely hard-coded.
+One of the best things about computers is one that often goes unnoticed; flexability. A vast amount of tasks would be nigh on impossible if the machines of the modern world were to become entirely hard-coded.
 If you hard-coded everything, then there would be little point for computing languages, logical abstraction, and computers as a whole. If you know the result, why build a machine to express the program?
 
 Crawssembly is no exception, dynamically storing values is as easy as removing the literal value in-place for another register
@@ -542,7 +543,7 @@ SHIFT is split into 3 subcategories:
 - Logical Shift Right (shr)
 - Arithmetic Shift Right (sar)
 
-> Because the sign of numbers is stored in the last bit of the binary numbers, shifting to the right can change the sign chaotically. Arithmetic Shift Right preserves the sign of the number.
+> Because the sign of numbers is stored in the first bit of the binary numbers, shifting to the right can change the sign chaotically. Arithmetic Shift Right preserves the sign of the number.
 
 #### Additional Operations
 
@@ -791,7 +792,7 @@ Example
 
 This program increases the value in `r01`, being `10` in this example, every loop. This program is an example of an **infinite loop**, it will never reach the `stp` command.
 
-Because this program is an infinite loop, you have to **force-exit** the program, you can do this by pressing `CTRL` and `c` at the same time.
+Because this program is an infinite loop, you have to **force quit** the program, you can do this by pressing `CTRL` and `c` at the same time.
 
 ### Dynamic Jumping
 
@@ -838,9 +839,9 @@ Let's read through each line in detail:
 3. `1`: This is the loop label, it points to line 3.
 4. `cal add 1 r03`: This adds `1` to the value inside `r03`, that being the 'increment' value.
 5. `sav r01 r03`: This saves the +1 calculation step back into `r03`.
-6. `cal add -1 r02`: This minuses `1` from the loop count, indicating that a loop has taken place.
+6. `cal add -1 r02`: This subtracts `1` from the loop count, indicating that a loop has taken place.
 7. `sav r01 r02`: This line updates `r02`, where the loop count is stored.
-8. `jmg 1`: Because the -1 step happened, the result is still stored in `r01`. If this >=0, the loop stops running.
+8. `jmg 1`: Because the -1 step happened, the result is still stored in `r01`. If this becomes 0, the loop stops running.
 9. `stp`: The program ends, resulting in 10 loops being executed.
 
 ### Activity: Letter Loops
@@ -1067,7 +1068,7 @@ Computers use two different systems for storing data; **Memory** and **Disk**.
 - Memory: A fast way to temporarily store data. It is where active data which is being used is stored. Memory is cleared when the computer resets, called **volatile**.
 - Disk: Long-term storage, used for files, apps, operating systems, and more. The disk is usually slower than memory, which is why only long-term data is stored. Because data is kept, it is called **non-volatile**.
 
-Registers are the fastest type of data storage, but the relative data they can hold is tiny. Crawssembly registers can hold a little over a kilobyte in register storage, but can access around 17 million kilobytes in memory!
+Registers are the fastest type of data storage, but the relative data they can hold is tiny. Crawssembly registers can hold a little over a kilobyte in register storage, but can access around 17 million kilobytes of memory, and another 17 million on the disk!
 
 | Storage Medium | Storage Length | Size | Speed |
 | -------------- | -------------- | ---- | ----- |
@@ -1228,7 +1229,7 @@ Example
 ```
 1                               ; Label pointing to line 1
   sav 0 r01                     ; Resets last keycode to get most recent
-  io keyboard poll r01          ; Gets the last key and stores into register 2
+  io keyboard poll r01          ; Gets the last key and stores into register 1
   jmz 1                         ; If no key pressed, don't print
   sav r01 ref                   ; Outputs that key code to the screen
   cal add -27 r01               ; Finds key - 27, the result is saved to register 1
@@ -1437,7 +1438,7 @@ There are some additional commands that are lesser used, but still useful:
 
 ### Speakers
 
-Making your computer 'speak' is one of more enjoyable ways to get a program output. Crawssembly provides many commands to take control of your speakers using `io speaker`.
+Making your computer 'speak' is one of the more enjoyable ways to get a program output. Crawssembly provides many commands to take control of your speakers using `io speaker`.
 
 The commands are:
 - `io speaker channel`: sets the active speaker channel. There are 8 channels in Crawssembly to play sounds from.
@@ -1448,7 +1449,7 @@ The commands are:
 - `io speaker off`: turns off the active channel
 - `io speaker toggle`: toggles the on/off state of the active channel
 
-> Crawssembly might not be able to access every channel your machine exposes. Because of this, audio is the most tempermental functions of Crawssembly as it's entirely dependent on the host, not the Crawssembly VM. If you encounter issues, please raise a [**Github Issue**](https://github.com/Jonah-Crawford/Crawssembly/issues/new) with the details!
+> Crawssembly might not be able to access every channel your machine exposes. Because of this, audio is the most temperamental functions of Crawssembly as it's entirely dependent on the host, not the Crawssembly VM. If you encounter issues, please raise a [**Github Issue**](https://github.com/Jonah-Crawford/Crawssembly/issues/new) with the details!
 
 The *wave type* is a number to tell the channel what type of sound to make.
 
@@ -1489,7 +1490,7 @@ io speaker off rff      ; turns off speaker
 io time sleep r02       ; waits 100ms
 
 io speaker on rff       ; turns on speaker
-io time sleep r02       ; waits 100mm
+io time sleep r02       ; waits 100ms
 
 io speaker off rff      ; turns off speaker
 ```
@@ -1626,7 +1627,7 @@ The rest of this section is used as quick-reference and help.
 - `io mouse btn`: Gets the bitfield of Middle, Right, and Left buttons into the input register.
 
 `io speaker`
-- `io speaker channel`: Sets the active channel (0-3) to the value in the input register.
+- `io speaker channel`: Sets the active channel (0-7) to the value in the input register.
 - `io speaker freq`: Sets the active channel's frequency, in Hertz, to the value in the input register.
 - `io speaker volume`: Sets the active channel's volume from, 0-100, to the value in the input register.
 - `io speaker wave`: Sets the active channel's wave type from Square, Sine, Triangle, Sawtooth, or Noise.
@@ -1643,7 +1644,7 @@ The rest of this section is used as quick-reference and help.
 - `io disk addr`: Sets the active disk address to the value in the input register.
 - `io disk read`: Reads the value of the active disk address into the input register.
 - `io disk write`: Writes the value of the input register into the active disk address.
-- `io disk save`: Forces the `storage.bin` file to update it's contents.
+- `io disk save`: Forces the `storage.bin` file to update its contents.
 
 ### Common Mistakes
 
@@ -1823,11 +1824,102 @@ The Executioner reads each binary code, decodes it into separate blocks, and exe
 </details>
 
 <details>
+<summary><strong>The CPU Cycle</strong></summary>
+
+## The CPU Cycle
+
+Every program, from a tiny calculator to a modern web browser, ultimately runs by repeating one incredibly simple process over and over again.
+This process is called the **Fetch-Decode-Execute** cycle, which we touched upon earlier.
+A CPU doesn't understand a program all at once. Instead, it reads one instruction at a time, carries it out, then moves on to the next instruction.
+
+```
+Instruction
+     │
+     V
+┌─────────┐
+│  Fetch  │
+└─────────┘
+     │
+     V
+┌─────────┐
+│ Decode  │
+└─────────┘
+     │
+     V
+┌─────────┐
+│ Execute │
+└─────────┘
+     │
+     V
+Next instruction
+```
+
+Modern processors perform this cycle billions of times every second.
+
+Even though a program might contain millions of instructions, the CPU is still only doing the same three steps repeatedly
+
+Every operating system, game, browser, programming language, and AI model ultimately runs because a processor never stops repeating this simple cycle.
+
+### Fetch
+
+The CPU first finds the next instruction to execute.
+To know where that instruction is stored, it keeps track of a number called the **Program Counter (PC)**.
+If the program counter contains the value 15, the CPU fetches instruction number 15.
+After fetching the instruction, the program counter usually moves on to the next instruction automatically.
+
+### Decode
+
+The fetched instruction is just a binary number. The CPU now works out what that binary means.
+
+Example
+
+```
+sav 10 r01
+```
+
+is decoded into
+- Instruction`sav`
+- Source `10`
+- Destination `r01`
+
+The CPU now knows what job it has to perform
+
+### Execute
+
+The CPU carries out the instruction.
+
+For our example:
+
+`sav 10 r01`
+
+means
+
+```
+Register 1
+
+Before
+
+r01 = 0
+
+↓
+
+After
+
+r01 = 10
+```
+
+The instruction is now finished.
+
+The CPU repeats the cycle for the next instruction.
+
+</details>
+
+<details>
 <summary><strong>How you can help Crawssembly</strong></summary>
 
 ## How you can help Crawssembly
 
-Eagle-eye's readers will have spotted that not *every* possible binary instruction has a function yet. This is to allow users you yourself to come up with ideas for Crawssembly's next versions!
+Eagle-eyed readers will have spotted that not *every* possible binary instruction has a function yet. This is to allow users like yourself to come up with ideas for Crawssembly's next versions!
 
 *CRAW SYSTEMS* is proud to release Crawssembly in open-source format to allow anyone to make their own changes to Crawssembly. If you have any ideas for the Crawssembly team, feel free to contact the project lead **Jonah Crawford** at *jonah@jonahcrawford.com*.
 
@@ -1854,7 +1946,7 @@ If you want a challenge, here are some longer programming ideas to get stuck in:
 
 ## Legal
 
-All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artificial Intelligence) at certain points; all ideas, techniques, and the vast amount of program volume was, and continues to be, written by human hands.
+All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artificial Intelligence) at certain points; all ideas, techniques, and the vast amount of the program was, and continues to be, written by human hands.
 
 ### Thanks
 
