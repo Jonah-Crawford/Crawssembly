@@ -1,0 +1,24 @@
+sav 1 r01				; set speaker channel value
+
+io speaker channel r01			; active channel set to 1
+
+sav 50 r01				; set speakre volume
+
+io speaker volume r01			; speaker volume = 50%
+
+sav 110 r01				; freq = 110
+cal add r01 r01				; freq = 220
+cal add r01 r01				; freq = 440
+
+io speaker freq r01			; set active speaker channel
+
+sav 125 r01				; time = 125
+cal add r01 r01				; time = 250
+cal add r01 r01				; time = 500
+cal add r01 r01				; time = 1000
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r01			; wait 1000 ms
+
+io speaker off rff			; turn off the speaker

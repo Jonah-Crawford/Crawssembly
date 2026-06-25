@@ -1,0 +1,10 @@
+1					; main loop
+
+  io keyboard poll r01			; get last pressed key
+  io text char r01			; show last pressed key
+
+  cal add -27 r01			; test for 27 = Esc
+  jmg 1					; code > 27, continue
+  jml 1					; code < 27, continue
+
+  stp					; code = 27, stop

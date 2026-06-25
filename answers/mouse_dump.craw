@@ -1,0 +1,23 @@
+1					; main loop
+
+  io mouse btn r02			; get button bitfield
+
+  cal and 1 r02				; get left button
+
+  ifg 2					; left button pressed
+    sav 76 ref				; 76 = L
+  rmv 2					; end left button pressed branch
+
+  cal and 2 r02				; get right button
+
+  ifg 2					; right button pressed
+    sav 82 ref				; 82 = R
+  rmv 2					; end right button pressed branch
+
+  cal and 4 r02				; get middle button
+
+  ifg 2					; middle button pressed
+    sav 77 ref				; 77 = M
+  rmv 2					; end middle button pressed branch
+
+  jmp 1					; continue main loop

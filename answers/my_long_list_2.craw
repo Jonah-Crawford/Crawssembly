@@ -1,0 +1,17 @@
+sav 10 r02				; set intial value
+
+1
+
+  cal add -1 r02			; decrement the value
+  sav r01 r02				; update the value
+
+  io disk addr r02			; set the active disk address
+  io disk read r03			; get the disk value
+
+  cal add 48 r03			; get character code of value
+  sav r01 ref				; output value
+
+  cal add -1 r02			; test for if 1 has been reached
+  jmg 1					; 1 hasn't been reached, continue
+
+  stp					; 1 has been reached, end the program

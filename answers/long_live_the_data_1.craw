@@ -1,0 +1,5 @@
+sav 1 r01				; set disk address value
+sav 65 r02				; set disk value
+
+io disk addr r01			; set active disk address
+io disk write r02			; write 42 to disk

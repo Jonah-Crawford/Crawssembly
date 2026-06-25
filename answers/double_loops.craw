@@ -1,0 +1,31 @@
+sav 32 r04				; code for space (' ')
+
+sav 64 r05				; code just before A
+
+sav r05 r02				; set 1st letter starting code
+sav r05 r03				; set 2nd letter starting code
+
+1					; outer loop
+
+cal add 1 r02				; increment 1st letter
+sav r01 r02				; update 1st letter
+
+2					; inner loop
+
+cal add 1 r03				; increment 2nd letter
+sav r01 r03				; update 2nd letter
+
+sav r02 ref				; print 1st letter
+sav r03 ref				; print 2nd letter
+sav r04 ref				; print space
+
+cal add -90 r03				; test for 2nd letter = Z
+jml 2					; continue if not Z
+
+sav r05 r03				; Z reached, reset 2nd letter
+
+cal add -90 r02				; test for 1st letter = Z
+jml 1					; continue if not Z
+
+stp					; ZZ reached, stop program
+

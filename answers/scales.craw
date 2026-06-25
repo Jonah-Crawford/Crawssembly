@@ -1,0 +1,180 @@
+sav 1 r01				; set speaker channel value
+
+io speaker channel r01			; active channel set to 1
+
+sav 50 r01				; set speaker volume
+
+io speaker volume r01			; speaker volume = 50%
+
+sav 125 r01				; time = 125
+cal add r01 r01				; time = 250
+sav r01 r02				; preserve pause time
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 13 r01				; freq = 233
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 27 r01				; freq = 247
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 42 r01				; freq = 262
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 57 r01				; freq = 277
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 74 r01				; freq = 294
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 91 r01				; freq = 311
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 110 r01				; freq = 330
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 110 r01				; freq = 330
+cal add 19 r01				; freq = 349
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 110 r01				; freq = 330
+cal add 40 r01				; freq = 370
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 110 r01				; freq = 330
+cal add 62 r01				; freq = 392
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker
+
+io time sleep r02			; pause
+
+sav 110 r01				; freq = 110
+cal add 110 r01				; freq = 220
+cal add 110 r01				; freq = 330
+cal add 85 r01				; freq = 415
+
+io speaker freq r01			; set active speaker channel
+
+io speaker on rff			; turn on the speaker
+
+io time sleep r02			; pause
+
+io speaker off rff			; turn off the speaker

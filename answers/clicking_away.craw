@@ -1,0 +1,15 @@
+1					; main loop
+
+  io mouse btn r01			; get mouse bitfield
+
+  ifg 2					; bitfield isn't 0 (so a click happened)
+
+    sav 67 ref				; 67 = C
+    sav 108 ref				; 108 = l
+    sav 105 ref				; 105 = i
+    sav 99 ref				; 99 = c
+    sav 107 ref				; 107 = k
+  
+  rmv 2					; end bitfield check
+
+  jmp 1					; continue loop

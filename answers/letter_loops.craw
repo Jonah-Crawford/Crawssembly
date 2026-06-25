@@ -1,0 +1,13 @@
+sav 64 r02				; start the counter just before A
+
+1					; label for the main loop
+
+cal add 1 r02				; move to next letter
+sav r01 r02				; update register 2 with the new letter
+
+sav r02 ref				; output the new letter
+cal add -90 r01				; test if the letter = 90 (Z)
+
+jml 1					; if register 1 > 0, then continue
+
+stp					; Z has been reached, end the program

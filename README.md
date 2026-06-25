@@ -424,6 +424,8 @@ sav 111 ref     ; 111 = 'o'
 
 This program shows "Hello". Try to add to this program, using [this page](https://www.asciitable.com/) as a reference, to get "Hello World!" to be shown.
 
+> Possible solutions to activities like this one can be found in the folder titled `answers`. If you get stuck, they are there to help you solve an activity and still continue learning. However, attempting the activity first is advised, failing is the best way to learn!
+
 ### More about 'literals'
 
 Literals in Crawssembly can be positive or negative, however they can only be between -128 and 127.
@@ -532,17 +534,15 @@ You can imagine OR to be like a bulb connected to two light switches, flipping e
 
 A **SHIFT** is a special type of operation, where it moves the bits to the left or right.
 
-Example
-
 0b1010 shifted 1 unit to the left is 0b10100
 0b1010 shifted 1 unit to the right is 0b101
 
 SHIFT is split into 3 subcategories:
-- Logical Shift Left (SHL)
-- Logical Shift Right (SHR)
-- Arithmetic Shift Right (SAR)
+- Logical Shift Left (shl)
+- Logical Shift Right (shr)
+- Arithmetic Shift Right (sar)
 
-Because the sign of numbers is stored in the last bit of the binary numbers, shifting to the right can change the sign chaotically. Arithmetic Shift Right preserves the sign of the number.
+> Because the sign of numbers is stored in the last bit of the binary numbers, shifting to the right can change the sign chaotically. Arithmetic Shift Right preserves the sign of the number.
 
 #### Additional Operations
 
@@ -586,6 +586,11 @@ sav 10 r01              ; saves 10 to register 1
 sav 20 r02              ; saves 20 to register 2
 
 cal xor r01 r02         ; XORs 10 and 20, result saves to r01
+```
+
+```
+sav 1 r01               ; set shift amount
+cal shl 7 r01           ; 0b111 shifted to the left by 1 unit is 0b1110
 ```
 
 ### Activity: Addition
@@ -687,7 +692,7 @@ You're likely to see symbols in-place of words like AND or XOR. The most common 
 | Operation Name | Possible Symbols |
 | -------------- | ---------------- |
 | AND | & or && |
-| OR | | or || |
+| OR | \| or \|\| |
 | NOT | ~ or ¬ or ! |
 | XOR | ^ |
 | Left Shift | << |
@@ -927,7 +932,7 @@ This format is much cleaner than JTE.
 
 ### Activity: Even Looper
 
-Write a program that loops from 0 to 10, and outputs 'e' if the number is even, and 'o' if the number is odd.
+Write a program that loops from 0 to 9, and outputs 'e' if the number is even, and 'o' if the number is odd.
 
 ### Advanced Activity: Even Checker
 
@@ -1148,7 +1153,7 @@ Write one program that saves a piece of data to disk. Then write a new program t
 
 #### Advanced Activity: My Long List
 
-Write one program to loop over the numbers from 0 to 10, saving each to a disk address. Then write a new program to read these values in reverse order, and output each one.
+Write one program to loop over the numbers from 0 to 9, saving each to a disk address. Then write a new program to read these values in reverse order, and output each one.
 
 ### What high-level programs do
 
@@ -1249,6 +1254,8 @@ The `io mouse` command group captures mouse events using 3 commands:
 - `io mouse y`: extracts current mouse Y position, relative to the screen's top-left corner
 - `io mouse btn`: creates a **bitfield** for the middle, right, and left buttons in that order.
 
+> Normal terminals can't capture mouse position, which is why `--tui` needs to be used for mouse events to work.
+
 #### Position
 
 The mouse's position can be extracted using `io mouse x` and `io mouse y`.
@@ -1329,7 +1336,7 @@ Inputting values into your program is all well and good, but it's pretty useless
 
 The screen is a great all-purpose viewing device. Not only can it show text, it can show graphics and symbols.
 
-> Crawssembly's screen is contained within the terminal. This is to protect your screen's contents outside the terminal, and to allow outputs to be easily seen.
+> Crawssembly's screen is contained within the terminal. This is to protect your screen's contents outside the terminal, and to allow outputs to be easily seen. However, this makes graphics quite slow, so fast graphics programs won't work as well in the Crawssembly VM.
 
 #### Text
 
@@ -1489,7 +1496,7 @@ io speaker off rff      ; turns off speaker
 
 > All speakers stop playing when the program ends or is forcefully quit.
 
-#### Activity: Piano Notes
+#### Activity: Piano Note
 
 Write a program to play a 440Hz tone for 1 second (1000 milliseconds).
 

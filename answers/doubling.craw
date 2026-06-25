@@ -1,0 +1,3 @@
+sav 50 r01				; save value amount
+sav 1 r02				; save shift amount
+cal shl r01 r02				; 50 << 1 = 50 * 2 = 100

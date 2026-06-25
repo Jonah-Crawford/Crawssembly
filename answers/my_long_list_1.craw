@@ -1,0 +1,12 @@
+1
+
+  cal add 1 r02				; increment the value
+  sav r01 r02				; update the value
+
+  io disk addr r02			; set the active disk address
+  io disk write r02			; write the value to disk
+
+  cal add -9 r02			; test for if 9 has been reached
+  jml 1					; 9 hasn't been reached, continue
+
+  stp					; 9 has been reached, end the program

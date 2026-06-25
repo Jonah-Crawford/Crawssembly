@@ -1,0 +1,40 @@
+1					; 1st key loop
+  io keyboard poll r01			; get last key pressed
+  jmz 1					; continue until key is pressed
+
+sav r01 r02				; preserve 1st key
+io text char r02			; show letter
+
+2					; 2nd key loop
+  io keyboard poll r01			; get last key pressed
+  jmz 2					; continue until key is pressed
+
+sav r01 r03				; preserve 2nd key
+io text char r03			; show letter
+
+3					; 3rd key loop
+  io keyboard poll r01			; get last key pressed
+  jmz 3					; continue until key is pressed
+
+sav r01 r04				; preserve 3rd key
+io text char r04			; show letter
+
+io text newline rff			; drop the cursor down
+sav 72 r01				; 72 = H
+io text char r01			; 'H'
+sav 101 r01				; 101 = e
+io text char r01			; 'He'
+sav 108 r01				; 108 = l
+io text char r01			; 'Hel'
+sav 108 r01				; 108 = l
+io text char r01			; 'Hell'
+sav 111 r01				; 108 = o
+io text char r01			; 'Hello'
+sav 44 r01				; 44 = ,
+io text char r01			; 'Hello,'
+sav 32 r01				; 32 = ' '
+io text char r01			; 'Hello, '
+
+io text char r02			; 1st letter print
+io text char r03			; 2nd letter print
+io text char r04			; 3rd letter print

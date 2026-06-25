@@ -1,0 +1,241 @@
+sav 127 r05				; high colour
+sav 64 r06				; semi-high colour
+sav 0 r07				; medium colour
+sav -64 r08				; semi-low colour
+sav -128 r09				; low colour
+
+sav 2 r02				; pixel x value
+sav 0 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r08				; set high ref
+io screen g r09				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 3 r02				; pixel x value
+sav 0 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r07				; set high ref
+io screen g r09				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 4 r02				; pixel x value
+sav 0 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r08				; set high ref
+io screen g r08				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 5 r02				; pixel x value
+sav 0 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r07				; set high ref
+io screen g r08				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 1 r02				; pixel x value
+sav 1 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r07				; set high ref
+io screen g r07				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 6 r02				; pixel x value
+sav 1 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r06				; set high ref
+io screen g r07				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 0 r02				; pixel x value
+sav 2 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r07				; set high ref
+io screen g r06				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 2 r02				; pixel x value
+sav 2 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r06				; set high ref
+io screen g r06				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 5 r02				; pixel x value
+sav 2 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r05				; set high ref
+io screen g r06				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 7 r02				; pixel x value
+sav 2 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r06				; set high ref
+io screen g r05				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 0 r02				; pixel x value
+sav 3 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r05				; set high ref
+io screen g r05				; set high green
+io screen b r09				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 7 r02				; pixel x value
+sav 3 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r05				; set high ref
+io screen g r05				; set high green
+io screen b r08				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 0 r02				; pixel x value
+sav 4 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r05				; set high ref
+io screen g r05				; set high green
+io screen b r07				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 2 r02				; pixel x value
+sav 4 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r05				; set high ref
+io screen g r05				; set high green
+io screen b r06				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 5 r02				; pixel x value
+sav 4 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r05				; set high ref
+io screen g r05				; set high green
+io screen b r05				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 7 r02				; pixel x value
+sav 4 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r06				; set high ref
+io screen g r05				; set high green
+io screen b r05				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 0 r02				; pixel x value
+sav 5 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r07				; set high ref
+io screen g r05				; set high green
+io screen b r05				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 3 r02				; pixel x value
+sav 5 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r08				; set high ref
+io screen g r05				; set high green
+io screen b r05				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 4 r02				; pixel x value
+sav 5 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r09				; set high ref
+io screen g r05				; set high green
+io screen b r05				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 7 r02				; pixel x value
+sav 5 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r09				; set high ref
+io screen g r05				; set high green
+io screen b r06				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 1 r02				; pixel x value
+sav 6 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r09				; set high ref
+io screen g r06				; set high green
+io screen b r05				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 6 r02				; pixel x value
+sav 6 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r09				; set high ref
+io screen g r06				; set high green
+io screen b r06				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 2 r02				; pixel x value
+sav 7 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r09				; set high ref
+io screen g r06				; set high green
+io screen b r07				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 3 r02				; pixel x value
+sav 7 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r09				; set high ref
+io screen g r07				; set high green
+io screen b r06				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 4 r02				; pixel x value
+sav 7 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r09				; set high ref
+io screen g r07				; set high green
+io screen b r07				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+sav 5 r02				; pixel x value
+sav 7 r03				; pixel y value
+io screen x r02				; set pixel x
+io screen y r03				; set pixel y
+io screen r r09				; set high ref
+io screen g r09				; set high green
+io screen b r08				; set high blue
+io screen pixel rff			; set pixel in graphics buffer
+
+io screen present rff			; show screen

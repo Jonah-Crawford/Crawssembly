@@ -1,0 +1,4 @@
+sav 1 r01				; set disk address value
+
+io disk addr r01			; set active disk address
+io disk read ref			; output disk value

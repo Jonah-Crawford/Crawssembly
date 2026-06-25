@@ -1,0 +1,32 @@
+sav 1 r01			; set memory address value
+sav 65 r02			; set memory value
+
+io mem addr r01			; set active memory address to 1
+io mem write r02		; write 65 (A) to the active memory address
+
+sav 2 r01			; set memory address value
+sav 66 r02			; set memory value
+
+io mem addr r01			; set active memory address to 2
+io mem write r02		; write 66 (B) to the active memory address
+
+sav 3 r01			; set memory address value
+sav 67 r02			; set memory value
+
+io mem addr r01			; set active memory address to 3
+io mem write r02		; write 67 (C) to the active memory address
+
+sav 3 r03			; set memory address value
+
+io mem addr r03			; set active memory address
+io mem read ref			; output memory address
+
+sav 2 r03			; set memory address value
+
+io mem addr r03			; set active memory address
+io mem read ref			; output memory address
+
+sav 1 r03			; set memory address value
+
+io mem addr r03			; set active memory address
+io mem read ref			; output memory address

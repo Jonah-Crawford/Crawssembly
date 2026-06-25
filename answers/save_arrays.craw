@@ -1,0 +1,13 @@
+1					; main loop
+
+  cal add 1 r02				; increment vaule
+  sav r01 r02				; update value
+
+  io mem addr r02			; set active memory address
+  io mem write r02			; write value to memory
+
+  cal add -10 r02			; test if value = 10
+
+  jml 1					; 10 not reached, continue
+
+  stp					; 10 reached, stop the program

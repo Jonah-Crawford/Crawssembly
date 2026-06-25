@@ -1,0 +1,18 @@
+1
+
+  cal add 1 r02			; increment value
+  sav r01 r02			; update value
+
+  cal and 1 r02			; bit mask last bit (place value of 1)
+
+  ifz 2				; the bit is 0, so the value is even
+
+    cal add 48 r02		; find code of the value
+    sav r01 ref			; output number
+
+  rmv 2				; end the even branch
+
+  cal add -9 r02		; tests if the value is greater than 9
+  jml 1				; 9 hasn't been reached yet, continue
+
+  stp				; 9 has been reached, end the program
