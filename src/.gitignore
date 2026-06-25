@@ -10,6 +10,11 @@ trace.txt
 *.swp
 *.swo
 *.save
+program.bin
+test
+disk.img
+empty.py
+out.c
 working/
 not_working/
 *.bin
