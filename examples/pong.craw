@@ -1,0 +1,632 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; PONG                         ;
+;                              ;
+; r10 = ball x                 ;
+; r11 = ball y                 ;
+;                              ;
+; r14 = ball dx                ;
+; r15 = ball dy                ;
+;                              ;
+; r17 = player y               ;
+; r18 = computer y             ;
+;                              ;
+; r1a = frame time             ;
+;                              ;
+; r1c = comp lag flag          ;
+;                              ;
+; r1e = player score           ;
+; r1f = computer score         ;
+;                              ;
+; CRAW SYSTEMS                 ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+sav 80 r1a					; set sleep time in ms
+
+sav -1 r14					; left movement
+sav 1 r15					; top movement
+
+sav -1 r1c					; computer lag flag = false
+
+sav -1 r1f					; solve off-by-one comp score
+
+sav 32 r17					; user paddle to middle
+sav 32 r18					; computer paddle to middle
+
+io screen clear rff				; initialise screen
+io screen present rff				; ready blank screen
+
+cal add r1a r1a					; 2 * sleep time
+cal add r01 r01					; 4 * sleep time
+cal add r01 r01					; 8 * sleep time
+cal add r01 r01					; 16 * sleep time
+io time sleep r01				; initial pause
+
+1						; main loop
+
+  io time sleep r1a				; pause for a frame
+
+  cal not r1c rff				; negation 1st step
+  cal add 1 r01					; negation 2ns step
+  sav r01 r1c					; comp lag flag toggled
+
+  cal add -11 r1e				; test for user win
+  ifz 10					; user win
+    stp						; end program
+  rmv 10					; end user win check
+
+  cal add -11 r1f				; test for computer win
+  ifz 10					; computer win
+    stp						; end program
+  rmv 10					; end computer win check
+
+  sav 10 r03					; user paddle x
+  sav 53 r04					; computer paddle y
+
+  cal add 4 r17					; get bottom of user paddle
+  io screen x r03				; set paddle x
+  io screen y r01				; set bottom paddle
+  io screen erasecell rff			; remove bottom
+
+  cal add -4 r17				; get top of user paddle
+  io screen x r03				; set paddle x
+  io screen y r01				; set top paddle
+  io screen erasecell rff			; remove top
+
+  cal add 4 r18					; get bottom of computer paddle
+  io screen x r04				; set paddle x
+  io screen y r01				; set bottom paddle
+  io screen erasecell rff			; remove bottom
+
+  cal add -4 r18				; get top of computer paddle
+  io screen x r04				; set paddle x
+  io screen y r01				; set top paddle
+  io screen erasecell rff			; remove top
+
+  io screen x r10				; get ball x
+  io screen y r11				; get ball y
+  io screen erasecell rff			; clear last ball position
+
+  sav 0 r0f					; reset key press
+  io keyboard poll r0f				; get last key pressed  
+
+  cal add -27 r0f				; Esc test
+  ifz 20					; Esc pressed
+    stp						; end program
+  rmv 20					; end Esc test
+
+  cal add 1 r0f					; test for up arrow
+  ifz 20					; up arrow pressed
+
+    cal add -2 r17				; decrement height
+    sav r01 r17					; update height
+    sav 0 r0f					; reset key press
+
+  rmv 20					; end up arrow pressed
+  cal add 2 r0f					; test for down arrow pressed
+  ifz 20					; down arrow pressed
+
+    cal add 2 r17				; increment height
+    sav r01 r17					; update height
+    sav 0 r0f					; reset key press
+
+  rmv 20					; end down arrow pressed
+
+  sav r10 r01					; check for l wall hit
+  ifz 20					; l wall hit
+
+    cal add 1 r1f				; increment computer score
+    sav r01 r1f					; update computer score
+
+    sav 32 r10					; ball = middle X
+    sav 32 r11					; ball = middle Y
+
+    sav -1 r14					; ball vx = left
+    sav -1 r15					; ball vy = down
+
+    cal add r1a r1a				; 2 * sleep time
+    cal add r01 r01				; 4 * sleep time
+    cal add r01 r01				; 8 * sleep time
+    io time sleep r01				; pause for 8 * sleep time
+
+  rmv 20					; end l wall hit check
+
+  cal add -64 r10				; check for r wall hit
+  ifz 20					; r wall hit
+
+    cal add 1 r1e				; increment player score
+    sav r01 r1e					; update player score
+
+    sav 32 r10					; ball = middle X
+    sav 32 r11					; ball = middle Y
+
+    sav 1 r14					; ball vx = right
+    sav -1 r15					; ball vy = down
+
+    cal add r1a r1a				; 2 * sleep time
+    cal add r01 r01				; 4 * sleep time
+    cal add r01 r01				; 8 * sleep time
+    io time sleep r01				; pause for 8 * sleep time
+
+  rmv 20					; end r wall hit check
+
+  sav r11 r01					; check for t wall hit
+  ifz 20					; t wall hit
+
+    cal not r15 rff				; negation 1st step
+    cal add 1 r01				; negation 2nd step
+    sav r01 r15					; dy = -dy
+
+  rmv 20					; end t wall hit check
+
+  cal add -64 r11				; check for t wall hit
+  ifz 20					; t wall hit
+
+    cal not r15 rff				; negation 1st step
+    cal add 1 r01				; negation 2nd step
+    sav r01 r15					; dy = -dy
+
+  rmv 20					; end t wall hit check
+
+  cal add -11 r10				; test for left paddle
+  ifz 20					; left paddle x reached
+
+    cal not r17 rff				; negation 1st step
+    cal add 1 r01				; negation 2nd step
+
+    cal add r01 r11				; get ball-paddle diff
+
+    ifl 30					; diff is negative
+
+      cal not r01 rff				; negation 1st step
+      cal add 1 r01				; negation 2nd step
+
+    rmv 30					; end diff is negative
+
+    cal add -4 r01				; if diff < 4 (paddle length)
+    ifl 30					; ball hit
+
+      cal not r14 rff				; negation 1st step
+      cal add 1 r01				; negation 2nd step
+      sav r01 r14				; dx = -dx
+
+    rmv 30					; end diff < 4 check
+  
+  rmv 20					; end left paddle x reached
+
+  cal add -53 r10				; test for right paddle
+  ifz 20					; left paddle x reached
+
+    cal not r18 rff				; negation 1st step
+    cal add 1 r01				; negation 2nd step
+
+    cal add r01 r11				; get ball-paddle diff
+
+    ifl 30					; diff is negative (below)
+
+      cal not r01 rff				; negation 1st step
+      cal add 1 r01				; negation 2nd step
+
+    rmv 30					; end diff is negative
+
+    cal add -4 r01				; if diff < 4 (paddle length)
+    ifl 30					; ball hit
+
+      cal not r14 rff				; negation 1st step
+      cal add 1 r01				; negation 2nd step
+      sav r01 r14				; dx = -dx
+
+    rmv 30					; end diff < 4 check
+  
+  rmv 20					; end right paddle x reached
+
+  cal add r14 r10				; move ball X
+  sav r01 r10					; save ball X
+  cal add r15 r11				; move ball Y
+  sav r01 r11					; save ball Y
+
+  cal not r18 rff				; negation 1st step
+  cal add 1 r01					; negation 2nd step
+  cal add r01 r11				; paddle ball difference
+
+  sav r01 r05					; preserve difference
+
+  io time milli r01				; timestamp for seed
+  cal and 3 r06					; get last 2 bits of seed
+  sav r01 r06					; preserve offset
+
+  sav r1c r01					; ready computer lag flag
+  ifg 20					; flag = true
+
+    cal add -1 r06				; reduce offset
+    sav r01 r06					; update offset
+
+  rmv 20					; end flag = true check
+
+  cal not r06 rff				; negation 1st step
+  cal add 1 r01					; negation 2nd step
+
+  cal add r01 r05				; above reaction time
+
+  ifg 20					; ball is below paddle
+
+    cal add 1 r18				; move computer paddle down
+    sav r01 r18					; update computer paddle
+
+  rmv 20					; end ball below paddle check
+
+  cal add r06 r06				; c + -T + T + T = c + T
+  cal add r01 r05				; below reaction time
+
+  ifl 20					; ball is above paddle
+
+    cal add -1 r18				; move computer paddle up
+    sav r01 r18					; update computer paddle
+
+  rmv 20					; end ball above paddle check
+
+  sav 127 r02					; used for white RGB code
+
+  io screen x r10				; ball x
+  io screen y r11				; ball y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set ball pixel in buffer
+
+  sav 10 r03					; player paddle x
+  sav 53 r04					; computer paddle y
+
+  cal add -3 r17				; paddle pixel
+
+  io screen x r03				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add -2 r17				; paddle pixel
+
+  io screen x r03				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add -1 r17				; paddle pixel
+
+  io screen x r03				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add 0 r17					; paddle pixel
+
+  io screen x r03				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add 1 r17					; paddle pixel
+
+  io screen x r03				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add 2 r17					; paddle pixel
+
+  io screen x r03				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add 3 r17					; paddle pixel
+
+  io screen x r03				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add -3 r18				; paddle pixel
+
+  io screen x r04				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add -2 r18				; paddle pixel
+
+  io screen x r04				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add -1 r18				; paddle pixel
+
+  io screen x r04				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add 0 r18					; paddle pixel
+
+  io screen x r04				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add 1 r18					; paddle pixel
+
+  io screen x r04				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add 2 r18					; paddle pixel
+
+  io screen x r04				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  cal add 3 r18					; paddle pixel
+
+  io screen x r04				; set pixel x
+  io screen y r01				; set pixel y
+  io screen r r02				; high red
+  io screen g r02				; high green
+  io screen b r02				; high blue
+  io screen pixel rff				; set paddle pixel in buffer
+
+  sav 2 r03					; get score pixels y
+  io screen y r03				; set score pixels y
+
+  sav r1e r01					; ready player score
+  ifg 100					; score > 0
+
+    sav 2 r03					; set 1 to x 2
+    io screen x r03				; set x
+    io screen r r02				; high red
+    io screen g r02				; high green
+    io screen b r02				; high blue
+    io screen pixel rff				; set pixel in buffer
+
+    cal add -1 r01				; decrement score
+    ifg 101					; score > 1
+
+      sav 4 r03					; set 2 to x 4
+      io screen x r03				; set x
+      io screen r r02				; high red
+      io screen g r02				; high green
+      io screen b r02				; high blue
+      io screen pixel rff			; set pixel in buffer
+
+      cal add -1 r01				; decrement score
+      ifg 102					; score > 2
+
+        sav 6 r03				; set 3 to x 6
+        io screen x r03				; set x
+        io screen r r02				; high red
+        io screen g r02				; high green
+        io screen b r02				; high blue
+        io screen pixel rff			; set pixel in buffer
+
+        cal add -1 r01				; decrement score
+        ifg 103					; score > 3
+
+          sav 8 r03				; set 4 to x 8
+          io screen x r03			; set x
+          io screen r r02			; high red
+          io screen g r02			; high green
+          io screen b r02			; high blue
+          io screen pixel rff			; set pixel in buffer
+
+          cal add -1 r01			; decrement score
+          ifg 104				; score > 4
+
+            sav 10 r03				; set 5 to x 10
+            io screen x r03			; set x
+            io screen r r02			; high red
+            io screen g r02			; high green
+            io screen b r02			; high blue
+            io screen pixel rff			; set pixel in buffer
+
+            cal add -1 r01			; decrement score
+            ifg 105				; score > 5
+
+              sav 12 r03			; set 6 to x 12
+              io screen x r03			; set x
+              io screen r r02			; high red
+              io screen g r02			; high green
+              io screen b r02			; high blue
+              io screen pixel rff		; set pixel in buffer
+
+              cal add -1 r01			; decrement score
+              ifg 106				; score > 6
+
+                sav 14 r03			; set 7 to x 14
+                io screen x r03			; set x
+                io screen r r02			; high red
+                io screen g r02			; high green
+                io screen b r02			; high blue
+                io screen pixel rff		; set pixel in buffer
+
+                cal add -1 r01			; decrement score
+                ifg 107				; score > 7
+
+                  sav 16 r03			; set 8 to x 16
+                  io screen x r03		; set x
+                  io screen r r02		; high red
+                  io screen g r02		; high green
+                  io screen b r02		; high blue
+                  io screen pixel rff		; set pixel in buffer
+
+                  cal add -1 r01		; decrement score
+                  ifg 108			; score > 8
+
+                    sav 18 r03			; set 9 to x 18
+                    io screen x r03		; set x
+                    io screen r r02		; high red
+                    io screen g r02		; high green
+                    io screen b r02		; high blue
+                    io screen pixel rff		; set pixel in buffer
+
+                    cal add -1 r01		; decrement score
+                    ifg 109			; score > 9
+
+                      sav 20 r03		; set 10 to x 20
+                      io screen x r03		; set x
+                      io screen r r02		; high red
+                      io screen g r02		; high green
+                      io screen b r02		; high blue
+                      io screen pixel rff	; set pixel in buffer
+
+                    rmv 109			; end score > 9 check
+                  rmv 108			; end score > 8 check
+                rmv 107				; end score > 7 check
+              rmv 106				; end score > 6 check
+            rmv 105				; end score > 5 check
+          rmv 104				; end score > 4 check
+        rmv 103					; end score > 3 check
+      rmv 102					; end score > 2 check
+    rmv 101					; end score > 1 check
+  rmv 100					; end score > 0 check
+
+  sav r1f r01					; ready computer score
+  ifg 100					; score > 0
+
+    sav 62 r03					; set 1 to x 62
+    io screen x r03				; set x
+    io screen r r02				; high red
+    io screen g r02				; high green
+    io screen b r02				; high blue
+    io screen pixel rff				; set pixel in buffer
+
+    cal add -1 r01				; decrement score
+    ifg 101					; score > 1
+
+      sav 60 r03				; set 2 to x 60
+      io screen x r03				; set x
+      io screen r r02				; high red
+      io screen g r02				; high green
+      io screen b r02				; high blue
+      io screen pixel rff			; set pixel in buffer
+
+      cal add -1 r01				; decrement score
+      ifg 102					; score > 2
+
+        sav 58 r03				; set 3 to x 58
+        io screen x r03				; set x
+        io screen r r02				; high red
+        io screen g r02				; high green
+        io screen b r02				; high blue
+        io screen pixel rff			; set pixel in buffer
+
+        cal add -1 r01				; decrement score
+        ifg 103					; score > 3
+
+          sav 56 r03				; set 4 to x 56
+          io screen x r03			; set x
+          io screen r r02			; high red
+          io screen g r02			; high green
+          io screen b r02			; high blue
+          io screen pixel rff			; set pixel in buffer
+
+          cal add -1 r01			; decrement score
+          ifg 104				; score > 4
+
+            sav 54 r03				; set 5 to x 54
+            io screen x r03			; set x
+            io screen r r02			; high red
+            io screen g r02			; high green
+            io screen b r02			; high blue
+            io screen pixel rff			; set pixel in buffer
+
+            cal add -1 r01			; decrement score
+            ifg 105				; score > 5
+
+              sav 52 r03			; set 6 to x 52
+              io screen x r03			; set x
+              io screen r r02			; high red
+              io screen g r02			; high green
+              io screen b r02			; high blue
+              io screen pixel rff		; set pixel in buffer
+
+              cal add -1 r01			; decrement score
+              ifg 106				; score > 6
+
+                sav 50 r03			; set 7 to x 50
+                io screen x r03			; set x
+                io screen r r02			; high red
+                io screen g r02			; high green
+                io screen b r02			; high blue
+                io screen pixel rff		; set pixel in buffer
+
+                cal add -1 r01			; decrement score
+                ifg 107				; score > 7
+
+                  sav 48 r03			; set 8 to x 48
+                  io screen x r03		; set x
+                  io screen r r02		; high red
+                  io screen g r02		; high green
+                  io screen b r02		; high blue
+                  io screen pixel rff		; set pixel in buffer
+
+                  cal add -1 r01		; decrement score
+                  ifg 108			; score > 8
+
+                    sav 46 r03			; set 9 to x 46
+                    io screen x r03		; set x
+                    io screen r r02		; high red
+                    io screen g r02		; high green
+                    io screen b r02		; high blue
+                    io screen pixel rff		; set pixel in buffer
+
+                    cal add -1 r01		; decrement score
+                    ifg 109			; score > 9
+
+                      sav 42 r03		; set 10 to x 42
+                      io screen x r03		; set x
+                      io screen r r02		; high red
+                      io screen g r02		; high green
+                      io screen b r02		; high blue
+                      io screen pixel rff	; set pixel in buffer
+
+                    rmv 109			; end score > 9 check
+                  rmv 108			; end score > 8 check
+                rmv 107				; end score > 7 check
+              rmv 106				; end score > 6 check
+            rmv 105				; end score > 5 check
+          rmv 104				; end score > 4 check
+        rmv 103					; end score > 3 check
+      rmv 102					; end score > 2 check
+    rmv 101					; end score > 1 check
+  rmv 100					; end score > 0 check
+
+  io screen present rff				; show screen
+
+  jmp 1						; continue main loop
