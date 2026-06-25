@@ -15,6 +15,82 @@ mod c_backend;
 mod asm;
 mod vm;
 
+use std::env;
+use std::path::PathBuf;
+
+const CRAW_NANO: &str = r#"
+syntax "crawssembly" "\.craw$"
+
+color brightcyan "\<(sav|cal|io|inp|stp)\>"
+
+color cyan "\<(nop)\>"
+
+color white "\<(not|and|or|xor|shl|shr|sar|add)\>"
+
+color magenta "\<(jmp|jmz|jmg|jml|ifz|ifg|ifl|rmv|fgo|str|run)\>"
+
+color brightblue "\<(screen|keyboard|speaker|mem|disk|text|time)\>"
+
+color blue "\<(char|hex|newline|pixel|read|write|erase|erasecell)\>"
+color blue "\<(x|y|int|clear|unix|low|sleep|milli|dump|present)\>"
+color blue "\<(red|green|blue|poll|btn|channel|freq|volume|wave|on|off)\>"
+color blue "\<(toggle|addr|save)\>"
+
+color yellow "[-+]?[0-9]+"
+color yellow "0x[0-9A-Fa-f]+"
+
+color brightgreen "\<(r[0-9A-Fa-f]{2}|ref)\>"
+
+color brightblack ";.*$"
+"#;
+
+fn install_nano() {
+  let home = match env::var("HOME").or_else(|_| env::var("USERPROFILE")) {
+    Ok(home) => PathBuf::from(home),
+    Err(_) => {
+      eprintln!("Could not find your home directory.");
+      return;
+    }
+  };
+
+  let nano_dir = home.join(".nano");
+  let syntax_path = nano_dir.join("craw.nanorc");
+  let nanorc_path = home.join(".nanorc");
+
+  if let Err(err) = fs::create_dir_all(&nano_dir) {
+    eprintln!("Could not create ~/.nano: {err}");
+    return;
+  }
+
+  if let Err(err) = fs::write(&syntax_path, CRAW_NANO) {
+    eprintln!("Could not write Crawssembly Nano syntax file: {err}");
+    return;
+  }
+
+  let include_line = "include ~/.nano/craw.nanorc";
+
+  let existing = fs::read_to_string(&nanorc_path).unwrap_or_default();
+
+  if !existing.lines().any(|line| line.trim() == include_line) {
+    let mut new_contents = existing;
+
+    if !new_contents.is_empty() && !new_contents.ends_with('\n') {
+      new_contents.push('\n');
+    }
+
+    new_contents.push_str(include_line);
+    new_contents.push('\n');
+
+    if let Err(err) = fs::write(&nanorc_path, new_contents) {
+      eprintln!("Could not update ~/.nanorc: {err}");
+      return;
+    }
+  }
+
+  println!("Installed Crawssembly syntax highlighting for GNU Nano.");
+  println!("Restart Nano for changes to take effect.");
+}
+
 type Instr = asm::Instr;
 
 fn main() {
@@ -22,6 +98,11 @@ fn main() {
 
   if args.iter().any(|a| a == "--help" || a == "-h") {
     print_help();
+    return;
+  }
+
+  if args.len() >= 2 && (args[1] == "--install-nano" || args[1] == "install-nano") {
+    install_nano();
     return;
   }
 
