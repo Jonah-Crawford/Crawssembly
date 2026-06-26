@@ -331,11 +331,13 @@ For example, asking your friend to get a drink from the kitchen is a simple matt
 
 The computer will do what it's told exactly as written to the letter. If you told a computer "Make me a sandwich", you might find the computer think of ways to turn your hair into cheese, to literally convert your body into that of a sandwich. It is an important skill to learn that, when dealing with computers, you must be purely logical. The first truth about computers:
 
- "Ambiguity kills the machine, precision keeps it running."
+"Ambiguity kills the machine, precision keeps it running."
 
 To use Crawssembly, these practices are no different.
 
 > Crawssembly comes with a folder full of example programs, each documented. Take a look at them for ideas!
+>
+> Crawssembly runs entierly in the terminal. To quickly edit files, you might use the `nano` command. This opens up a file for quick editing. By running the command `craw install-nano`, you can use `nano` to see your `.craw` files in ful syntax colour! This makes programs easier to write and debug.
 
 ### Instructions
 

@@ -5,5 +5,5 @@ mod web;
 
 #[wasm_bindgen]
 pub fn run_craw(source: &str) -> String {
-  web::run_craw(source)
+    web::run_craw(source)
 }

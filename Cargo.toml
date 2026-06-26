@@ -1,7 +1,11 @@
 [package]
 name = "crawssembly"
-version = "1.1.0"
+version = "1.0.0"
 edition = "2024"
+description = "An educational assembly-like language and virtual machine."
+license = "MIT"
+repository = "https://github.com/Jonah-Crawford/Crawssembly"
+readme = "README.md"
 
 [dependencies]
 wasm-bindgen = "0.2"
