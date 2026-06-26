@@ -23,8 +23,6 @@ Check out Crawssembly Online with [this link!](https://crawssembly.ultimatecraw.
 - [Quick Reference](#quick-reference)
 - [Legal](#legal)
 
-> Longer learning sections are collapsed below so this README stays easier to scan. Open whichever section you need.
-
 ## Why does Crawssembly exist?
 
 **Crawssembly** is an educational assembly-like language designed to teach how computers work from the ground up.
