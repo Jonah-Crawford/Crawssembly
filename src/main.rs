@@ -407,6 +407,7 @@ fn print_help() {
     println!("  craw compile <file.craw>      Assemble to program.bin only");
     println!("  craw debug <file.craw>        Run with VM stats shown");
     println!("  craw emit-c <file.craw>       Convert Crawssembly to C");
+    println!("  craw install-nano             Install nano syntax highlighting");
     println!("  craw run <file.craw>          Assemble and run a file");
     println!();
     println!("Options:");
