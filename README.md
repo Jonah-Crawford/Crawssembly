@@ -38,7 +38,7 @@ Crawssembly removes much of the complexity while preserving the core ideas:
 Crawssembly is not:
 
 ❌ A replacement for x86 or ARM  
-❌ A better version of assembly
+❌ A better version of assembly  
 ❌ A production language
 
 Crawssembly is:
