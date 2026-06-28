@@ -39,7 +39,8 @@ color blue "\<(toggle|addr|save)\>"
 color yellow "[-+]?[0-9]+"
 color yellow "0x[0-9A-Fa-f]+"
 
-color brightgreen "\<(r[0-9A-Fa-f]{2}|ref)\>"
+color brightgreen "\<(r[0-9A-Fa-f]{2})\>"
+color green "\<(r00|r01|ref|rff)\>"
 
 color brightblack ";.*$"
 "#;
@@ -111,6 +112,14 @@ fn main() {
         return;
     }
 
+    let disk_config = match parse_disk_config(&args) {
+        Ok(disk) => disk,
+        Err(e) => {
+            eprintln!("{e}");
+            std::process::exit(1);
+        }
+    };
+
     let dump = args.iter().any(|a| a == "--dump");
     let dump_decoded = args.iter().any(|a| a == "--dump-decoded");
     let debug = args.iter().any(|a| a == "--debug");
@@ -137,7 +146,14 @@ fn main() {
 
     let input_list = file_input.unwrap_or_else(|| vec![0]);
 
-    let vm_config = vm::VmConfig { screen_w, screen_h };
+    if disk_config.raw && !disk_config.readonly && !args.iter().any(|a| a == "--force") {
+        eprintln!("WARNING: Crawssembly is about to write to a real disk/device:");
+        eprintln!("  {}", disk_config.path);
+        eprintln!("Use --readonly for safe inspection, or --force to allow writes.");
+        std::process::exit(1);
+    }
+
+    let vm_config = vm::VmConfig { screen_w, screen_h, disk: disk_config, };
 
     let command = first_positional(&args);
 
@@ -331,7 +347,41 @@ fn positional_after(args: &[String], command: &str) -> Option<String> {
 }
 
 fn is_option_with_value(arg: &str) -> bool {
-    matches!(arg, "--screen" | "--file" | "-o" | "--output")
+    matches!(arg, "--screen" | "--file" | "-o" | "--output" | "--disk" | "--raw-disk")
+}
+
+fn parse_disk_config(args: &[String]) -> Result<vm::DiskConfig, String> {
+  let mut disk = vm::DiskConfig::default();
+
+  for i in 0..args.len() {
+    match args[i].as_str() {
+      "--disk" => {
+        let Some(path) = args.get(i + 1) else {
+          return Err("--disk expects a filename".to_string());
+        };
+
+        disk.path = path.clone();
+        disk.raw = false;
+      }
+
+      "--raw-disk" => {
+        let Some(path) = args.get(i + 1) else {
+          return Err("--raw-disk expects a device path".to_string());
+        };
+
+        disk.path = path.clone();
+        disk.raw = true;
+      }
+
+      "--readonly" => {
+        disk.readonly = true;
+      }
+
+      _ => {}
+    }
+  }
+
+  Ok(disk)
 }
 
 fn parse_output_file(args: &[String]) -> Option<String> {

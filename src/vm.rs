@@ -11,9 +11,7 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use crossterm::{
     cursor,
-    event::{
-        self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseButton, MouseEventKind,
-    },
+    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseButton, MouseEventKind},
     execute, queue,
     style::{Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
     terminal::{self, ClearType},
@@ -44,10 +42,11 @@ const IO_UNAVAILABLE: i32 = 4;
 // screen
 const IO_SCREEN_OUT_OF_BOUNDS: i32 = 0x10;
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct VmConfig {
     pub screen_w: usize,
     pub screen_h: usize,
+    pub disk: DiskConfig,
 }
 
 impl Default for VmConfig {
@@ -55,6 +54,7 @@ impl Default for VmConfig {
         Self {
             screen_w: 64,
             screen_h: 64,
+            disk: DiskConfig::default(),
         }
     }
 }
@@ -411,6 +411,23 @@ struct MouseState {
     buttons: i32,
 }
 
+#[derive(Clone)]
+pub struct DiskConfig {
+    pub path: String,
+    pub raw: bool,
+    pub readonly: bool,
+}
+
+impl Default for DiskConfig {
+    fn default() -> Self {
+        Self {
+            path: DISK_PATH.to_string(),
+            raw: false,
+            readonly: false,
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug)]
 pub struct Speaker {
     pub freq: f32,
@@ -612,6 +629,7 @@ impl Resonator {
     }
 }
 
+#[allow(dead_code)]
 struct Cpu {
     regs: [i32; 256],
 
@@ -625,6 +643,9 @@ struct Cpu {
     pub disk_addr: usize,
     disk_dirty: bool,
     output_buffer: Vec<u8>,
+    disk_path: String,
+    disk_raw: bool,
+    disk_readonly: bool,
 
     // Dense labels with generation stamp
     label_pos: Vec<i32>,
@@ -729,6 +750,9 @@ impl Cpu {
             disk_addr: 0,
             disk_dirty: false,
             output_buffer: Vec::new(),
+            disk_path: config.disk.path,
+            disk_raw: config.disk.raw,
+            disk_readonly: config.disk.readonly,
             label_pos: vec![-1; 65536],
             label_epoch: vec![0; 65536],
             epoch: 1,
@@ -811,20 +835,21 @@ impl Cpu {
     }
 
     fn load_disk(&mut self, path: &str) -> Result<(), String> {
-        if !std::path::Path::new(path).exists() {
+        if !std::path::Path::new(path).exists() && !self.disk_raw {
             self.create_blank_disk(path)?;
         }
 
-        let bytes = match std::fs::read(path) {
-            Ok(bytes) => bytes,
-            Err(_) => return Ok(()),
-        };
+        let mut file = OpenOptions::new()
+            .read(true)
+            .open(path)
+            .map_err(|e| e.to_string())?;
 
-        for (i, chunk) in bytes.chunks_exact(4).enumerate() {
-            if i >= self.disk.len() {
-                break;
-            }
+        file.seek(SeekFrom::Start(0)).map_err(|e| e.to_string())?;
 
+        let mut bytes = vec![0u8; self.disk.len() * 4];
+        let n = file.read(&mut bytes).map_err(|e| e.to_string())?;
+
+        for (i, chunk) in bytes[..n].chunks_exact(4).enumerate() {
             self.disk[i] = i32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]);
         }
 
@@ -834,12 +859,21 @@ impl Cpu {
     fn save_disk(&self, path: &str) -> Result<(), String> {
         let mut bytes = Vec::with_capacity(self.disk.len() * 4);
 
+
         for value in &self.disk {
-            let value = *value;
             bytes.extend_from_slice(&value.to_le_bytes());
         }
 
-        std::fs::write(path, bytes).map_err(|e| e.to_string())
+        let mut file = OpenOptions::new()
+             .write(true)
+             .open(path)
+             .map_err(|e| e.to_string())?;
+
+        file.seek(SeekFrom::Start(0)).map_err(|e| e.to_string())?;
+        file.write_all(&bytes).map_err(|e| e.to_string())?;
+        file.flush().map_err(|e| e.to_string())?;
+
+        Ok(())
     }
 
     fn prog_len(&self, main: &[Decoded], prog: ProgRef) -> i32 {
@@ -1168,7 +1202,8 @@ impl Cpu {
 
         let mut stdout = io::stdout();
 
-        let _ = self.load_disk(DISK_PATH);
+        let disk_path = self.disk_path.clone();
+        let _ = self.load_disk(&disk_path);
 
         let _ = terminal::enable_raw_mode();
 
@@ -1387,8 +1422,12 @@ impl Cpu {
             );
         }
 
-        if self.disk_dirty {
-            let _ = self.save_disk(DISK_PATH);
+        if self.disk_dirty && !self.disk_readonly {
+            let disk_path = self.disk_path.clone();
+
+            if let Err(e) = self.save_disk(&disk_path) {
+                eprintln!("Failed to save disk '{}': {}", disk_path, e);
+            }
         }
     }
 
@@ -1778,14 +1817,35 @@ impl Cpu {
 
                 // write
                 0x2 => {
+                    if self.disk_readonly {
+                        self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                        return;
+                    }
+
                     self.disk[self.disk_addr] = value;
                     self.disk_dirty = true;
+
                     //println!("disk addr {} written with {}", self.disk_addr, value);
                 }
 
                 // save
                 0x3 => {
-                    let _ = self.save_disk(DISK_PATH);
+                    if self.disk_readonly {
+                        self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                        return;
+                    }
+
+                    let disk_path = self.disk_path.clone();
+
+                    match self.save_disk(&disk_path) {
+                        Ok(()) => {
+                            self.regs[REG_IO_STATUS] = IO_OK;
+                        }
+
+                        Err(_) => {
+                            self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                        }
+                    }
                 }
 
                 _ => self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND,

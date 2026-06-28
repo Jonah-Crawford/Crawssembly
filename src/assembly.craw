@@ -1,13 +1,8 @@
-sav -1 r01
-ifg 1
+sav 0 r02
+io disk addr r02
 
-  sav -1 r01
-  ifl 2
+sav 65 r03
+io disk write r03
 
-    sav 65 ref
-
-  rmv 2
-
-rmv 1
-
-sav 66 ref
+io text int ree
+stp
