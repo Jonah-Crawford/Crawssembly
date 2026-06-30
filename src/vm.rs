@@ -9,6 +9,8 @@ use std::sync::{Arc, Mutex, atomic::AtomicBool};
 use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
+use chrono::{TimeZone, SecondsFormat, Utc};
+
 use crossterm::{
     cursor,
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseButton, MouseEventKind},
@@ -1514,6 +1516,17 @@ impl Cpu {
                         terminal::Clear(ClearType::All),
                         cursor::MoveTo(0, 0)
                     );
+                }
+
+                // iso
+                0x6 => {
+                    #[allow(deprecated)]
+                    let datetime = Utc.timestamp(value as i64, 0);
+
+                    let iso_string = datetime.to_rfc3339_opts(SecondsFormat::Secs, true);
+
+                    print!("{}", iso_string);
+
                 }
 
                 _ => {

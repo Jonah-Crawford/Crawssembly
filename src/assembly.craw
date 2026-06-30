@@ -1,8 +1,2 @@
-sav 0 r02
-io disk addr r02
-
-sav 65 r03
-io disk write r03
-
-io text int ree
-stp
+io time unix r01
+io text iso r01

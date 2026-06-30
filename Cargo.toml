@@ -15,6 +15,7 @@ cpal = "0.15"
 crossterm = "0.28"
 ctrlc = "3.5"
 sysinfo = "0.37"
+chrono = "0.4"
 
 [profile.release]
 debug = false

@@ -535,7 +535,7 @@ You can imagine OR to be like a bulb connected to two light switches, flipping e
 
 A **SHIFT** is a special type of operation, where it moves the bits to the left or right.
 
-0b1010 shifted 1 unit to the left is 0b10100
+0b1010 shifted 1 unit to the left is 0b10100  
 0b1010 shifted 1 unit to the right is 0b101
 
 SHIFT is split into 3 subcategories:

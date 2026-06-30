@@ -1,0 +1,805 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; CrawFS dir                            ;
+;                                       ;
+; Expects boot sector input (--file)    ;
+;                                       ;
+; r10 = total file count                ;
+; r20-r2f = per-file name               ;
+; r1c-r1f = per-file extension          ;
+; r1b = per-file start address          ;
+; r1a = per-file length                 ;
+; r19 = per-file count                  ;
+; r18 = per-file ID                     ;
+; r17 = per-file parent dir ID          ;
+; r16 = per-file time created           ;
+; r30-r36 = per-file owner              ;
+; r37 = per-file group read             ;
+; r38 = per-file group write            ;
+; r39 = per-file group execute          ;
+; r3a = per-file global read            ;
+; r3b = per-file global write           ;
+; r3c = per-file global execute         ;
+; r3d = per-file is directory?          ;
+; r3e = per-file is hidden?             ;
+;                                       ;
+; CRAW SYSTEMS                          ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+cal add -67 r00				; 67 = C
+ifg 1					; code > 67
+  stp					; magic not met, stop
+rmv 1					; end code > 67 check
+
+ifl 1					; code < 67
+  stp					; magic not met, stop
+rmv 1					; end code < 67 check
+
+inp					; get 2nd magic byte
+
+cal add -82 r00				; 82 = R
+ifg 1					; code > 82
+  stp					; magic not met, stop
+rmv 1					; end code > 82 check
+
+ifl 1					; code < 82
+  stp					; magic not met, stop
+rmv 1					; end code < 82
+
+inp					; get 3rd magic byte
+
+cal add -65 r00				; 65 = A
+ifg 1					; code > 65
+  stp					; magic not met, stop
+rmv 1					; end code > 65 check
+
+ifl 1					; code < 65
+  stp					; magic not met, stop
+rmv 1					; end code < 65 check
+
+inp					; get 4th magic byte
+
+cal add -87 r00				; 87 = W
+ifg 1					; code > 87
+  stp					; magic not met, stop
+rmv 1					; end code > 87 check
+
+ifl 1					; code < 87
+  stp					; magic not met, stop
+rmv 1					; end code < 87
+
+inp					; get 1st byte of index count
+sav r00 r05				; preserve 1st byte
+
+inp					; get 2nd byte of index count
+sav r00 r04				; preserve 2nd byte
+
+inp					; get 3rd byte of index count
+sav r00 r03				; preserve 3rd byte
+
+inp					; get 4th byte of index count
+sav r00 r02				; preserve 4th byte
+
+sav 8 r06				; set shift amount
+
+cal shl r02 r06				; 1st byte << 8
+cal shl r01 r06				; 1st byte << 16
+cal shl r01 r06				; 1st byte << 24
+sav r01 r02				; preserve shifted 1st byte
+
+cal shl r03 r06				; 2nd byte << 8
+cal shl r01 r06				; 2nd byte << 16
+sav r01 r03				; preserve shifted 2nd byte
+
+cal shl r04 r06				; 4rd byte << 8
+sav r01 r04				; preserve shifted 3rd byte
+
+cal add r02 r03				; 1st byte + 2nd byte
+cal add r01 r04				; 1st byte + 2nd byte + 3rd byte
+cal add r01 r05				; 1st byte + 2nd byte + 3rd byte + 4th byte
+sav r01 r10				; preserve total file count
+
+sav 84 r01				; "Total Files: "
+io text char r01
+sav 111 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 108 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 70 r01
+io text char r01
+sav 105 r01
+io text char r01
+sav 108 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 115 r01
+io text char r01
+sav 58 r01
+io text char r01
+sav 32 r01
+io text char r01
+
+io text int r10				; prints total file count
+
+io text newline rff			; drop cursor down
+
+sav 0 r19				; inititate file count
+
+1					; file record loop
+  cal add 1 r19				; incrememnt file count
+  sav r01 r19				; update file count
+
+  inp					; get 1st filename byte
+  sav r00 r20				; 1st char store
+
+  inp					; get 2nd filename byte
+  sav r00 r21				; 2nd char store
+
+  inp					; get 3rd filename byte
+  sav r00 r22				; 3rd char store
+
+  inp					; get 4th filename byte
+  sav r00 r23				; 4th char store
+
+  inp					; get 5th filename byte
+  sav r00 r24				; 5th char store
+
+  inp					; get 6th filename byte
+  sav r00 r25				; 6th char store
+
+  inp					; get 7th filename byte
+  sav r00 r26				; 7th char store
+
+  inp					; get 8th filename byte
+  sav r00 r27				; 8th char store
+
+  inp					; get 9th filename byte
+  sav r00 r28				; 9th char store
+
+  inp					; get 10th filename byte
+  sav r00 r29				; 10th char store
+
+  inp					; get 11th filename byte
+  sav r00 r2a				; 11th char store
+
+  inp					; get 12th filename byte
+  sav r00 r2b				; 12th char store
+
+  inp					; get 13th filename byte
+  sav r00 r2c				; 13th char store
+
+  inp					; get 14th filename byte
+  sav r00 r2d				; 14th char store
+
+  inp					; get 15th filename byte
+  sav r00 r2e				; 15th char store
+
+  inp					; get 16th filename byte
+  sav r00 r2f				; 16th char store
+
+  inp					; get 1st filetype byte
+  sav r00 r1c				; 1st char store
+
+  inp					; get 2nd filetype byte
+  sav r00 r1d				; 2nd char store
+
+  inp					; get 3rd filetype byte
+  sav r00 r1e				; 3rd char store
+
+  inp					; get 4th filetype byte
+  sav r00 r1f				; 4th char store
+
+  inp					; get 1st address byte
+  sav r00 r05				; preserve 1st byte
+
+  inp					; get 2nd address byte
+  sav r00 r04				; preserve 2nd byte
+
+  inp					; get 3rd address byte
+  sav r00 r03				; preserve 3rd byte
+
+  inp					; get 4th address byte
+  sav r00 r02				; preserve 4th byte
+
+  cal shl r02 r06			; 1st byte << 8
+  cal shl r01 r06			; 1st byte << 16
+  cal shl r01 r06			; 1st byte << 24
+  sav r01 r02				; preserve shifted 1st byte
+
+  cal shl r03 r06			; 2nd byte << 8
+  cal shl r01 r06			; 2nd byte << 16
+  sav r01 r03				; preserve shifted 2nd byte
+
+  cal shl r04 r06			; 4rd byte << 8
+  sav r01 r04				; preserve shifted 3rd byte
+
+  cal add r02 r03			; 1st byte + 2nd byte
+  cal add r01 r04			; 1st byte + 2nd byte + 3rd byte
+  cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
+  sav r01 r1b				; preserve file address
+
+  inp					; get 1st length byte
+  sav r00 r05				; preserve 1st byte
+
+  inp					; get 2nd length byte
+  sav r00 r04				; preserve 2nd byte
+
+  inp					; get 3rd length byte
+  sav r00 r03				; preserve 3rd byte
+
+  inp					; get 4th length byte
+  sav r00 r02				; preserve 4th byte
+
+  cal shl r02 r06			; 1st byte << 8
+  cal shl r01 r06			; 1st byte << 16
+  cal shl r01 r06			; 1st byte << 24
+  sav r01 r02				; preserve shifted 1st byte
+
+  cal shl r03 r06			; 2nd byte << 8
+  cal shl r01 r06			; 2nd byte << 16
+  sav r01 r03				; preserve shifted 2nd byte
+
+  cal shl r04 r06			; 4rd byte << 8
+  sav r01 r04				; preserve shifted 3rd byte
+
+  cal add r02 r03			; 1st byte + 2nd byte
+  cal add r01 r04			; 1st byte + 2nd byte + 3rd byte
+  cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
+  sav r01 r1a				; preserve file length
+
+  inp					; get 1st ID byte
+  sav r00 r05				; preserve 1st byte
+
+  inp					; get 2nd ID byte
+  sav r00 r04				; preserve 2nd byte
+
+  inp					; get 3rd ID byte
+  sav r00 r03				; preserve 3rd byte
+
+  inp					; get 4th ID byte
+  sav r00 r02				; preserve 4th byte
+
+  cal shl r02 r06			; 1st byte << 8
+  cal shl r01 r06			; 1st byte << 16
+  cal shl r01 r06			; 1st byte << 24
+  sav r01 r02				; preserve shifted 1st byte
+
+  cal shl r03 r06			; 2nd byte << 8
+  cal shl r01 r06			; 2nd byte << 16
+  sav r01 r03				; preserve shifted 2nd byte
+
+  cal shl r04 r06			; 4rd byte << 8
+  sav r01 r04				; preserve shifted 3rd byte
+
+  cal add r02 r03			; 1st byte + 2nd byte
+  cal add r01 r04			; 1st byte + 2nd byte + 3rd byte
+  cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
+  sav r01 r18				; preserve file ID
+
+  inp					; get 1st parent dir ID byte
+  sav r00 r05				; preserve 1st byte
+
+  inp					; get 2nd parent dir ID byte
+  sav r00 r04				; preserve 2nd byte
+
+  inp					; get 3rd parent dir ID byte
+  sav r00 r03				; preserve 3rd byte
+
+  inp					; get 4th parent dir ID byte
+  sav r00 r02				; preserve 4th byte
+
+  cal shl r02 r06			; 1st byte << 8
+  cal shl r01 r06			; 1st byte << 16
+  cal shl r01 r06			; 1st byte << 24
+  sav r01 r02				; preserve shifted 1st byte
+
+  cal shl r03 r06			; 2nd byte << 8
+  cal shl r01 r06			; 2nd byte << 16
+  sav r01 r03				; preserve shifted 2nd byte
+
+  cal shl r04 r06			; 4rd byte << 8
+  sav r01 r04				; preserve shifted 3rd byte
+
+  cal add r02 r03			; 1st byte + 2nd byte
+  cal add r01 r04			; 1st byte + 2nd byte + 3rd byte
+  cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
+  sav r01 r17				; preserve parent directory ID
+
+  inp					; get 1st creation time byte
+  sav r00 r05				; preserve 1st byte
+
+  inp					; get 2nd creation time byte
+  sav r00 r04				; preserve 2nd byte
+
+  inp					; get 3rd creation time byte
+  sav r00 r03				; preserve 3rd byte
+
+  inp					; get 4th creation time byte
+  sav r00 r02				; preserve 4th byte
+
+  cal shl r02 r06			; 1st byte << 8
+  cal shl r01 r06			; 1st byte << 16
+  cal shl r01 r06			; 1st byte << 24
+  sav r01 r02				; preserve shifted 1st byte
+
+  cal shl r03 r06			; 2nd byte << 8
+  cal shl r01 r06			; 2nd byte << 16
+  sav r01 r03				; preserve shifted 2nd byte
+
+  cal shl r04 r06			; 4rd byte << 8
+  sav r01 r04				; preserve shifted 3rd byte
+
+  cal add r02 r03			; 1st byte + 2nd byte
+  cal add r01 r04			; 1st byte + 2nd byte + 3rd byte
+  cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
+  sav r01 r16				; preserve creation time
+
+  inp					; get 1st owner char
+  sav r00 r30				; preserve char
+
+  inp					; get 2nd owner char
+  sav r00 r31				; preserve char
+
+  inp					; get 3rd owner char
+  sav r00 r32				; preserve char
+
+  inp					; get 4th owner char
+  sav r00 r33				; preserve char
+
+  inp					; get 5th owner char
+  sav r00 r34				; preserve char
+
+  inp					; get 6th owner char
+  sav r00 r35				; preserve char
+
+  inp					; get 7th owner char
+  sav r00 r36				; preserve char
+
+  inp					; get file use byte
+
+  sav r00 r08				; copy file use byte
+
+  sav 1 r09				; load shift amount
+
+  cal and 1 r08				; bitmask last bit
+  sav r01 r3e				; preserve hidden flag
+
+  cal sar r08 r09			; shift byte to the right
+  sav r01 r08				; update flie use byte
+  cal and 1 r01				; bitmask last bit
+  sav r01 r3d				; preserve directory flag
+
+  cal sar r08 r09			; shift byte to the right
+  sav r01 r08				; update flie use byte
+  cal and 1 r01				; bitmask last bit
+  sav r01 r3c				; preserve global execute flag
+
+  cal sar r08 r09			; shift byte to the right
+  sav r01 r08				; update flie use byte
+  cal and 1 r01				; bitmask last bit
+  sav r01 r3b				; preserve global write flag
+
+  cal sar r08 r09			; shift byte to the right
+  sav r01 r08				; update flie use byte
+  cal and 1 r01				; bitmask last bit
+  sav r01 r3a				; preserve global read flag
+
+  cal sar r08 r09			; shift byte to the right
+  sav r01 r08				; update flie use byte
+  cal and 1 r01				; bitmask last bit
+  sav r01 r39				; preserve group execute flag
+
+  cal sar r08 r09			; shift byte to the right
+  sav r01 r08				; update flie use byte
+  cal and 1 r01				; bitmask last bit
+  sav r01 r38				; preserve group write flag
+
+  cal sar r08 r09			; shift byte to the right
+  sav r01 r08				; update flie use byte
+  cal and 1 r01				; bitmask last bit
+  sav r01 r37				; preserve group read flag
+
+  ; At this point, the file data has been expanded r20 to r2f contains the 
+  ; file name r1c to r1f contains the file extension r1b contains the file 
+  ; start address on the disk r1a contains the length of the file in bytes 
+  ; (NOT BITS!) and so on
+
+  io text newline rff			; drop cursor down
+
+  io text int r18			; show file ID
+
+  io text newline rff			; drop cursor down
+
+  sav 32 r01				; "  "
+  io text char r01
+  io text char r01
+
+  io text char r20			; show 1st filename letter
+  io text char r21			; show 2nd filename letter
+  io text char r22			; show 3rd filename letter
+  io text char r23			; show 4th filename letter
+  io text char r24			; show 5th filename letter
+  io text char r25			; show 6th filename letter
+  io text char r26			; show 7th filename letter
+  io text char r27			; show 8th filename letter
+  io text char r28			; show 9th filename letter
+  io text char r29			; show 10th filename letter
+  io text char r2a			; show 11th filename letter
+  io text char r2b			; show 12th filename letter
+  io text char r2c			; show 13th filename letter
+  io text char r2d			; show 14th filename letter
+  io text char r2e			; show 15th filename letter
+  io text char r2f			; show 16th filename letter
+
+  sav r1c r01				; test for empty extension
+  ifg 10				; extension not empty
+
+    sav 46 r01				; "."
+    io text char r01
+
+    io text char r1c			; show 1st extension letter
+    io text char r1d			; show 2nd extension letter
+    io text char r1e			; show 3rd extension letter
+    io text char r1f			; show 4th extension letter
+
+  rmv 10				; end extension empty check
+
+  io text newline rff			; drop cursor down
+
+  sav 32 r01				; "  "
+  io text char r01
+  io text char r01
+
+  io text int r1a			; length in bytes
+
+  sav 32 r01				; " B ("
+  io text char r01
+  sav 66 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+  sav 40 r01
+  io text char r01
+
+  sav 4 r01				; 0b0..100
+  sav 7 r02				; shift amount
+  cal shl r01 r02			; 512
+
+  cal add r01 r1a			; adds 0.5 KiB for binary rounding
+
+  sav 10 r02				; 2^10 = 1024
+  cal sar r01 r02			; divide rounded len by 1024
+
+  io text int r01			; length in kibibytes
+
+  sav 32 r01				; " KiB)"
+  io text char r01
+  sav 75 r01
+  io text char r01
+  sav 105 r01
+  io text char r01
+  sav 66 r01
+  io text char r01
+  sav 41 r01
+  io text char r01
+
+  io text newline rff			; drop cursor down
+
+  sav 32 r01				; "  "
+  io text char r01
+  io text char r01
+
+  sav 68 r01				; "Disk: "
+  io text char r01
+  sav 105 r01
+  io text char r01
+  sav 115 r01
+  io text char r01
+  sav 107 r01
+  io text char r01
+  sav 58 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+
+  sav 48 r01				; "0x"
+  io text char r01
+  sav 120 r01
+  io text char r01
+
+  io text hex r1b			; start address
+
+  sav 32 r01				; " - 0x"
+  io text char r01
+  sav 45 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+  sav 48 r01
+  io text char r01
+  sav 120 r01
+  io text char r01
+
+  cal add 2 r1a				; add half for rounding
+  sav 2 r02				; quarter division amount
+  cal sar r01 r02			; divide length by 4 for 32-bit
+
+  cal add r01 r1b			; start address + 32-bit length
+
+  io text hex r01			; show end address hex
+
+  io text newline rff			; drop cursor down
+
+  sav 32 r01				; "  "
+  io text char r01
+  io text char r01
+
+  sav 80 r01				; "Parent Directory ID: "
+  io text char r01
+  sav 97 r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 110 r01
+  io text char r01
+  sav 116 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+  sav 68 r01
+  io text char r01
+  sav 105 r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 99 r01
+  io text char r01
+  sav 116 r01
+  io text char r01
+  sav 111 r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  sav 121 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+  sav 73 r01
+  io text char r01
+  sav 68 r01
+  io text char r01
+  sav 58 r01
+  io text char r01
+  sav 32 r01
+  io text char r01  
+
+  io text int r17			; print parent dir ID
+
+  io text newline rff			; drop cursor down
+
+  sav 32 r01				; "  "
+  io text char r01
+  io text char r01
+
+  sav 84 r01				; "Time created: "
+  io text char r01
+  sav 105 r01
+  io text char r01
+  sav 109 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+  sav 99 r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 97 r01
+  io text char r01
+  sav 116 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 100 r01
+  io text char r01
+  sav 58 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+
+
+
+
+  ; do timestamp to text here pls
+
+
+
+
+  io text newline rff			; drop cursor down
+
+  sav 32 r01				; "  "
+  io text char r01
+  io text char r01
+
+  sav 79 r01				; "Owner: "
+  io text char r01
+  sav 119 r01
+  io text char r01
+  sav 110 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  sav 58 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+
+  io text char r30			; print owner string
+  io text char r31
+  io text char r32
+  io text char r33
+  io text char r34
+  io text char r35
+  io text char r36
+
+  io text newline rff			; drop cursor down
+
+  sav 32 r01				; "  "
+  io text char r01
+  io text char r01
+
+  sav 80 r01				; "Permissions: "
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  sav 109 r01
+  io text char r01
+  sav 105 r01
+  io text char r01
+  sav 115 r01
+  io text char r01
+  sav 115 r01
+  io text char r01
+  sav 105 r01
+  io text char r01
+  sav 111 r01
+  io text char r01
+  sav 110 r01
+  io text char r01
+  sav 115 r01
+  io text char r01
+  sav 58 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
+
+  sav 114 r03				; 114 = r
+  sav 119 r04				; 119 = w
+  sav 101 r05				; 101 = e
+  sav 100 r07				; 100 = d (r06 skipped to preserve 8)
+  sav 104 r08				; 104 = h
+  sav 45 r09				; 45 = -
+
+  sav r37 r01				; group read test
+  ifg 10				; group read
+
+    io text char r03			; show r
+
+  rmv 10				; end group read
+  ifz 10				; no group read
+
+    io text char r09			; show -
+
+  rmv 10				; end no group read
+
+  sav r38 r01				; group write test
+  ifg 10				; group write
+
+    io text char r04			; show w
+
+  rmv 10				; end group write
+  ifz 10				; no group write
+
+    io text char r09			; show -
+
+  rmv 10				; end no group write
+
+  sav r39 r01				; group execute test
+  ifg 10				; group execute
+
+    io text char r05			; show e
+
+  rmv 10				; end group execute
+  ifz 10				; no group execute
+
+    io text char r09			; show -
+
+  rmv 10				; end no group execute
+
+  sav r3a r01				; global read test
+  ifg 10				; global read
+
+    io text char r03			; show r
+
+  rmv 10				; end global read
+  ifz 10				; no global read
+
+    io text char r09			; show -
+
+  rmv 10				; end no global read
+
+  sav r3b r01				; global write test
+  ifg 10				; global write
+
+    io text char r04			; show w
+
+  rmv 10				; end global write
+  ifz 10				; no global write
+
+    io text char r09			; show -
+
+  rmv 10				; end no global write
+
+  sav r3c r01				; global execute test
+  ifg 10				; global execute
+
+    io text char r05			; show e
+
+  rmv 10				; end global execute
+  ifz 10				; no global execute
+
+    io text char r09			; show -
+
+  rmv 10				; end no global execute
+
+  sav r3d r01				; directory test
+  ifg 10				; directory
+
+    io text char r07			; show d
+
+  rmv 10				; end directory
+  ifz 10				; no directory
+
+    io text char r09			; show -
+
+  rmv 10				; end no directory
+
+  sav r3e r01				; hidden test
+  ifg 10				; hidden
+
+    io text char r08			; show h
+
+  rmv 10				; end hidden
+  ifz 10				; no hidden
+
+    io text char r09			; show -
+
+  rmv 10				; end no hidden
+
+  io text newline rff			; drop cursor down
+
+  cal not r19 rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step (- file count)
+
+  cal add r01 r10			; total - file ID
+
+  jmg 1					; total != file count, continue loop
+
+stp					; reached end, stop

@@ -1,0 +1,629 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; CrawFS read                           ;
+;                                       ;
+; Expects boot sector input (--file)    ;
+;                                       ;
+; r10-r1f = searched name               ;
+; r0f = Enter flag                      ;
+; r0e = total file count                ;
+;                                       ;
+; CRAW SYSTEMS                          ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+cal add -67 r00                         ; 67 = C
+ifg 1                                   ; code > 67
+  stp                                   ; magic not met, stop
+rmv 1                                   ; end code > 67 check
+
+ifl 1                                   ; code < 67
+  stp                                   ; magic not met, stop
+rmv 1                                   ; end code < 67 check
+
+inp                                     ; get 2nd magic byte
+
+cal add -82 r00                         ; 82 = R
+ifg 1                                   ; code > 82
+  stp                                   ; magic not met, stop
+rmv 1                                   ; end code > 82 check
+
+ifl 1                                   ; code < 82
+  stp                                   ; magic not met, stop
+rmv 1                                   ; end code < 82
+
+inp                                     ; get 3rd magic byte
+
+cal add -65 r00                         ; 65 = A
+ifg 1                                   ; code > 65
+  stp                                   ; magic not met, stop
+rmv 1                                   ; end code > 65 check
+
+ifl 1                                   ; code < 65
+  stp                                   ; magic not met, stop
+rmv 1                                   ; end code < 65 check
+
+inp                                     ; get 4th magic byte
+
+cal add -87 r00                         ; 87 = W
+ifg 1                                   ; code > 87
+  stp                                   ; magic not met, stop
+rmv 1                                   ; end code > 87 check
+
+ifl 1                                   ; code < 87
+  stp                                   ; magic not met, stop
+rmv 1                                   ; end code < 87
+
+inp                                     ; get 1st byte of index count
+sav r00 r05                             ; preserve 1st byte
+
+inp                                     ; get 2nd byte of index count
+sav r00 r04                             ; preserve 2nd byte
+
+inp                                     ; get 3rd byte of index count
+sav r00 r03                             ; preserve 3rd byte
+
+inp                                     ; get 4th byte of index count
+sav r00 r02						; preserve 4th byte
+
+sav 8 r06						; set shift amount
+
+cal shl r02 r06						; 1st byte << 8
+cal shl r01 r06						; 1st byte << 16
+cal shl r01 r06						; 1st byte << 24
+sav r01 r02						; preserve shifted 1st byte
+
+cal shl r03 r06						; 2nd byte << 8
+cal shl r01 r06						; 2nd byte << 16
+sav r01 r03						; preserve shifted 2nd byte
+
+cal shl r04 r06						; 4rd byte << 8
+sav r01 r04						; preserve shifted 3rd byte
+
+cal add r02 r03						; 1st byte + 2nd byte
+cal add r01 r04						; 1st byte + 2nd byte + 3rd byte
+cal add r01 r05						; 1st byte + 2nd byte + 3rd byte + 4th byte
+sav r01 r0e						; preserve total file count
+
+sav 69 r01						; "Enter a filename (16 char limit)"
+io text char r01
+sav 110 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 102 r01
+io text char r01
+sav 105 r01
+io text char r01
+sav 108 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 109 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 40 r01
+io text char r01
+sav 49 r01
+io text char r01
+sav 54 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 99 r01
+io text char r01
+sav 104 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 108 r01
+io text char r01
+sav 105 r01
+io text char r01
+sav 109 r01
+io text char r01
+sav 105 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 41 r01
+io text char r01
+
+io text newline rff					; drop cursor down
+
+1							; get 1st key loop
+
+  io keyboard poll r01					; get last key pressed
+  sav r01 r02						; preserve key press
+  jmz 1							; no key pressed, continue looking
+
+io text char r01					; show pressed key
+
+rmv 1							; free label 1
+
+cal add 5 r01						; -5 = Enter
+ifz 1							; Enter pressed
+
+  sav 1 r0f						; Enter flag is true
+
+rmv 1							; end Enter pressed check
+
+sav r0f r01						; ready Enter flag check
+ifz 1							; Enter flag is false
+
+  sav r02 r10						; preserve key press
+
+rmv 1							; end Enter flag is false check
+
+ifz 10							; Enter flag is false
+
+  1							; get 2nd key loop
+
+    io keyboard poll r01				; get last key pressed
+    sav r01 r02						; preserve key press
+    jmz 1						; no key pressed, continue looking
+
+  io text char r01					; show pressed key
+
+  rmv 1							; free label 1
+
+  cal add 5 r01						; -5 = Enter
+  ifz 1							; Enter pressed
+
+    sav 1 r0f						; Enter flag is true
+
+  rmv 1							; end Enter pressed check
+
+  sav r0f r01						; ready Enter flag check
+  ifz 1							; Enter flag is false
+
+    sav r02 r11						; preserve key press
+
+  rmv 1							; end Enter flag is false check
+
+  ifz 20						; Enter flag is false
+
+    1							; get 3rd key loop
+
+      io keyboard poll r01				; get last key pressed
+      sav r01 r02					; preserve key press
+      jmz 1						; no key pressed, continue looking
+
+    io text char r01					; show pressed key
+
+    rmv 1						; free label 1
+
+    cal add 5 r01					; -5 = Enter
+    ifz 1						; Enter pressed
+
+      sav 1 r0f						; Enter flag is true
+
+    rmv 1						; end Enter pressed check
+
+    sav r0f r01						; ready Enter flag check
+    ifz 1						; Enter flag is false
+
+      sav r02 r12					; preserve key press
+
+    rmv 1						; end Enter flag is false check
+
+    ifz 30						; Enter flag is false
+
+      1							; get 4th key loop
+
+        io keyboard poll r01				; get last key pressed
+        sav r01 r02					; preserve key press
+        jmz 1						; no key pressed, continue looking
+
+      io text char r01					; show pressed key
+
+      rmv 1						; free label 1
+
+      cal add 5 r01					; -5 = Enter
+      ifz 1						; Enter pressed
+
+        sav 1 r0f					; Enter flag is true
+
+      rmv 1						; end Enter pressed check
+
+      sav r0f r01					; ready Enter flag check
+      ifz 1						; Enter flag is false
+
+        sav r02 r13					; preserve key press
+
+      rmv 1						; end Enter flag is false check
+
+      ifz 40						; Enter flag is false
+
+        1						; get 5th key loop
+
+          io keyboard poll r01				; get last key pressed
+          sav r01 r02					; preserve key press
+          jmz 1						; no key pressed, continue looking
+
+        io text char r01				; show pressed key
+
+        rmv 1						; free label 1
+
+        cal add 5 r01					; -5 = Enter
+        ifz 1						; Enter pressed
+
+          sav 1 r0f					; Enter flag is true
+
+        rmv 1						; end Enter pressed check
+
+        sav r0f r01					; ready Enter flag check
+        ifz 1						; Enter flag is false
+
+          sav r02 r14					; preserve key press
+
+        rmv 1						; end Enter flag is false check
+
+        ifz 50						; Enter flag is false
+
+          1						; get 6th key loop
+
+            io keyboard poll r01			; get last key pressed
+            sav r01 r02					; preserve key press
+            jmz 1					; no key pressed, continue looking
+
+          io text char r01				; show pressed key
+
+          rmv 1						; free label 1
+
+          cal add 5 r01					; -5 = Enter
+          ifz 1						; Enter pressed
+
+            sav 1 r0f					; Enter flag is true
+
+          rmv 1						; end Enter pressed check
+
+          sav r0f r01					; ready Enter flag check
+          ifz 1						; Enter flag is false
+
+            sav r02 r15					; preserve key press
+
+          rmv 1						; end Enter flag is false check
+
+          ifz 60					; Enter flag is false
+
+            1						; get 7th key loop
+
+              io keyboard poll r01			; get last key pressed
+              sav r01 r02				; preserve key press
+              jmz 1					; no key pressed, continue looking
+
+            io text char r01				; show pressed key
+
+            rmv 1					; free label 1
+
+            cal add 5 r01				; -5 = Enter
+            ifz 1					; Enter pressed
+
+              sav 1 r0f					; Enter flag is true
+
+            rmv 1					; end Enter pressed check
+
+            sav r0f r01					; ready Enter flag check
+            ifz 1					; Enter flag is false
+
+              sav r02 r16				; preserve key press
+
+            rmv 1					; end Enter flag is false check
+
+            ifz 70					; Enter flag is false
+
+              1						; get 8th key loop
+
+                io keyboard poll r01			; get last key pressed
+                sav r01 r02				; preserve key press
+                jmz 1					; no key pressed, continue looking
+
+              io text char r01				; show pressed key
+
+              rmv 1					; free label 1
+
+              cal add 5 r01				; -5 = Enter
+              ifz 1					; Enter pressed
+
+                sav 1 r0f				; Enter flag is true
+
+              rmv 1					; end Enter pressed check
+
+              sav r0f r01				; ready Enter flag check
+              ifz 1					; Enter flag is false
+
+                sav r02 r17				; preserve key press
+
+              rmv 1					; end Enter flag is false check
+
+              ifz 80					; Enter flag is false
+
+                1					; get 9th key loop
+
+                  io keyboard poll r01			; get last key pressed
+                  sav r01 r02				; preserve key press
+                  jmz 1					; no key pressed, continue looking
+
+                io text char r01			; show pressed key
+
+                rmv 1					; free label 1
+
+                cal add 5 r01				; -5 = Enter
+                ifz 1					; Enter pressed
+
+                  sav 1 r0f				; Enter flag is true
+
+                rmv 1					; end Enter pressed check
+
+                sav r0f r01				; ready Enter flag check
+                ifz 1					; Enter flag is false
+
+                  sav r02 r18				; preserve key press
+
+                rmv 1					; end Enter flag is false check
+
+                ifz 90					; Enter flag is false
+
+                  1					; get 10th key loop
+
+                    io keyboard poll r01		; get last key pressed
+                    sav r01 r02				; preserve key press
+                    jmz 1				; no key pressed, continue looking
+
+                  io text char r01			; show pressed key
+
+                  rmv 1					; free label 1
+
+                  cal add 5 r01				; -5 = Enter
+                  ifz 1					; Enter pressed
+
+                    sav 1 r0f				; Enter flag is true
+
+                  rmv 1					; end Enter pressed check
+
+                  sav r0f r01				; ready Enter flag check
+                  ifz 1					; Enter flag is false
+
+                    sav r02 r19				; preserve key press
+
+                  rmv 1					; end Enter flag is false check
+
+                  ifz 100				; Enter flag is false
+
+                    1					; get 11th key loop
+
+                      io keyboard poll r01		; get last key pressed
+                      sav r01 r02			; preserve key press
+                      jmz 1				; no key pressed, continue looking
+
+                    io text char r01			; show pressed key
+
+                    rmv 1				; free label 1
+
+                    cal add 5 r01			; -5 = Enter
+                    ifz 1				; Enter pressed
+
+                      sav 1 r0f				; Enter flag is true
+
+                    rmv 1				; end Enter pressed check
+
+                    sav r0f r01				; ready Enter flag check
+                    ifz 1				; Enter flag is false
+
+                      sav r02 r1a			; preserve key press
+
+                    rmv 1				; end Enter flag is false check
+
+                    ifz 110				; Enter flag is false
+
+                      1					; get 12th key loop
+
+                        io keyboard poll r01		; get last key pressed
+                        sav r01 r02			; preserve key press
+                        jmz 1				; no key pressed, continue looking
+
+                      io text char r01			; show pressed key
+
+                      rmv 1				; free label 1
+
+                      cal add 5 r01			; -5 = Enter
+                      ifz 1				; Enter pressed
+
+                        sav 1 r0f			; Enter flag is true
+
+                      rmv 1				; end Enter pressed check
+
+                      sav r0f r01			; ready Enter flag check
+                      ifz 1				; Enter flag is false
+
+                        sav r02 r1b			; preserve key press
+
+                      rmv 1				; end Enter flag is false check
+
+                      ifz 120				; Enter flag is false
+
+                        1				; get 13th key loop
+
+                          io keyboard poll r01		; get last key pressed
+                          sav r01 r02			; preserve key press
+                          jmz 1				; no key pressed, continue looking
+
+                        io text char r01		; show pressed key
+
+                        rmv 1				; free label 1
+
+                        cal add 5 r01			; -5 = Enter
+                        ifz 1				; Enter pressed
+
+                          sav 1 r0f			; Enter flag is true
+
+                        rmv 1				; end Enter pressed check
+
+                        sav r0f r01			; ready Enter flag check
+                        ifz 1				; Enter flag is false
+
+                          sav r02 r1c			; preserve key press
+
+                        rmv 1				; end Enter flag is false check
+
+                        ifz 130				; Enter flag is false
+
+                          1				; get 14th key loop
+
+                            io keyboard poll r01	; get last key pressed
+                            sav r01 r02			; preserve key press
+                            jmz 1			; no key pressed, continue looking
+
+                          io text char r01		; show pressed key
+
+                          rmv 1				; free label 1
+
+                          cal add 5 r01			; -5 = Enter
+                          ifz 1				; Enter pressed
+
+                            sav 1 r0f			; Enter flag is true
+
+                          rmv 1				; end Enter pressed check
+
+                          sav r0f r01			; ready Enter flag check
+                          ifz 1				; Enter flag is false
+
+                            sav r02 r1d			; preserve key press
+
+                          rmv 1				; end Enter flag is false check
+
+                          ifz 140			; Enter flag is false
+
+                            1				; get 15th key loop
+
+                              io keyboard poll r01	; get last key pressed
+                              sav r01 r02		; preserve key press
+                              jmz 1			; no key pressed, continue looking
+
+                            io text char r01		; show pressed key
+
+                            rmv 1			; free label 1
+
+                            cal add 5 r01		; -5 = Enter
+                            ifz 1			; Enter pressed
+
+                              sav 1 r0f			; Enter flag is true
+
+                            rmv 1			; end Enter pressed check
+
+                            sav r0f r01			; ready Enter flag check
+                            ifz 1			; Enter flag is false
+
+                              sav r02 r1e		; preserve key press
+
+                            rmv 1			; end Enter flag is false check
+
+                            ifz 150			; Enter flag is false
+
+                              1				; get 16th key loop
+
+                                io keyboard poll r01	; get last key pressed
+                                sav r01 r02		; preserve key press
+                                jmz 1			; no key pressed, continue looking
+
+                              io text char r01		; show pressed key
+
+                              rmv 1			; free label 1
+
+                              cal add 5 r01		; -5 = Enter
+                              ifz 1			; Enter pressed
+
+                                sav 1 r0f		; Enter flag is true
+
+                              rmv 1			; end Enter pressed check
+
+                              sav r0f r01		; ready Enter flag check
+                              ifz 1			; Enter flag is false
+
+                                sav r02 r1f		; preserve key press
+
+                              rmv 1			; end Enter flag is false check
+
+                            rmv 150			; end Enter flag is false check
+                          rmv 140			; end Enter flag is false check
+                        rmv 130				; end Enter flag is false check
+                      rmv 120				; end Enter flag is false check
+                    rmv 110				; end Enter flag is false check
+                  rmv 100				; end Enter flag is false check
+                rmv 90					; end Enter flag is false check
+              rmv 80					; end Enter flag is false check
+            rmv 70					; end Enter flag is false check
+          rmv 60					; end Enter flag is false check
+        rmv 50						; end Enter flag is false check
+      rmv 40						; end Enter flag is false check
+    rmv 30						; end Enter flag is false check
+  rmv 20						; end Enter flag is false check
+rmv 10							; end Enter flag is false check
+
+io text newline rff					; drop cursor down
+
+sav 69 r01						; "Entered Filename: "
+io text char r01
+sav 110 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 100 r01
+io text char r01
+sav 32 r01
+io text char r01
+sav 70 r01
+io text char r01
+sav 105 r01
+io text char r01
+sav 108 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 109 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 58 r01
+io text char r01
+sav 32 r01
+io text char r01
+
+
+
+
+
+
+
+
+

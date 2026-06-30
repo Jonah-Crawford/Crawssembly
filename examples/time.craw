@@ -1,0 +1,342 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Program to convert UNIX time to ISO 8601      ;
+;                                               ;
+; r0f = UNIX timestamp                          ;
+; r10 = seconds in year                         ;
+; r11 = seconds in leap year                    ;
+; r12 = seconds in a day                        ;
+; r20 = year value                              ;
+; r21 = month value                             ;
+; r22 = day value                               ;
+; r23 = hour value                              ;
+; r24 = minute value                            ;
+; r25 = second value                            ;
+; r26 = leap year value                         ;
+;                                               ;
+; CRAW SYSTEMS                                  ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+99						; main time loop
+
+  sav 0 r01					; reset registers
+  sav 0 r02
+  sav 0 r03					; I'm going to be honest...
+  sav 0 r04					; ...here, I don't fully...
+  sav 0 r05					; ...remmeber all of the...
+  sav 0 r06					; ...registers I used for...
+  sav 0 r07					; ...this program because...
+  sav 0 r08					; ...the logic is all over...
+  sav 0 r09					; ...the place. Also I...
+  sav 0 r0a					; ...clearly can't be...
+  sav 0 r0b					; ...bothered to look...
+  sav 0 r0c					; ...over every line and...
+  sav 0 r0d					; ...note which registers...
+  sav 0 r0e					; ...overflow across the...
+  sav 0 r0f					; ...main loop to cause...
+  sav 0 r10					; ...issues. - J. Crawford
+  sav 0 r11
+  sav 0 r12
+  sav 0 r13
+  sav 0 r14
+  sav 0 r15
+  sav 0 r16
+  sav 0 r17
+  sav 0 r18
+  sav 0 r19
+  sav 0 r1a
+  sav 0 r1b
+  sav 0 r1c
+  sav 0 r1d
+  sav 0 r1e
+  sav 0 r1f
+  sav 0 r20
+  sav 0 r21
+  sav 0 r22
+  sav 0 r23
+  sav 0 r24
+  sav 0 r25
+  sav 0 r26
+
+  sav 7 r02					; shift amount
+  sav 15 r01					; 0b0..1111
+  cal shl r01 r02				; 0b0..11110000000
+  cal add 4 r01					; 0b0..11110000100
+  cal shl r01 r02				; 0b0..111100001000000000
+  cal add 103 r01				; 0b0..111100001001100111
+  cal shl r01 r02				; 31,536,000 (seconds in a year)
+  sav r01 r10					; preserve s / year
+
+  sav 15 r01					; 0b0..1111
+  cal shl r01 r02				; 0b0..11110000000
+  cal add 10 r01				; 0b0..11110001010
+  cal shl r01 r02				; 0b0..111100010010000000
+  cal add 10 r01				; 0b0..111100010010001010
+  cal shl r01 r02				; 32,622,400 (seconds in a lyear)
+  sav r01 r11					; preserve s / lyear
+
+  sav 5 r01					; 0b0..111
+  cal shl r01 r02				; 0b0..1110000000
+  cal add 35 r01				; 0b0..1110100011
+  cal shl r01 r02				; 86,400 (seconds in a day)
+  sav r01 r12					; preserve s / day
+
+  sav 15 r01					; 0b0..1111
+  cal shl r01 r02				; 0b0..11110000000
+  cal add 50 r01				; 1970 (Starting year offset)
+  sav r01 r20					; update year value
+
+  sav 1 r26					; 1968 = leap year => offset = 1
+
+  io time unix r0f				; get timestamp
+
+  cal not r10 rff				; negation 1st step
+  cal add 1 r01					; negation 2nd step
+  sav r01 r05					; preserve - s / year
+
+  cal not r11 rff				; negation 1st step
+  cal add 1 r01					; negation 2nd step
+  sav r01 r06					; preserve - s / lyear
+
+  sav r0f r03					; ready timestamp
+
+  1						; year subtraction loop
+
+    cal add 1 r26				; increment leap year check
+    sav r01 r26					; update leap year check
+
+    cal add -4 r26				; test for leap year
+    ifz 10					; leap year
+
+      sav r06 r04				; set subtraction to s / lyear
+      sav 0 r26					; reset leap year value
+
+    rmv 10					; end leap year check
+    ifl 10					; normal year
+
+      sav r05 r04				; set subtrcation to s / year
+
+    rmv 10					; end normal year check
+
+    cal add 1 r20				; increment year value
+    sav r01 r20					; update year value
+
+    cal add r03 r04				; subtract seconds value
+    sav r01 r03					; preserve timestamp
+
+    jmg 1					; time still positive, continue
+    jmz 1					; exact year met, continue
+
+  rmv 1						; free label 1
+
+  cal add -1 r20				; reverse extra loop
+  sav r01 r20					; update year value
+
+  cal not r04 rff				; negate 1st step
+  cal add 1 r01					; negate 2nd value
+
+  cal add r01 r03				; return timestamp to positive
+  sav r01 r03					; preserve reduced timestamp
+
+  cal not r12 rff				; negation 1st step
+  cal add 1 r01					; negation 2nd step
+  sav r01 r04					; preserve - s / day
+
+  1						; day subtraction loop
+
+    cal add 1 r22				; increment day value
+    sav r01 r22					; update day value
+
+    cal add r03 r04				; subtract seconds value
+    sav r01 r03					; preserve timestamp
+
+    jmg 1					; time still positive, continue
+    jmz 1					; exact day met, continue
+
+  rmv 1						; free label 1
+
+  cal and 3 r20					; test for leap year
+  ifz 10					; year/4 = integer => leap year
+
+    cal add -60 r22				; test for non-affected date
+    ifg 20					; end < feb
+
+      cal add -1 r22				; accounts for 29th feb day
+      sav r01 r22				; update day count
+
+    rmv 20					; end < feb check
+  rmv 10					; end year/4 = integer check
+
+  sav r22 r05					; make a copy of the day
+
+  sav 1 r21					; set jan month
+
+  cal add -31 r05				; jan amount
+  ifg 10					; day > jan
+
+    sav 2 r21					; set feb month
+    sav r01 r22					; update reduced day count
+
+    cal add -59 r05				; feb amount
+    ifg 20					; day > feb
+
+      sav 3 r21					; set mar month
+      sav r01 r22				; update reduced day count
+
+      cal add -90 r05				; mar amount
+      ifg 30					; day > mar
+
+        sav 4 r21				; set apr month
+        sav r01 r22				; update reduced day count
+
+        cal add -120 r05			; apr amount
+        ifg 40					; day > apr
+
+          sav 5 r21				; set may month
+          sav r01 r22				; update reduced day count
+
+          sav -128 r01
+          cal add -23 r01			; 151
+          cal add r01 r05			; may amount
+          ifg 50				; day > may
+
+            sav 6 r21				; set jun month
+            sav r01 r22				; update reduced day count
+
+            sav -128 r01
+            cal add -53 r01			; 181
+            cal add r01 r05			; jun amount
+            ifg 60				; day > jun
+
+              sav 7 r21				; set jul month
+              sav r01 r22			; update reduced day count
+
+              sav -128 r01
+              cal add -84 r01			; 212
+              cal add r01 r05			; jul amount
+              ifg 70				; day > jul
+
+                sav 8 r21			; set aug month
+                sav r01 r22			; update reduced day count
+
+                sav -128 r01
+                cal add -115 r01		; 243
+                cal add r01 r05			; aug amount
+                ifg 80				; day > aug
+
+                  sav 9 r21			; set sep month
+                  sav r01 r22			; update reduced day count
+
+                  sav -128 r01
+                  cal add -128 r01
+                  cal add -17 r01		; 273
+                  cal add r01 r05		; sep amount
+                  ifg 90			; day > sep
+
+                    sav 10 r21			; set oct month
+                    sav r01 r22			; update reduced day count
+
+                    sav -128 r01
+                    cal add -128 r01
+                    cal add -48 r01		; 304
+                    cal add r01 r05		; oct amount
+                    ifg 100			; day > oct
+
+                      sav 11 r21		; set nov month
+                      sav r01 r22		; update reduced day count
+
+                      sav -128 r01
+                      cal add -128 r01
+                      cal add -78 r01		; 334
+                      cal add r01 r05		; nov amount
+                      ifg 110			; day > nov
+
+                        sav 12 r21		; set dec month
+                        sav r01 r22		; update reduced day count
+
+                      rmv 110			; end day > nov check
+                    rmv 100			; end day > oct check
+                  rmv 90			; end day > sep check
+                rmv 80				; end day > aug check
+              rmv 70				; end day > jul check
+            rmv 60				; end day > jun check
+          rmv 50				; end day > may check
+        rmv 40					; end day > apr check
+      rmv 30					; end day > mar check
+    rmv 20					; end day > feb check
+  rmv 10					; end day > jan check
+
+  rmv 1						; free label 1
+
+  cal add r03 r12				; restore extra day
+  sav r01 r03					; update timestamp
+
+  sav 28 r01					; 0b0..11100
+  sav 7 r02					; shift amount
+  cal shl r01 r02				; 0b0..111000000000
+  cal add 16 r01				; 3600 (s / hour)
+  sav r01 r08					; preserve value
+
+  cal not r01 rff				; negation 1st step
+  cal add 1 r01					; negation 2nd step
+  sav r01 r04					; preserve hour amount
+
+  1						; hour subtraction loop
+
+    cal add 1 r23				; increment hour value
+    sav r01 r23					; update hour value
+
+    cal add r03 r04				; subtract seconds value
+    sav r01 r03					; preserve timestamp
+
+    jmg 1					; time still positive, continue
+    jmz 1					; exact hour met, continue
+
+  rmv 1						; free label 1
+
+  cal add r08 r03				; restore last loop subtraction
+  sav r01 r03					; update timestamp
+
+  cal add -1 r23				; restore last loop addition
+  sav r01 r23					; update hour value
+
+  sav -60 r04					; -60 for minute value
+
+  1						; hour subtraction loop
+
+    cal add 1 r24				; increment minute value
+    sav r01 r24					; update minute value
+
+    cal add r03 r04				; subtract seconds value
+    sav r01 r03					; preserve timestamp
+
+    jmg 1					; time still positive, continue
+    jmz 1					; exact minute met, continue
+
+  rmv 1						; free label 1
+
+  cal add -1 r24				; restore last loop addition
+  sav r01 r24					; update minute value
+
+  cal add 60 r03				; restore last loop subtraction
+
+  sav r01 r25					; remainder is raw seconds
+
+  io text clear rff				; clear terminal
+
+  io text int r20				; show year
+  io text newline rff				; drop cursor down
+  io text int r21				; show months
+  io text newline rff				; drop cursor down
+  io text int r22				; show days
+  io text newline rff				; drop cursor down
+  io text int r23				; show hours
+  io text newline rff				; drop cursor down
+  io text int r24				; show minutes
+  io text newline rff				; drop cursor down
+  io text int r25				; show seconds
+
+  sav 100 r01
+  cal add 100 r01				; sleep time in milliseconds
+  io time sleep r01				; wait for 100ms
+
+  jmp 99					; continue main loop

@@ -21,26 +21,26 @@ use std::path::PathBuf;
 const CRAW_NANO: &str = r#"
 syntax "crawssembly" "\.craw$"
 
-color brightcyan "\<(sav|cal|io|inp|stp)\>"
+color brightcyan "\<(sav|cal|io|inp)\>"
 
 color cyan "\<(nop)\>"
 
 color white "\<(not|and|or|xor|shl|shr|sar|add)\>"
 
-color magenta "\<(jmp|jmz|jmg|jml|ifz|ifg|ifl|rmv|fgo|str|run)\>"
+color magenta "\<(jmp|jmz|jmg|jml|ifz|ifg|ifl|rmv|fgo|str|run|stp)\>"
 
 color brightblue "\<(screen|keyboard|speaker|mem|disk|text|time)\>"
 
 color blue "\<(char|hex|newline|pixel|read|write|erase|erasecell)\>"
 color blue "\<(x|y|int|clear|unix|low|sleep|milli|dump|present)\>"
 color blue "\<(red|green|blue|poll|btn|channel|freq|volume|wave|on|off)\>"
-color blue "\<(toggle|addr|save)\>"
+color blue "\<(toggle|addr|save|iso)\>"
 
 color yellow "[-+]?[0-9]+"
 color yellow "0x[0-9A-Fa-f]+"
 
 color brightgreen "\<(r[0-9A-Fa-f]{2})\>"
-color green "\<(r00|r01|ref|rff)\>"
+color cyan "\<(r00|r01|ref|rff)\>"
 
 color brightblack ";.*$"
 "#;
