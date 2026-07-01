@@ -10,13 +10,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 use std::fs;
+use std::env;
+use std::path::{Path, PathBuf};
 
 mod asm;
 mod c_backend;
 mod vm;
-
-use std::env;
-use std::path::PathBuf;
 
 const CRAW_NANO: &str = r#"
 syntax "crawssembly" "\.craw$"
@@ -28,6 +27,8 @@ color cyan "\<(nop)\>"
 color white "\<(not|and|or|xor|shl|shr|sar|add)\>"
 
 color magenta "\<(jmp|jmz|jmg|jml|ifz|ifg|ifl|rmv|fgo|str|run|stp)\>"
+
+color brightmagenta "\<(execute|executestd)\>"
 
 color brightblue "\<(screen|keyboard|speaker|mem|disk|text|time)\>"
 
@@ -44,6 +45,8 @@ color cyan "\<(r00|r01|ref|rff)\>"
 
 color brightblack ";.*$"
 "#;
+
+type Instr = asm::Instr;
 
 fn install_nano() {
     let home = match env::var("HOME").or_else(|_| env::var("USERPROFILE")) {
@@ -89,10 +92,45 @@ fn install_nano() {
     }
 
     println!("Installed Crawssembly syntax highlighting for GNU Nano.");
-    println!("Restart Nano for changes to take effect.");
 }
 
-type Instr = asm::Instr;
+fn copy_dir(src: &Path, dst: &Path) -> Result<(), String> {
+    fs::create_dir_all(dst).map_err(|e| e.to_string())?;
+
+    for entry in fs::read_dir(src).map_err(|e| e.to_string())? {
+        let entry = entry.map_err(|e| e.to_string())?;
+
+        let src_path = entry.path();
+        let dst_path = dst.join(entry.file_name());
+
+        if src_path.is_dir() {
+            let _ = copy_dir(&src_path, &dst_path);
+        } else {
+            fs::copy(&src_path, &dst_path).map_err(|e| e.to_string())?;
+        }
+    }
+
+    Ok(())
+}
+
+fn install_std() {
+    if let Err(e) = try_install_std() { eprintln!("Warning: Could not install standard library: {e}"); }
+}
+
+fn try_install_std() -> Result<(), String> {
+    let home = std::env::var("HOME")
+        .map_err(|_| "HOME not set")?;
+
+    let dst = Path::new(&home)
+        .join(".crawssembly")
+        .join("std");
+
+    if dst.exists() { return Ok(()); }
+
+    let _ = copy_dir(Path::new("std"), &dst);
+
+    Ok(())
+}
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -104,6 +142,11 @@ fn main() {
 
     if args.len() >= 2 && (args[1] == "--install-nano" || args[1] == "install-nano") {
         install_nano();
+        return;
+    }
+
+    if args.len() >= 2 && (args[1] == "--install-std" || args[1] == "install-std") {
+        install_std();
         return;
     }
 
@@ -412,10 +455,7 @@ fn assemble_file(
     dump: bool,
     dump_decoded: bool,
 ) -> Result<(), String> {
-    let src =
-        fs::read_to_string(input_path).map_err(|e| format!("Failed to read {input_path}: {e}"))?;
-
-    let lines: Vec<String> = src.lines().map(|s| s.to_string()).collect();
+    let lines = asm::expand_execute_file(std::path::Path::new(input_path))?;
 
     match asm::assemble(&lines) {
         Ok(program) => {

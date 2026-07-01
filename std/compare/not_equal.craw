@@ -1,0 +1,18 @@
+; CSL: compare/not_equal.craw
+; Inputs: r02-r03
+; Outputs: r02
+; Scope: r01-r02 | 60000
+
+rmv 60000					; free label
+
+cal not r02 rff					; negation 1st step
+cal add 1 r01					; negation 2nd step
+cal add r01 r03					; r03 - r02
+
+sav 1 r02					; assume equal
+
+ifz 60000					; if r03 - r02 = 0 => equal
+  sav 0 r02					; result = 0
+rmv 60000					; end e03 - r02 = 0 check
+
+sav 0 r01					; reset used registers

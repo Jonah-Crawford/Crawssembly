@@ -1921,7 +1921,7 @@ The CPU repeats the cycle for the next instruction.
 
 Eagle-eyed readers will have spotted that not *every* possible binary instruction has a function yet. This is to allow users like yourself to come up with ideas for Crawssembly's next versions!
 
-*CRAW SYSTEMS* is proud to release Crawssembly in open-source format to allow anyone to make their own changes to Crawssembly. If you have any ideas for the Crawssembly team, feel free to contact the project lead **Jonah Crawford** at *jonah@jonahcrawford.com*.
+*CRAW SYSTEMS* is proud to release Crawssembly in open-source format to allow anyone to make their own changes to Crawssembly. If you have any ideas for the Crawssembly team, feel free to contact the project lead **Jonah Crawford** at *jonah@jonahcrawford.com*. You can also make a [pull request](https://github.com/Jonah-Crawford/Crawssembly/compare) on the official GitHub page.
 
 </details>
 

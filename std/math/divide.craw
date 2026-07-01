@@ -1,0 +1,36 @@
+; CSL: math/divide.craw			; r02 = minus sum
+; Inputs: r02-r03			; r03 = divisor
+; Outputs: r02-r03			; r04 = loop count
+; Scope: r01-r04 | 60000
+
+sav 0 r04				; initialise loop count
+
+rmv 60000				; free loop label
+
+cal not r03 rff				; negation 1st step
+cal add 1 r01				; negation 2nd step
+sav r01 r03				; r03 = -r03
+
+60000					; main subtraction loop
+
+  cal add 1 r04				; increment loop count
+  sav r01 r04				; update loop count
+
+  cal add r02 r03			; subtract dividend by divisor
+  sav r01 r02				; update minus sum
+
+  jmg 60000				; minused value isn't negative, continue
+  jmz 60000				; edge-case value, continue
+
+rmv 60000				; free loop label
+
+cal not r03 rff				; negation 1st step
+cal add 1 r01				; negation 2nd step (original r03)
+cal add r01 r02				; restore final loop for remainder
+sav r01 r03				; update remainder
+
+cal add -1 r04				; restore final loop for result
+sav r01 r02				; update result
+
+sav 0 r01				; reset used registers
+sav 0 r04

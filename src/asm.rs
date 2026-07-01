@@ -1,8 +1,86 @@
 // src/asm.rs
 
 use std::collections::{HashMap, HashSet};
+use std::fs;
+use std::path::{Path, PathBuf};
 
 pub type Instr = u32;
+
+#[allow(dead_code)]
+pub fn assemble_file(path: &Path) -> Result<Vec<Instr>, String> {
+  let lines = expand_execute(path, &mut Vec::new())?;
+  assemble(&lines)
+}
+
+pub fn expand_execute_file(path: &Path) -> Result<Vec<String>, String> {
+  expand_execute(path, &mut Vec::new())
+}
+
+fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, String> {
+  let path = path
+    .canonicalize()
+    .map_err(|e| format!("Could not open '{}': {e}", path.display()))?;
+
+  if stack.contains(&path) {
+    return Err(format!("Recursive execute detected: {}", path.display()));
+  }
+
+  stack.push(path.clone());
+
+  let src = fs::read_to_string(&path)
+    .map_err(|e| format!("Could not read '{}': {e}", path.display()))?;
+
+  let mut out = Vec::new();
+
+  for (ln, raw) in src.lines().enumerate() {
+    let toks = tokenize(raw);
+    let head = toks.first().map(|s| s.as_str());
+
+    if head == Some("execute") || head == Some("executestd") {
+      if toks.len() != 2 {
+        return Err(format!(
+          "{}:{}: {} expects 1 path",
+          path.display(),
+          ln + 1,
+          toks[0]
+        ));
+      }
+
+      let child = if head == Some("executestd") {
+        std_root().join(&toks[1])
+      } else {
+        path
+          .parent()
+          .unwrap_or_else(|| Path::new("."))
+          .join(&toks[1])
+      };
+
+      out.extend(expand_execute(&child, stack)?);
+    } else {
+      out.push(raw.to_string());
+    }
+  }
+
+  stack.pop();
+  Ok(out)
+}
+
+fn std_root() -> PathBuf {
+  if let Ok(path) = std::env::var("CRAW_STD") {
+    return PathBuf::from(path);
+  }
+
+  let local_std = PathBuf::from("std");
+  if local_std.exists() {
+    return local_std;
+  }
+
+  let home = std::env::var("HOME")
+    .map(PathBuf::from)
+    .unwrap_or_else(|_| PathBuf::from("."));
+
+  home.join(".crawssembly").join("std")
+}
 
 pub fn assemble(lines: &[String]) -> Result<Vec<Instr>, String> {
     let mut defs: HashSet<String> = HashSet::new();
@@ -782,5 +860,7 @@ fn is_known_mnemonic(head: &str) -> bool {
             | "fgo"
             | "str"
             | "run"
+            | "execute"
+            | "executestd"
     )
 }

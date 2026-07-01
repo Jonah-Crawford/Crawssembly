@@ -620,13 +620,7 @@ sav 0 r19				; inititate file count
   sav 32 r01
   io text char r01
 
-
-
-
-  ; do timestamp to text here pls
-
-
-
+  io text iso r16			; show time
 
   io text newline rff			; drop cursor down
 

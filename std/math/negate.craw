@@ -1,0 +1,8 @@
+; CSL: math/negate.craw
+; Inputs: r02
+; Outputs: r02
+; Scope: r01-r02
+
+cal not r02 rff				; negation 1st step
+cal add 1 r01				; negation 2nd step
+sav r01 r02				; save result to output

@@ -1,0 +1,22 @@
+; CSL: math/sign.craw
+; Inputs: r02
+; Outputs: r02
+; Scope: r01-r02 | 60000
+
+rmv 60000					; free label
+
+sav r02 r01					; get value for negative check
+
+ifg 60000					; number > 0
+  sav 1 r02					; sign = 1
+rmv 60000					; end number > 0 check
+
+ifz 60000					; number = 0
+  sav 0 r02					; sign = 0
+rmv 60000					; end number = 0 check
+
+ifl 60000					; number < 0
+  sav -1 r02					; sign = -1
+rmv 60000					; end number < 0 check
+
+sav 0 r01					; reset used registers
