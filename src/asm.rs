@@ -4,6 +4,8 @@ use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use dirs
+
 pub type Instr = u32;
 
 #[allow(dead_code)]
@@ -66,20 +68,19 @@ fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, 
 }
 
 fn std_root() -> PathBuf {
-  if let Ok(path) = std::env::var("CRAW_STD") {
-    return PathBuf::from(path);
-  }
+    if let Ok(path) = std::env::var("CRAW_STD") {
+        return PathBuf::from(path);
+    }
 
-  let local_std = PathBuf::from("std");
-  if local_std.exists() {
-    return local_std;
-  }
+    let local_std = PathBuf::from("std");
+    if local_std.exists() {
+        return local_std;
+    }
 
-  let home = std::env::var("HOME")
-    .map(PathBuf::from)
-    .unwrap_or_else(|_| PathBuf::from("."));
-
-  home.join(".crawssembly").join("std")
+    dirs::home_dir()
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join(".crawssembly")
+        .join("std")
 }
 
 pub fn assemble(lines: &[String]) -> Result<Vec<Instr>, String> {
