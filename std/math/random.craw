@@ -1,6 +1,17 @@
+; CSL: math/random.craw
+; Inputs: None
+; Outputs: r02
+; Scope: r01-r03 | 60000
+
+rmv 60000					; free label
+
 io time milli r02				; get time in milliseconds
 
-1						; main loop
+cal and 15 r02					; get last 4 bits of time
+cal add 10 r01					; add 10 to value
+sav r01 r03					; save value as loop count
+
+60000						; main loop
 
   sav 7 r01					; save shift amount
   cal shl r02 r01				; shift time
@@ -17,10 +28,12 @@ io time milli r02				; get time in milliseconds
   cal xor r02 r01				; xor time
   sav r01 r02					; update time
 
-  io text int r01				; show random time
-  io text newline rff				; drop cursor down
+  cal add -1 r03				; decrement loop count
+  sav r01 r03					; update loop count
 
-  sav 100 r01					; save pause time in ms
-  io time sleep r01				; pause for 100ms
+  jmg 60000					; count > 0, continue
 
-  jmp 1						; continue main loop
+rmv 60000					; free label
+
+sav 0 r01					; reset used registers
+sav 0 r03

@@ -8,7 +8,7 @@ Check out Crawssembly Online with [this link!](https://crawssembly.ultimatecraw.
 [Dedicated Documentation Website](http://docs-crawssembly.ultimatecraw.xyz)
 
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
-![Version](https://img.shields.io/badge/Latest_Release-v1.0.0-blue)
+![Version](https://img.shields.io/badge/Latest_Release-v1.1.0-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
 ![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
@@ -857,39 +857,6 @@ Update your 'Letter Loops' activity program to contain a **nested loop** that pr
 
 > Hint: Both loops take similar forms, but take care to not mix register values together, separate the 1st loop from the 2nd loop clearly, and reset the inner-loop values in the outer loop.
 
-### More about jumping
-
-Sometimes you don't want a label to be used. If you want to jump to a line once and you know where it is, don't bother with making a label pointer!
-
-If you know where you want the Crawssembly executioner to jump to, use `fgo` (Force GO).
-
-Example
-
-```
-1       sav 10 r01      ; saves value 10 to register 1
-2       cal add 1 r01   ; adds 1 to value inside register 1
-3       fgo 2           ; jumps directly to line 2
-```
-
-This is an example of using `fgo` for an infinite loop.
-
-#### Dynamic `fgo`
-
-Keen-eyed readers will have noticed that line numbers *don't start at 0* like registers do. This is because `fgo 0` doesn't go to the first line number, rather `fgo` jumps to whatever line number is stored in `r01`.
-
-Example
-
-```
-1       sav 5 r01
-2       fgo 0
-3       1
-4       jmp 1
-5
-6       stp
-```
-
-`fgo 0` above skips over the evil infinite loop, since `r01` contains `5`.
-
 </details>
 
 <details>
@@ -897,22 +864,8 @@ Example
 
 ## Branching
 
-Let's say you wanted to only run a piece of code if a certain condition was met. You could use labels and jumps in what is called the **Jump-Then-Execute** format.
-
-```
-1       sav 7 r02               ; saves 7, which is where execution jumps to after label 1 is defined
-2       1                       ; label 1 points to line 2
-3       sav r02 r01             ; readies the line number into register 1, so 'fgo' can jump past the code below
-4       fgo 0                   ; the first execution jumps to line 7, the second execution jumps to line 5
-5       2                       ; label 2 points to line 5
-6       jmp 2                   ; jumps back to the label 2 pointer, an infinite loop
-7
-8       sav 50 r01              ; sets '50' as the test value
-9       sav 5 r02               ; sets the next fgo line number to '5', if the check succeeds this executes the instructions under label 1
-10      jmz 1                   ; if the test value is zero, activate the infinite loop
-```
-
-JTE is complex, and luckily, there is a better way. You can use the `if` group of commands to execute code depending on the value in `r01`:
+Let's say you wanted to only run a piece of code if a certain condition was met.
+You can use the `if` group of commands to execute code depending on the value in `r01`:
 
 - `ifg`: Continues IF Greater (`r01` > 0)
 - `ifz`: Continues IF Zero (`r01` = 0)
@@ -929,7 +882,6 @@ Example
 4       jmp 2                   ; jumps back to label 2, an infinite loop
 5       rmv 1                   ; ends the if branch using label 1
 ```
-This format is much cleaner than JTE.
 
 ### Activity: Even Looper
 
@@ -1538,6 +1490,127 @@ This is called the **2038 problem**, or **Y2K38**. And because it affects many m
 </details>
 
 <details>
+<summary><strong>Functions</strong></summary>
+
+## Functions
+
+Crawssembly doesn't have functions like higher level programs do. But you can still run other programs, similar to library imports.
+
+You can do this using `execute path/to/file.craw`. Unlike the other instructions, this is a **macro**, a non-binary instruction that is interpreted by the compiler.
+
+`execute` tells the compiler to read the file being pointed to, and copy that file in to replace that line.
+
+It's very important to know what your function does when it's copied in, since the same registers and labels are used before and after the program is executed.
+
+Example
+
+```
+; add_three.craw
+
+cal add 3 r10           ; adds 3 to value inside r10
+sav r01 r10             ; updates r10 value
+```
+
+```
+; main.craw
+
+sav 100 r10             ; sets input of add_three to 100
+
+execute add_three.craw  ; executes the add_three.craw program
+
+io text int r10         ; shows the result (103)
+```
+
+> You must make sure that the path to the function is correct, else `craw main.craw` will fail.
+
+</details>
+
+<details>
+<summary><strong>Crawssembly Standard Library</strong></summary>
+
+## Crawssembly Standard Library
+
+The **Crawssembly Standard Library (CSL)** is a group of common functions included to
+make it easier to write longer programs. Use of `executestd module/function.craw`
+is used to access the program. `execute` is used for **user-created** programs,
+and is differentiated as `execute` uses the path relative to the program being executed, while `executestd` works *anywhere* on your machine.
+
+> Like `execute`, `executestd` is a **macro**, not a raw binary instruction.
+
+You can save the contents of `std/` to your root folder by running `craw install-std`. This makes `executestd` work from anywhere.
+
+Each program takes inputs starting at `r02`, and emits outputs also starting at `r02`. Each program also uses labels starting at 60000.
+
+Example
+
+```
+sav 12 r02                      ; 12 is the first argument
+sav 5 r03                       ; 5 is the second argument
+
+executestd math/multiply.craw   ; r02 = r02 * r03
+
+; at this point, registers r01, r03, and r04 are now empty (see the base program list)
+
+io text int r02                 ; outputs 12*5 (i.e. 60)
+```
+
+### Base Programs
+
+This is the list of programs available, along with Inputs, Outputs, and **Scope**.
+
+> The **scope** of a function is the range of data the program touches. It's important to note what values get mutated so your program works correctly. This includes label values.
+
+- reset_regs: I: r02 O: N/A S: Variable | 60000 (`executestd reset_regs.craw`)
+  - Resets all the register values up to the code in `r02`
+- compare:
+  - equal: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/equal.craw`)
+    - outputs `1` if `r02` = `r03`, else `0`
+  - greater: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/greater.craw`)
+    - outputs `1` if `r02` > `r03`, else `0`
+  - greater_equal: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/greater_equal.craw`)
+    - outputs `1` if `r02` >= `r03`, else `0`
+  - less: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/less.craw`)
+    - outputs `1` if `r02` < `r03`, else `0`
+  - less_equal: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/less_equal.craw`)
+    - outputs `1` if `r02` <= `r03`, else `0`
+  - not_equal: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/not_equal.craw`)
+    - outputs `1` if `r02` != `r03`, else `0`
+- math:
+  - abs: I: r02 O: r02 S: r01-r02 | 60000 (`executestd math/abs.craw`)
+    - outputs the positive-only number
+  - divide: I: r02-r03 O: r02-r03 S: r01-r04 | 60000 (`executestd math/divide.craw`)
+    - outputs `r02` / `r03` into `r02`, and the remainder into `r03`
+  - modulo: I: r02-r03 O: r02 S: r01-r03 | 60000 (`executestd math/modulo.craw`)
+    - the same as divide, but only outputs the remainder
+  - multiply: I: r02-r03 O: r02 S: r01-r04 | 60000 (`executestd math/multiply.craw`)
+    - outputs `r02` * `r03`
+  - negate: I: r02 O: r02 S: r01-r02 (`executestd math/negate.craw`)
+    - negates the value inside `r02` (i.e. `r02` = -`r02`)
+  - power: I: r02-r03 O: r02 S: r01-r05 | 60000-60001 (`executestd math/power.craw`)
+    - outputs `r02` ^ `r03`
+  - random: I: N/A O: r02 S: r01-r03 | 60000 (`executestd math/random.craw`)
+    - outputs a random number using the timestamp in milliseconds as the seed
+  - sign: I: r02 O: r02 S: r01-r02 | 60000 (`execute math/sign.craw`)
+    - outputs `-1` if the input is negative, `1` if positive, and `0` if 0
+
+### Activity: Multiplication
+
+Write a program that multiplies 2 numbers together using `executestd math/multiply.craw`
+
+### Advanced Activity: Calculator
+
+Write a program that outputs `r02` + `r03`, `r02` * `r03`, and `r02` / `r03`.
+
+> Remember, look at the scope of each `executestd` call to make sure your values don't get lost.
+
+### Custom Programs
+
+Adding to this list is quite easy, simply add your programs to the `std/` folder inside the main Crawssembly folder (where you installed Crawssembly in the first place) and update the CSL by running `craw install-std`. This will propogate your new programs and modules you added
+so that they too can be used from any location. This is helpful for custom programs you would use often that aren't included.
+
+</details>
+
+<details>
 <summary><strong>Register Constants</strong></summary>
 
 ## Register Constants
@@ -1590,7 +1663,6 @@ The rest of this section is used as quick-reference and help.
 `ifz LABEL`: Continues if `r01` is equal to 0.  
 `ifl LABEL`: Continues if `r01` is less than 0.  
 `rmv LABEL`: Removes the label from memory, and ends any `if` commands.  
-`fgo IMMEDIATE`: Jumps to the line number, if `0` used, jump to value in `r01`.  
 `stp`: Stops the program.  
 `nop`: Does nothing.  
 
@@ -1717,7 +1789,6 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `ifg` | `00 101` | `00 101 llllllll llllllll` | Continue if `r01` > 0 |
 | `ifz` | `00 110` | `00 110 llllllll llllllll` | Continue if `r01` = 0 |
 | `jmp` | `00 111` | `00 111 llllllll llllllll` | Jump to label |
-| `fgo` | `01 011` | `01 011 nnnnnnnn nnnnnnnn` | Jump to line number, or `r01` if 0 |
 | `rmv` | `01 101` | `01 101 llllllll llllllll` | Removes/ends label scope |
 | `io`  | `01 110` | `01 110 ddddcccc rrrrrrrr`| Accesses non-CPU devices |
 | label definition | `01 111` | `01 111 llllllll llllllll` | Creates a label |
@@ -1953,6 +2024,6 @@ All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artifici
 Thank you to **Koy Camerini-Yachdav** who tested Crawssembly on macOS, and their amazing work making detailed error reports.
 Thank you to the *CRAW SYSTEMS* team for help with programming, especially *@Xytrophico* with testing on Linux systems and providing invaluable help.
 
-*Crawssembly is a product of CRAW SYSTEMS (C) 2026*
+*Crawssembly is a product of CRAW SYSTEMS (2026)*
 
 </details>

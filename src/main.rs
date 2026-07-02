@@ -8,6 +8,7 @@
 //╚██████╗██║  ██║██║  ██║╚███╔███╔╝███████║███████║███████╗██║ ╚═╝ ██║██████╔╝███████╗██║    //
 // ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝    //
 ////////////////////////////////////////////////////////////////////////////////////////////////
+// CRAW SYSTEMS
 
 use std::fs;
 use std::env;
@@ -95,18 +96,22 @@ fn install_nano() {
 }
 
 fn copy_dir(src: &Path, dst: &Path) -> Result<(), String> {
-    fs::create_dir_all(dst).map_err(|e| e.to_string())?;
+    fs::create_dir_all(dst)
+        .map_err(|e| format!("Failed to create {}: {e}", dst.display()))?;
 
-    for entry in fs::read_dir(src).map_err(|e| e.to_string())? {
+    for entry in fs::read_dir(src)
+        .map_err(|e| format!("Failed to read {}: {e}", src.display()))?
+    {
+
         let entry = entry.map_err(|e| e.to_string())?;
-
         let src_path = entry.path();
         let dst_path = dst.join(entry.file_name());
 
         if src_path.is_dir() {
-            let _ = copy_dir(&src_path, &dst_path);
+          copy_dir(&src_path, &dst_path)?;
         } else {
-            fs::copy(&src_path, &dst_path).map_err(|e| e.to_string())?;
+          fs::copy(&src_path, &dst_path)
+              .map_err(|e| format!("Failed to copy {} to {}: {e}", src_path.display(), dst_path.display()))?;
         }
     }
 
@@ -114,7 +119,11 @@ fn copy_dir(src: &Path, dst: &Path) -> Result<(), String> {
 }
 
 fn install_std() {
-    if let Err(e) = try_install_std() { eprintln!("Warning: Could not install standard library: {e}"); }
+    if let Err(e) = try_install_std() {
+        eprintln!("Warning: Could not install standard library: {e}");
+    } else {
+        println!("Crawssembly Standard Library (CSL) stored");
+    }
 }
 
 fn try_install_std() -> Result<(), String> {
@@ -125,9 +134,12 @@ fn try_install_std() -> Result<(), String> {
         .join(".crawssembly")
         .join("std");
 
+    println!("Installing CSL from {}", Path::new("std").display());
+    println!("Installing CSL to {}", dst.display());
+
     if dst.exists() { return Ok(()); }
 
-    let _ = copy_dir(Path::new("std"), &dst);
+    copy_dir(Path::new("std"), &dst)?;
 
     Ok(())
 }

@@ -1,0 +1,6 @@
+sav 15 r02				; first value input
+sav 5 r03				; second value input
+
+executestd math/multiply.craw		; runs r02 = r02 * r03
+
+io text int r02				; output result (i.e. 75)

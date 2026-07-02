@@ -1,0 +1,29 @@
+sav 15 r05				; set first value (A)
+sav 5 r06				; set second vaule (B)
+
+sav r05 r02				; ready first value
+sav r06 r03				; ready second value
+
+cal add r02 r03				; A + B
+
+io text int r01				; output A + B
+io text newline rff			; drop cursor down
+
+sav r05 r02				; ready first value
+sav r06 r03				; ready second value
+
+executestd math/multiply.craw		; A * B
+
+io text int r02				; output A * B
+io text newline rff			; drop cursor down
+
+sav r05 r02				; ready first value
+sav r06 r03				; ready second value
+
+executestd math/divide.craw		; A / B
+
+io text int r02				; output A / B
+
+sav 114 r01				; 114 = r
+io text char r01			; output 'r'
+io text int r03				; output remainder of A / B
