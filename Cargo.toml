@@ -8,11 +8,11 @@ repository = "https://github.com/Jonah-Crawford/Crawssembly"
 readme = "README.md"
 
 include = [
-  "src/**/*.rs",
-  "examples/**/*.craw",
-  "README.md",
-  "LICENSE",
-  "Cargo.toml"
+  "/src/**/*.rs",
+  "/examples/**/*.craw",
+  "/README.md",
+  "/LICENSE",
+  "/Cargo.toml"
 ]
 
 [features]

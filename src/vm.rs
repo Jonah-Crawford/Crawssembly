@@ -2290,8 +2290,6 @@ impl Vm {
 
         Self {
             cpu: Cpu::new(audio, config.clone()),
-            config,
-            audio,
         }
     }
 
