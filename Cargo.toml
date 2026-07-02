@@ -6,6 +6,8 @@ description = "An educational assembly-like language and virtual machine."
 license = "MIT"
 repository = "https://github.com/Jonah-Crawford/Crawssembly"
 readme = "README.md"
+keywords = ["assembly", "education", "language", "virtual-machine"]
+categories = ["compilers", "emulators"]
 
 include = [
   "/src/**/*.rs",

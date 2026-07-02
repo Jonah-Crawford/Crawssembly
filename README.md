@@ -1971,6 +1971,36 @@ The CPU repeats the cycle for the next instruction.
 </details>
 
 <details>
+<summary><strong>Crawssembly Library</strong></summary>
+
+# Crawssembly Library
+
+Crawssembly is written in Rust, so you can write your own programs to use Crawssembly in other Rust programs. 
+You can do this using the **Crawssembly Crate** on the Rust package manager, *Cargo*.
+
+Example
+
+```rust
+use crawssembly::{RunOptions, Vm, VmConfig};
+
+fn main() -> Result<(), String> {
+  let mut vm = Vm::without_audio(VmConfig::default());
+
+  vm.run_file("program.bin", RunOptions {
+    plain: true,
+    show_stats: false,
+    ..RunOptions::default()
+  })?;
+
+  println!("rFF = {}", vm.registers()[0xFF]);
+
+  Ok(())
+}
+```
+
+</details>
+
+<details>
 <summary><strong>How you can help Crawssembly</strong></summary>
 
 ## How you can help Crawssembly
