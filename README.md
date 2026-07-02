@@ -1560,38 +1560,23 @@ This is the list of programs available, along with Inputs, Outputs, and **Scope*
 
 > The **scope** of a function is the range of data the program touches. It's important to note what values get mutated so your program works correctly. This includes label values.
 
-- reset_regs: I: r02 O: N/A S: Variable | 60000 (`executestd reset_regs.craw`)
-  - Resets all the register values up to the code in `r02`
-- compare:
-  - equal: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/equal.craw`)
-    - outputs `1` if `r02` = `r03`, else `0`
-  - greater: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/greater.craw`)
-    - outputs `1` if `r02` > `r03`, else `0`
-  - greater_equal: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/greater_equal.craw`)
-    - outputs `1` if `r02` >= `r03`, else `0`
-  - less: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/less.craw`)
-    - outputs `1` if `r02` < `r03`, else `0`
-  - less_equal: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/less_equal.craw`)
-    - outputs `1` if `r02` <= `r03`, else `0`
-  - not_equal: I: r02-r03 O: r02 S: r01-r02 | 60000 (`executestd compare/not_equal.craw`)
-    - outputs `1` if `r02` != `r03`, else `0`
-- math:
-  - abs: I: r02 O: r02 S: r01-r02 | 60000 (`executestd math/abs.craw`)
-    - outputs the positive-only number
-  - divide: I: r02-r03 O: r02-r03 S: r01-r04 | 60000 (`executestd math/divide.craw`)
-    - outputs `r02` / `r03` into `r02`, and the remainder into `r03`
-  - modulo: I: r02-r03 O: r02 S: r01-r03 | 60000 (`executestd math/modulo.craw`)
-    - the same as divide, but only outputs the remainder
-  - multiply: I: r02-r03 O: r02 S: r01-r04 | 60000 (`executestd math/multiply.craw`)
-    - outputs `r02` * `r03`
-  - negate: I: r02 O: r02 S: r01-r02 (`executestd math/negate.craw`)
-    - negates the value inside `r02` (i.e. `r02` = -`r02`)
-  - power: I: r02-r03 O: r02 S: r01-r05 | 60000-60001 (`executestd math/power.craw`)
-    - outputs `r02` ^ `r03`
-  - random: I: N/A O: r02 S: r01-r03 | 60000 (`executestd math/random.craw`)
-    - outputs a random number using the timestamp in milliseconds as the seed
-  - sign: I: r02 O: r02 S: r01-r02 | 60000 (`execute math/sign.craw`)
-    - outputs `-1` if the input is negative, `1` if positive, and `0` if 0
+| Module  | Function        | Inputs    | Outputs   | Scope                    | Description                                                               |
+| ------- | --------------- | --------- | --------- | ------------------------ | ------------------------------------------------------------------------- |
+| Core    | `reset_regs`    | `r02`     | -         | Variable, `60000`        | Resets registers from `r01` up to the register specified in `r02`.        |
+| Compare | `equal`         | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 == r03`, otherwise `0`.                               |
+| Compare | `greater`       | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 > r03`, otherwise `0`.                                |
+| Compare | `greater_equal` | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 >= r03`, otherwise `0`.                               |
+| Compare | `less`          | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 < r03`, otherwise `0`.                                |
+| Compare | `less_equal`    | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 <= r03`, otherwise `0`.                               |
+| Compare | `not_equal`     | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 != r03`, otherwise `0`.                               |
+| Math    | `abs`           | `r02`     | `r02`     | `r01-r02`, `60000`       | Returns the absolute value of `r02`.                                      |
+| Math    | `divide`        | `r02-r03` | `r02-r03` | `r01-r04`, `60000`       | Quotient in `r02`, remainder in `r03`.                                    |
+| Math    | `modulo`        | `r02-r03` | `r02`     | `r01-r03`, `60000`       | Returns only the remainder.                                               |
+| Math    | `multiply`      | `r02-r03` | `r02`     | `r01-r04`, `60000`       | Multiplies `r02` by `r03`.                                                |
+| Math    | `negate`        | `r02`     | `r02`     | `r01-r02`, `60000`       | Negates `r02`.                                                            |
+| Math    | `power`         | `r02-r03` | `r02`     | `r01-r05`, `60000-60001` | Raises `r02` to the power of `r03`.                                       |
+| Math    | `random`        | -         | `r02`     | `r01-r03`, `60000`       | Generates a pseudorandom integer using the current millisecond timestamp. |
+| Math    | `sign`          | `r02`     | `r02`     | `r01-r02`, `60000`       | Returns `-1`, `0`, or `1` depending on the sign of `r02`.                 |
 
 ### Activity: Multiplication
 
