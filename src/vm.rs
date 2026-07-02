@@ -23,7 +23,7 @@ use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 
 use sysinfo::System;
 
-type Instr = u32;
+pub type Instr = u32;
 
 const INSTR_MASK: u32 = 0x1F_FFFF; // 21 bits
 const BLOCK_INSTRS: usize = 168;
@@ -166,7 +166,7 @@ fn run_bench(program: &[Decoded], iters: u64) {
     );
 }
 
-fn load_program(path: &str) -> Result<Vec<Instr>, String> {
+pub fn load_program(path: &str) -> Result<Vec<Instr>, String> {
     let bytes = fs::read(path).map_err(|e| e.to_string())?;
     if bytes.len() % 4 != 0 {
         return Err("program.bin corrupted (not u32-aligned)".into());
@@ -332,7 +332,7 @@ fn read_block(block: u16) -> Result<Vec<Instr>, String> {
 }
 
 #[derive(Clone, Copy)]
-struct Decoded {
+pub struct Decoded {
     core: u8,
     mode: u8,
     a: u8,
@@ -345,7 +345,7 @@ struct Decoded {
     is_inp: bool,
 }
 
-fn predecode(program: &[Instr]) -> Vec<Decoded> {
+pub fn predecode(program: &[Instr]) -> Vec<Decoded> {
     let mut out = Vec::with_capacity(program.len());
 
     for &instr in program {
@@ -2230,6 +2230,111 @@ impl Cpu {
 
             _ => (prog, pc + 1, false),
         }
+    }
+}
+
+pub fn run_program_with_options(
+    program: &[Instr],
+    plain: bool,
+    audio: bool,
+    speed: i32,
+    input_list: Vec<i32>,
+    looped: bool,
+    show_stats: bool,
+    config: VmConfig,
+) -> Result<(), String> {
+    let decoded = predecode(program);
+
+    let mut cpu = Cpu::new(audio, config);
+    cpu.execute_interactive(&decoded, speed, &input_list, looped, plain, show_stats);
+
+    Ok(())
+}
+
+#[derive(Clone)]
+pub struct RunOptions {
+    pub speed: i32,
+    pub input: Vec<i32>,
+    pub looped: bool,
+    pub plain: bool,
+    pub show_stats: bool,
+}
+
+impl Default for RunOptions {
+    fn default() -> Self {
+        Self {
+            speed: -1,
+            input: vec![0],
+            looped: false,
+            plain: false,
+            show_stats: true,
+        }
+    }
+}
+
+pub struct Vm {
+    cpu: Cpu,
+}
+
+impl Vm {
+    pub fn new(config: VmConfig) -> Self {
+        let audio = true;
+
+        Self {
+            cpu: Cpu::new(audio, config.clone()),
+        }
+    }
+
+    pub fn without_audio(config: VmConfig) -> Self {
+        let audio = false;
+
+        Self {
+            cpu: Cpu::new(audio, config.clone()),
+            config,
+            audio,
+        }
+    }
+
+    pub fn run_program(&mut self, program: &[Instr], options: RunOptions) {
+        let decoded = predecode(program);
+
+        self.cpu.execute_interactive(
+            &decoded,
+            options.speed,
+            &options.input,
+            options.looped,
+            options.plain,
+            options.show_stats,
+        );
+    }
+
+    pub fn run_file(&mut self, path: &str, options: RunOptions) -> Result<(), String> {
+        let program = load_program(path)?;
+        self.run_program(&program, options);
+        Ok(())
+    }
+
+    pub fn bench_program(&mut self, program: &[Instr], iters: u64) -> u64 {
+        let decoded = predecode(program);
+        let mut ticks = 0;
+
+        for _ in 0..iters.max(1) {
+            ticks += self.cpu.execute_noio(&decoded, &[0]);
+        }
+
+        ticks
+    }
+
+    pub fn registers(&self) -> &[i32; 256] {
+        &self.cpu.regs
+    }
+
+    pub fn memory(&self) -> &[i32] {
+        &self.cpu.memory
+    }
+
+    pub fn screen(&self) -> &[[u8; 3]] {
+        &self.cpu.screen
     }
 }
 

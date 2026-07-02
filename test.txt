@@ -1,0 +1,84 @@
+pub struct Vm {
+    cpu: Cpu,
+    config: VmConfig,
+    audio: bool,
+}
+
+#[derive(Clone)]
+pub struct RunOptions {
+    pub speed: i32,
+    pub input: Vec<i32>,
+    pub looped: bool,
+    pub plain: bool,
+    pub show_stats: bool,
+}
+
+impl Default for RunOptions {
+    fn default() -> Self {
+        Self {
+            speed: -1,
+            input: vec![0],
+            looped: false,
+            plain: false,
+            show_stats: true,
+        }
+    }
+}
+
+impl Vm {
+    pub fn new(config: VmConfig) -> Self {
+        let audio = true;
+
+        Self {
+            cpu: Cpu::new(audio, config.clone()),
+            config,
+            audio,
+        }
+    }
+
+    pub fn without_audio(config: VmConfig) -> Self {
+        let audio = false;
+
+        Self {
+            cpu: Cpu::new(audio, config.clone()),
+            config,
+            audio,
+        }
+    }
+
+    pub fn run_program(&mut self, program: &[Instr], options: RunOptions) {
+        let decoded = predecode(program);
+
+        self.cpu.execute_interactive(
+            &decoded,
+            options.speed,
+            &options.input,
+            options.looped,
+            options.plain,
+            options.show_stats,
+        );
+    }
+
+    pub fn run_file(&mut self, path: &str, options: RunOptions) -> Result<(), String> {
+        let program = load_program(path)?;
+        self.run_program(&program, options);
+        Ok(())
+    }
+
+    pub fn bench_program(&mut self, program: &[Instr], iters: u64) -> u64 {
+        let decoded = predecode(program);
+        self.cpu.execute_noio(&decoded, &[0])
+    }
+
+    pub fn registers(&self) -> &[i32; 256] {
+        &self.cpu.regs
+    }
+
+    pub fn memory(&self) -> &[i32] {
+        &self.cpu.memory
+    }
+
+    pub fn screen(&self) -> &[[u8; 3]] {
+        &self.cpu.screen
+    }
+}

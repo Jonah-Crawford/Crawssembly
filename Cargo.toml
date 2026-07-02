@@ -1,22 +1,33 @@
 [package]
 name = "crawssembly"
-version = "1.0.0"
+version = "1.2.0"
 edition = "2024"
 description = "An educational assembly-like language and virtual machine."
 license = "MIT"
 repository = "https://github.com/Jonah-Crawford/Crawssembly"
 readme = "README.md"
 
+include = [
+  "src/**/*.rs",
+  "examples/**/*.craw",
+  "README.md",
+  "LICENSE",
+  "Cargo.toml"
+]
+
+[features]
+default = ["native"]
+native = ["cpal", "crossterm", "ctrlc", "sysinfo", "chrono"]
+wasm = ["wasm-bindgen"]
+
 [dependencies]
 dirs = "6.0.0"
-wasm-bindgen = "0.2"
-
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-cpal = "0.15"
-crossterm = "0.28"
-ctrlc = "3.5"
-sysinfo = "0.37"
-chrono = "0.4"
+wasm-bindgen = { version = "0.2", optional = true }
+cpal = { version = "0.15", optional = true }
+crossterm = { version = "0.28", optional = true }
+ctrlc = { version = "3.5", optional = true }
+sysinfo = { version = "0.37", optional = true }
+chrono = { version = "0.4", optional = true }
 
 [profile.release]
 debug = false
@@ -24,6 +35,7 @@ debug = false
 [[bin]]
 name = "craw"
 path = "src/main.rs"
+required-features = ["native"]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
