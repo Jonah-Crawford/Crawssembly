@@ -1,15 +1,19 @@
 // src/vm.rs
 
-use std::collections::VecDeque;
 use std::fs;
-use std::fs::{File, OpenOptions};
-use std::io::{self};
-use std::io::{BufWriter, Read, Seek, SeekFrom, Write};
-use std::sync::{Arc, Mutex, atomic::AtomicBool};
 use std::thread;
+use std::io::{self};
+use std::collections::VecDeque;
+use std::fs::{File, OpenOptions};
+use std::sync::{Arc, Mutex, atomic::AtomicBool};
+use std::io::{BufWriter, Read, Seek, SeekFrom, Write};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
+use sysinfo::System;
+
 use chrono::{TimeZone, SecondsFormat, Utc};
+
+use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 
 use crossterm::{
     cursor,
@@ -18,10 +22,6 @@ use crossterm::{
     style::{Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
     terminal::{self, ClearType},
 };
-
-use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-
-use sysinfo::System;
 
 pub type Instr = u32;
 
@@ -2233,6 +2233,7 @@ impl Cpu {
     }
 }
 
+#[allow(dead_code)]
 pub fn run_program_with_options(
     program: &[Instr],
     plain: bool,
@@ -2251,6 +2252,7 @@ pub fn run_program_with_options(
     Ok(())
 }
 
+#[allow(dead_code)]
 #[derive(Clone)]
 pub struct RunOptions {
     pub speed: i32,
@@ -2272,10 +2274,12 @@ impl Default for RunOptions {
     }
 }
 
+#[allow(dead_code)]
 pub struct Vm {
     cpu: Cpu,
 }
 
+#[allow(dead_code)]
 impl Vm {
     pub fn new(config: VmConfig) -> Self {
         let audio = true;

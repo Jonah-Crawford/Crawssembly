@@ -8,15 +8,16 @@
 //╚██████╗██║  ██║██║  ██║╚███╔███╔╝███████║███████║███████╗██║ ╚═╝ ██║██████╔╝███████╗██║    //
 // ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝    //
 ////////////////////////////////////////////////////////////////////////////////////////////////
-// CRAW SYSTEMS
+// 2026 CRAW SYSTEMS
 
 use std::fs;
 use std::env;
 use std::path::{Path, PathBuf};
 
-mod asm;
-mod c_backend;
 mod vm;
+mod asm;
+mod pkg;
+mod c_backend;
 
 const CRAW_NANO: &str = r#"
 syntax "crawssembly" "\.craw$"
@@ -159,6 +160,15 @@ fn main() {
 
     if args.len() >= 2 && (args[1] == "--install-std" || args[1] == "install-std") {
         install_std();
+        return;
+    }
+
+    if args.len() >= 2 && (args[1] == "pkg" || args[1] == "package" || args[1] == "cpm") {
+        if let Err(e) = pkg::handle_pkg(&args[2..]) {
+            eprintln!("CPM error: {}", e);
+            std::process::exit(1);
+        }
+
         return;
     }
 

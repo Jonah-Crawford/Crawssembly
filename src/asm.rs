@@ -1,8 +1,8 @@
 // src/asm.rs
 
-use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::collections::{HashMap, HashSet};
 
 use dirs;
 
@@ -68,15 +68,6 @@ fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, 
 }
 
 fn std_root() -> PathBuf {
-    if let Ok(path) = std::env::var("CRAW_STD") {
-        return PathBuf::from(path);
-    }
-
-    let local_std = PathBuf::from("std");
-    if local_std.exists() {
-        return local_std;
-    }
-
     dirs::home_dir()
         .unwrap_or_else(|| PathBuf::from("."))
         .join(".crawssembly")
