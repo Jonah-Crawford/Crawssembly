@@ -153,6 +153,15 @@ fn main() {
         return;
     }
 
+    if args.len() >= 2 && (args[1] == "--init" || args[1] == "init") {
+        if let Err(e) = pkg::init_package(&args[2]) {
+            eprintln!("Error creating package directory: {}", e);
+            std::process::exit(1);
+        }
+
+        return;
+    }
+
     if args.len() >= 2 && (args[1] == "--install-nano" || args[1] == "install-nano") {
         install_nano();
         return;
@@ -518,8 +527,11 @@ fn print_help() {
     println!("  craw check <file.craw>        Check that a file assembles");
     println!("  craw compile <file.craw>      Assemble to program.bin only");
     println!("  craw debug <file.craw>        Run with VM stats shown");
+    println!("  craw init <name>              Creates a package structure");
     println!("  craw emit-c <file.craw>       Convert Crawssembly to C");
     println!("  craw install-nano             Install nano syntax highlighting");
+    println!("  craw install-std              Update the CSL to yrou machine");
+    println!("  craw pkg <command> <arg>      Access the CPM");
     println!("  craw run <file.craw>          Assemble and run a file");
     println!();
     println!("Options:");

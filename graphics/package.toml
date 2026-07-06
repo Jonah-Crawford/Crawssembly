@@ -1,0 +1,4 @@
+name = "graphics"
+version = "1.0.0"
+description = "graphics, a Crawssembly package."
+license = "MIT"
