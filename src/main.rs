@@ -30,8 +30,6 @@ color white "\<(not|and|or|xor|shl|shr|sar|add)\>"
 
 color magenta "\<(jmp|jmz|jmg|jml|ifz|ifg|ifl|rmv|fgo|str|run|stp)\>"
 
-color brightmagenta "\<(execute|executestd)\>"
-
 color brightblue "\<(screen|keyboard|speaker|mem|disk|text|time)\>"
 
 color blue "\<(char|hex|newline|pixel|read|write|erase|erasecell)\>"
@@ -44,6 +42,8 @@ color yellow "0x[0-9A-Fa-f]+"
 
 color brightgreen "\<(r[0-9A-Fa-f]{2})\>"
 color cyan "\<(r00|r01|ref|rff)\>"
+
+color brightmagenta "\<(execute|executestd)\>[[:space:]]+.*$"
 
 color brightblack ";.*$"
 "#;
@@ -131,16 +131,31 @@ fn try_install_std() -> Result<(), String> {
     let home = std::env::var("HOME")
         .map_err(|_| "HOME not set")?;
 
+    let src = Path::new("std");
+
     let dst = Path::new(&home)
         .join(".crawssembly")
         .join("std");
 
-    println!("Installing CSL from {}", Path::new("std").display());
+    println!("Installing CSL from {}", src.display());
     println!("Installing CSL to {}", dst.display());
 
-    if dst.exists() { return Ok(()); }
+    if !src.exists() {
+        return Err(format!(
+            "Standard library source does not exist: {}",
+        src.display()
+        ));
+    }
 
-    copy_dir(Path::new("std"), &dst)?;
+    if dst.exists() {
+        fs::remove_dir_all(&dst)
+            .map_err(|e| format!(
+                "Failed to remove existing CSL at {}: {e}",
+                dst.display()
+            ))?;
+    }
+
+    copy_dir(src, &dst)?;
 
     Ok(())
 }

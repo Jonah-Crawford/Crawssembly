@@ -1,1 +1,23 @@
-executestd graphics/hello.craw
+io screen clear rff
+
+sav 127 r01
+
+io screen r r01
+io screen g r01
+io screen b r01
+
+sav 10 r02
+sav 10 r03
+sav 25 r04
+sav 35 r05
+
+executestd screen/rectangle_fill.craw
+
+io screen present rff
+
+1
+  io keyboard poll r01
+  cal add -27 r01
+  jmg 1
+  jml 1
+stp

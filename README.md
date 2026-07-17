@@ -2,13 +2,13 @@
 
 ![Crawssembly Banner](https://www.dropbox.com/scl/fi/e4fhcba8zkgw2youvai8s/Crawssembly.png?rlkey=x1xojmcn29z9joxnmpb09iums&st=lxansr9a&raw=1)
 
-Project Lead: J.D. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
+Project Lead: JD. Crawford. [Help support Crawssembly and open-source learning!](https://buymeacoffee.com/jonah_crawford)
 
 Check out Crawssembly Online with [this link!](https://crawssembly.ultimatecraw.xyz/)  
 [Dedicated Documentation Website](http://docs-crawssembly.ultimatecraw.xyz)
 
 ![Status](https://img.shields.io/badge/Status-Under%20Development-blue)
-![Version](https://img.shields.io/badge/Latest_Release-v1.1.0-blue)
+![Version](https://img.shields.io/badge/Latest_Release-v1.2.0-blue)
 ![Rust](https://img.shields.io/badge/Rust-Implementation-orange)
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
 ![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
@@ -88,20 +88,16 @@ Use `craw --help` to display helpful use information about the different ways to
 
 ![First Program](https://img.shields.io/badge/First_Program-Under_60_Seconds-green)
 
-Create a file called `hello.craw` and write the following:
+First, create a project by running `craw init project`, this creates the structure needed for all Crawssembly purposes.
 
-```
-sav 72 ref
-sav 105 ref
-stp
-```
+Enter the Crawssembly project using `cd project`.
 
-Run this file using `craw hello.craw`
+You'll notice there is a file called `main.craw`. Run this file using `craw main.craw`
 
 Expected Output
 
 ```
-Hi
+Hello World!
 ```
 
 Congratulations, you are taking the first steps to learning Crawssembly!
@@ -1577,6 +1573,10 @@ This is the list of programs available, along with Inputs, Outputs, and **Scope*
 | math    | `power`         | `r02-r03` | `r02`     | `r01-r05`, `60000-60001` | Raises `r02` to the power of `r03`.                                       |
 | math    | `random`        | -         | `r02`     | `r01-r03`, `60000`       | Generates a pseudorandom integer using the current millisecond timestamp. |
 | math    | `sign`          | `r02`     | `r02`     | `r01-r02`, `60000`       | Returns `-1`, `0`, or `1` depending on the sign of `r02`.                 |
+| screen  | `circle`        | `r02-r04` | -         | `r01-r08`, `60000-60001` | Draws a circle at (`r02`, `r03`) with radius `r04`.                       |
+| screen  | `line`          | `r02-r05` | -         | `r01-r0c`, `60000-60002` | Draws a line from (`r02`, `r03`) to (`r04`, `r05`).                       |
+| screen  | `rectangle`     | `r02-r05` | -         | `r01-r10`, `60000-60002` | Draws a rectangle with corners (`r02`, `r03`) & (`r04`, `r05`).           |
+
 
 ### Activity: Multiplication
 
@@ -1592,6 +1592,17 @@ Write a program that outputs `r02` + `r03`, `r02` * `r03`, and `r02` / `r03`.
 
 Adding to this list is quite easy, simply add your programs to the `std/` folder inside the main Crawssembly folder (where you installed Crawssembly in the first place) and update the CSL by running `craw install-std`. This will propogate your new programs and modules you added
 so that they too can be used from any location. This is helpful for custom programs you would use often that aren't included.
+
+</details>
+
+<details>
+<summary><strong>Packages</strong></summary>
+
+## Packages
+
+You can share your Crawssembly project with others by publishing to the 
+
+
 
 </details>
 
