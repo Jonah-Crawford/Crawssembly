@@ -1,0 +1,12 @@
+; CSL: stack/push.craw
+; Inputs: Nonw
+; Outputs: r02
+; Scope: r01-r02, red
+
+cal add -1 red          ; lowers stack pointer (stack increases downwards)
+sav r01 red             ; update stack pointer
+
+io mem addr red         ; set active memory address to the new stack pointer
+io mem write r02        ; writes the value inside the input register
+
+sav 0 r01               ; reset the used registers

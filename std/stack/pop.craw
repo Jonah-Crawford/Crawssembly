@@ -1,0 +1,16 @@
+; CSL: stack/pop.craw
+; Inputs: r02
+; Outputs: None
+; Scope: r01-r02, red
+
+io mem addr red         ; sets active memory address to the stack pointer
+io mem read r02         ; reads latest stack entry into the output register
+
+sav 0 r01               ; ready the null value to remove latest stack entry
+io mem write r01        ; clears the stack entry
+
+cal add 1 red           ; increments the stack pointer
+sav r01 red             ; updates the stack pointer value
+
+sav 0 r01               ; reset used registers
+sav 0 r02

@@ -35,10 +35,10 @@ rmv 60000				; end x1 - x0 < 0 check
 
 sav r01 r11				; loop count = |x1 - x0|
 
-sav r0e r03				; y0 = y0
-sav r10 r05				; y1 = y1
-
 60003					; fill loop
+
+  sav r0e r03				; y0 = y0
+  sav r10 r05				; y1 = y1
 
   sav r0d r02				; x0 = x
   sav r0d r04				; x1 = x
@@ -51,8 +51,8 @@ sav r10 r05				; y1 = y1
   cal add -1 r11			; decrement loop count
   sav r01 r11				; update loop count
 
-  ifg 60003				; loop count > 0, continue
-  ifz 60003				; edge case, 1 loop left
+  jmg 60003				; loop count > 0, continue
+  jmz 60003				; edge case, 1 loop left
 
 sav 0 r0d				; reset used registers
 sav 0 r0e

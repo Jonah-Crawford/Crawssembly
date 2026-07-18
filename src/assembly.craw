@@ -15,9 +15,18 @@ executestd screen/rectangle_fill.craw
 
 io screen present rff
 
+sav 97 ref
+sav 98 ref
+sav 99 ref
+sav 100 ref
+sav 101 ref
+sav 102 ref
+
 1
+
   io keyboard poll r01
   cal add -27 r01
   jmg 1
   jml 1
+
 stp
