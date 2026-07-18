@@ -1360,12 +1360,12 @@ io screen red r02       ; sets the red colour to 127, making the colour 0xFF0000
 io screen green r02     ; sets the green colour to 127, making the colour 0xFFFF00
 io screen blue r02      ; sets the blue colour to 127, making the colour 0xFFFFFF
 
-io screen pixel         ; updates the graphics buffer, pixel at (5,5) now has a colour of 0xFFFFFF (i.e. pure white)
+io screen pixel rff        ; updates the graphics buffer, pixel at (5,5) now has a colour of 0xFFFFFF (i.e. pure white)
 
-io screen present       ; sends the graphics buffer to the screen
+io screen present rff     ; sends the graphics buffer to the screen
 ```
 
-> Because graphics are being used, `craw myfile.craw --tui` should be used for best results. You can also set the size of the graphics screen using `craw myfile.craw --tui --screen WIDTHxHEIGHT`, and replace `WIDTHxHEIGHT` with your screen dimensions.
+> Because graphics are being used, `craw myfile.craw --tui` should be used for best results. You can also set the size of the graphics screen using `craw myfile.craw --tui --screen WIDTHxHEIGHT`, and replace `WIDTHxHEIGHT` with your screen dimensions. Also, note that the io command uses 3 operands, and rff is being passed as the third argument in the last two commands.
 
 #### Activity: Smiling Screen
 
