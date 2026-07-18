@@ -1600,9 +1600,15 @@ so that they too can be used from any location. This is helpful for custom progr
 
 ## Packages
 
-You can share your Crawssembly project with others by publishing to the 
+You can share your Crawssembly project with others by publishing to the CPM (Crawssembly Package Manager).
 
+To do this, your project must be in a proper folder structure using `craw init myfoldername`. You can then run `craw pack` to compiler your project into a tarball. `craw publish --url package_install_url` sends your url to download your tarball, along with your folder data inside `package.toml`, to the CPM database.
 
+You can then see your package, and other packages people have made, on the [CPM Website](https://cpm.ultimatecraw.xyz/).
+
+Installing a package can be done by using `craw install packagename`.
+
+> This feature is still in very early alpha, so errors are likely to occur!
 
 </details>
 
