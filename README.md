@@ -1556,27 +1556,30 @@ This is the list of programs available, along with Inputs, Outputs, and **Scope*
 
 > The **scope** of a function is the range of data the program touches. It's important to note what values get mutated so your program works correctly. This includes label values.
 
-| Module  | Function        | Inputs    | Outputs   | Scope                    | Description                                                               |
-| ------- | --------------- | --------- | --------- | ------------------------ | ------------------------------------------------------------------------- |
-| -       | `reset_regs`    | `r02`     | -         | Variable, `60000`        | Resets registers from `r01` up to the register specified in `r02`.        |
-| compare | `equal`         | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 == r03`, otherwise `0`.                               |
-| compare | `greater`       | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 > r03`, otherwise `0`.                                |
-| compare | `greater_equal` | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 >= r03`, otherwise `0`.                               |
-| compare | `less`          | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 < r03`, otherwise `0`.                                |
-| compare | `less_equal`    | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 <= r03`, otherwise `0`.                               |
-| compare | `not_equal`     | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 != r03`, otherwise `0`.                               |
-| math    | `abs`           | `r02`     | `r02`     | `r01-r02`, `60000`       | Returns the absolute value of `r02`.                                      |
-| math    | `divide`        | `r02-r03` | `r02-r03` | `r01-r04`, `60000`       | Quotient in `r02`, remainder in `r03`.                                    |
-| math    | `modulo`        | `r02-r03` | `r02`     | `r01-r03`, `60000`       | Returns only the remainder.                                               |
-| math    | `multiply`      | `r02-r03` | `r02`     | `r01-r04`, `60000`       | Multiplies `r02` by `r03`.                                                |
-| math    | `negate`        | `r02`     | `r02`     | `r01-r02`, `60000`       | Negates `r02`.                                                            |
-| math    | `power`         | `r02-r03` | `r02`     | `r01-r05`, `60000-60001` | Raises `r02` to the power of `r03`.                                       |
-| math    | `random`        | -         | `r02`     | `r01-r03`, `60000`       | Generates a pseudorandom integer using the current millisecond timestamp. |
-| math    | `sign`          | `r02`     | `r02`     | `r01-r02`, `60000`       | Returns `-1`, `0`, or `1` depending on the sign of `r02`.                 |
-| screen  | `circle`        | `r02-r04` | -         | `r01-r08`, `60000-60001` | Draws a circle at (`r02`, `r03`) with radius `r04`.                       |
-| screen  | `line`          | `r02-r05` | -         | `r01-r0c`, `60000-60002` | Draws a line from (`r02`, `r03`) to (`r04`, `r05`).                       |
-| screen  | `rectangle`     | `r02-r05` | -         | `r01-r10`, `60000-60002` | Draws a rectangle with corners (`r02`, `r03`) & (`r04`, `r05`).           |
-
+| Module  | Function         | Inputs    | Outputs   | Scope                    | Description                                                               |
+| ------- | ---------------- | --------- | --------- | ------------------------ | ------------------------------------------------------------------------- |
+| -       | `reset_regs`     | `r02`     | -         | Variable, `60000`        | Resets registers from `r01` up to the register specified in `r02`.        |
+| compare | `equal`          | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 == r03`, otherwise `0`.                               |
+| compare | `greater`        | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 > r03`, otherwise `0`.                                |
+| compare | `greater_equal ` | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 >= r03`, otherwise `0`.                               |
+| compare | `less`           | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 < r03`, otherwise `0`.                                |
+| compare | `less_equal`     | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 <= r03`, otherwise `0`.                               |
+| compare | `not_equal`      | `r02-r03` | `r02`     | `r01-r02`, `60000`       | Outputs `1` if `r02 != r03`, otherwise `0`.                               |
+| math    | `abs`            | `r02`     | `r02`     | `r01-r02`, `60000`       | Returns the absolute value of `r02`.                                      |
+| math    | `divide`         | `r02-r03` | `r02-r03` | `r01-r04`, `60000`       | Quotient in `r02`, remainder in `r03`.                                    |
+| math    | `modulo`         | `r02-r03` | `r02`     | `r01-r03`, `60000`       | Returns only the remainder.                                               |
+| math    | `multiply`       | `r02-r03` | `r02`     | `r01-r04`, `60000`       | Multiplies `r02` by `r03`.                                                |
+| math    | `negate`         | `r02`     | `r02`     | `r01-r02`, `60000`       | Negates `r02`.                                                            |
+| math    | `power`          | `r02-r03` | `r02`     | `r01-r05`, `60000-60001` | Raises `r02` to the power of `r03`.                                       |
+| math    | `random`         | -         | `r02`     | `r01-r03`, `60000`       | Generates a pseudorandom integer using the current millisecond timestamp. |
+| math    | `sign`           | `r02`     | `r02`     | `r01-r02`, `60000`       | Returns `-1`, `0`, or `1` depending on the sign of `r02`.                 |
+| screen  | `circle`         | `r02-r04` | -         | `r01-r08`, `60000-60001` | Draws a circle at (`r02`, `r03`) with radius `r04`.                       |
+| screen  | `line`           | `r02-r05` | -         | `r01-r0c`, `60000-60002` | Draws a line from (`r02`, `r03`) to (`r04`, `r05`).                       |
+| screen  | `rectangle`      | `r02-r05` | -         | `r01-r10`, `60000-60002` | Draws a rectangle with corners (`r02`, `r03`) & (`r04`, `r05`).           |
+| screen  | `rectangle_fill` | `r02-r05` | -         | `r01-r11`, `60000-60003` | Draws a filled-in rectangle with corners (`r02`, `r03`) & (`r04`, `r05`)  |
+| stack   | `init`           | -         | `red`     | `r01-r02`, `red`         | Creates the stack pointer, used for the stack in RAM                      |
+| stack   | `pop`            | -         | `r02`     | `r01-r02`, `red`         | Removes the last entry on the stack, and stores it in r02                 |
+| stack   | `push`           | `r02`     | -         | `r01-r02`, `red`         | Adds a new entry, with value of `r02`, to the top of the stack            |
 
 ### Activity: Multiplication
 
@@ -1592,6 +1595,33 @@ Write a program that outputs `r02` + `r03`, `r02` * `r03`, and `r02` / `r03`.
 
 Adding to this list is quite easy, simply add your programs to the `std/` folder inside the main Crawssembly folder (where you installed Crawssembly in the first place) and update the CSL by running `craw install-std`. This will propogate your new programs and modules you added
 so that they too can be used from any location. This is helpful for custom programs you would use often that aren't included.
+
+### About the stack
+
+The stack in memory is like a tower of plates. You can only remove the top one to use it, and any additional plates have to go on top.
+This ordered nature of the memory addresses is useful for nesting programs using `execute`, and temporary values. `pop` removes the most recent element, `push` adds a new element.
+
+The stack uses a **stack pointer**, which is the memory address of the most recent value on the stack. This is stored in `red` for the standard library. Because the stack starts from the top of memory, `stack/init.craw` is needed to form the stack pointer's large initial value.
+
+Example
+
+``` 
+executestd stack/init.craw      ; stack pointer -> red
+
+sav 100 r02                     ; 100 into input
+executestd stack/push.craw      ; adds '100' to stack
+
+sav 50 r02			; 50 into input
+executestd stack/push.craw      ; adds '50' to stack
+
+executestd stack/pop.craw       ; removes the last element (50)
+io text int r02                 ; shows last element (50)
+
+io text newline rff             ; drops cursor down
+
+executestd stack/pop.craw       ; removes the last element (100)
+io text int r02                 ; shows last element (100)
+```
 
 </details>
 
