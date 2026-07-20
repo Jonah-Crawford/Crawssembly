@@ -3,6 +3,8 @@
 ; Outputs: r02			r04 = result	r08 = temp
 ; Scope: r01-r08 | 60000	r05 = sign
 
+rmv 60000			; free label
+
 sav 0 r05			; assume positive sign
 sav r02 r03			; assume positive value
 
@@ -112,6 +114,14 @@ ifz 60000			; value = 0
 
   sav 0 r08			; result = 0x00000000
 
-rmv 60000			; end value = 0 check
+rmv 60000			; end value = 0 check, and free label
 
 sav r08 r02			; output final result
+
+sav 0 r01			; reset used registers
+sav 0 r03
+sav 0 r04
+sav 0 r05
+sav 0 r06
+sav 0 r07
+sav 0 r08

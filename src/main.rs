@@ -187,6 +187,15 @@ fn main() {
         return;
     }
 
+    if args.len() >= 2 && (args[1] == "--crush" || args[1] == "crush") {
+        if let Err(e) = crush_file(&args[2..]) {
+            eprintln!("Error crushing file: {}", e);
+            std::process::exit(1);
+        }
+
+        return;
+    }
+
     if args.len() >= 2 && (args[1] == "pkg" || args[1] == "package" || args[1] == "cpm") {
         if let Err(e) = pkg::handle_pkg(&args[2..]) {
             eprintln!("CPM error: {}", e);
@@ -380,6 +389,51 @@ fn main() {
     }
 }
 
+fn crush_file(args: &[String]) -> Result<(), String> {
+    if args.is_empty() { return Err("No input file specified".into()); }
+
+    let input = &args[0];
+
+    let output = if args.len() >= 2 {
+        args[1].clone()
+    } else {
+        let mut path = std::path::PathBuf::from(input);
+        path.set_extension("crushed.craw");
+        path.to_string_lossy().into_owned()
+    };
+
+    let source = std::fs::read_to_string(input)
+        .map_err(|e| format!("Failed to read {input}: {e}"))?;
+
+    let crushed = crush_source(&source)?;
+
+    std::fs::write(&output, crushed)
+        .map_err(|e| format!("Failed to write {output}: {e}"))?;
+
+    println!("Crushed source written to {output}");
+
+    Ok(())
+}
+
+fn crush_source(source: &str) -> Result<String, String> {
+    let mut out = String::new();
+
+    for line in source.lines() {
+        let line = line
+            .split(';')
+            .next()
+            .unwrap()
+            .trim();
+
+        if !line.is_empty() {
+            out.push_str(line);
+            out.push('\n');
+        }
+    }
+
+    Ok(out)
+}
+
 fn first_positional(args: &[String]) -> Option<String> {
     let mut i = 1;
 
@@ -541,9 +595,10 @@ fn print_help() {
     println!("  craw <file.craw>              Assemble and run a file");
     println!("  craw check <file.craw>        Check that a file assembles");
     println!("  craw compile <file.craw>      Assemble to program.bin only");
+    println!("  craw crush <file.craw>        Reduceed a .craw file size");
     println!("  craw debug <file.craw>        Run with VM stats shown");
-    println!("  craw init <name>              Creates a package structure");
     println!("  craw emit-c <file.craw>       Convert Crawssembly to C");
+    println!("  craw init <name>              Creates a package structure");
     println!("  craw install-nano             Install nano syntax highlighting");
     println!("  craw install-std              Update the CSL to yrou machine");
     println!("  craw pkg <command> <arg>      Access the CPM");

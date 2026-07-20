@@ -6,21 +6,36 @@ io text hex r02
 io text newline rff
 
 sav 1 r02
+io text int r02
 executestd float/float.craw
+io text space rff
 io text hex r02
 io text newline rff
 
 sav 2 r02
+io text int r02
 executestd float/float.craw
+io text space rff
 io text hex r02
 io text newline rff
 
 sav 3 r02
+io text int r02
 executestd float/float.craw
+io text space rff
 io text hex r02
 io text newline rff
 
 sav 42 r02
+io text int r02
 executestd float/float.craw
+io text space rff
+io text hex r02
+io text newline rff
+
+sav -42 r02
+io text int r02
+executestd float/float.craw
+io text space rff
 io text hex r02
 io text newline rff
