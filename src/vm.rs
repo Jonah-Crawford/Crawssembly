@@ -1529,6 +1529,12 @@ impl Cpu {
 
                 }
 
+                // space
+                0x7 => {
+                    print!(" ");
+                    let _ = io::stdout().flush();
+                }
+
                 _ => {
                     self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
                 }

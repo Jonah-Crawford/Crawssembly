@@ -35,7 +35,7 @@ color brightblue "\<(screen|keyboard|speaker|mem|disk|text|time)\>"
 color blue "\<(char|hex|newline|pixel|read|write|erase|erasecell)\>"
 color blue "\<(x|y|int|clear|unix|low|sleep|milli|dump|present)\>"
 color blue "\<(red|green|blue|poll|btn|channel|freq|volume|wave|on|off)\>"
-color blue "\<(toggle|addr|save|iso)\>"
+color blue "\<(toggle|addr|save|iso|space)\>"
 
 color yellow "[-+]?[0-9]+"
 color yellow "0x[0-9A-Fa-f]+"

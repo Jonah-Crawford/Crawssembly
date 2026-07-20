@@ -1296,6 +1296,8 @@ Before now, program outputs have used the `ref` register to send raw ASCII codes
 - `io text newline`: Shorthand for moving the text cursor to a new line.
 - `io text hex`: Shows the hex value stored inside the input register.
 - `io text clear`: Clears the terminal, is usually quite slow.
+- `io text iso`: Shows a human readable version of the timestamp input.
+- `io text space`: Shprthand for printing a space.
 
 Example
 
@@ -1846,7 +1848,9 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `io text int` | `0000` | `0001` | `01 110 0000 0001 rrrrrrrr` | Print input register's value |
 | `io text newline` | `0000` | `0010` | `01 110 0000 0010 rrrrrrrr` | Moves the text cursor to the next line |
 | `io text hex` | `0000` | `0011` | `01 110 0000 0011 rrrrrrrr` | Print input register's value in hexadecimal |
-| `io text clear` | `0000` | `0100` | `01 110 0000 0100 rrrrrrrr` | Clears the terminal, can be slow |
+| `io text clear` | `0000` | `0101` | `01 110 0000 0100 rrrrrrrr` | Clears the terminal, can be slow |
+| `io text iso` | `0000` | `0110` | `01 110 0000 0110 rrrrrrrr` | Prints the timestamp ISO |
+| `io text space` | `0000` | `0111` | `01 110 0000 0111 rrrrrrrr` | Prints a space |
 | `io time unix` | `0001` | `0000` | `01 110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
 | `io time low` | `0001` | `0001` | `01 110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
 | `io time sleep` | `0001` | `0010` | `01 110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |

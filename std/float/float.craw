@@ -1,0 +1,117 @@
+; CSL: float/float.craw		r02 = value	r06 = exponent
+; Inputs: r02			r03 = magnitude	r07 = significand
+; Outputs: r02			r04 = result	r08 = temp
+; Scope: r01-r08 | 60000	r05 = sign
+
+sav 0 r05			; assume positive sign
+sav r02 r03			; assume positive value
+
+sav r02 r01			; ready input for sign check
+ifl 60000			; value < 0
+
+  sav 1 r05			; sign = 1
+
+  cal not r02 rff		; negation 1st step
+  cal add 1 r01			; negation 2nd step
+  sav r01 r03			; magnitude = |value|
+
+rmv 60000			; end value < 0 branch
+
+sav -1 r06			; init position
+
+sav r03 r08			; preserve magnitude
+
+60000				; find highest bit loop
+
+  cal add 1 r06			; increment position
+  sav r01 r06			; update position
+
+  sav 1 r01			; load shift amount
+
+  cal shr r03 r01		; magnitude >> 1
+  sav r01 r03			; update magnitude
+
+  jmg 60000			; value > 0, continue
+  jml 60000			; value < 0, continue
+
+sav r08 r03			; return magnitude
+
+cal add 127 r06			; 127 exponent offset
+sav r01 r06			; update exponent
+
+sav -128 r01			; -150 construction 1st step
+cal add -22 r01			; -128 + -22 = -150
+cal add r06 r01			; exponent - 150
+
+ifl 60000			; exponent < 150
+
+  cal not r06 rff		; negation 1st step
+  cal add 1 r01			; negation 2nd step
+  cal add 127 r01		; 127 - exponent
+  cal add 23 r01		; 150 - exponent
+
+  cal shl r03 r01		; magnitude << (150 - exponent)
+  sav r01 r07			; save significand
+
+rmv 60000			; end exponent < 150 branch
+
+sav -128 r01			; -150 construction 1st step
+cal add -22 r01			; -128 + -22 = -150
+cal add r06 r01			; exponent - 150
+
+ifz 60000			; exponent = 150
+
+  cal not r06 rff		; negation 1st step
+  cal add 1 r01			; negation 2nd step
+  cal add 127 r01		; 127 - exponent
+  cal add 23 r01		; 150 - exponent
+
+  cal shl r03 r01		; magnitude << (150 - exponent)
+  sav r01 r07			; save significand
+
+rmv 60000			; end exponent = 150 branch
+
+sav -128 r01			; -150 construction 1st step
+cal add -22 r01			; -128 + -22 = -150
+cal add r06 r01			; exponent - 150
+
+ifg 60000			; exponent > 150
+
+  cal shr r03 r01		; magnitude >> (exponent - 150)
+  sav r01 r07			; save significand
+
+rmv 60000			; end exponent > 150 branch
+
+sav 3 r01			; 0b0..011
+sav 7 r08			; shift amount
+
+cal shl r01 r08			; 0b0..0110000000
+cal add 127 r01			; 0b0..0111111111
+cal shl r01 r08			; 0b0..01111111110000000
+cal add 127 r01			; 0b0..01111111111111111
+cal shl r01 r08			; 0b0..011111111111111110000000
+cal add 127 r01			; 0b0..011111111111111111111111
+
+cal and r07 r01			; significand & 0x007fffff
+sav r01 r07			; replace significand with fraction
+
+sav 31 r01			; shift amount
+cal shl r05 r01			; sign << 31
+sav r01 r04			; update result
+
+sav 23 r01			; shift amount
+cal shl r06 r01			; exponent << 23
+cal or r04 r01			; result | exponent << 23
+sav r01 r04			; update result
+
+cal or r04 r07			; result | fraction
+sav r01 r08			; preserve result
+
+sav r02 r01			; final 0 value check
+ifz 60000			; value = 0
+
+  sav 0 r08			; result = 0x00000000
+
+rmv 60000			; end value = 0 check
+
+sav r08 r02			; output final result

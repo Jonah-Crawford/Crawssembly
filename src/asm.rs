@@ -458,6 +458,7 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
             "error" | "err" => Ok(0x4),
             "clear" => Ok(0x5),
             "iso" => Ok(0x6),
+            "space" => Ok(0x7),
             _ => Err(format!("Unknown text command '{tok}'")),
         },
 
