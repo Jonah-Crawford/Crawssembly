@@ -1,0 +1,12 @@
+; CSL: heap/alloc.craw
+; Inputs: r02
+; Outputs: r02
+; Scope: r01-r03, rec
+
+sav rec r03
+cal add rec r02
+sav r01 rec
+sav r03 r02
+
+sav 0 r01			; reset used registers
+sav 0 r03

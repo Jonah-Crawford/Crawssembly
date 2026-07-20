@@ -1,0 +1,32 @@
+; CSL: float/int.craw		r02 = value	r06 = temp
+; Inputs: r02			r03 = sign	r07 = result
+; Outputs: r02			r04 = exponent
+; Scope: r01-r07 | 60000	r05 = fraction
+
+sav 31 r01			; shift amount
+cal shr r02 r01			; extract sign
+sav r01 r03			; save sign
+
+sav 23 r01			; shift amount
+cal shl r02 r01			; extract sign-exponent part
+sav r01 r04			; preserve s-e part
+
+sav 127 r01			; 255 construction
+cal add 127 r01			; 127 + 127 = 254
+cal add 1 r01			; 254 + 1 = 255 (0xFF)
+
+cal and r02 r01			; (result >> 23) & 0xFF
+sav r01 r04			; preserve extracted exponent
+
+sav 3 r01			; 0b0..11
+sav 7 r06			; shift amount
+cal shl r01 r06			; 0b0..110000000
+cal add 127 r01			; 0b0..111111111
+cal shl r01 r06			; 0b0..1111111110000000
+cal add 127 r01			; 0b0..1111111111111111
+cal shl r01 r06			; 0b0..11111111111111110000000
+cal add 127 r01			; 0b0..11111111111111111111111 (0x007FFFFF)
+
+cal and r02 r01			; result & 0x007FFFFF
+
+
