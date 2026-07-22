@@ -1794,7 +1794,7 @@ impl Cpu {
             0x6 => match command {
                 // addr
                 0x0 => {
-                    if !(0..=65535).contains(&value) {
+                    if !(0..=1048575).contains(&value) {
                         self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
                     } else {
                         self.mem_addr = value as usize;
@@ -1820,7 +1820,7 @@ impl Cpu {
             0x7 => match command {
                 // addr
                 0x0 => {
-                    if !(0..=65535).contains(&value) {
+                    if !(0..=1048575).contains(&value) {
                         self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
                         return;
                     }
