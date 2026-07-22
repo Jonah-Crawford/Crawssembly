@@ -1,11 +1,13 @@
 ; CSL: heap/init.craw
 ; Inputs: None
 ; Outputs: rec
-; Scope: r01, rec
+; Scope: r01-r02, rec
 
-sav 127 r01			; 256 construction
-cal add 127 r01			; 127 + 127 = 254
-cal add 2 r01			; 254 + 2 = 255
+sav 1 r01			; 0b0..1
+sav 16 r02			; shift amount
+cal shl r01 r02			; 0b0..10000000000000000 (0x10000)
+
 sav r01 rec			; set heap pointer
 
 sav 0 r01			; reset used registers
+sav 0 r02

@@ -6,11 +6,29 @@
 ; ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝      ╚═════╝ ╚══════╝
 ;                                  (C) 2026 CRAW SYSTEMS
 
+io text clear rff				; clear text console
 
 
+execute load_boot_sector.craw			; load boot sector
 
 
 10000						; main command loop
+
+  sav 67 r01					; CShell$ 
+  io text char r01
+  sav 83 r01
+  io text char r01
+  sav 104 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 108 r01
+  io text char r01
+  io text char r01
+  sav 36 r01
+  io text char r01
+  sav 32 r01
+  io text char r01
 
   execute get_user_input.craw			; extract user command -> mem
 

@@ -1,41 +1,46 @@
+executestd heap/init.craw
+executestd stack/init.craw
+
+sav 6 r02
+
+executestd heap/alloc.craw
+io text newline rff
+io text int rec
+io text newline rff
+io text int red
+io text newline rff
+io text int ree
+
+
+sav 7 r02
+
+executestd heap/alloc.craw
+io text newline rff
+io text int rec
+io text newline rff
+io text int red
+io text newline rff
+io text int ree
+
+
+
+
+cal add -25 rec
+sav r01 r03
+
 sav 0 r02
-io text int r02
-executestd float/float.craw
-io text space rff
-io text hex r02
-io text newline rff
 
-sav 1 r02
-io text int r02
-executestd float/float.craw
-io text space rff
-io text hex r02
-io text newline rff
+1
+  io text newline rff
+  cal add 1 r02
+  sav r01 r02
+  cal add r02 r03
+  io text hex r01
+  io text space rff
+  io mem addr r01
+  io mem read r01
+  io text hex r01
+  cal add -100 r02
+  jml 1
 
-sav 2 r02
-io text int r02
-executestd float/float.craw
-io text space rff
-io text hex r02
-io text newline rff
-
-sav 3 r02
-io text int r02
-executestd float/float.craw
-io text space rff
-io text hex r02
-io text newline rff
-
-sav 42 r02
-io text int r02
-executestd float/float.craw
-io text space rff
-io text hex r02
-io text newline rff
-
-sav -42 r02
-io text int r02
-executestd float/float.craw
-io text space rff
-io text hex r02
-io text newline rff
+stp

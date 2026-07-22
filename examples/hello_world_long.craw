@@ -4,7 +4,6 @@ sav 101 r01				; 101 = 'e'
 io text char r01
 sav 108 r01				; 108 = 'l'
 io text char r01
-sav 108 r01				; 108 = 'l'
 io text char r01
 sav 111 r01				; 111 = 'o'
 io text char r01

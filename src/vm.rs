@@ -31,7 +31,7 @@ const BLOCK_BYTES: usize = 441; // 168 * 21 = 3528 bits = 441 bytes
 const STORAGE_BLOCKS: usize = 512;
 const STORAGE_PATH: &str = "storage.bin";
 const DISK_PATH: &str = "disk.img";
-const DISK_CELLS: usize = 65536;
+const DISK_CELLS: usize = 1048576;
 
 // IO status values
 const REG_IO_STATUS: usize = 0xEE;
@@ -746,9 +746,9 @@ impl Cpu {
         Self {
             regs,
             sleep_times: 0.0,
-            memory: vec![0; 65536],
+            memory: vec![0; 1048576],
             mem_addr: 0,
-            disk: vec![0; 65536],
+            disk: vec![0; 1048576],
             disk_addr: 0,
             disk_dirty: false,
             output_buffer: Vec::new(),

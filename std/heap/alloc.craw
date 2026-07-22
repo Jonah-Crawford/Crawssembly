@@ -1,12 +1,19 @@
-; CSL: heap/alloc.craw
-; Inputs: r02
-; Outputs: r02
-; Scope: r01-r03, rec
+; CSL: heap/alloc.craw			r02 = input	r06 = header
+; Inputs: r02				r03 = address	r07 = flags
+; Outputs: rec, ree			r04 = block size
+; Scope: r01-r07, rec-red | 60000-60002	r05 = size
 
-sav rec r03
-cal add rec r02
-sav r01 rec
-sav r03 r02
 
-sav 0 r01			; reset used registers
-sav 0 r03
+sav r02 r01				; ready size test
+
+sav 4 ree				; assume bad size
+
+ifg 60003				; size > 0
+
+  sav 0 ree				; size is ok
+  executestd heap/_alloc.craw		; main code
+
+rmv 60003				; end size > 0 check
+
+sav 0 r01				; reset used registers
+sav 0 r02

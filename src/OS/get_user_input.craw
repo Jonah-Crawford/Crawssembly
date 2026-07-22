@@ -1,5 +1,38 @@
 ; get_user_input.craw
 ; Inputs: None
 ; Outputs: r02-r03
-; Scope: r01-r0
+; Scope: r01-r02, r0f-r1f, rec-red | 1-2, 10-24
 
+
+2						; input loop
+
+  sav 0 r0f					; reset character regs
+  sav 0 r10
+  sav 0 r11
+  sav 0 r12
+  sav 0 r13
+  sav 0 r14
+  sav 0 r15
+  sav 0 r16
+  sav 0 r17
+  sav 0 r18
+  sav 0 r19
+  sav 0 r1a
+  sav 0 r1b
+  sav 0 r1c
+  sav 0 r1d
+  sav 0 r1e
+  sav 0 r1f
+
+  io text newline rff
+
+  sav 16 r02					; allocate 16 words
+  executestd heap/alloc.craw			; create 16 byte block
+
+  execute read_16_inputs.craw			; 16 chars into r10-r1f
+
+  sav r0f r01					; ready input length
+
+  jmz 2						; looped, continue
+
+  

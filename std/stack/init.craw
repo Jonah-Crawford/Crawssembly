@@ -3,14 +3,10 @@
 ; Outputs: red
 ; Scope: r01-r02, red
 
-sav 3 r01			; 0b0..011
-sav 7 r02			; shift amount
-
-cal shl r01 r02			; 0b0..0110000000
-cal add 127 r01			; 0b0..0111111111
-
-cal shl r01 r02			; 0b00.01111111110000000
-cal add 127 r01			; 0b00.01111111111111111 (65535)
+sav 1 r01			; 0b0..1
+sav 20 r02			; shift amount
+cal shl r01 r02			; 0b0..100000000000000000000 (0x100000)
+cal add -1 r01			; 0b0..011111111111111111111 (0xfffff)
 
 sav r01 red			; update stack pointer register
 
