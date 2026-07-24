@@ -30,28 +30,12 @@ sav r01 r03				; save address
   io mem read r06			; extract header
   sav r06 r01				; ready header
 
-  io text newline rff
-  io text hex r03
-  io text space rff
-  io text hex r06
-  io text space rff
-  io text int r04
-  io text space rff
-  io text int r07
-  io text newline rff
-
   ifz 60001				; header is empty, end of heap
 
     cal add 2 r07			; set end flag to true
     sav r01 r07				; update flags
 
   rmv 60001				; end header empty check
-
-  io text newline rff
-  io text hex r06
-  io text space rff
-  io text int r07
-  io text newline rff
 
   sav 127 r01				; 0b0..01111111
   sav 7 r02				; shift amount

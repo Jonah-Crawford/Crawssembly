@@ -2,30 +2,22 @@ executestd heap/init.craw
 executestd stack/init.craw
 
 sav 6 r02
+executestd heap/alloc.craw
+
+sav rec r10
+
+sav 2 r02
 
 executestd heap/alloc.craw
-io text newline rff
-io text int rec
-io text newline rff
-io text int red
-io text newline rff
-io text int ree
 
+sav r10 r02
 
-sav 7 r02
-
-executestd heap/alloc.craw
-io text newline rff
-io text int rec
-io text newline rff
-io text int red
-io text newline rff
-io text int ree
+executestd heap/free.craw
 
 
 
 
-cal add -25 rec
+cal add -20 rec
 sav r01 r03
 
 sav 0 r02
@@ -40,7 +32,7 @@ sav 0 r02
   io mem addr r01
   io mem read r01
   io text hex r01
-  cal add -100 r02
+  cal add -50 r02
   jml 1
 
 stp
