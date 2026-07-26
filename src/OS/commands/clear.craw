@@ -1,0 +1,9 @@
+;;;;;;;;;;;;;;;;;;;;;;;
+; CrawOS clear        ;
+;                     ;
+; Clears the screen   ;
+;                     ;
+; CRAW SYSTEMS        ;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+io text clear rff		; clears the screen

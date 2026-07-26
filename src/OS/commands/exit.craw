@@ -1,0 +1,9 @@
+;;;;;;;;;;;;;;;;;;;;;;;
+; CrawOS exit         ;
+;                     ;
+; exits CrawOS        ;
+;                     ;
+; CRAW SYSTEMS        ;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+stp				; stops main.craw

@@ -6,15 +6,14 @@
 ; ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚══╝╚══╝      ╚═════╝ ╚══════╝
 ;                                  (C) 2026 CRAW SYSTEMS
 
+executestd stack/init.craw			; initialise the stack
+executestd heap/init.craw			; initialise the heap
+
 io text clear rff				; clear text console
-
-
-execute load_boot_sector.craw			; load boot sector
-
 
 10000						; main command loop
 
-  sav 67 r01					; CShell$ 
+  sav 67 r01					; "CShell$ "
   io text char r01
   sav 83 r01
   io text char r01
@@ -27,11 +26,57 @@ execute load_boot_sector.craw			; load boot sector
   io text char r01
   sav 36 r01
   io text char r01
-  sav 32 r01
-  io text char r01
+  io text space rff
 
-  execute get_user_input.craw			; extract user command -> mem
+  execute get_user_input.craw			; extracts user command -> mem
 
+  execute find_command.craw			; extracts command from input
 
+  io text int r02
 
+  cal add 1 r02					; -1 test for bad command
 
+  ifz 10001					; bad command
+
+    io text newline rff				; drop cursor down
+    sav 85 r01					; "Unknown command"
+    io text char r01
+    sav 110 r01
+    io text char r01
+    sav 107 r01
+    io text char r01
+    sav 110 r01
+    io text char r01
+    sav 111 r01
+    io text char r01
+    sav 119 r01
+    io text char r01
+    sav 110 r01
+    io text char r01
+    io text space rff
+    sav 99 r01
+    io text char r01
+    sav 111 r01
+    io text char r01
+    sav 109 r01
+    io text char r01
+    io text char r01
+    sav 97 r01
+    io text char r01
+    sav 110 r01
+    io text char r01
+    sav 100 r01
+    io text char r01    
+    io text newline rff				; drop cursor down
+
+    jmp 10000					; continue command loop
+
+  rmv 10001					; end bad command check
+
+  execute find_options.craw			; extracts command options
+
+  execute run_command.craw			; execute the command
+
+  executestd heap/free.craw			; free command heap block
+
+  jmp 10000					; continue main loop

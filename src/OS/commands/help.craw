@@ -1,0 +1,45 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; CrawOS help             ;
+;                         ;
+; Displays command help   ;
+;                         ;
+; CRAW SYSTEMS            ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+io text newline rff			; "exit"
+sav 101 r01
+io text char r01
+sav 120 r01
+io text char r01
+sav 105 r01
+io text char r01
+sav 116 r01
+io text char r01
+
+io text newline r01			; "ls"
+sav 108 r01
+io text char r01
+sav 115 r01
+io text char r01
+
+io text newline r01			; "clear"
+sav 99 r01
+io text char r01
+sav 108 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 114 r01
+io text char r01
+
+io text newline r01			; "help"
+sav 104 r01
+io text char r01
+sav 101 r01
+io text char r01
+sav 108 r01
+io text char r01
+sav 112 r01
+io text char r01

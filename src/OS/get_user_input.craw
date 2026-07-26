@@ -1,8 +1,15 @@
 ; get_user_input.craw
 ; Inputs: None
 ; Outputs: r02-r03
-; Scope: r01-r02, r0f-r1f, rec-red | 1-2, 10-24
+; Scope: r01-r03, r0f-r1f, r02-red | 1-2, 10-24
 
+sav 1 r01					; 0b0..1
+sav 8 r02					; shift amount
+cal shl r01 r02					; 0b0..100000000
+sav r01 r02					; set 256 to input
+executestd heap/alloc.craw			; create 256 byte block
+
+sav rec r03					; heap pointer -> address
 
 2						; input loop
 
@@ -24,15 +31,110 @@
   sav 0 r1e
   sav 0 r1f
 
-  io text newline rff
-
-  sav 16 r02					; allocate 16 words
-  executestd heap/alloc.craw			; create 16 byte block
-
   execute read_16_inputs.craw			; 16 chars into r10-r1f
 
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r10				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r11				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r12				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r13				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r14				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r15				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r16				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r17				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r18				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r19				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r1a				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r1b				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r1c				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r1d				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r1e				; write character
+
+  cal add 1 r03					; get next data address
+  sav r01 r03					; update address
+  io mem addr r01				; set memory address
+  io mem write r1f				; write character
+
   sav r0f r01					; ready input length
+  jmz 2						; no enter => continue
 
-  jmz 2						; looped, continue
+rmv 2						; free label
 
-  
+sav 0 r01					; reset used registers
+sav 0 r02
+sav 0 r03
+sav 0 r0f
+sav 0 r10
+sav 0 r11
+sav 0 r12
+sav 0 r13
+sav 0 r14
+sav 0 r15
+sav 0 r16
+sav 0 r17
+sav 0 r18
+sav 0 r19
+sav 0 r1a
+sav 0 r1b
+sav 0 r1c
+sav 0 r1d
+sav 0 r1e
+sav 0 r1f

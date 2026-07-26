@@ -1,0 +1,34 @@
+; execute_command.craw
+; Inputs: r02
+; Outputs: None
+; Scope: Variable
+
+cal add 0 r02				; 0 = exit
+ifz 60100				; exit
+
+  execute commands/exit.craw		; run exit
+
+rmv 60100				; end exit branch
+
+cal add -1 r02				; 1 = ls
+ifz 60100				; ls
+
+  execute commands/ls.craw		; run ls
+
+rmv 60100				; end ls branch
+
+cal add -2 r02				; 2 = clear
+ifz 60100				; clear
+
+  execute commands/clear.craw		; run clear
+
+rmv 60100				; end clear branch
+
+cal add -3 r02				; 3 = help
+ifz 60100				; help
+
+  execute commands/help.craw		; run help
+
+rmv 60100				; end help branch
+
+sav 0 r01				; clears lingering values

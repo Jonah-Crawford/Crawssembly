@@ -1,7 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; CrawFS dir                            ;
-;                                       ;
-; Expects boot sector input (--file)    ;
+; CrawOS ls                             ;
 ;                                       ;
 ; r10 = total file count                ;
 ; r20-r2f = per-file name               ;
@@ -12,6 +10,7 @@
 ; r18 = per-file ID                     ;
 ; r17 = per-file parent dir ID          ;
 ; r16 = per-file time created           ;
+; r15 = current word address            ;
 ; r30-r36 = per-file owner              ;
 ; r37 = per-file group read             ;
 ; r38 = per-file group write            ;
@@ -25,7 +24,13 @@
 ; CRAW SYSTEMS                          ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-cal add -67 r00				; 67 = C
+io text newline rff			; initial drop down
+
+sav 0 r01				; disk address
+io disk addr r01			; set address
+io disk read r01			; get value
+
+cal add -67 r01				; 67 = C
 ifg 1					; code > 67
   stp					; magic not met, stop
 rmv 1					; end code > 67 check
@@ -34,9 +39,11 @@ ifl 1					; code < 67
   stp					; magic not met, stop
 rmv 1					; end code < 67 check
 
-inp					; get 2nd magic byte
+sav 1 r01				; disk address
+io disk addr r01			; set address
+io disk read r01			; get value
 
-cal add -82 r00				; 82 = R
+cal add -82 r01				; 82 = R
 ifg 1					; code > 82
   stp					; magic not met, stop
 rmv 1					; end code > 82 check
@@ -45,9 +52,11 @@ ifl 1					; code < 82
   stp					; magic not met, stop
 rmv 1					; end code < 82
 
-inp					; get 3rd magic byte
+sav 2 r01                               ; disk address
+io disk addr r01                        ; set address
+io disk read r01                        ; get value
 
-cal add -65 r00				; 65 = A
+cal add -65 r01				; 65 = A
 ifg 1					; code > 65
   stp					; magic not met, stop
 rmv 1					; end code > 65 check
@@ -56,9 +65,11 @@ ifl 1					; code < 65
   stp					; magic not met, stop
 rmv 1					; end code < 65 check
 
-inp					; get 4th magic byte
+sav 3 r01                               ; disk address
+io disk addr r01                        ; set address
+io disk read r01                        ; get value
 
-cal add -87 r00				; 87 = W
+cal add -87 r01				; 87 = W
 ifg 1					; code > 87
   stp					; magic not met, stop
 rmv 1					; end code > 87 check
@@ -67,19 +78,30 @@ ifl 1					; code < 87
   stp					; magic not met, stop
 rmv 1					; end code < 87
 
-inp					; get 1st byte of index count
-sav r00 r05				; preserve 1st byte
+sav 4 r01                               ; disk address
+io disk addr r01                        ; set address
+io disk read r01                        ; get value
 
-inp					; get 2nd byte of index count
-sav r00 r04				; preserve 2nd byte
+sav r01 r05				; preserve 1st byte
 
-inp					; get 3rd byte of index count
-sav r00 r03				; preserve 3rd byte
+sav 5 r01                               ; disk address
+io disk addr r01                        ; set address
+io disk read r01                        ; get value
 
-inp					; get 4th byte of index count
-sav r00 r02				; preserve 4th byte
+sav r01 r04				; preserve 2nd byte
 
-sav 8 r06				; set shift amount
+sav 6 r01                               ; disk address
+io disk addr r01                        ; set address
+io disk read r01                        ; get value
+
+sav r01 r03				; preserve 3rd byte
+
+sav 7 r01                               ; disk address
+io disk addr r01                        ; set address
+io disk read r01                        ; get value
+sav r01 r02				; preserve 4th byte
+
+sav 7 r06				; set shift amount
 
 cal shl r02 r06				; 1st byte << 8
 cal shl r01 r06				; 1st byte << 16
@@ -131,81 +153,155 @@ io text newline rff			; drop cursor down
 
 sav 0 r19				; inititate file count
 
+sav 7 r15				; initiate disk address
+
 1					; file record loop
   cal add 1 r19				; incrememnt file count
   sav r01 r19				; update file count
 
-  inp					; get 1st filename byte
-  sav r00 r20				; 1st char store
+  cal add 1 r15				; increase address
+  sav r01 r15				; update address
+  io disk addr r15			; set address
+  io disk read r01			; read address
+  sav r01 r20				; 1st char store
 
-  inp					; get 2nd filename byte
-  sav r00 r21				; 2nd char store
+  cal add 1 r15				; increase address
+  sav r01 r15				; update address
+  io disk addr r15			; set address
+  io disk read r01			; read address
+  sav r01 r21				; 2nd char store
 
-  inp					; get 3rd filename byte
-  sav r00 r22				; 3rd char store
+  cal add 1 r15				; increase address
+  sav r01 r15				; update address
+  io disk addr r15			; set address
+  io disk read r01			; read address
+  sav r01 r22				; 3rd char store
 
-  inp					; get 4th filename byte
-  sav r00 r23				; 4th char store
+  cal add 1 r15				; increase address
+  sav r01 r15				; update address
+  io disk addr r15			; set address
+  io disk read r01			; read address
+  sav r01 r23				; 4th char store
 
-  inp					; get 5th filename byte
-  sav r00 r24				; 5th char store
+  cal add 1 r15				; increase address
+  sav r01 r15				; update address
+  io disk addr r15			; set address
+  io disk read r01			; read address
+  sav r01 r24				; 5th char store
 
-  inp					; get 6th filename byte
-  sav r00 r25				; 6th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r25				; 6th char store
 
-  inp					; get 7th filename byte
-  sav r00 r26				; 7th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r26				; 7th char store
 
-  inp					; get 8th filename byte
-  sav r00 r27				; 8th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r27				; 8th char store
 
-  inp					; get 9th filename byte
-  sav r00 r28				; 9th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r28				; 9th char store
 
-  inp					; get 10th filename byte
-  sav r00 r29				; 10th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r29				; 10th char store
 
-  inp					; get 11th filename byte
-  sav r00 r2a				; 11th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r2a				; 11th char store
 
-  inp					; get 12th filename byte
-  sav r00 r2b				; 12th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r2b				; 12th char store
 
-  inp					; get 13th filename byte
-  sav r00 r2c				; 13th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r2c				; 13th char store
 
-  inp					; get 14th filename byte
-  sav r00 r2d				; 14th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r2d				; 14th char store
 
-  inp					; get 15th filename byte
-  sav r00 r2e				; 15th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r2e				; 15th char store
 
-  inp					; get 16th filename byte
-  sav r00 r2f				; 16th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r2f				; 16th char store
 
-  inp					; get 1st filetype byte
-  sav r00 r1c				; 1st char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r1c				; 1st char store
 
-  inp					; get 2nd filetype byte
-  sav r00 r1d				; 2nd char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r1d				; 2nd char store
 
-  inp					; get 3rd filetype byte
-  sav r00 r1e				; 3rd char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r1e				; 3rd char store
 
-  inp					; get 4th filetype byte
-  sav r00 r1f				; 4th char store
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r1f				; 4th char store
 
-  inp					; get 1st address byte
-  sav r00 r05				; preserve 1st byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r05				; preserve 1st byte
 
-  inp					; get 2nd address byte
-  sav r00 r04				; preserve 2nd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r04				; preserve 2nd byte
 
-  inp					; get 3rd address byte
-  sav r00 r03				; preserve 3rd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r03				; preserve 3rd byte
 
-  inp					; get 4th address byte
-  sav r00 r02				; preserve 4th byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r02				; reserve 4th byte
 
   cal shl r02 r06			; 1st byte << 8
   cal shl r01 r06			; 1st byte << 16
@@ -224,17 +320,29 @@ sav 0 r19				; inititate file count
   cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
   sav r01 r1b				; preserve file address
 
-  inp					; get 1st length byte
-  sav r00 r05				; preserve 1st byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r05				; preserve 1st byte
 
-  inp					; get 2nd length byte
-  sav r00 r04				; preserve 2nd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r04				; preserve 2nd byte
 
-  inp					; get 3rd length byte
-  sav r00 r03				; preserve 3rd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r03				; preserve 3rd byte
 
-  inp					; get 4th length byte
-  sav r00 r02				; preserve 4th byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r02				; preserve 4th byte
 
   cal shl r02 r06			; 1st byte << 8
   cal shl r01 r06			; 1st byte << 16
@@ -253,17 +361,29 @@ sav 0 r19				; inititate file count
   cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
   sav r01 r1a				; preserve file length
 
-  inp					; get 1st ID byte
-  sav r00 r05				; preserve 1st byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r05				; preserve 1st byte
 
-  inp					; get 2nd ID byte
-  sav r00 r04				; preserve 2nd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r04				; preserve 2nd byte
 
-  inp					; get 3rd ID byte
-  sav r00 r03				; preserve 3rd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r03				; preserve 3rd byte
 
-  inp					; get 4th ID byte
-  sav r00 r02				; preserve 4th byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r02				; preserve 4th byte
 
   cal shl r02 r06			; 1st byte << 8
   cal shl r01 r06			; 1st byte << 16
@@ -282,17 +402,29 @@ sav 0 r19				; inititate file count
   cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
   sav r01 r18				; preserve file ID
 
-  inp					; get 1st parent dir ID byte
-  sav r00 r05				; preserve 1st byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r05				; preserve 1st byte
 
-  inp					; get 2nd parent dir ID byte
-  sav r00 r04				; preserve 2nd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r04				; preserve 2nd byte
 
-  inp					; get 3rd parent dir ID byte
-  sav r00 r03				; preserve 3rd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r03				; preserve 3rd byte
 
-  inp					; get 4th parent dir ID byte
-  sav r00 r02				; preserve 4th byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r02				; preserve 4th byte
 
   cal shl r02 r06			; 1st byte << 8
   cal shl r01 r06			; 1st byte << 16
@@ -311,17 +443,29 @@ sav 0 r19				; inititate file count
   cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
   sav r01 r17				; preserve parent directory ID
 
-  inp					; get 1st creation time byte
-  sav r00 r05				; preserve 1st byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r05				; preserve 1st byte
 
-  inp					; get 2nd creation time byte
-  sav r00 r04				; preserve 2nd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r04				; preserve 2nd byte
 
-  inp					; get 3rd creation time byte
-  sav r00 r03				; preserve 3rd byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r03				; preserve 3rd byte
 
-  inp					; get 4th creation time byte
-  sav r00 r02				; preserve 4th byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r02				; preserve 4th byte
 
   cal shl r02 r06			; 1st byte << 8
   cal shl r01 r06			; 1st byte << 16
@@ -340,30 +484,53 @@ sav 0 r19				; inititate file count
   cal add r01 r05			; 1st byte + 2nd byte + 3rd byte + 4th byte
   sav r01 r16				; preserve creation time
 
-  inp					; get 1st owner char
-  sav r00 r30				; preserve char
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r30				; preserve char
 
-  inp					; get 2nd owner char
-  sav r00 r31				; preserve char
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r31				; preserve char
 
-  inp					; get 3rd owner char
-  sav r00 r32				; preserve char
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r32				; preserve char
 
-  inp					; get 4th owner char
-  sav r00 r33				; preserve char
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r33				; preserve char
 
-  inp					; get 5th owner char
-  sav r00 r34				; preserve char
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r34				; preserve char
 
-  inp					; get 6th owner char
-  sav r00 r35				; preserve char
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r35				; preserve char
 
-  inp					; get 7th owner char
-  sav r00 r36				; preserve char
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r36				; preserve char
 
-  inp					; get file use byte
-
-  sav r00 r08				; copy file use byte
+  cal add 1 r15                         ; increase address
+  sav r01 r15                           ; update address
+  io disk addr r15                       ; set address
+  io disk read r01                       ; read address
+  sav r01 r08				; copy file use byte
 
   sav 1 r09				; load shift amount
 
@@ -796,4 +963,4 @@ sav 0 r19				; inititate file count
 
   jmg 1					; total != file count, continue loop
 
-stp					; reached end, stop
+rmv 1					; free label
