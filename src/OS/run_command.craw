@@ -33,4 +33,11 @@ ifz 60100				; help
 
 rmv 60100				; end help branch
 
+cal add -4 reb				; 4 = date
+ifz 60100				; date
+
+  execute commands/date.craw		; run date
+
+rmv 60100				; end date branch
+
 sav 0 r01				; clears lingering values

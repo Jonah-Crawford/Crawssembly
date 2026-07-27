@@ -1340,12 +1340,12 @@ The text device is the largest `io` group, below is the list of all instructions
 - `io text clear`: Clears the terminal, is usually quite slow.
 - `io text iso`: Shows the human-readable version of the inputted timestamp.`
 - `io text space`: Shorthand for printing a space.
-- `io text red`: Sets the current text red colour value.
-- `io text green`: Sets the current text green colour value.
-- `io text blue`: Sets the current text blue colour value.
-- `io text fred`: Sets the current background text red colour value.
-- `io text fgree`: Sets the current background text green colour value.
-- `io text fblue`: Sets the current background text blue colour value.
+- `io text r`: Sets the current text red colour value.
+- `io text g`: Sets the current text green colour value.
+- `io text b`: Sets the current text blue colour value.
+- `io text fr`: Sets the current background text red colour value.
+- `io text fg`: Sets the current background text green colour value.
+- `io text fb`: Sets the current background text blue colour value.
 
 ### Graphics
 
@@ -1354,9 +1354,9 @@ Unlike text output, graphics allow programs to control individual pixels. Crawss
 There are 8 main commands in the `io screen` group:
 - `io screen x`: sets the current active X coordinate
 - `io screen y`: sets the current active Y coordinate
-- `io screen red`: sets the current red colour value
-- `io screen green`: sets the current green colour value
-- `io screen blue`: sets the current blue colour value
+- `io screen r`: sets the current red colour value
+- `io screen g`: sets the current green colour value
+- `io screen b`: sets the current blue colour value
 - `io screen pixel`: updates the graphics buffer at (X,Y)
 - `io screen present`: sends the graphics buffer to the screen
 - `io screen clear`: clears the screen buffer
@@ -1869,12 +1869,12 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `io text clear` | `0000` | `0101` | `01 110 0000 0101 rrrrrrrr` | Clears the terminal, can be slow |
 | `io text iso` | `0000` | `0110` | `01 110 0000 0110 rrrrrrrr` | Prints the timestamp ISO |
 | `io text space` | `0000` | `0111` | `01 110 0000 0111 rrrrrrrr` | Prints a space |
-| `io text red` | `0000` | `1000` | `01 110 0000 1000 rrrrrrrr` | Sets the text red value |
-| `io text green` | `0000` | `1001` | `01 110 0000 1001 rrrrrrrr` | Sets the text blue value |
-| `io text blue` | `0000` | `1010` | `01 110 0000 1010 rrrrrrrr` | Sets the text blue value |
-| `io text bred` | `0000` | `1011` | `01 110 0000 1011 rrrrrrrr` | Sets the background red value |
-| `io text bgreen` | `0000` | `1100` | `01 110 0000 1100 rrrrrrrr` | Sets the background blue value |
-| `io text bblue` | `0000` | `1101` | `01 110 0000 1101 rrrrrrrr` | Sets the background blue value |
+| `io text r` | `0000` | `1000` | `01 110 0000 1000 rrrrrrrr` | Sets the text red value |
+| `io text g` | `0000` | `1001` | `01 110 0000 1001 rrrrrrrr` | Sets the text blue value |
+| `io text b` | `0000` | `1010` | `01 110 0000 1010 rrrrrrrr` | Sets the text blue value |
+| `io text br` | `0000` | `1011` | `01 110 0000 1011 rrrrrrrr` | Sets the background red value |
+| `io text bg` | `0000` | `1100` | `01 110 0000 1100 rrrrrrrr` | Sets the background blue value |
+| `io text bb` | `0000` | `1101` | `01 110 0000 1101 rrrrrrrr` | Sets the background blue value |
 | `io time unix` | `0001` | `0000` | `01 110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
 | `io time low` | `0001` | `0001` | `01 110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
 | `io time sleep` | `0001` | `0010` | `01 110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |

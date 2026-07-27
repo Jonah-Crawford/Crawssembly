@@ -1,0 +1,15 @@
+;;;;;;;;;;;;;;;;;;;;;;;
+; CrawOS date         ;
+;                     ;
+; Outputs ISO date    ;
+;                     ;
+; CRAW SYSTEMS        ;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+io time unix r01
+
+io text newline rff			; drop cursor down
+io text iso r01				; show human-readable time
+io text newline rff			; drop cursor down
+
+sav 0 r01				; reset used registers

@@ -9,32 +9,84 @@
 executestd stack/init.craw			; initialise the stack
 executestd heap/init.craw			; initialise the heap
 
+sav 127 r01					; high colour
+io text r r01					; high red
+io text g r01					; high green
+io text b r01					; high blue
+
+sav -128 r01					; low colour
+io text br r01					; low bred
+io text bg r01					; low bgreen
+io text bb r01					; low bblue
+
 io text clear rff				; clear text console
 
 10000						; main command loop
 
-  sav 67 r01					; "CShell$ "
+  sav 127 r01					; high colour
+  io text g r01					; high green
+  io text b r01					; high blue
+
+  sav -128 r01					; low colour
+  io text br r01				; low bred
+  io text bg r01				; low bgreen
+  io text bb r01				; low bblue
+  io text r r01					; low red
+
+  sav 99 r01					; "crawsh>"
   io text char r01
-  sav 83 r01
+  sav 114 r01
+  io text char r01
+  sav 97 r01
+  io text char r01
+  sav 119 r01
+  io text char r01
+  sav 115 r01
   io text char r01
   sav 104 r01
   io text char r01
-  sav 101 r01
+  sav 62 r01
   io text char r01
-  sav 108 r01
-  io text char r01
-  io text char r01
-  sav 36 r01
-  io text char r01
-  io text space rff
 
-  execute get_user_input.craw			; extracts user command -> mem
+  sav 127 r01					; high colour
+  io text r r01					; high red
+  io text g r01					; high green
+  io text b r01					; high blue
+
+  sav -128 r01					; low colour
+  io text br r01				; low bred
+  io text bg r01				; low bgreen
+  io text bb r01				; low bblue
+
+  io text space rff				; seperate command
+
+  execute get_user_input.craw			; extracts command -> mem
 
   execute find_command.craw			; extracts command from input
+
+  cal add 2 r02					; -2 test for empty command
+
+  ifz 10001					; empty command
+
+    io text newline rff				; drop cursor down
+
+    jmp 10000					; continue main loop
+
+  rmv 10001					; end empty command check
 
   cal add 1 r02					; -1 test for bad command
 
   ifz 10001					; bad command
+
+    sav 127 r01					; high colour
+    io text r r01				; high red
+
+    sav -128 r01				; low colour
+    io text br r01				; low bred
+    io text bg r01				; low bgreen
+    io text bb r01				; low bblue
+    io text g r01				; low green
+    io text b r01				; low blue
 
     io text newline rff				; drop cursor down
     sav 85 r01					; "Unknown command"
@@ -66,6 +118,17 @@ io text clear rff				; clear text console
     sav 100 r01
     io text char r01    
     io text newline rff				; drop cursor down
+
+    sav 127 r01					; high colour
+    io text r r01				; high red
+    io text g r01				; high green
+    io text b r01				; high blue
+
+    sav -128 r01				; low colour
+    io text br r01				; low bred
+    io text bg r01				; low bgreen
+    io text bb r01				; low bblue
+
 
     jmp 10000					; continue command loop
 
