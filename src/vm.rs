@@ -662,6 +662,14 @@ struct Cpu {
     call_stack: Vec<Frame>,
     blocks: Vec<Vec<Decoded>>, // cache of decoded blocks
 
+    // text
+    foreground_red: u8,
+    foreground_green: u8,
+    foreground_blue: u8,
+    background_red: u8,
+    background_green: u8,
+    background_blue: u8,
+
     // screen
     screen: Vec<[u8; 3]>,
     render_mode: TerminalRenderMode,
@@ -762,6 +770,12 @@ impl Cpu {
             input_pos: 0,
             call_stack: Vec::new(),
             blocks: Vec::new(),
+            foreground_red: 255,
+            foreground_green: 255,
+            foreground_blue: 255,
+            background_red: 0,
+            background_green: 0,
+            background_blue: 0,
             screen: vec![[0, 0, 0]; config.screen_w * config.screen_h],
             last_screen: vec![[255, 255, 255]; config.screen_w * config.screen_h],
             render_mode: Self::detect_terminal_render_mode(),
@@ -1535,6 +1549,126 @@ impl Cpu {
                     let _ = io::stdout().flush();
                 }
 
+                // fred
+                0x8 => {
+
+                    if let Some(v) = Self::signed_to_rgb(value) {
+                        self.foreground_red = v;
+                    } else {
+                        self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                    }
+
+                    print!(
+                        "\x1b[38;2;{};{};{}m",
+                        self.foreground_red,
+                        self.foreground_green,
+                        self.foreground_blue
+                    );
+
+                    let _ = io::stdout().flush();
+                }
+
+                // fgreen
+                0x9 => {
+
+                    if let Some(v) = Self::signed_to_rgb(value) {
+                        self.foreground_green = v;
+                    } else {
+                        self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                    }
+
+                    print!(
+                        "\x1b[38;2;{};{};{}m",
+                        self.foreground_red,
+                        self.foreground_green,
+                        self.foreground_blue
+                    );
+
+                    let _ = io::stdout().flush();
+                }
+
+                // fblue
+                0xA => {
+
+                    if let Some(v) = Self::signed_to_rgb(value) {
+                        self.foreground_blue = v;
+                    } else {
+                        self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                    }
+
+                    print!(
+                        "\x1b[38;2;{};{};{}m",
+                        self.foreground_red,
+                        self.foreground_green,
+                        self.foreground_blue
+                    );
+
+                    let _ = io::stdout().flush();
+                }
+
+
+                // bred
+                0xB => {
+
+                    if let Some(v) = Self::signed_to_rgb(value) {
+                        self.background_red = v;
+                    } else {
+                        self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                    }
+
+                    print!(
+                        "\x1b[48;2;{};{};{}m",
+                        self.background_red,
+                        self.background_green,
+                        self.background_blue
+                    );
+
+                    let _ = io::stdout().flush();
+                }
+
+                // bgreen
+                0xC => {
+
+                    if let Some(v) = Self::signed_to_rgb(value) {
+                        self.background_green = v;
+                    } else {
+                        self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                    }
+
+                    print!(
+                        "\x1b[48;2;{};{};{}m",
+                        self.background_red,
+                        self.background_green,
+                        self.background_blue
+                    );
+
+                    let _ = io::stdout().flush();
+                }
+
+                // bblue
+                0xD => {
+
+                    if let Some(v) = Self::signed_to_rgb(value) {
+                        self.background_blue = v;
+                    } else {
+                        self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                    }
+
+                    print!(
+                        "\x1b[48;2;{};{};{}m",
+                        self.background_red,
+                        self.background_green,
+                        self.background_blue
+                    );
+
+                    let _ = io::stdout().flush();
+                }
+
+
+
+
+
+
                 _ => {
                     self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
                 }
@@ -1617,7 +1751,7 @@ impl Cpu {
                     }
                 }
 
-                // red colour
+                // red
                 0x6 => {
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.screen_red = v;
@@ -1626,7 +1760,7 @@ impl Cpu {
                     }
                 }
 
-                // green colour
+                // green
                 0x7 => {
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.screen_green = v;
@@ -1635,7 +1769,7 @@ impl Cpu {
                     }
                 }
 
-                // blue colour
+                // blue
                 0x8 => {
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.screen_blue = v;

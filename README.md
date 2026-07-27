@@ -1291,26 +1291,25 @@ The screen is a great all-purpose viewing device. Not only can it show text, it 
 
 Before now, program outputs have used the `ref` register to send raw ASCII codes to the screen. While useful for debugging, this isn't the best way to get a program output. This uses the `io text` group of commands.
 
+The main commands are as follows:
+
 - `io text char`: Shows the ASCII code stored in the input register to the screen, the more *idiomatic* version of using `ref`.
 - `io text int`: Shows the actual value inside the input register.
 - `io text newline`: Shorthand for moving the text cursor to a new line.
-- `io text hex`: Shows the hex value stored inside the input register.
 - `io text clear`: Clears the terminal, is usually quite slow.
-- `io text iso`: Shows a human readable version of the timestamp input.
-- `io text space`: Shprthand for printing a space.
+- `io text space`: Shorthand for printing a space.
 
 Example
 
 ```
 sav 100 r01
 
+io text clear rff
+
 io text char r01
 io text newline rff
 
 io text int r01
-io text newline rff
-
-io text hex r01
 io text newline rff
 ```
 
@@ -1319,7 +1318,6 @@ Output
 ```
 d
 100
-64
 ```
 
 #### Activity: The New Way To Talk
@@ -1329,6 +1327,25 @@ Write a program that prints the key you press, and make it so when `Esc` is pres
 #### Advanced Activity: Arcade Leaderboard Name
 
 Write a program that stores a 3 letter name from the keyboard, and then output `Hello, ` followed by that name.
+
+#### Other Commands
+
+The text device is the largest `io` group, below is the list of all instructions:
+
+- `io text char`: Shows the ASCII code stored in the input register to the screen, the more *idiomatic* version of using `ref`.
+- `io text int`: Shows the actual value inside the input register.
+- `io text newline`: Shorthand for moving the text cursor to a new line.
+- `io text hex`: Shows the hex value inside the input register.
+- `io text error`: Displays error text based on the value in `ref`.
+- `io text clear`: Clears the terminal, is usually quite slow.
+- `io text iso`: Shows the human-readable version of the inputted timestamp.`
+- `io text space`: Shorthand for printing a space.
+- `io text red`: Sets the current text red colour value.
+- `io text green`: Sets the current text green colour value.
+- `io text blue`: Sets the current text blue colour value.
+- `io text fred`: Sets the current background text red colour value.
+- `io text fgree`: Sets the current background text green colour value.
+- `io text fblue`: Sets the current background text blue colour value.
 
 ### Graphics
 
@@ -1848,9 +1865,16 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `io text int` | `0000` | `0001` | `01 110 0000 0001 rrrrrrrr` | Print input register's value |
 | `io text newline` | `0000` | `0010` | `01 110 0000 0010 rrrrrrrr` | Moves the text cursor to the next line |
 | `io text hex` | `0000` | `0011` | `01 110 0000 0011 rrrrrrrr` | Print input register's value in hexadecimal |
-| `io text clear` | `0000` | `0101` | `01 110 0000 0100 rrrrrrrr` | Clears the terminal, can be slow |
+| `io text error` | `0000` | `0100` | `01 110 0000 0100 rrrrrrrr` | Shows error text based on `ree` value |
+| `io text clear` | `0000` | `0101` | `01 110 0000 0101 rrrrrrrr` | Clears the terminal, can be slow |
 | `io text iso` | `0000` | `0110` | `01 110 0000 0110 rrrrrrrr` | Prints the timestamp ISO |
 | `io text space` | `0000` | `0111` | `01 110 0000 0111 rrrrrrrr` | Prints a space |
+| `io text red` | `0000` | `1000` | `01 110 0000 1000 rrrrrrrr` | Sets the text red value |
+| `io text green` | `0000` | `1001` | `01 110 0000 1001 rrrrrrrr` | Sets the text blue value |
+| `io text blue` | `0000` | `1010` | `01 110 0000 1010 rrrrrrrr` | Sets the text blue value |
+| `io text bred` | `0000` | `1011` | `01 110 0000 1011 rrrrrrrr` | Sets the background red value |
+| `io text bgreen` | `0000` | `1100` | `01 110 0000 1100 rrrrrrrr` | Sets the background blue value |
+| `io text bblue` | `0000` | `1101` | `01 110 0000 1101 rrrrrrrr` | Sets the background blue value |
 | `io time unix` | `0001` | `0000` | `01 110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
 | `io time low` | `0001` | `0001` | `01 110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
 | `io time sleep` | `0001` | `0010` | `01 110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |

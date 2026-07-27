@@ -1,30 +1,32 @@
 ; execute_command.craw
-; Inputs: r02
+; Inputs: reb
 ; Outputs: None
 ; Scope: Variable
 
-cal add 0 r02				; 0 = exit
+sav r02 reb				; preserve code into highest register
+
+cal add 0 reb				; 0 = exit
 ifz 60100				; exit
 
   execute commands/exit.craw		; run exit
 
 rmv 60100				; end exit branch
 
-cal add -1 r02				; 1 = ls
+cal add -1 reb				; 1 = ls
 ifz 60100				; ls
 
   execute commands/ls.craw		; run ls
 
 rmv 60100				; end ls branch
 
-cal add -2 r02				; 2 = clear
+cal add -2 reb				; 2 = clear
 ifz 60100				; clear
 
   execute commands/clear.craw		; run clear
 
 rmv 60100				; end clear branch
 
-cal add -3 r02				; 3 = help
+cal add -3 reb				; 3 = help
 ifz 60100				; help
 
   execute commands/help.craw		; run help

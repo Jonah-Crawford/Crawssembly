@@ -32,8 +32,6 @@ io text clear rff				; clear text console
 
   execute find_command.craw			; extracts command from input
 
-  io text int r02
-
   cal add 1 r02					; -1 test for bad command
 
   ifz 10001					; bad command

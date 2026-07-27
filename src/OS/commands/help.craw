@@ -43,3 +43,5 @@ sav 108 r01
 io text char r01
 sav 112 r01
 io text char r01
+
+io text newline rff			; final cursor drop

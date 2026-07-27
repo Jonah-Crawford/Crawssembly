@@ -1,2 +1,22 @@
-sav 100 r00
-io text int r00
+sav 0 r01
+
+io text hex r01
+io text space rff
+io text r r01
+io text hex r01
+io text space rff
+io text g r01
+io text hex r01
+io text space rff
+io text b r01
+io text hex r01
+io text space rff
+io text br r01
+io text hex r01
+io text space rff
+io text bg r01
+io text hex r01
+io text space r01
+io text bb r01
+io text hex r01
+io text newline rff

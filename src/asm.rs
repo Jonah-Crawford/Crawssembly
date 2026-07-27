@@ -459,6 +459,12 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
             "clear" => Ok(0x5),
             "iso" => Ok(0x6),
             "space" => Ok(0x7),
+            "red" | "r" | "fred" | "fr" => Ok(0x8),
+            "green" | "g" | "fgreen" | "fg" => Ok(0x9),
+            "blue" | "b" | "fblue" | "fb" => Ok(0xA),
+            "bred" | "br" => Ok(0xB),
+            "bgreen" | "bg" => Ok(0xC),
+            "bblue" | "bb" => Ok(0xD),
             _ => Err(format!("Unknown text command '{tok}'")),
         },
 

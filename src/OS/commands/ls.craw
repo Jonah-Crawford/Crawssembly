@@ -963,4 +963,6 @@ sav 7 r15				; initiate disk address
 
   jmg 1					; total != file count, continue loop
 
+io text newline rff			; final cursor drop
+
 rmv 1					; free label
