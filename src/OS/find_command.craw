@@ -59,6 +59,49 @@ ifz 60010				; e branch
       rmv 60013				; end exit branch
     rmv 60012				; end exi branch
   rmv 60011				; end ex branch
+
+  cal add 2 rec				; 2nd char
+  io mem addr r01			; set char
+  io mem read r01			; read char
+
+  cal add -99 r01			; 99 = c
+  ifz 60011				; ec branch
+
+    cal add 3 rec			; 3rd char
+    io mem addr r01			; set char
+    io mem read r01			; read char
+
+    cal add -104 r01			; 104 = h
+    ifz 60012				; ech branch
+
+      cal add 4 rec			; 4th char
+      io mem addr r01			; set char
+      io mem read r01			; read char
+
+      cal add -111 r01			; 111 = o
+      ifz 60013				; echo branch
+
+        cal add 5 rec			; 5th char
+        io mem addr r01			; set char
+        io mem read r01			; read char
+
+        ifz 60014			; 0 = end
+
+          sav 5 r02			; echo = 5
+
+        rmv 60014			; end clear command
+
+        cal add -32 r01			; 32 = ' '
+        ifz 60014			; exit command
+
+          sav 5 r02			; echo = 5
+
+        rmv 60014			; end echo command
+
+      rmv 60013				; end echo branch
+    rmv 60012				; end ech branch
+  rmv 60011				; end ec branch  
+
 rmv 60010				; end e branch
 
 cal add 1 rec				; 1st char

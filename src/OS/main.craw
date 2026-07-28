@@ -64,6 +64,10 @@ io text clear rff				; clear text console
 
   execute find_command.craw			; extracts command from input
 
+  io text newline rff
+  io text int r02
+  io text newline rff
+
   cal add 2 r02					; -2 test for empty command
 
   ifz 10001					; empty command
