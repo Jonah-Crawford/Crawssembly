@@ -1,26 +1,44 @@
-; CSL: math/multiply.craw		r02 = addition amount
-; Inputs: r02-r03			r03 = loop count
+; CSL: math/multiply.craw		r02 = multiplier
+; Inputs: r02-r03			r03 = multiplicand
 ; Outputs: r02				r04 = sum total
-; Scope: r01-r04 | 60000
+; Scope: r01-r05 | 60000-60001    r05 = loop counter
 
 sav 0 r01				; initialise r01
+sav 0 r04               ; initialise r04
 
-rmv 60000				; free label for main loop
+; to iterate through 8 bits of the multiplier
+sav 8 r05               ; initialise r05
 
-60000					; main addition loop
 
-  cal add r02 r04			; add to sum total
-  sav r01 r04				; update sum total
+60000
+    cal and 1 r02       ; extract rightmost bit from r02
 
-  cal add -1 r03			; decrement loop count
-  sav r01 r03				; update loop count
+                        ; doing AND operation with 0 is insignificant here, so skipping
+    ifg 60001
+                        ; if not 0, the bit must be 1
+                        ; doing an AND operation would result in the exact same multiplier
 
-  jmg 60000				; loop count > 0, continue
+        cal add r03 r04 ; add the multiplier to the total sum register
+        sav r01 r04     ; update sum total
+    rmv 60001
 
-rmv 60000				; free label
+    sav 1 r01           ; save 1 to r01 for shift operation
+    cal shr r02 r01     ; shift multiplier right by 1 to move to next bit
+    sav r01 r02         ; update multiplier
+
+    sav 1 r01           ; save 1 to r01 for shift operation
+    cal shl r03 r01     ; shift multiplicand left by 1 to add 0 at rightmost bit
+    sav r01 r03         ; update multiplicand
+
+    cal add -1 r05      ; decrement loop counter
+    sav r01 r05         ; update loop counter
+
+jmg 60000
+
 
 sav r04 r02				; save result to general output register
 
 sav 0 r01				; reset used registers
 sav 0 r03
 sav 0 r04
+sav 0 r05
