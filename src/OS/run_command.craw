@@ -40,4 +40,11 @@ ifz 60100				; date
 
 rmv 60100				; end date branch
 
+cal add -5 reb				; 5 = echo
+ifz 60100				; echo
+
+  execute commands/echo.craw		; run echo
+
+rmv 60100				; end echo branch
+
 sav 0 r01				; clears lingering values

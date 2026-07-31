@@ -6,4 +6,27 @@
 ; CRAW SYSTEMS        ;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-nop
+cal add 6 rec			; start of echo
+sav r01 r03			; save to address register
+
+io text newline rff		; drop cursor down
+
+60020				; print loop
+
+  io mem addr r03		; set address
+  io mem read r02		; read value
+  io text char r02		; print value
+  cal add 1 r03			; increment address
+  sav r01 r03			; update address
+
+  cal not rec rff		; negation 1st step
+  cal add 1 r01			; negation 2nd step
+  cal add r03 r01		; addr - rec
+  cal add -128 r01		; addr - 128 - rec
+  cal add -128 r01		; addr - (256 + rec)
+
+  jml 60020			; char > 256, continue
+
+rmv 60020			; free label
+
+io text newline rff		; drop cursor down
