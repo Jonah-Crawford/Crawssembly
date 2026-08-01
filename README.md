@@ -13,6 +13,9 @@ Check out Crawssembly Online with [this link!](https://crawssembly.ultimatecraw.
 ![VM](https://img.shields.io/badge/Virtual%20Machine-Custom-blue)
 ![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen)
 
+Related Repos:
+- [Crawssembly Package Manager](https://github.com/Jonah-Crawford/cpm)
+
 ## Contents
 
 - [Why does Crawssembly exist?](#why-does-crawssembly-exist)
