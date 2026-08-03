@@ -38,6 +38,7 @@ sha2 = "0.10"
 hex = "0.4"
 ureq = "2"
 serde_json = "1"
+rpassword = "7"
 
 [profile.release]
 debug = false

@@ -1,6 +1,6 @@
 pub mod asm;
-pub mod vm;
 pub mod c_backend;
+pub mod vm;
 
 #[cfg(feature = "wasm")]
 mod web;
@@ -15,13 +15,6 @@ pub fn run_craw(source: &str) -> String {
 }
 
 pub use vm::{
-    DiskConfig,
-    Instr,
-    RunOptions,
-    Vm,
-    VmConfig,
-    load_program,
-    predecode,
-    run_program_with_options,
+    DiskConfig, Instr, RunOptions, Vm, VmConfig, load_program, predecode, run_program_with_options,
     run_vm_with_options,
 };

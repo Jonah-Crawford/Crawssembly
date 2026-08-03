@@ -1,8 +1,8 @@
 // src/asm.rs
 
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::collections::{HashMap, HashSet};
 
 use dirs;
 
@@ -10,61 +10,60 @@ pub type Instr = u32;
 
 #[allow(dead_code)]
 pub fn assemble_file(path: &Path) -> Result<Vec<Instr>, String> {
-  let lines = expand_execute(path, &mut Vec::new())?;
-  assemble(&lines)
+    let lines = expand_execute(path, &mut Vec::new())?;
+    assemble(&lines)
 }
 
 pub fn expand_execute_file(path: &Path) -> Result<Vec<String>, String> {
-  expand_execute(path, &mut Vec::new())
+    expand_execute(path, &mut Vec::new())
 }
 
 fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, String> {
-  let path = path
-    .canonicalize()
-    .map_err(|e| format!("Could not open '{}': {e}", path.display()))?;
+    let path = path
+        .canonicalize()
+        .map_err(|e| format!("Could not open '{}': {e}", path.display()))?;
 
-  if stack.contains(&path) {
-    return Err(format!("Recursive execute detected: {}", path.display()));
-  }
-
-  stack.push(path.clone());
-
-  let src = fs::read_to_string(&path)
-    .map_err(|e| format!("Could not read '{}': {e}", path.display()))?;
-
-  let mut out = Vec::new();
-
-  for (ln, raw) in src.lines().enumerate() {
-    let toks = tokenize(raw);
-    let head = toks.first().map(|s| s.as_str());
-
-    if head == Some("execute") || head == Some("executestd") {
-      if toks.len() != 2 {
-        return Err(format!(
-          "{}:{}: {} expects 1 path",
-          path.display(),
-          ln + 1,
-          toks[0]
-        ));
-      }
-
-      let child = if head == Some("executestd") {
-        std_root().join(&toks[1])
-      } else {
-        path
-          .parent()
-          .unwrap_or_else(|| Path::new("."))
-          .join(&toks[1])
-      };
-
-      out.extend(expand_execute(&child, stack)?);
-    } else {
-      out.push(raw.to_string());
+    if stack.contains(&path) {
+        return Err(format!("Recursive execute detected: {}", path.display()));
     }
-  }
 
-  stack.pop();
-  Ok(out)
+    stack.push(path.clone());
+
+    let src = fs::read_to_string(&path)
+        .map_err(|e| format!("Could not read '{}': {e}", path.display()))?;
+
+    let mut out = Vec::new();
+
+    for (ln, raw) in src.lines().enumerate() {
+        let toks = tokenize(raw);
+        let head = toks.first().map(|s| s.as_str());
+
+        if head == Some("execute") || head == Some("executestd") {
+            if toks.len() != 2 {
+                return Err(format!(
+                    "{}:{}: {} expects 1 path",
+                    path.display(),
+                    ln + 1,
+                    toks[0]
+                ));
+            }
+
+            let child = if head == Some("executestd") {
+                std_root().join(&toks[1])
+            } else {
+                path.parent()
+                    .unwrap_or_else(|| Path::new("."))
+                    .join(&toks[1])
+            };
+
+            out.extend(expand_execute(&child, stack)?);
+        } else {
+            out.push(raw.to_string());
+        }
+    }
+
+    stack.pop();
+    Ok(out)
 }
 
 fn std_root() -> PathBuf {
