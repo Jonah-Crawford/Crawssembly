@@ -24,6 +24,7 @@ Related Repos:
 - [Beginner Overview](#what-will-i-learn)
 - [Detailed Guide](#detailed-guide)
 - [Quick Reference](#quick-reference)
+- [Crawssembly Package Manager](#crawssembly-package-manager)
 - [Legal](#legal)
 
 ## Why does Crawssembly exist?
@@ -1648,23 +1649,6 @@ io text int r02                 ; shows last element (100)
 </details>
 
 <details>
-<summary><strong>Packages</strong></summary>
-
-## Packages
-
-You can share your Crawssembly project with others by publishing to the CPM (Crawssembly Package Manager).
-
-To do this, your project must be in a proper folder structure using `craw init myfoldername`. You can then run `craw pack` to compiler your project into a tarball. `craw publish --url package_install_url` sends your url to download your tarball, along with your folder data inside `package.toml`, to the CPM database.
-
-You can then see your package, and other packages people have made, on the [CPM Website](https://cpm.ultimatecraw.xyz/).
-
-Installing a package can be done by using `craw install packagename`.
-
-> This feature is still in very early alpha, so errors are likely to occur!
-
-</details>
-
-<details>
 <summary><strong>Register Constants</strong></summary>
 
 ## Register Constants
@@ -2049,36 +2033,6 @@ The CPU repeats the cycle for the next instruction.
 </details>
 
 <details>
-<summary><strong>Crawssembly Library</strong></summary>
-
-# Crawssembly Library
-
-Crawssembly is written in Rust, so you can write your own programs to use Crawssembly in other Rust programs. 
-You can do this using the **Crawssembly Crate** on the Rust package manager, *Cargo*.
-
-Example
-
-```rust
-use crawssembly::{RunOptions, Vm, VmConfig};
-
-fn main() -> Result<(), String> {
-  let mut vm = Vm::without_audio(VmConfig::default());
-
-  vm.run_file("program.bin", RunOptions {
-    plain: true,
-    show_stats: false,
-    ..RunOptions::default()
-  })?;
-
-  println!("rFF = {}", vm.registers()[0xFF]);
-
-  Ok(())
-}
-```
-
-</details>
-
-<details>
 <summary><strong>How you can help Crawssembly</strong></summary>
 
 ## How you can help Crawssembly
@@ -2106,15 +2060,179 @@ If you want a challenge, here are some longer programming ideas to get stuck in:
 </details>
 
 <details>
+<summary><strong>Crawssembly Package Manager</strong></summary>
+
+## Crawssembly Package Manager
+
+As your projects grow, you'll probably find yourself writing code that you'd like to reuse. Rather than copying files between projects, Crawssembly includes the **Crawssembly Package Manager (CPM)**.
+
+CPM is Crawssembly's official package registry. It allows developers to publish libraries, install packages created by other people, and keep projects organised.
+
+A typical workflow looks like this:
+
+```
+                 Create Project
+                       │
+                       ▼
+                Write Crawssembly
+                       │
+                       ▼
+               Package your project
+                       │
+                       ▼
+              Publish to the CPM Registry
+                       │
+        ┌──────────────┴──────────────┐
+        ▼                             ▼
+Other developers              Install into projects
+```
+
+Packages are distributed as compressed archives containing your Crawssembly source files and package metadata. Every published package has:
+
+- A unique package name
+- A version number
+- An author
+- A description
+- A download location
+- A cryptographic SHA-256 checksum
+
+The CPM registry stores this information so that users can easily discover and install packages without needing to manually download files.
+
+### Package Structure
+
+Every package is simply a normal Crawssembly project containing a `package.toml` file.
+
+Example:
+
+```
+home/
+├── std/
+│   ├── math.craw
+│   ├── strings.craw
+│   └── utilities.craw
+└── my_library/
+    ├── package.toml
+    └── main.craw
+```
+
+The `package.toml` file describes the package and contains information such as its name, version, author and repository.
+
+### Installing Packages
+
+Packages can be installed directly from the registry.
+
+```bash
+craw pkg install package_name
+```
+
+Installed packages become available through `executestd` exactly like the built-in **Crawssembly Standard Library**.
+
+For example:
+
+```
+executestd my_library/math.craw
+```
+
+### Publishing Packages
+
+Publishing a package is designed to be straightforward.
+
+```
+craw pkg publish
+```
+
+This command automatically:
+
+1. Packs your project into a release archive.
+2. Creates a GitHub Release.
+3. Uploads the package archive.
+4. Publishes the package to the CPM registry.
+
+Once published, anyone can install your package using its package name.
+
+### Authentication
+
+Publishing requires a CPM account.
+
+Log in:
+
+```
+craw pkg login
+```
+
+View your account:
+
+```
+craw pkg whoami
+```
+
+Log out:
+
+```
+craw pkg logout
+```
+
+### Common Commands
+
+| Command | Description |
+|---------|-------------|
+| `craw pkg login` | Log into the CPM registry |
+| `craw pkg whoami` | Show the current account |
+| `craw pkg pack` | Create a package archive locally |
+| `craw pkg publish` | Publish the current package |
+| `craw pkg install` | Install a package |
+| `craw pkg update` | Update installed packages |
+| `craw pkg remove` | Remove an installed package |
+
+The CPM is intended to be the central place for sharing Crawssembly libraries, educational examples and reusable components.
+
+</details>
+
+<details>
+<summary><strong>Crawssembly Crate</strong></summary>
+
+## Crawssembly Crate
+
+Crawssembly is written in the Rust language, so you can write your own programs to use Crawssembly in other Rust programs. 
+You can do this using the **Crawssembly Crate** on the Rust package manager, *Cargo*.
+
+Example
+
+```rust
+use crawssembly::{RunOptions, Vm, VmConfig};
+
+fn main() -> Result<(), String> {
+  let mut vm = Vm::without_audio(VmConfig::default());
+
+  vm.run_file("program.bin", RunOptions {
+    plain: true,
+    show_stats: false,
+    ..RunOptions::default()
+  })?;
+
+  println!("rFF = {}", vm.registers()[0xFF]);
+
+  Ok(())
+}
+```
+
+</details>
+
+<details>
 <summary><strong>Legal</strong></summary>
 
 ## Legal
 
 All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artificial Intelligence) at certain points; all ideas, techniques, and the vast amount of the program was, and continues to be, written by human hands.
 
+> Don't like AI code? Become a volunteer, make a PR, and get rid of it!
+
 ### Thanks
 
 Thank you to **Koy Camerini-Yachdav** who tested Crawssembly on macOS, and their amazing work making detailed error reports.
+
+Thank you to **Fazin Ahamed** for testing out the package CLI system, specifically user accounts and API key - project linking.
+
 Thank you to the *CRAW SYSTEMS* team for help with programming, especially *@Xytrophico* with testing on Linux systems and providing invaluable help.
 
 *Crawssembly is a product of CRAW SYSTEMS (2026)*
