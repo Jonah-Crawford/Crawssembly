@@ -2110,7 +2110,7 @@ home/
 │   ├── math.craw
 │   ├── strings.craw
 │   └── utilities.craw
-└── my_library/
+└── my_package/
     ├── package.toml
     └── main.craw
 ```

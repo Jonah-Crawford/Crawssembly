@@ -440,6 +440,7 @@ fn parse_io_device(tok: &str) -> Result<u8, String> {
         "mem" | "memory" => Ok(0x6),
         "disk" | "disc" => Ok(0x7),
         "speech" => Ok(0x8),
+        "cpu" => Ok(0x9),
         _ => Err(format!("Unknown I/O device '{tok}'")),
     }
 }
@@ -548,6 +549,14 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
             "reset" | "clear" => Ok(0x8),
             _ => Err(format!("Unknown speech command '{tok}'")),
         },
+
+        // cpu
+        0x9 => match t.as_str() {
+          "pcread" => Ok(0x0),
+          "pcwrite" => Ok(0x1),
+
+          _ => Err(format!("Unknown cpu command '{tok}'")),
+        }
 
         _ => Err(format!("Unknown I/O device id {}", device)),
     }

@@ -1485,7 +1485,7 @@ impl Cpu {
         let r = reg as usize;
         let value = self.regs[r];
 
-        self.regs[REG_IO_STATUS] = IO_OK;
+        self.regs[REG_IO_STATUS] = IO_OK; // assume io command is fine
 
         match device {
             // text
@@ -2011,6 +2011,20 @@ impl Cpu {
                 _ => {
                     self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
                 }
+            },
+
+            // cpu
+            0x9 => match command {
+
+                // pcread
+                0x0 => {
+                    self.write_reg(r, self.disk[self.disk_addr]);
+                }
+
+                _ => {
+                    self.regs[REG_IO_STATUS] = IO_INVALD_COMMAND;
+                }
+
             },
 
             _ => {

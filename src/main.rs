@@ -597,7 +597,6 @@ fn print_help() {
     println!("  craw compile <file.craw>      Assemble to program.bin only");
     println!("  craw crush <file.craw>        Reduce a .craw file size");
     println!("  craw debug <file.craw>        Run with VM stats shown");
-    println!("  craw emit-c <file.craw>       Convert Crawssembly to C");
     println!("  craw init <name>              Creates a package structure");
     println!("  craw install-nano             Install nano syntax highlighting");
     println!("  craw install-std              Update the CSL to your machine");
