@@ -1,0 +1,5 @@
+fgo 3
+execute filler.craw
+sav 10 r01
+io text int r01
+stp

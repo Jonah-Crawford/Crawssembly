@@ -8,17 +8,42 @@ use dirs;
 
 pub type Instr = u32;
 
+#[derive(Debug, Clone)]
+struct ExpandedLine {
+    text: String,
+    source_path: PathBuf,
+    logical_line: usize,
+}
+
+#[derive(Debug, Default)]
+struct Expansion {
+    lines: Vec<ExpandedLine>,
+    line_map: HashMap<(PathBuf, usize), usize>,
+}
+
 #[allow(dead_code)]
 pub fn assemble_file(path: &Path) -> Result<Vec<Instr>, String> {
-    let lines = expand_execute(path, &mut Vec::new())?;
+    let expansion = expand_execute(path, &mut Vec::new())?;
+    let lines = relocate_program_lines(&expansion)?;
     assemble(&lines)
 }
 
 pub fn expand_execute_file(path: &Path) -> Result<Vec<String>, String> {
-    expand_execute(path, &mut Vec::new())
+    let expansion = expand_execute(path, &mut Vec::new())?;
+    relocate_program_lines(&expansion)
 }
 
-fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, String> {
+fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Expansion, String> {
+    let mut expansion = Expansion::default();
+    expand_execute_into(path, stack, &mut expansion)?;
+    Ok(expansion)
+}
+
+fn expand_execute_into(
+    path: &Path,
+    stack: &mut Vec<PathBuf>,
+    expansion: &mut Expansion,
+) -> Result<(), String> {
     let path = path
         .canonicalize()
         .map_err(|e| format!("Could not open '{}': {e}", path.display()))?;
@@ -32,14 +57,15 @@ fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, 
     let src = fs::read_to_string(&path)
         .map_err(|e| format!("Could not read '{}': {e}", path.display()))?;
 
-    let mut out = Vec::new();
+    let mut logical_line = 0usize;
 
     for (ln, raw) in src.lines().enumerate() {
         let toks = tokenize(raw);
-        let head = toks.first().map(|s| s.as_str());
+        let head = toks.first().map(|s| s.to_ascii_lowercase());
 
-        if head == Some("execute") || head == Some("executestd") {
+        if matches!(head.as_deref(), Some("execute") | Some("executestd")) {
             if toks.len() != 2 {
+                stack.pop();
                 return Err(format!(
                     "{}:{}: {} expects 1 path",
                     path.display(),
@@ -48,7 +74,7 @@ fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, 
                 ));
             }
 
-            let child = if head == Some("executestd") {
+            let child = if head.as_deref() == Some("executestd") {
                 std_root().join(&toks[1])
             } else {
                 path.parent()
@@ -56,14 +82,122 @@ fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, 
                     .join(&toks[1])
             };
 
-            out.extend(expand_execute(&child, stack)?);
-        } else {
-            out.push(raw.to_string());
+            expand_execute_into(&child, stack, expansion)?;
+            continue;
         }
+
+        logical_line += 1;
+        let expanded_line = expansion.lines.len() + 1;
+
+        expansion
+            .line_map
+            .insert((path.clone(), logical_line), expanded_line);
+
+        expansion.lines.push(ExpandedLine {
+            text: raw.to_string(),
+            source_path: path.clone(),
+            logical_line,
+        });
     }
 
     stack.pop();
+    Ok(())
+}
+
+fn relocate_program_lines(expansion: &Expansion) -> Result<Vec<String>, String> {
+    let mut out = Vec::with_capacity(expansion.lines.len());
+
+    for line in &expansion.lines {
+        let toks = tokenize(&line.text);
+
+        if toks.is_empty() {
+            out.push(line.text.clone());
+            continue;
+        }
+
+        let head = toks[0].to_ascii_lowercase();
+
+        if head == "fgo" && toks.len() == 2 {
+            let target = if let Some(target) = parse_relocatable_line(&toks[1])? {
+                Some(target)
+            } else if toks[1] != "0" && is_number_token(&toks[1]) {
+                Some(
+                    toks[1]
+                        .parse::<usize>()
+                        .map_err(|_| format!("Bad fgo line '{}'", toks[1]))?,
+                )
+            } else {
+                None
+            };
+
+            if let Some(target) = target {
+                let relocated = resolve_program_line(expansion, line, target)?;
+                out.push(format!("fgo {relocated}"));
+                continue;
+            }
+        }
+
+        if head == "sav" && toks.len() == 3 {
+            if let Some(target) = parse_relocatable_line(&toks[1])? {
+                let relocated = resolve_program_line(expansion, line, target)?;
+
+                if relocated > 127 {
+                    return Err(format!(
+                        "{}: logical line {} relocates to {}, which cannot fit in sav's imm8;                          load the address another way before using fgo 0 or io cpu pcwrite",
+                        line.source_path.display(),
+                        target,
+                        relocated
+                    ));
+                }
+
+                out.push(format!("sav {relocated} {}", toks[2]));
+                continue;
+            }
+        }
+
+        out.push(line.text.clone());
+    }
+
     Ok(out)
+}
+
+fn parse_relocatable_line(tok: &str) -> Result<Option<usize>, String> {
+    let Some(raw) = tok.strip_prefix('@') else {
+        return Ok(None);
+    };
+
+    if raw.is_empty() || !raw.chars().all(|c| c.is_ascii_digit()) {
+        return Err(format!("Bad relocatable line reference '{tok}'"));
+    }
+
+    let value = raw
+        .parse::<usize>()
+        .map_err(|_| format!("Bad relocatable line reference '{tok}'"))?;
+
+    if value == 0 {
+        return Err("Relocatable line references are 1-based; '@0' is invalid".into());
+    }
+
+    Ok(Some(value))
+}
+
+fn resolve_program_line(
+    expansion: &Expansion,
+    line: &ExpandedLine,
+    target: usize,
+) -> Result<usize, String> {
+    expansion
+        .line_map
+        .get(&(line.source_path.clone(), target))
+        .copied()
+        .ok_or_else(|| {
+            format!(
+                "{}: logical line {} references missing local line @{}",
+                line.source_path.display(),
+                line.logical_line,
+                target
+            )
+        })
 }
 
 fn std_root() -> PathBuf {

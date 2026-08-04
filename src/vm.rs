@@ -1481,9 +1481,17 @@ impl Cpu {
         tick
     }
 
-    fn handle_io(&mut self, device: u8, command: u8, reg: u8) {
+    fn handle_io(
+        &mut self,
+        device: u8,
+        command: u8,
+        reg: u8,
+        pc: i32,
+        prog_len: i32,
+    ) -> Option<i32> {
         let r = reg as usize;
         let value = self.regs[r];
+        let mut next_pc = None;
 
         self.regs[REG_IO_STATUS] = IO_OK; // assume io command is fine
 
@@ -1841,7 +1849,7 @@ impl Cpu {
                     Ok(speakers) => speakers,
                     Err(_) => {
                         self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
-                        return;
+                        return None;
                     }
                 };
 
@@ -1932,7 +1940,7 @@ impl Cpu {
                 0x0 => {
                     if !(0..=1048575).contains(&value) {
                         self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
-                        return;
+                        return None;
                     }
                     self.disk_addr = value as usize;
                     //println!("disk_addr now equals '{}'", self.mem_addr)
@@ -1948,7 +1956,7 @@ impl Cpu {
                 0x2 => {
                     if self.disk_readonly {
                         self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
-                        return;
+                        return None;
                     }
 
                     self.disk[self.disk_addr] = value;
@@ -1961,7 +1969,7 @@ impl Cpu {
                 0x3 => {
                     if self.disk_readonly {
                         self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
-                        return;
+                        return None;
                     }
 
                     let disk_path = self.disk_path.clone();
@@ -2015,22 +2023,33 @@ impl Cpu {
 
             // cpu
             0x9 => match command {
-
                 // pcread
+                // Returns the next instruction as a 1-based Crawssembly line number.
                 0x0 => {
-                    self.write_reg(r, self.disk[self.disk_addr]);
+                    self.write_reg(r, pc + 2);
+                }
+
+                // pcwrite
+                // Accepts a 1-based Crawssembly line number.
+                0x1 => {
+                    if !(1..=prog_len).contains(&value) {
+                        self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                    } else {
+                        next_pc = Some(value - 1);
+                    }
                 }
 
                 _ => {
-                    self.regs[REG_IO_STATUS] = IO_INVALD_COMMAND;
+                    self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
                 }
-
             },
 
             _ => {
                 self.regs[REG_IO_STATUS] = IO_INVALID_DEVICE;
             }
         }
+
+        next_pc
     }
 
     fn envelope(&mut self, n: usize, total: usize) -> f32 {
@@ -2190,7 +2209,15 @@ impl Cpu {
             let command = ((d.imm16 >> 8) & 0x0F) as u8;
             let reg = (d.imm16 & 0xFF) as u8;
 
-            self.handle_io(device, command, reg);
+            if let Some(next_pc) = self.handle_io(
+                device,
+                command,
+                reg,
+                pc,
+                self.prog_len(main, prog),
+            ) {
+                return (prog, next_pc, false);
+            }
 
             return (prog, pc + 1, false);
         }
