@@ -117,7 +117,7 @@ enum ParsedLine {
     Jump { kind: JumpKind, label: LabelRef },
     If { kind: IfKind, label: LabelRef },
     Rmv { label: LabelRef },
-    Fgo { line: u16 },
+    Fgo { label: LabelRef },
     Run { block: u16 },
 
     Str { start: StartRef, block: u8 },
@@ -246,8 +246,8 @@ fn parse_lines(
             if toks.len() != 2 {
                 return Err(format!("Line {}: fgo expects 1 operand", ln + 1));
             }
-            let n = parse_u16(&toks[1]).map_err(|e| format!("Line {}: {e}", ln + 1))?;
-            out.push(ParsedLine::Fgo { line: n });
+            let label = parse_label_ref(&toks[1], refs, numeric_ids_used)?;
+            out.push(ParsedLine::Fgo { label });
             continue;
         }
 
@@ -632,7 +632,10 @@ fn encode_line(
             Ok((0b01101u32 << 16) | (id as u32))
         }
 
-        ParsedLine::Fgo { line } => Ok((0b01011u32 << 16) | (*line as u32)),
+        ParsedLine::Fgo { label } => {
+            let id = resolve_label_id(label, label_id)?;
+            Ok((0b01011u32 << 16) | (id as u32))
+        }
 
         ParsedLine::Run { block } => Ok((0b01010u32 << 16) | (*block as u32)),
 

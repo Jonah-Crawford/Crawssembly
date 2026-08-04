@@ -539,14 +539,19 @@ impl WebCpu {
 
             // fgo
             0b01011 => {
-                let target_1_based = if d.imm16 == 0 {
-                    self.regs[1]
+                let label_id = if d.imm16 == 0 {
+                    let value = self.regs[1];
+                    if !(0..=u16::MAX as i32).contains(&value) {
+                        return (pc + 1, false);
+                    }
+                    value as u16
                 } else {
-                    d.imm16 as i32
+                    d.imm16
                 };
+                let target = self.label_get(label_id);
 
-                if target_1_based >= 1 {
-                    (target_1_based - 1, false)
+                if target >= 0 {
+                    (target, false)
                 } else {
                     (pc + 1, false)
                 }

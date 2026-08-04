@@ -1701,6 +1701,7 @@ The rest of this section is used as quick-reference and help.
 `ifz LABEL`: Continues if `r01` is equal to 0.  
 `ifl LABEL`: Continues if `r01` is less than 0.  
 `rmv LABEL`: Removes the label from memory, and ends any `if` commands.  
+`fgo LABEL`: Jumps to the label ID. `fgo 0` uses the label ID stored in `r01`.  
 `stp`: Stops the program.  
 `nop`: Does nothing.  
 
@@ -1827,6 +1828,7 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `ifg` | `00 101` | `00 101 llllllll llllllll` | Continue if `r01` > 0 |
 | `ifz` | `00 110` | `00 110 llllllll llllllll` | Continue if `r01` = 0 |
 | `jmp` | `00 111` | `00 111 llllllll llllllll` | Jump to label |
+| `fgo` | `01 011` | `01 011 llllllll llllllll` | Jump to label ID; `0` uses the ID in `r01` |
 | `rmv` | `01 101` | `01 101 llllllll llllllll` | Removes/ends label scope |
 | `io`  | `01 110` | `01 110 ddddcccc rrrrrrrr`| Accesses non-CPU devices |
 | label definition | `01 111` | `01 111 llllllll llllllll` | Creates a label |
