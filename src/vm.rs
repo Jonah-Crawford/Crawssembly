@@ -1,23 +1,25 @@
 // src/vm.rs
 
-use std::fs;
-use std::thread;
-use std::io::{self};
 use std::collections::VecDeque;
+use std::fs;
 use std::fs::{File, OpenOptions};
-use std::sync::{Arc, Mutex, atomic::AtomicBool};
+use std::io::{self};
 use std::io::{BufWriter, Read, Seek, SeekFrom, Write};
+use std::sync::{Arc, Mutex, atomic::AtomicBool};
+use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use sysinfo::System;
 
-use chrono::{TimeZone, SecondsFormat, Utc};
+use chrono::{SecondsFormat, TimeZone, Utc};
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 
 use crossterm::{
     cursor,
-    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseButton, MouseEventKind},
+    event::{
+        self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseButton, MouseEventKind,
+    },
     execute, queue,
     style::{Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
     terminal::{self, ClearType},
@@ -875,15 +877,14 @@ impl Cpu {
     fn save_disk(&self, path: &str) -> Result<(), String> {
         let mut bytes = Vec::with_capacity(self.disk.len() * 4);
 
-
         for value in &self.disk {
             bytes.extend_from_slice(&value.to_le_bytes());
         }
 
         let mut file = OpenOptions::new()
-             .write(true)
-             .open(path)
-             .map_err(|e| e.to_string())?;
+            .write(true)
+            .open(path)
+            .map_err(|e| e.to_string())?;
 
         file.seek(SeekFrom::Start(0)).map_err(|e| e.to_string())?;
         file.write_all(&bytes).map_err(|e| e.to_string())?;
@@ -1484,7 +1485,7 @@ impl Cpu {
         let r = reg as usize;
         let value = self.regs[r];
 
-        self.regs[REG_IO_STATUS] = IO_OK;
+        self.regs[REG_IO_STATUS] = IO_OK; // assume io command is fine
 
         match device {
             // text
@@ -1540,7 +1541,6 @@ impl Cpu {
                     let iso_string = datetime.to_rfc3339_opts(SecondsFormat::Secs, true);
 
                     print!("{}", iso_string);
-
                 }
 
                 // space
@@ -1551,7 +1551,6 @@ impl Cpu {
 
                 // fred
                 0x8 => {
-
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.foreground_red = v;
                     } else {
@@ -1560,9 +1559,7 @@ impl Cpu {
 
                     print!(
                         "\x1b[38;2;{};{};{}m",
-                        self.foreground_red,
-                        self.foreground_green,
-                        self.foreground_blue
+                        self.foreground_red, self.foreground_green, self.foreground_blue
                     );
 
                     let _ = io::stdout().flush();
@@ -1570,7 +1567,6 @@ impl Cpu {
 
                 // fgreen
                 0x9 => {
-
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.foreground_green = v;
                     } else {
@@ -1579,9 +1575,7 @@ impl Cpu {
 
                     print!(
                         "\x1b[38;2;{};{};{}m",
-                        self.foreground_red,
-                        self.foreground_green,
-                        self.foreground_blue
+                        self.foreground_red, self.foreground_green, self.foreground_blue
                     );
 
                     let _ = io::stdout().flush();
@@ -1589,7 +1583,6 @@ impl Cpu {
 
                 // fblue
                 0xA => {
-
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.foreground_blue = v;
                     } else {
@@ -1598,18 +1591,14 @@ impl Cpu {
 
                     print!(
                         "\x1b[38;2;{};{};{}m",
-                        self.foreground_red,
-                        self.foreground_green,
-                        self.foreground_blue
+                        self.foreground_red, self.foreground_green, self.foreground_blue
                     );
 
                     let _ = io::stdout().flush();
                 }
 
-
                 // bred
                 0xB => {
-
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.background_red = v;
                     } else {
@@ -1618,9 +1607,7 @@ impl Cpu {
 
                     print!(
                         "\x1b[48;2;{};{};{}m",
-                        self.background_red,
-                        self.background_green,
-                        self.background_blue
+                        self.background_red, self.background_green, self.background_blue
                     );
 
                     let _ = io::stdout().flush();
@@ -1628,7 +1615,6 @@ impl Cpu {
 
                 // bgreen
                 0xC => {
-
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.background_green = v;
                     } else {
@@ -1637,9 +1623,7 @@ impl Cpu {
 
                     print!(
                         "\x1b[48;2;{};{};{}m",
-                        self.background_red,
-                        self.background_green,
-                        self.background_blue
+                        self.background_red, self.background_green, self.background_blue
                     );
 
                     let _ = io::stdout().flush();
@@ -1647,7 +1631,6 @@ impl Cpu {
 
                 // bblue
                 0xD => {
-
                     if let Some(v) = Self::signed_to_rgb(value) {
                         self.background_blue = v;
                     } else {
@@ -1656,18 +1639,11 @@ impl Cpu {
 
                     print!(
                         "\x1b[48;2;{};{};{}m",
-                        self.background_red,
-                        self.background_green,
-                        self.background_blue
+                        self.background_red, self.background_green, self.background_blue
                     );
 
                     let _ = io::stdout().flush();
                 }
-
-
-
-
-
 
                 _ => {
                     self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
@@ -2035,6 +2011,20 @@ impl Cpu {
                 _ => {
                     self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
                 }
+            },
+
+            // cpu
+            0x9 => match command {
+
+                // pcread
+                0x0 => {
+                    self.write_reg(r, self.disk[self.disk_addr]);
+                }
+
+                _ => {
+                    self.regs[REG_IO_STATUS] = IO_INVALD_COMMAND;
+                }
+
             },
 
             _ => {

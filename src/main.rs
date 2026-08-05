@@ -10,14 +10,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 2026 CRAW SYSTEMS
 
-use std::fs;
 use std::env;
+use std::fs;
 use std::path::{Path, PathBuf};
 
-mod vm;
 mod asm;
-mod pkg;
 mod c_backend;
+mod pkg;
+mod vm;
 
 const CRAW_NANO: &str = r#"
 syntax "crawssembly" "\.craw$"
@@ -39,6 +39,7 @@ color blue "\<(toggle|addr|save|iso|space|r|g|b|fr|fg|fb|br|bg|bb)\>"
 
 color yellow "[-+]?[0-9]+"
 color yellow "0x[0-9A-Fa-f]+"
+color yellow "0b[0-9A-Fa-f]+"
 
 color brightgreen "\<(r[0-9A-Fa-f]{2})\>"
 color cyan "\<(r00|r01|ref|rff)\>"
@@ -97,22 +98,23 @@ fn install_nano() {
 }
 
 fn copy_dir(src: &Path, dst: &Path) -> Result<(), String> {
-    fs::create_dir_all(dst)
-        .map_err(|e| format!("Failed to create {}: {e}", dst.display()))?;
+    fs::create_dir_all(dst).map_err(|e| format!("Failed to create {}: {e}", dst.display()))?;
 
-    for entry in fs::read_dir(src)
-        .map_err(|e| format!("Failed to read {}: {e}", src.display()))?
-    {
-
+    for entry in fs::read_dir(src).map_err(|e| format!("Failed to read {}: {e}", src.display()))? {
         let entry = entry.map_err(|e| e.to_string())?;
         let src_path = entry.path();
         let dst_path = dst.join(entry.file_name());
 
         if src_path.is_dir() {
-          copy_dir(&src_path, &dst_path)?;
+            copy_dir(&src_path, &dst_path)?;
         } else {
-          fs::copy(&src_path, &dst_path)
-              .map_err(|e| format!("Failed to copy {} to {}: {e}", src_path.display(), dst_path.display()))?;
+            fs::copy(&src_path, &dst_path).map_err(|e| {
+                format!(
+                    "Failed to copy {} to {}: {e}",
+                    src_path.display(),
+                    dst_path.display()
+                )
+            })?;
         }
     }
 
@@ -128,14 +130,11 @@ fn install_std() {
 }
 
 fn try_install_std() -> Result<(), String> {
-    let home = std::env::var("HOME")
-        .map_err(|_| "HOME not set")?;
+    let home = std::env::var("HOME").map_err(|_| "HOME not set")?;
 
     let src = Path::new("std");
 
-    let dst = Path::new(&home)
-        .join(".crawssembly")
-        .join("std");
+    let dst = Path::new(&home).join(".crawssembly").join("std");
 
     println!("Installing CSL from {}", src.display());
     println!("Installing CSL to {}", dst.display());
@@ -143,16 +142,13 @@ fn try_install_std() -> Result<(), String> {
     if !src.exists() {
         return Err(format!(
             "Standard library source does not exist: {}",
-        src.display()
+            src.display()
         ));
     }
 
     if dst.exists() {
         fs::remove_dir_all(&dst)
-            .map_err(|e| format!(
-                "Failed to remove existing CSL at {}: {e}",
-                dst.display()
-            ))?;
+            .map_err(|e| format!("Failed to remove existing CSL at {}: {e}", dst.display()))?;
     }
 
     copy_dir(src, &dst)?;
@@ -251,7 +247,11 @@ fn main() {
         std::process::exit(1);
     }
 
-    let vm_config = vm::VmConfig { screen_w, screen_h, disk: disk_config, };
+    let vm_config = vm::VmConfig {
+        screen_w,
+        screen_h,
+        disk: disk_config,
+    };
 
     let command = first_positional(&args);
 
@@ -390,7 +390,9 @@ fn main() {
 }
 
 fn crush_file(args: &[String]) -> Result<(), String> {
-    if args.is_empty() { return Err("No input file specified".into()); }
+    if args.is_empty() {
+        return Err("No input file specified".into());
+    }
 
     let input = &args[0];
 
@@ -402,13 +404,12 @@ fn crush_file(args: &[String]) -> Result<(), String> {
         path.to_string_lossy().into_owned()
     };
 
-    let source = std::fs::read_to_string(input)
-        .map_err(|e| format!("Failed to read {input}: {e}"))?;
+    let source =
+        std::fs::read_to_string(input).map_err(|e| format!("Failed to read {input}: {e}"))?;
 
     let crushed = crush_source(&source)?;
 
-    std::fs::write(&output, crushed)
-        .map_err(|e| format!("Failed to write {output}: {e}"))?;
+    std::fs::write(&output, crushed).map_err(|e| format!("Failed to write {output}: {e}"))?;
 
     println!("Crushed source written to {output}");
 
@@ -419,11 +420,7 @@ fn crush_source(source: &str) -> Result<String, String> {
     let mut out = String::new();
 
     for line in source.lines() {
-        let line = line
-            .split(';')
-            .next()
-            .unwrap()
-            .trim();
+        let line = line.split(';').next().unwrap().trim();
 
         if !line.is_empty() {
             out.push_str(line);
@@ -490,41 +487,44 @@ fn positional_after(args: &[String], command: &str) -> Option<String> {
 }
 
 fn is_option_with_value(arg: &str) -> bool {
-    matches!(arg, "--screen" | "--file" | "-o" | "--output" | "--disk" | "--raw-disk")
+    matches!(
+        arg,
+        "--screen" | "--file" | "-o" | "--output" | "--disk" | "--raw-disk"
+    )
 }
 
 fn parse_disk_config(args: &[String]) -> Result<vm::DiskConfig, String> {
-  let mut disk = vm::DiskConfig::default();
+    let mut disk = vm::DiskConfig::default();
 
-  for i in 0..args.len() {
-    match args[i].as_str() {
-      "--disk" => {
-        let Some(path) = args.get(i + 1) else {
-          return Err("--disk expects a filename".to_string());
-        };
+    for i in 0..args.len() {
+        match args[i].as_str() {
+            "--disk" => {
+                let Some(path) = args.get(i + 1) else {
+                    return Err("--disk expects a filename".to_string());
+                };
 
-        disk.path = path.clone();
-        disk.raw = false;
-      }
+                disk.path = path.clone();
+                disk.raw = false;
+            }
 
-      "--raw-disk" => {
-        let Some(path) = args.get(i + 1) else {
-          return Err("--raw-disk expects a device path".to_string());
-        };
+            "--raw-disk" => {
+                let Some(path) = args.get(i + 1) else {
+                    return Err("--raw-disk expects a device path".to_string());
+                };
 
-        disk.path = path.clone();
-        disk.raw = true;
-      }
+                disk.path = path.clone();
+                disk.raw = true;
+            }
 
-      "--readonly" => {
-        disk.readonly = true;
-      }
+            "--readonly" => {
+                disk.readonly = true;
+            }
 
-      _ => {}
+            _ => {}
+        }
     }
-  }
 
-  Ok(disk)
+    Ok(disk)
 }
 
 fn parse_output_file(args: &[String]) -> Option<String> {
@@ -597,11 +597,10 @@ fn print_help() {
     println!("  craw compile <file.craw>      Assemble to program.bin only");
     println!("  craw crush <file.craw>        Reduce a .craw file size");
     println!("  craw debug <file.craw>        Run with VM stats shown");
-    println!("  craw emit-c <file.craw>       Convert Crawssembly to C");
     println!("  craw init <name>              Creates a package structure");
     println!("  craw install-nano             Install nano syntax highlighting");
     println!("  craw install-std              Update the CSL to your machine");
-    println!("  craw pkg <command> <arg>      Access the CPM");
+    println!("  craw pkg <command>            Access the CPM (Crawssembly Package Manager)");
     println!("  craw run <file.craw>          Assemble and run a file");
     println!();
     println!("Options:");
@@ -622,8 +621,10 @@ fn print_help() {
     println!("  --tui                         Use alternate-screen terminal mode");
     println!();
     println!("Examples:");
+    println!("  craw pkg login");
     println!("  craw hello.craw");
     println!("  craw debug hello.craw");
+    println!("  craw pkg install graphics");
     println!("  craw compile hello.craw --dump");
     println!("  craw imageviewer.craw --file image.bmp");
     println!("  craw graphics.craw --screen 128x128 --tui");
