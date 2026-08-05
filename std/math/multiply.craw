@@ -6,8 +6,8 @@
 sav 0 r01				; initialise r01
 sav 0 r04               ; initialise r04
 
-; to iterate through 8 bits of the multiplier
-sav 8 r05               ; initialise r05
+; to iterate through 32 bits of the multiplier
+sav 32 r05               ; initialise r05
 
 
 60000
@@ -34,6 +34,7 @@ sav 8 r05               ; initialise r05
     sav r01 r05         ; update loop counter
 
 jmg 60000
+rmv 60000               ; remove unused label
 
 
 sav r04 r02				; save result to general output register
