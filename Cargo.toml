@@ -50,3 +50,8 @@ required-features = ["native"]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
+
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = false
