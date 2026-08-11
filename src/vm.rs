@@ -2022,7 +2022,7 @@ impl Cpu {
                 }
 
                 _ => {
-                    self.regs[REG_IO_STATUS] = IO_INVALD_COMMAND;
+                    self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
                 }
 
             },
