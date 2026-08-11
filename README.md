@@ -794,7 +794,7 @@ This program increases the value in `r01`, being `10` in this example, every loo
 
 Because this program is an infinite loop, you have to **force quit** the program, you can do this by pressing `CTRL` and `c` at the same time.
 
-### Dynamic Jumping
+### Comparative Jumping
 
 Infinite loops, while nice in languages like Python and Java, are usually very unhelpful in assembly. Since the program is so close to the hardware, an infinite loop can't be stopped, save a full power cycle or in-built reset.
 
@@ -856,6 +856,47 @@ Update your 'Letter Loops' activity program to contain a **nested loop** that pr
 `AA AB AC AD AE AF AG` etc... `AX AY AZ BA BB BC BD` etc... `ZX ZY ZZ`
 
 > Hint: Both loops take similar forms, but take care to not mix register values together, separate the 1st loop from the 2nd loop clearly, and reset the inner-loop values in the outer loop.
+
+### Dynamic Jumping
+
+Crawssembly gives you a way to jump to labels based on prior code, such that the specific label to be jumped to is unknown before code execution. What this means, is that you could write a program that, depending on the logic, jumps to either label 1, or label 2, or label 3, etc... without a long jump block like so
+
+```
+1       jmg 1
+2       cal add 1 r01
+3       jmg 2
+4       cal add 1 r01
+5       jmg 3
+
+etc...
+```
+
+This is done with the `fgo` command. `fgo` is *almost* the exact same to `jmp`, insofar as you can use `fgo` and `jmp` interchangably without much issue, unless you use `fgo 0`.
+
+`fgo 0` is used to jump to the label stored in `r01`, and so as such it is a dynamic jump.
+
+Example
+
+```
+1       sav 10 r01              ; save 10 into register 1
+2       cal add 10 r01          ; 10 + 10 = 20
+3
+4       fgo 0                   ; dynamic jump to the label in register 1
+5
+6       10                      ; label 10, pointing to line 6
+7       sav 97 ref              ; output 'a'
+8       stp                     ; end program
+9
+10      20                      ; label 20, pointing to line 10
+11      sav 98 ref              ; output 'b'
+12      stp                     ; end program
+13
+14      30                      ; label 30, pointing to line 14
+15      sav 99 ref              ; output 'c'
+16      stp                     ; end program
+```
+
+The label that is selected to execute is based on the logic above, in the example we can see that `r01` contains the value of 20, so `fgo 0` points to label 20, which is itself a pointer to line 10.
 
 </details>
 
@@ -927,7 +968,7 @@ rmv 1
 
 But both do the exact same function. 
 
-> Indentation does not imply scope, that's determined my `rmv`. If there is no `rmv` command, the code will keep running no matter how much indentation you use. It is simply a visual hint.
+> Indentation does not imply scope, that's determined by `rmv`. If there is no `rmv` command, the code will keep running no matter how much indentation you use. It is simply a visual hint.
 
 </details>
 
@@ -1701,6 +1742,7 @@ The rest of this section is used as quick-reference and help.
 `ifz LABEL`: Continues if `r01` is equal to 0.  
 `ifl LABEL`: Continues if `r01` is less than 0.  
 `rmv LABEL`: Removes the label from memory, and ends any `if` commands.  
+`fgo LABEL`: Jumps to the label ID. `fgo 0` uses the label ID stored in `r01`.  
 `stp`: Stops the program.  
 `nop`: Does nothing.  
 
@@ -1827,6 +1869,7 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `ifg` | `00 101` | `00 101 llllllll llllllll` | Continue if `r01` > 0 |
 | `ifz` | `00 110` | `00 110 llllllll llllllll` | Continue if `r01` = 0 |
 | `jmp` | `00 111` | `00 111 llllllll llllllll` | Jump to label |
+| `fgo` | `01 011` | `01 011 llllllll llllllll` | Jump to label ID; `0` uses the ID in `r01` |
 | `rmv` | `01 101` | `01 101 llllllll llllllll` | Removes/ends label scope |
 | `io`  | `01 110` | `01 110 ddddcccc rrrrrrrr`| Accesses non-CPU devices |
 | label definition | `01 111` | `01 111 llllllll llllllll` | Creates a label |
