@@ -845,6 +845,15 @@ impl Cpu {
         self.sleep_times = 0.0
     }
 
+    fn register_labels(&mut self, program: &[Decoded]) {
+        for (pc, d) in program.iter().enumerate() {
+            if d.op5 == 0b01111 {
+                self.label_set(d.imm16, pc as i32);
+            }
+        }
+    }
+
+
     fn create_blank_disk(&mut self, path: &str) -> Result<(), String> {
         let byte_count = DISK_CELLS * 4;
         let data = vec![0u8; byte_count];
@@ -1207,6 +1216,7 @@ impl Cpu {
         use std::time::Duration;
 
         self.begin_run();
+        self.register_labels(program);
 
         if !input.is_empty() {
             self.input_pos = 0;
@@ -1450,6 +1460,7 @@ impl Cpu {
 
     fn execute_noio(&mut self, program: &[Decoded], input: &[i32]) -> u64 {
         self.begin_run();
+        self.register_labels(program);
 
         if !input.is_empty() {
             self.input_pos = 0;

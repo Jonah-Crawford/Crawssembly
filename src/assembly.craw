@@ -1,0 +1,10 @@
+sav 10 r01
+
+fgo 0
+
+execute filler.craw
+
+10
+  sav 42 r01
+  io text int r01
+  stp
