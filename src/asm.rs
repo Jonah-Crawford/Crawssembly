@@ -472,8 +472,9 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
         0x1 => match t.as_str() {
             "unix" => Ok(0x0),
             "low" => Ok(0x01),
-            "sleep" | "slp" => Ok(0x2),
+            "sleepms" | "sleep" => Ok(0x2),
             "milli" | "millis" => Ok(0x3),
+            "sleepus" => Ok(0x4),
             _ => Err(format!("Unknown time command '{tok}'")),
         },
 

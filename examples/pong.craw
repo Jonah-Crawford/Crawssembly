@@ -39,11 +39,11 @@ cal add r1a r1a					; 2 * sleep time
 cal add r01 r01					; 4 * sleep time
 cal add r01 r01					; 8 * sleep time
 cal add r01 r01					; 16 * sleep time
-io time sleep r01				; initial pause
+io time sleepms r01				; initial pause
 
 1						; main loop
 
-  io time sleep r1a				; pause for a frame
+  io time sleepms r1a				; pause for a frame
 
   cal not r1c rff				; negation 1st step
   cal add 1 r01					; negation 2ns step
@@ -126,7 +126,7 @@ io time sleep r01				; initial pause
     cal add r1a r1a				; 2 * sleep time
     cal add r01 r01				; 4 * sleep time
     cal add r01 r01				; 8 * sleep time
-    io time sleep r01				; pause for 8 * sleep time
+    io time sleepms r01				; pause for 8 * sleep time
 
   rmv 20					; end l wall hit check
 
@@ -145,7 +145,7 @@ io time sleep r01				; initial pause
     cal add r1a r1a				; 2 * sleep time
     cal add r01 r01				; 4 * sleep time
     cal add r01 r01				; 8 * sleep time
-    io time sleep r01				; pause for 8 * sleep time
+    io time sleepms r01				; pause for 8 * sleep time
 
   rmv 20					; end r wall hit check
 

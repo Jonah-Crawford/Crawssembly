@@ -884,16 +884,16 @@ Example
 4       fgo 0                   ; dynamic jump to the label in register 1
 5
 6       10                      ; label 10, pointing to line 6
-7       sav 97 ref              ; output 'a'
-8       stp                     ; end program
+7         sav 97 ref            ; output 'a'
+8         stp                   ; end program
 9
 10      20                      ; label 20, pointing to line 10
-11      sav 98 ref              ; output 'b'
-12      stp                     ; end program
+11        sav 98 ref            ; output 'b'
+12        stp                   ; end program
 13
 14      30                      ; label 30, pointing to line 14
-15      sav 99 ref              ; output 'c'
-16      stp                     ; end program
+15        sav 99 ref            ; output 'c'
+16        stp                   ; end program
 ```
 
 The label that is selected to execute is based on the logic above, in the example we can see that `r01` contains the value of 20, so `fgo 0` points to label 20, which is itself a pointer to line 10.
@@ -1473,9 +1473,9 @@ The *wave type* is a number to tell the channel what type of sound to make.
 | 3 | Sawtooth Wave | Aggressive, harsh beeps |
 | 4 | Random Noise | Great for sound effects |
 
-Because sound is very time-dependent, you'll want to play sounds for a set period of time. You can do this by pausing the program using `io time sleep`.
+Because sound is very time-dependent, you'll want to play sounds for a set period of time. You can do this by pausing the program using `io time sleepms`.
 
-> `io time sleep` pauses Crawssembly's execution for the inputted length in **milliseconds**. There are other `io time` commands which will be covered shortly.
+> `io time sleepms` pauses Crawssembly's execution for the inputted length in **milliseconds**. There are other `io time` commands which will be covered shortly.
 
 Example
 
@@ -1496,13 +1496,13 @@ sav 50 r01              ; saves 50 to register 1, used for the speaker volume
 io speaker volume r01   ; sets active speaker volume to 50%
 
 io speaker on rff       ; turns on speaker
-io time sleep r02       ; waits 100ms
+io time sleepms r02     ; waits 100ms
 
 io speaker off rff      ; turns off speaker
-io time sleep r02       ; waits 100ms
+io time sleepms r02     ; waits 100ms
 
 io speaker on rff       ; turns on speaker
-io time sleep r02       ; waits 100ms
+io time sleepms r02     ; waits 100ms
 
 io speaker off rff      ; turns off speaker
 ```
@@ -1528,10 +1528,13 @@ Write a program that plays every note in an octave. You can use [this Wikipedia 
 
 It's common, in larger programs, that the current time should be known. In computers, this is maintained through a CMOS battery. This keeps the internal clock running on the machine when the computer is turned off.
 
-To use time commands, you would use the `io time` group. We already discussed `io time sleep` in the speakers section.
-- `io time sleep`: pauses execution for a set period in milliseconds
+To use time commands, you would use the `io time` group. We already discussed `io time sleepms` in the speakers section.
+- `io time sleepms`: pauses execution for a set period in milliseconds
+- `io time sleepus`: pauses execution for a set period in microseconds
 - `io time unix`: outputs the current **UNIX timestamp**
 - `io time low`: outputs the last 31 bits of the **UNIX timestamp**
+
+> Because microseconds are a very small unit, `sleepus` is highly dependant on your machine's OS. This means that you won't always get the exact delay you input, and the difference won't be the same every time.
 
 ### UNIX Timestamp
 
@@ -1755,7 +1758,8 @@ The rest of this section is used as quick-reference and help.
 `io time`
 - `io time unix`: Extracts the current UNIX timestamp into the input register.
 - `io time low`: Extracts the value-only bits of the UNIX timestamp, avoids potential negative values.
-- `io time sleep`: Pauses execution for the inputted number of milliseconds.
+- `io time sleepms`: Pauses execution for the inputted number of milliseconds.
+- `io time sleepus`: Pauses execution for the inputted number of microseconds.
 
 `io screen`
 - `io screen x`: Sets the current active X coordinate.
@@ -1907,8 +1911,9 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `io text bb` | `0000` | `1101` | `01 110 0000 1101 rrrrrrrr` | Sets the background blue value |
 | `io time unix` | `0001` | `0000` | `01 110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
 | `io time low` | `0001` | `0001` | `01 110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
-| `io time sleep` | `0001` | `0010` | `01 110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |
+| `io time sleepms` | `0001` | `0010` | `01 110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |
 | `io time milli` | `0001` | `0011` | `01 110 0001 0011 rrrrrrrr` | Stores the `low` time in milliseconds |
+| `io time sleepms` | `0001` | `0100` | `01 110 0001 0100 rrrrrrrr` | Pauses execution for inputted number of microseconds |
 | `io screen x` | `0010` | `0000` | `01 110 0010 0000 rrrrrrrr` | Sets active x coordinate in the graphics buffer |
 | `io screen y` | `0010` | `0001` | `01 110 0010 0001 rrrrrrrr` | Sets active Y coordinate in the graphics buffer |
 | `io screen pixel` | `0010` | `0010` | `01 110 0010 0010 rrrrrrrr` | Updates pixel in the graphics buffer at active coordinates |

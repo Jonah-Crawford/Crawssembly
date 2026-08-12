@@ -32,9 +32,9 @@ color magenta "\<(jmp|jmz|jmg|jml|ifz|ifg|ifl|rmv|fgo|str|run|stp)\>"
 
 color brightblue "\<(screen|keyboard|speaker|mem|disk|text|time)\>"
 
-color blue "\<(char|hex|newline|pixel|read|write|erase|erasecell)\>"
-color blue "\<(x|y|int|clear|unix|low|sleep|milli|dump|present)\>"
-color blue "\<(r|g|b|poll|btn|channel|freq|volume|wave|on|off)\>"
+color blue "\<(char|b|hex|newline|pixel|read|write|erase|erasecell)\>"
+color blue "\<(x|g|y|int|clear|unix|low|sleepms|milli|dump|present)\>"
+color blue "\<(r|poll|btn|channel|freq|volume|wave|on|off|sleepus)\>"
 color blue "\<(toggle|addr|save|iso|space|r|g|b|fr|fg|fb|br|bg|bb)\>"
 
 color yellow "[-+]?[0-9]+"

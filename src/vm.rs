@@ -1683,10 +1683,10 @@ impl Cpu {
                     self.write_reg(r, (now & 0x7FFF_FFFF) as i32);
                 }
 
-                // sleep
+                // sleepms
                 0x2 => {
                     thread::sleep(Duration::from_millis(value as u64));
-                    self.sleep_times += value as f64 / 1000.0
+                    self.sleep_times += value as f64 / 1_000.0
                 }
 
                 // milli
@@ -1697,6 +1697,12 @@ impl Cpu {
                         .as_millis();
 
                     self.write_reg(r, (now & 0x7FFF_FFFF) as i32);
+                }
+
+                // sleepus
+                0x4 => {
+                    thread::sleep(Duration::from_micros(value as u64));
+                    self.sleep_times += value as f64 / 1_000_000.0
                 }
 
                 _ => {

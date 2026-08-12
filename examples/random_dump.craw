@@ -21,6 +21,6 @@ io time milli r02				; get time in milliseconds
   io text newline rff				; drop cursor down
 
   sav 100 r01					; save pause time in ms
-  io time sleep r01				; pause for 100ms
+  io time sleepms r01				; pause for 100ms
 
   jmp 1						; continue main loop
