@@ -129,7 +129,6 @@ io text clear rff				; clear text console
     io text bg r01				; low bgreen
     io text bb r01				; low bblue
 
-
     jmp 10000					; continue command loop
 
   rmv 10001					; end bad command check

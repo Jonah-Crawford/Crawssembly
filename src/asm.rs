@@ -496,7 +496,8 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
 
         // keyboard
         0x3 => match t.as_str() {
-            "last" | "poll" => Ok(0x0),
+            "poll" => Ok(0x0),
+            "mod" | "modifier" | "modifiers" => Ok(0x1),
             _ => Err(format!("Unknown keyboard command '{tok}'")),
         },
 

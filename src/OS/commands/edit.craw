@@ -1,0 +1,13 @@
+;;;;;;;;;;;;;;;;
+; CrawOS edit  ;
+;              ;
+; CRAW SYSTEMS ;
+;;;;;;;;;;;;;;;;
+
+
+
+1					; main loop
+
+  io keyboard poll r01			; get key press
+
+  

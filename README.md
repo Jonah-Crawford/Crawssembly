@@ -1207,15 +1207,21 @@ Because input uses the keyboard and mouse, there is a hidden layer between what 
 
 Crawssembly provides direct keyboard access using `io keyboard`. The main command in this group is `io keyboard poll`, which gets the last key pressed as a key code into the input register.
 
-Key Codes:
-- 0: No key pressed
-- -1: Up Arrow
-- -2: Down Arrow
-- -3: Left Arrow
-- -4: Right Arrow
-- -5: Enter
-- 27: Escape
-- other: ASCII code ([See this chart for more](https://www.asciitable.com/))
+Most special **control** keys are given a negative keycode
+
+> Esc is give a positive keycode as an exception to match ASICC encodings
+
+| Key | Code | Key | Code |
+| --- | ---- | --- | ---- |
+| Up Arrow | -1 | Home | -8 |
+| Down Arrow | -2 | End | -9 |
+| Left Arrow | -3 | PageUp | -10 |
+| Right Arrow | -4 | PageDown | -11 |
+| Enter | -5 | Tab | -12 |
+| Backspace | -6 | BackTab | -13 |
+| Delete | -7 | Insert | -14 |
+
+Other keys are represented by their ASCII code ([See this chart for more](https://www.asciitable.com/))
 
 Example
 
