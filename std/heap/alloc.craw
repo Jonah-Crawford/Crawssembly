@@ -3,7 +3,6 @@
 ; Outputs: rec, ree			r04 = block size
 ; Scope: r01-r07, rec-red | 60000-60002	r05 = size
 
-
 sav r02 r01				; ready size test
 
 sav 4 ree				; assume bad size

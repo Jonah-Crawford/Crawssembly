@@ -143,7 +143,7 @@ Just like riding a bike, you practise using the slower stabiliser wheels before 
 
 This guide is made to help you learn the basics of Crawssembly, you can read it in any order, skip over any parts you don't like, or read the entire thing before writing a single piece of code.
 
-> Most ideas build upon each other, so it's smart, if you're skipping around, to take a look at some important bits you may have missed that link to a later topic. (e.g. *bitfields* require you knowing about *bit masking*)
+> Most ideas build upon each other, so it's smart, if you're skipping around, to take a look at some important bits you may have missed that link to a later topic. (e.g. *bit fields* require you knowing about *bit masking*)
 
 ## Detailed Guide
 
@@ -1241,6 +1241,16 @@ This program shows the last key printed by outputting to `ref`, and ends the loo
 
 > Remember, `ref` outputs the [ASCII code](https://www.asciitable.com/) of the key pressed, not the real raw value of that key. Pressing Enter won't print 'Enter' to the screen!
 
+#### Modifiers
+
+You can extract keyboard modifiers (like CTRL) using `io keyboard mod`. This creates a **bit field** of the 4 main modifier keys.
+
+| Shift | CTRL | ALT | SUPER |
+| ----- | ---- | --- | ----- |
+| 0b0001 | 0b0010 | 0b0100 | 0b1000 |
+
+> Bit fields are explained in more detail in the following mouse section.
+
 ### The Mouse
 
 Almost all basic mice output 4 streams of data:
@@ -1252,7 +1262,7 @@ Almost all basic mice output 4 streams of data:
 The `io mouse` command group captures mouse events using 3 commands:
 - `io mouse x`: extracts current mouse X position, relative to the screen's top-left corner
 - `io mouse y`: extracts current mouse Y position, relative to the screen's top-left corner
-- `io mouse btn`: creates a **bitfield** for the middle, right, and left buttons in that order.
+- `io mouse btn`: creates a **bit field** for the middle, right, and left buttons in that order.
 
 > Normal terminals can't capture mouse position, which is why `--tui` needs to be used for mouse events to work.
 
@@ -1284,7 +1294,7 @@ A **bit field** is a single binary number which encodes multiple values. Instead
 | On | On | Off | `0b110` | 6 |
 | On | On | On | `0b111` | 7 |
 
-You can extract each button using bit masks.
+Like the **bit field** created with `io keyboard mod`, you can extract each button using bit masks.
 
 Example
 
@@ -1313,7 +1323,7 @@ cal and 4 r04
 sav r01 r03
 ```
 
-This example unpacks the bitfield, stored in `r04` into `r01` (Left Button), `r02` (Right Button), and `r03` (Middle Button)
+This example unpacks the bit field, stored in `r04` into `r01` (Left Button), `r02` (Right Button), and `r03` (Middle Button)
 
 #### Activity: Clicking Away
 
@@ -1653,6 +1663,9 @@ This is the list of programs available, along with Inputs, Outputs, and **Scope*
 | stack   | `init`           | -         | `red`     | `r01-r02`, `red`         | Creates the stack pointer, used for the stack in RAM                      |
 | stack   | `pop`            | -         | `r02`     | `r01-r02`, `red`         | Removes the last entry on the stack, and stores it in r02                 |
 | stack   | `push`           | `r02`     | -         | `r01-r02`, `red`         | Adds a new entry, with value of `r02`, to the top of the stack            |
+| heap    | `init`           | -         | `rec`     | `r01-r02 rec`            | Creates the heap pointer, which tracks heap blocks in RAM                 |
+| heap    | `alloc`          | `r02`     | `rec ree` | `r01-r07 rec-red`, `60000-60002` | Makes a new heap block in memory                                  |
+| heap    | `free`           | `r02`     | `ree`     | `r01-r03`, `60000-60003` | Frees the current heap block in memory                                    |
 
 ### Activity: Multiplication
 
@@ -1786,7 +1799,7 @@ The rest of this section is used as quick-reference and help.
 `io mouse`
 - `io mouse x`: Gets the mouse X coordinate into the input register.
 - `io mouse y`: Gets the mouse Y coordinate into the input register.
-- `io mouse btn`: Gets the bitfield of Middle, Right, and Left buttons into the input register.
+- `io mouse btn`: Gets the bit field of Middle, Right, and Left buttons into the input register.
 
 `io speaker`
 - `io speaker channel`: Sets the active channel (0-7) to the value in the input register.
