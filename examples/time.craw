@@ -337,6 +337,6 @@
 
   sav 100 r01
   cal add 100 r01				; sleep time in milliseconds
-  io time sleep r01				; wait for 100ms
+  io time sleepms r01				; wait for 100ms
 
   jmp 99					; continue main loop

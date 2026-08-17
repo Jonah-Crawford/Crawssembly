@@ -143,7 +143,7 @@ Just like riding a bike, you practise using the slower stabiliser wheels before 
 
 This guide is made to help you learn the basics of Crawssembly, you can read it in any order, skip over any parts you don't like, or read the entire thing before writing a single piece of code.
 
-> Most ideas build upon each other, so it's smart, if you're skipping around, to take a look at some important bits you may have missed that link to a later topic. (e.g. *bitfields* require you knowing about *bit masking*)
+> Most ideas build upon each other, so it's smart, if you're skipping around, to take a look at some important bits you may have missed that link to a later topic. (e.g. *bit fields* require you knowing about *bit masking*)
 
 ## Detailed Guide
 
@@ -794,7 +794,7 @@ This program increases the value in `r01`, being `10` in this example, every loo
 
 Because this program is an infinite loop, you have to **force quit** the program, you can do this by pressing `CTRL` and `c` at the same time.
 
-### Dynamic Jumping
+### Comparative Jumping
 
 Infinite loops, while nice in languages like Python and Java, are usually very unhelpful in assembly. Since the program is so close to the hardware, an infinite loop can't be stopped, save a full power cycle or in-built reset.
 
@@ -856,6 +856,47 @@ Update your 'Letter Loops' activity program to contain a **nested loop** that pr
 `AA AB AC AD AE AF AG` etc... `AX AY AZ BA BB BC BD` etc... `ZX ZY ZZ`
 
 > Hint: Both loops take similar forms, but take care to not mix register values together, separate the 1st loop from the 2nd loop clearly, and reset the inner-loop values in the outer loop.
+
+### Dynamic Jumping
+
+Crawssembly gives you a way to jump to labels based on prior code, such that the specific label to be jumped to is unknown before code execution. What this means, is that you could write a program that, depending on the logic, jumps to either label 1, or label 2, or label 3, etc... without a long jump block like so
+
+```
+1       jmg 1
+2       cal add 1 r01
+3       jmg 2
+4       cal add 1 r01
+5       jmg 3
+
+etc...
+```
+
+This is done with the `fgo` command. `fgo` is *almost* the exact same to `jmp`, insofar as you can use `fgo` and `jmp` interchangably without much issue, unless you use `fgo 0`.
+
+`fgo 0` is used to jump to the label stored in `r01`, and so as such it is a dynamic jump.
+
+Example
+
+```
+1       sav 10 r01              ; save 10 into register 1
+2       cal add 10 r01          ; 10 + 10 = 20
+3
+4       fgo 0                   ; dynamic jump to the label in register 1
+5
+6       10                      ; label 10, pointing to line 6
+7         sav 97 ref            ; output 'a'
+8         stp                   ; end program
+9
+10      20                      ; label 20, pointing to line 10
+11        sav 98 ref            ; output 'b'
+12        stp                   ; end program
+13
+14      30                      ; label 30, pointing to line 14
+15        sav 99 ref            ; output 'c'
+16        stp                   ; end program
+```
+
+The label that is selected to execute is based on the logic above, in the example we can see that `r01` contains the value of 20, so `fgo 0` points to label 20, which is itself a pointer to line 10.
 
 </details>
 
@@ -927,7 +968,7 @@ rmv 1
 
 But both do the exact same function. 
 
-> Indentation does not imply scope, that's determined my `rmv`. If there is no `rmv` command, the code will keep running no matter how much indentation you use. It is simply a visual hint.
+> Indentation does not imply scope, that's determined by `rmv`. If there is no `rmv` command, the code will keep running no matter how much indentation you use. It is simply a visual hint.
 
 </details>
 
@@ -1166,15 +1207,21 @@ Because input uses the keyboard and mouse, there is a hidden layer between what 
 
 Crawssembly provides direct keyboard access using `io keyboard`. The main command in this group is `io keyboard poll`, which gets the last key pressed as a key code into the input register.
 
-Key Codes:
-- 0: No key pressed
-- -1: Up Arrow
-- -2: Down Arrow
-- -3: Left Arrow
-- -4: Right Arrow
-- -5: Enter
-- 27: Escape
-- other: ASCII code ([See this chart for more](https://www.asciitable.com/))
+Most special **control** keys are given a negative keycode
+
+> Esc is give a positive keycode as an exception to match ASICC encodings
+
+| Key | Code | Key | Code |
+| --- | ---- | --- | ---- |
+| Up Arrow | -1 | Home | -8 |
+| Down Arrow | -2 | End | -9 |
+| Left Arrow | -3 | PageUp | -10 |
+| Right Arrow | -4 | PageDown | -11 |
+| Enter | -5 | Tab | -12 |
+| Backspace | -6 | BackTab | -13 |
+| Delete | -7 | Insert | -14 |
+
+Other keys are represented by their ASCII code ([See this chart for more](https://www.asciitable.com/))
 
 Example
 
@@ -1194,6 +1241,16 @@ This program shows the last key printed by outputting to `ref`, and ends the loo
 
 > Remember, `ref` outputs the [ASCII code](https://www.asciitable.com/) of the key pressed, not the real raw value of that key. Pressing Enter won't print 'Enter' to the screen!
 
+#### Modifiers
+
+You can extract keyboard modifiers (like CTRL) using `io keyboard mod`. This creates a **bit field** of the 4 main modifier keys.
+
+| Shift | CTRL | ALT | SUPER |
+| ----- | ---- | --- | ----- |
+| 0b0001 | 0b0010 | 0b0100 | 0b1000 |
+
+> Bit fields are explained in more detail in the following mouse section.
+
 ### The Mouse
 
 Almost all basic mice output 4 streams of data:
@@ -1205,7 +1262,7 @@ Almost all basic mice output 4 streams of data:
 The `io mouse` command group captures mouse events using 3 commands:
 - `io mouse x`: extracts current mouse X position, relative to the screen's top-left corner
 - `io mouse y`: extracts current mouse Y position, relative to the screen's top-left corner
-- `io mouse btn`: creates a **bitfield** for the middle, right, and left buttons in that order.
+- `io mouse btn`: creates a **bit field** for the middle, right, and left buttons in that order.
 
 > Normal terminals can't capture mouse position, which is why `--tui` needs to be used for mouse events to work.
 
@@ -1237,7 +1294,7 @@ A **bit field** is a single binary number which encodes multiple values. Instead
 | On | On | Off | `0b110` | 6 |
 | On | On | On | `0b111` | 7 |
 
-You can extract each button using bit masks.
+Like the **bit field** created with `io keyboard mod`, you can extract each button using bit masks.
 
 Example
 
@@ -1266,7 +1323,7 @@ cal and 4 r04
 sav r01 r03
 ```
 
-This example unpacks the bitfield, stored in `r04` into `r01` (Left Button), `r02` (Right Button), and `r03` (Middle Button)
+This example unpacks the bit field, stored in `r04` into `r01` (Left Button), `r02` (Right Button), and `r03` (Middle Button)
 
 #### Activity: Clicking Away
 
@@ -1432,9 +1489,9 @@ The *wave type* is a number to tell the channel what type of sound to make.
 | 3 | Sawtooth Wave | Aggressive, harsh beeps |
 | 4 | Random Noise | Great for sound effects |
 
-Because sound is very time-dependent, you'll want to play sounds for a set period of time. You can do this by pausing the program using `io time sleep`.
+Because sound is very time-dependent, you'll want to play sounds for a set period of time. You can do this by pausing the program using `io time sleepms`.
 
-> `io time sleep` pauses Crawssembly's execution for the inputted length in **milliseconds**. There are other `io time` commands which will be covered shortly.
+> `io time sleepms` pauses Crawssembly's execution for the inputted length in **milliseconds**. There are other `io time` commands which will be covered shortly.
 
 Example
 
@@ -1455,13 +1512,13 @@ sav 50 r01              ; saves 50 to register 1, used for the speaker volume
 io speaker volume r01   ; sets active speaker volume to 50%
 
 io speaker on rff       ; turns on speaker
-io time sleep r02       ; waits 100ms
+io time sleepms r02     ; waits 100ms
 
 io speaker off rff      ; turns off speaker
-io time sleep r02       ; waits 100ms
+io time sleepms r02     ; waits 100ms
 
 io speaker on rff       ; turns on speaker
-io time sleep r02       ; waits 100ms
+io time sleepms r02     ; waits 100ms
 
 io speaker off rff      ; turns off speaker
 ```
@@ -1487,10 +1544,13 @@ Write a program that plays every note in an octave. You can use [this Wikipedia 
 
 It's common, in larger programs, that the current time should be known. In computers, this is maintained through a CMOS battery. This keeps the internal clock running on the machine when the computer is turned off.
 
-To use time commands, you would use the `io time` group. We already discussed `io time sleep` in the speakers section.
-- `io time sleep`: pauses execution for a set period in milliseconds
+To use time commands, you would use the `io time` group. We already discussed `io time sleepms` in the speakers section.
+- `io time sleepms`: pauses execution for a set period in milliseconds
+- `io time sleepus`: pauses execution for a set period in microseconds
 - `io time unix`: outputs the current **UNIX timestamp**
 - `io time low`: outputs the last 31 bits of the **UNIX timestamp**
+
+> Because microseconds are a very small unit, `sleepus` is highly dependant on your machine's OS. This means that you won't always get the exact delay you input, and the difference won't be the same every time.
 
 ### UNIX Timestamp
 
@@ -1603,6 +1663,9 @@ This is the list of programs available, along with Inputs, Outputs, and **Scope*
 | stack   | `init`           | -         | `red`     | `r01-r02`, `red`         | Creates the stack pointer, used for the stack in RAM                      |
 | stack   | `pop`            | -         | `r02`     | `r01-r02`, `red`         | Removes the last entry on the stack, and stores it in r02                 |
 | stack   | `push`           | `r02`     | -         | `r01-r02`, `red`         | Adds a new entry, with value of `r02`, to the top of the stack            |
+| heap    | `init`           | -         | `rec`     | `r01-r02 rec`            | Creates the heap pointer, which tracks heap blocks in RAM                 |
+| heap    | `alloc`          | `r02`     | `rec ree` | `r01-r07 rec-red`, `60000-60002` | Makes a new heap block in memory                                  |
+| heap    | `free`           | `r02`     | `ree`     | `r01-r03`, `60000-60003` | Frees the current heap block in memory                                    |
 
 ### Activity: Multiplication
 
@@ -1701,6 +1764,7 @@ The rest of this section is used as quick-reference and help.
 `ifz LABEL`: Continues if `r01` is equal to 0.  
 `ifl LABEL`: Continues if `r01` is less than 0.  
 `rmv LABEL`: Removes the label from memory, and ends any `if` commands.  
+`fgo LABEL`: Jumps to the label ID. `fgo 0` uses the label ID stored in `r01`.  
 `stp`: Stops the program.  
 `nop`: Does nothing.  
 
@@ -1713,7 +1777,8 @@ The rest of this section is used as quick-reference and help.
 `io time`
 - `io time unix`: Extracts the current UNIX timestamp into the input register.
 - `io time low`: Extracts the value-only bits of the UNIX timestamp, avoids potential negative values.
-- `io time sleep`: Pauses execution for the inputted number of milliseconds.
+- `io time sleepms`: Pauses execution for the inputted number of milliseconds.
+- `io time sleepus`: Pauses execution for the inputted number of microseconds.
 
 `io screen`
 - `io screen x`: Sets the current active X coordinate.
@@ -1734,7 +1799,7 @@ The rest of this section is used as quick-reference and help.
 `io mouse`
 - `io mouse x`: Gets the mouse X coordinate into the input register.
 - `io mouse y`: Gets the mouse Y coordinate into the input register.
-- `io mouse btn`: Gets the bitfield of Middle, Right, and Left buttons into the input register.
+- `io mouse btn`: Gets the bit field of Middle, Right, and Left buttons into the input register.
 
 `io speaker`
 - `io speaker channel`: Sets the active channel (0-7) to the value in the input register.
@@ -1827,6 +1892,7 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `ifg` | `00 101` | `00 101 llllllll llllllll` | Continue if `r01` > 0 |
 | `ifz` | `00 110` | `00 110 llllllll llllllll` | Continue if `r01` = 0 |
 | `jmp` | `00 111` | `00 111 llllllll llllllll` | Jump to label |
+| `fgo` | `01 011` | `01 011 llllllll llllllll` | Jump to label ID; `0` uses the ID in `r01` |
 | `rmv` | `01 101` | `01 101 llllllll llllllll` | Removes/ends label scope |
 | `io`  | `01 110` | `01 110 ddddcccc rrrrrrrr`| Accesses non-CPU devices |
 | label definition | `01 111` | `01 111 llllllll llllllll` | Creates a label |
@@ -1864,8 +1930,9 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `io text bb` | `0000` | `1101` | `01 110 0000 1101 rrrrrrrr` | Sets the background blue value |
 | `io time unix` | `0001` | `0000` | `01 110 0001 0000 rrrrrrrr` | Stores current UNIX timestamp in input register |
 | `io time low` | `0001` | `0001` | `01 110 0001 0001 rrrrrrrr` | Stores magnitude of the UNIX timestamp in input register |
-| `io time sleep` | `0001` | `0010` | `01 110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |
+| `io time sleepms` | `0001` | `0010` | `01 110 0001 0010 rrrrrrrr` | Pauses execution for inputted number of milliseconds |
 | `io time milli` | `0001` | `0011` | `01 110 0001 0011 rrrrrrrr` | Stores the `low` time in milliseconds |
+| `io time sleepms` | `0001` | `0100` | `01 110 0001 0100 rrrrrrrr` | Pauses execution for inputted number of microseconds |
 | `io screen x` | `0010` | `0000` | `01 110 0010 0000 rrrrrrrr` | Sets active x coordinate in the graphics buffer |
 | `io screen y` | `0010` | `0001` | `01 110 0010 0001 rrrrrrrr` | Sets active Y coordinate in the graphics buffer |
 | `io screen pixel` | `0010` | `0010` | `01 110 0010 0010 rrrrrrrr` | Updates pixel in the graphics buffer at active coordinates |

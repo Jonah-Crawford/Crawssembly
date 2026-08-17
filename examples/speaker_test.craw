@@ -20,6 +20,6 @@ io speaker freq r03			; sets speaker frequency to 440Hz
 
 io speaker on rff			; turns on speaker
 
-io time sleep r04			; pauses for 1000ms (1s)
+io time sleepms r04			; pauses for 1000ms (1s)
 
 io speaker off rff			; turns off speaker

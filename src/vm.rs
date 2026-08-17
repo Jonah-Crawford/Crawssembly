@@ -10,9 +10,7 @@ use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use sysinfo::System;
-
 use chrono::{SecondsFormat, TimeZone, Utc};
-
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 
 use crossterm::{
@@ -415,6 +413,12 @@ struct MouseState {
     buttons: i32,
 }
 
+#[derive(Copy, Clone)]
+struct KeyboardState {
+    key: i32,
+    modifiers: i32,
+}
+
 #[derive(Clone)]
 pub struct DiskConfig {
     pub path: String,
@@ -689,7 +693,7 @@ struct Cpu {
     screen_force_redraw: bool,
 
     // keyboard
-    last_key: Arc<Mutex<i32>>,
+    keyboard: Arc<Mutex<KeyboardState>>,
 
     // mouse
     mouse: Arc<Mutex<MouseState>>,
@@ -792,7 +796,10 @@ impl Cpu {
             screen_force_redraw: true,
             last_present: Instant::now() - Duration::from_millis(100),
             target_frame_ms: 20, // <-<-<-<-<-<-<- FRAME RATE -<-<-<-<-<-<-<
-            last_key: Arc::new(Mutex::new(0)),
+            keyboard: Arc::new(Mutex::new(KeyboardState {
+                key: 0,
+                modifiers: 0,
+            })),
             mouse: Arc::new(Mutex::new(MouseState {
                 x: 0,
                 y: 0,
@@ -844,6 +851,15 @@ impl Cpu {
 
         self.sleep_times = 0.0
     }
+
+    fn register_labels(&mut self, program: &[Decoded]) {
+        for (pc, d) in program.iter().enumerate() {
+            if d.op5 == 0b01111 {
+                self.label_set(d.imm16, pc as i32);
+            }
+        }
+    }
+
 
     fn create_blank_disk(&mut self, path: &str) -> Result<(), String> {
         let byte_count = DISK_CELLS * 4;
@@ -1207,6 +1223,7 @@ impl Cpu {
         use std::time::Duration;
 
         self.begin_run();
+        self.register_labels(program);
 
         if !input.is_empty() {
             self.input_pos = 0;
@@ -1237,7 +1254,7 @@ impl Cpu {
         let interrupted = Arc::new(AtomicBool::new(false));
         let interrupted_thread = interrupted.clone();
 
-        let key_state = self.last_key.clone();
+        let keyboard_state = self.keyboard.clone();
         let mouse_state = self.mouse.clone();
 
         thread::spawn(move || {
@@ -1258,14 +1275,31 @@ impl Cpu {
                             KeyCode::Left => -3,
                             KeyCode::Right => -4,
                             KeyCode::Enter => -5,
+                            KeyCode::Backspace => -6,
+                            KeyCode::Delete => -7,
+                            KeyCode::Home => -8,
+                            KeyCode::End => -9,
+                            KeyCode::PageUp => -10,
+                            KeyCode::PageDown => -11,
+                            KeyCode::Tab => -12,
+                            KeyCode::BackTab => -13,
+                            KeyCode::Insert => -14,
                             KeyCode::Esc => 27,
                             KeyCode::Char(c) => c as i32,
                             _ => 0,
                         };
 
-                        if let Ok(mut last) = key_state.lock() {
-                            *last = code;
+                        let modifiers =
+                            if k.modifiers.contains(event::KeyModifiers::SHIFT) { 1 } else { 0 }
+                            | if k.modifiers.contains(event::KeyModifiers::CONTROL) { 2 } else { 0 }
+                            | if k.modifiers.contains(event::KeyModifiers::ALT) { 4 } else { 0 }
+                            | if k.modifiers.contains(event::KeyModifiers::SUPER) { 8 } else { 0 };
+
+                        if let Ok(mut keyboard) = keyboard_state.lock() {
+                            keyboard.key = code;
+                            keyboard.modifiers = modifiers;
                         }
+
                     }
 
                     Ok(Event::Mouse(m)) => {
@@ -1450,6 +1484,7 @@ impl Cpu {
 
     fn execute_noio(&mut self, program: &[Decoded], input: &[i32]) -> u64 {
         self.begin_run();
+        self.register_labels(program);
 
         if !input.is_empty() {
             self.input_pos = 0;
@@ -1672,10 +1707,10 @@ impl Cpu {
                     self.write_reg(r, (now & 0x7FFF_FFFF) as i32);
                 }
 
-                // sleep
+                // sleepms
                 0x2 => {
                     thread::sleep(Duration::from_millis(value as u64));
-                    self.sleep_times += value as f64 / 1000.0
+                    self.sleep_times += value as f64 / 1_000.0
                 }
 
                 // milli
@@ -1686,6 +1721,12 @@ impl Cpu {
                         .as_millis();
 
                     self.write_reg(r, (now & 0x7FFF_FFFF) as i32);
+                }
+
+                // sleepus
+                0x4 => {
+                    thread::sleep(Duration::from_micros(value as u64));
+                    self.sleep_times += value as f64 / 1_000_000.0
                 }
 
                 _ => {
@@ -1769,25 +1810,38 @@ impl Cpu {
                 }
             },
 
+
             // keyboard
             0x3 => match command {
-                // get last pressed key
-                0x0 => {
-                    let key = if let Ok(mut last) = self.last_key.lock() {
-                        let key = *last;
-                        *last = 0;
-                        key
-                    } else {
-                        self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
-                        0
-                    };
+              // poll
+              0x0 => {
+                let key = if let Ok(mut keyboard) = self.keyboard.lock() {
+                  let key = keyboard.key;
+                  keyboard.key = 0;
+                  key
+                } else {
+                  self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                  0
+                };
 
-                    self.write_reg(r, key);
-                }
+                self.write_reg(r, key);
+              }
 
-                _ => {
-                    self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
-                }
+              // modifiers
+              0x1 => {
+                let modifiers = if let Ok(keyboard) = self.keyboard.lock() {
+                  keyboard.modifiers
+                } else {
+                  self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                  0
+                };
+
+                self.write_reg(r, modifiers);
+              }
+
+              _ => {
+                self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
+              }
             },
 
             // mouse
@@ -2022,7 +2076,7 @@ impl Cpu {
                 }
 
                 _ => {
-                    self.regs[REG_IO_STATUS] = IO_INVALD_COMMAND;
+                    self.regs[REG_IO_STATUS] = IO_INVALID_COMMAND;
                 }
 
             },
@@ -2321,13 +2375,18 @@ impl Cpu {
             }
 
             0b01011 => {
-                let target_1_based = if d.imm16 == 0 {
-                    self.regs[1]
+                let label_id = if d.imm16 == 0 {
+                    let value = self.regs[1];
+                    if !(0..=u16::MAX as i32).contains(&value) {
+                        return (prog, pc + 1, false);
+                    }
+                    value as u16
                 } else {
-                    d.imm16 as i32
+                    d.imm16
                 };
-                if target_1_based >= 1 {
-                    (prog, target_1_based - 1, false)
+                let target = self.label_get(label_id);
+                if target >= 0 {
+                    (prog, target, false)
                 } else {
                     (prog, pc + 1, false)
                 }

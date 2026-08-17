@@ -10,3 +10,10 @@ program.bin
 test
 empty.py
 out.c
+perf.*
+*.svg
+*.bmp
+*.png
+*.webp
+*.jpg
+*.jpeg

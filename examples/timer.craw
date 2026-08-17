@@ -9,7 +9,7 @@ sav 10 r02				; timer start value
 1					; main timer loop
   io text int r02			; output value to screen
   io text newline rff			; drops down to a new line
-  io time sleep r03			; pauses for 1000ms (1 second)
+  io time sleepms r03			; pauses for 1000ms (1 second)
   cal add -1 r02			; decrement timer value
   sav r01 r02				; update timer value in register 2
   jmg 1					; continue loop if not finished
