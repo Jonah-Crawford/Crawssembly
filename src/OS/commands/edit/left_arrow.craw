@@ -1,0 +1,14 @@
+; edit/left_arrow.craw
+; r10 = cursor address
+; r20 = buffer start
+
+cal add -1 r10                            ; attempt movement
+sav r01 r10
+
+cal not r20 rff                           ; -buffer start
+cal add 1 r01
+cal add r10 r01                           ; cursor - buffer start
+
+ifl 10                                    ; cursor < buffer start
+  sav r20 r10                             ; clamp to beginning
+rmv 10

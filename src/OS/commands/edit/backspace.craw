@@ -1,0 +1,77 @@
+; edit/backspace.craw          r0e = destination walker
+; r10 = cursor position        r1f = total file size
+; r20 = heap block start       r0d = EOF address
+; r06 = deleted character      r07 = source address
+; r08 = temp character
+
+; cannot delete before buffer start
+
+cal not r20 rff
+cal add 1 r01
+cal add r10 r01                               ; cursor - buffer start
+
+ifz 10                                        ; cursor at beginning
+  jmp 20
+rmv 10
+
+
+; move cursor onto character being deleted
+
+cal add -1 r10
+sav r01 r10
+sav r10 r0e                                   ; destination starts at cursor
+
+io mem addr r10
+io mem read r06                               ; remember deleted character
+
+
+; calculate current EOF
+
+cal add r1f r20
+sav r01 r0d                                   ; first unused cell
+
+
+11                                             ; shift-left loop
+
+  cal add 1 r0e
+  sav r01 r07                                 ; source = destination + 1
+
+  cal not r0d rff
+  cal add 1 r01
+  cal add r07 r01                             ; source - EOF
+
+  ifz 12                                      ; source reached EOF
+    jmp 13
+  rmv 12
+
+  io mem addr r07
+  io mem read r08
+
+  io mem addr r0e
+  io mem write r08
+
+  cal add 1 r0e
+  sav r01 r0e
+
+  jmp 11
+
+
+13                                             ; shifting complete
+
+sav 0 r08
+io mem addr r0e                                ; old final character
+io mem write r08                               ; clear it
+
+cal add -1 r1f
+sav r01 r1f                                   ; shrink file
+
+sav r06 r01
+cal add -10 r01                               ; deleted LF?
+
+ifz 14
+  cal add -1 r0a
+  sav r01 r0a
+rmv 14
+
+
+20

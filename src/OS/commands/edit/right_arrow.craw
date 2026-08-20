@@ -1,0 +1,17 @@
+; edit/right_arrow.craw		r1f = file size
+; r10 = cursor address		r0e = EOF address
+; r20 = buffer start
+
+cal add 1 r10                             ; attempt movement
+sav r01 r10
+
+cal add r1f r20                           ; buffer start + file size
+sav r01 r0e                               ; EOF / maximum cursor
+
+cal not r0e rff                           ; -EOF
+cal add 1 r01
+cal add r10 r01                           ; cursor - EOF
+
+ifg 10                                    ; cursor > EOF
+  sav r0e r10                             ; clamp to EOF
+rmv 10

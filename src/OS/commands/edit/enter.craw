@@ -1,0 +1,14 @@
+; edit/enter.craw
+; r02 = keyboard character
+; r0a = total line count
+; r09 = temp original key
+
+sav r02 r09                                     ; preserve input register
+
+sav 10 r02                                      ; LF
+execute character.craw                          ; insert newline
+
+sav r09 r02                                     ; restore input register
+
+cal add 1 r0a
+sav r01 r0a                                     ; increment line count

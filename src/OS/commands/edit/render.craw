@@ -1,0 +1,259 @@
+; edit/render.craw              r13 = char address       r16 = cursor line
+; r20 = heap block start        r14 = top char           r17 = top line
+; r10 = cursor position         r15 = line index
+; r1f = total file size         r18 = end of file
+; r67 = temp heap walker
+
+sav -128 r01                            ; low colour
+io text br r01
+io text bg r01
+io text bb r01
+
+io text clear rff                       ; reset screen
+
+sav r20 r14                             ; TEMP: viewport starts at buffer
+sav 1 r17                               ; first visible line
+sav r17 r15                             ; initialise line index
+sav r15 r16                             ; default cursor line
+
+cal add r1f r20                         ; buffer start + file size
+sav r01 r18                             ; first unused cell / EOF
+
+sav r14 r13                             ; initialise char address
+cal add -1 r13                          ; loop increments before reading
+sav r01 r13
+
+sav 127 r01                             ; inverted line-number colour
+sav -128 r02
+io text br r01
+io text bg r01
+io text bb r01
+io text fr r02
+io text fg r02
+io text fb r02
+
+io text int r15                         ; show line index
+
+sav 127 r01                             ; normal colour
+sav -128 r02
+io text fr r01
+io text fg r01
+io text fb r01
+io text br r02
+io text bg r02
+io text bb r02
+
+io text space rff                       ; "    "
+io text space rff
+io text space rff
+io text space rff
+
+10                                      ; render loop
+
+  cal add 1 r13                         ; increment char address
+  sav r01 r13
+
+  ; test r13 == r18
+  cal not r18 rff                       ; -EOF
+  cal add 1 r01
+  cal add r13 r01                       ; char address - EOF
+  ifz 12                                ; reached first unused cell
+    jmp 20                              ; finish document rendering
+  rmv 12
+
+  ; test r13 == cursor
+  cal not r10 rff                       ; -cursor
+  cal add 1 r01
+  cal add r13 r01                       ; char address - cursor
+  ifz 11                                ; cursor at this character
+
+    sav r15 r16                         ; preserve cursor line
+
+    sav 127 r01                         ; cursor colour
+    sav -128 r02
+    io text br r01
+    io text bg r01
+    io text bb r01
+    io text fr r02
+    io text fg r02
+    io text fb r02
+
+  rmv 11
+
+  io mem addr r13
+  io mem read r04                       ; preserve character
+
+  sav r04 r01
+  cal add -10 r01                       ; test for LF
+  ifz 11                                ; newline
+
+    ; if cursor is on newline, show cursor as a space
+    cal not r10 rff
+    cal add 1 r01
+    cal add r13 r01
+    ifz 12
+      io text space rff
+    rmv 12
+
+    io text newline rff
+
+    cal add 1 r15                       ; increment line number
+    sav r01 r15
+
+    sav 127 r01                         ; line-number colour
+    sav -128 r02
+    io text br r01
+    io text bg r01
+    io text bb r01
+    io text fr r02
+    io text fg r02
+    io text fb r02
+
+    io text int r15
+
+    sav 127 r01                         ; normal colour
+    sav -128 r02
+    io text fr r01
+    io text fg r01
+    io text fb r01
+    io text br r02
+    io text bg r02
+    io text bb r02
+
+    io text space rff                   ; "    "
+    io text space rff
+    io text space rff
+    io text space rff
+
+    jmp 10
+
+  rmv 11
+
+  io text char r04                      ; render normal character
+
+  sav 127 r01                           ; restore normal colour
+  sav -128 r02
+  io text fr r01
+  io text fg r01
+  io text fb r01
+  io text br r02
+  io text bg r02
+  io text bb r02
+
+  jmp 10
+
+20                                      ; end document rendering
+
+; cursor can legally sit at EOF
+cal not r10 rff
+cal add 1 r01
+cal add r18 r01                         ; EOF - cursor
+ifz 11
+
+  sav r15 r16                           ; cursor is on current line
+
+  sav 127 r01                           ; cursor colour
+  sav -128 r02
+  io text br r01
+  io text bg r01
+  io text bb r01
+  io text fr r02
+  io text fg r02
+  io text fb r02
+
+  io text space rff                     ; visible EOF cursor
+
+rmv 11
+
+io text newline rff
+io text newline rff
+
+sav 127 r01                             ; status colour
+sav -128 r02
+io text br r01
+io text bg r01
+io text bb r01
+io text fr r02
+io text fg r02
+io text fb r02
+
+sav 76 r01                              ; "Ln "
+io text char r01
+sav 110 r01
+io text char r01
+io text space rff
+
+io text int r16                         ; current line
+
+sav 47 r01                              ; "/"
+io text char r01
+
+io text int r0a                         ; total lines
+
+io text newline rff
+
+io text int r1f                         ; file length
+
+io text space rff                       ; " Chars"
+sav 67 r01
+io text char r01
+sav 104 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 115 r01
+io text char r01
+
+sav 127 r01                             ; restore normal colour
+sav -128 r02
+io text fr r01
+io text fg r01
+io text fb r01
+io text br r02
+io text bg r02
+io text bb r02
+
+io text newline rff
+io text newline rff
+
+
+
+
+
+; TEMP: show document memory
+; r67 = memory address
+; r68 = cells remaining
+
+;sav r20 r67                             ; start at buffer beginning
+;
+;cal add 1 r1f                           ; file size + first unused cell
+;sav r01 r68                             ; number of cells to display
+;
+;6767
+
+;  io mem addr r67                       ; select current cell
+;  io mem read r04                       ; read value
+
+;  io text hex r67                       ; show address
+;  io text space rff
+;  io text hex r04                       ; show contents
+;  io text newline rff
+
+;  cal add 1 r67                         ; next address
+;  sav r01 r67
+
+;  cal add -1 r68                        ; one fewer cell remaining
+;  sav r01 r68
+
+;  ifz 6768                              ; finished
+;    jmp 6769
+;  rmv 6768
+
+;  jmp 6767                              ; continue dump
+
+;6769
+
+;rmv 6767
+;rmv 6769

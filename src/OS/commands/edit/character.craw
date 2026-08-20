@@ -1,0 +1,48 @@
+; edit/character.craw           r0e = reverse char index
+; r10 = cursor position         r1f = total file size
+; r20 = heap block start        r05 = new character store
+; r0d = source address
+
+sav r02 r05                                     ; preserve character code from poll
+
+cal add r1f r20                                 ; buffer start + file size
+sav r01 r0e                                     ; first unused cell
+
+10                                              ; reverse character walker loop
+
+  cal not r10 rff                               ; negation 1st step
+  cal add 1 r01                                 ; negation 2nd step
+  cal add r0e r01                               ; char index - cursor
+
+  ifz 11                                        ; reached cursor position
+
+    io mem addr r0e                             ; access cursor
+    io mem write r05                            ; write new character
+
+    cal add 1 r1f                               ; increment total file size
+    sav r01 r1f                                 ; update total file size
+
+    cal add 1 r10                               ; increment cursor position
+    sav r01 r10                                 ; update cursor
+
+    jmp 12                                      ; insertion complete
+
+  rmv 11                                        ; end cursor check
+
+  ifg 11                                        ; destination is after cursor
+
+    cal add -1 r0e                              ; source = destination - 1
+    sav r01 r0d                                 ; preserve source address
+
+    io mem addr r0d                             ; access source character
+    io mem read r02                             ; read source character
+
+    io mem addr r0e                             ; access destination
+    io mem write r02                            ; shift character right
+
+    sav r0d r0e                                 ; move walker left
+    jmp 10                                      ; continue shifting
+
+  rmv 11                                        ; end destination > cursor check
+
+12                                              ; insertion complete

@@ -1,0 +1,49 @@
+; edit/initial_pass.craw
+; r09 = char index
+; r0a = line count
+
+io text clear rff			; clear terminal
+
+sav 76 r01				; "Loading..."
+io text char r01
+sav 111 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 100 r01
+io text char r01
+sav 105 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 103 r01
+io text char r01
+sav 46 r01
+io text char r01
+io text char r01
+io text char r01
+
+sav 1 r0a				; initialise line count
+cal add 1 r20				; get first char from heap
+sav r01 r09				; update char index
+
+10					; main loop
+
+  io mem addr r09			; get address
+  io mem read r01			; read char
+
+  cal add -10 r01			; newline test
+  ifz 11				; newline
+
+    cal add 1 r0a			; increment count
+    sav r01 r0a				; update count
+
+  rmv 11				; end newline check
+
+  io mem read r01			; read cell again
+
+  ifg 11				; ascii code > 0
+    jmp 10				; continue loop
+  rmv 11				; end ascii check
+
+io text clear rff			; clear terminal

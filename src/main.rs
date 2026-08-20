@@ -36,6 +36,7 @@ color blue "\<(char|b|hex|newline|pixel|read|write|erase|erasecell)\>"
 color blue "\<(x|g|y|int|clear|unix|low|sleepms|milli|dump|present)\>"
 color blue "\<(r|poll|btn|channel|freq|volume|wave|on|off|sleepus)\>"
 color blue "\<(toggle|addr|save|iso|space|r|g|b|fr|fg|fb|br|bg|bb)\>"
+color blue "\<(mod|modification|modifications)\>"
 
 color yellow "[-+]?[0-9]+"
 color yellow "0x[0-9A-Fa-f]+"

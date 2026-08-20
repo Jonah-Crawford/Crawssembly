@@ -4,10 +4,139 @@
 ; CRAW SYSTEMS ;
 ;;;;;;;;;;;;;;;;
 
+sav 64 r01                                      ; 0b0..01000000
+sav 10 r02                                      ; shift amount
+cal shl r01 r02                                 ; 64 KiB
+sav r01 r02                                     ; allocation size
+
+executestd heap/alloc.craw                      ; heap block for text buffer
+
+cal add 1 rec                                   ; first data block
+sav r01 r10                                     ; cursor = buffer start
+sav r10 r20                                     ; preserve buffer start
+
+sav r20 r14                                     ; viewport starts at buffer
+sav 1 r17                                       ; top visible line
+sav 0 r1f                                       ; empty file
+
+execute edit/initial_pass.craw                  ; get line count -> r0a
+execute edit/render.craw                        ; initial render
+
+1                                               ; main loop
+
+  io keyboard poll r02                          ; get key press
+  io keyboard mod r03                           ; get modifiers
+
+  sav r02 r04                                   ; preserve original key
+
+  sav r04 r01                                   ; no key?
+  ifz 2
+
+    sav r03 r01                                 ; no modifiers either?
+    ifz 3
+      jmp 1
+    rmv 3
+
+  rmv 2
 
 
-1					; main loop
+  ; up arrow = -1
 
-  io keyboard poll r01			; get key press
+  sav r04 r01
+  cal add 1 r01
+  ifz 2
+    execute edit/up_arrow.craw
+    jmp 8
+  rmv 2
 
-  
+
+  ; down arrow = -2
+
+  sav r04 r01
+  cal add 2 r01
+  ifz 2
+    execute edit/down_arrow.craw
+    jmp 8
+  rmv 2
+
+
+  ; left arrow = -3
+
+  sav r04 r01
+  cal add 3 r01
+  ifz 2
+    execute edit/left_arrow.craw
+    jmp 8
+  rmv 2
+
+
+  ; right arrow = -4
+
+  sav r04 r01
+  cal add 4 r01
+  ifz 2
+    execute edit/right_arrow.craw
+    jmp 8
+  rmv 2
+
+
+  ; Enter = -5
+
+  sav r04 r01
+  cal add 5 r01
+  ifz 2
+    execute edit/enter.craw
+    jmp 8
+  rmv 2
+
+
+  ; Backspace = -6
+
+  sav r04 r01
+  cal add 6 r01
+  ifz 2
+    execute edit/backspace.craw
+    jmp 8
+  rmv 2
+
+
+  ; CTRL modifier
+
+  cal and 2 r03
+  ifg 2
+
+    ; CTRL + S
+
+    sav r04 r01
+    cal add -115 r01
+    ifz 3
+      execute edit/save.craw
+      jmp 8
+    rmv 3
+
+
+    ; CTRL + X
+
+    sav r04 r01
+    cal add -120 r01
+    ifz 3
+      jmp 9
+    rmv 3
+
+    jmp 1                               ; don't insert Ctrl combinations
+
+  rmv 2
+
+
+  ; normal printable character
+
+  sav r04 r02                           ; restore original character code
+  execute edit/character.craw
+
+
+8                                               ; redraw after state change
+
+  execute edit/render.craw
+  jmp 1
+
+9					; end edit.craw

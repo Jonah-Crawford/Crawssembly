@@ -26,10 +26,6 @@ use crossterm::{
 pub type Instr = u32;
 
 const INSTR_MASK: u32 = 0x1F_FFFF; // 21 bits
-const BLOCK_INSTRS: usize = 168;
-const BLOCK_BYTES: usize = 441; // 168 * 21 = 3528 bits = 441 bytes
-const STORAGE_BLOCKS: usize = 512;
-const STORAGE_PATH: &str = "storage.bin";
 const DISK_PATH: &str = "disk.img";
 const DISK_CELLS: usize = 1048576;
 
@@ -228,109 +224,6 @@ fn read_i32() -> Result<Option<i32>, String> {
     Ok(read_line()?.parse::<i32>().ok())
 }
 
-// ---------- Storage (str/run) ----------
-
-fn ensure_storage() -> Result<(), String> {
-    if fs::metadata(STORAGE_PATH).is_ok() {
-        return Ok(());
-    }
-    let f = OpenOptions::new()
-        .create(true)
-        .write(true)
-        .truncate(false)
-        .open(STORAGE_PATH)
-        .map_err(|e| e.to_string())?;
-    let size = (BLOCK_BYTES * STORAGE_BLOCKS) as u64;
-    f.set_len(size).map_err(|e| e.to_string())?;
-    Ok(())
-}
-
-fn pack_21bit_block(instrs: &[Instr]) -> Vec<u8> {
-    // instrs length <= 168. Pads with nop (0).
-    let mut padded: Vec<u32> = Vec::with_capacity(BLOCK_INSTRS);
-    for &i in instrs.iter().take(BLOCK_INSTRS) {
-        padded.push(i & INSTR_MASK);
-    }
-    while padded.len() < BLOCK_INSTRS {
-        padded.push(0);
-    }
-
-    let mut out = vec![0u8; BLOCK_BYTES];
-    let mut bit_pos: usize = 0;
-
-    for &v in &padded {
-        for k in (0..21).rev() {
-            let bit = ((v >> k) & 1) as u8;
-            let byte_i = bit_pos / 8;
-            let bit_i = 7 - (bit_pos % 8);
-            if bit == 1 {
-                out[byte_i] |= 1 << bit_i;
-            }
-            bit_pos += 1;
-        }
-    }
-
-    out
-}
-
-fn unpack_21bit_block(buf: &[u8]) -> Vec<Instr> {
-    let mut out: Vec<Instr> = Vec::with_capacity(BLOCK_INSTRS);
-    let mut bit_pos: usize = 0;
-
-    for _ in 0..BLOCK_INSTRS {
-        let mut v: u32 = 0;
-        for _ in 0..21 {
-            let byte_i = bit_pos / 8;
-            let bit_i = 7 - (bit_pos % 8);
-            let bit = (buf[byte_i] >> bit_i) & 1;
-            v = (v << 1) | (bit as u32);
-            bit_pos += 1;
-        }
-        out.push(v & INSTR_MASK);
-    }
-
-    out
-}
-
-fn write_block(block: u16, instrs: &[Instr]) -> Result<(), String> {
-    ensure_storage()?;
-    if block as usize >= STORAGE_BLOCKS {
-        return Err(format!("str: block out of range: {}", block));
-    }
-
-    let buf = pack_21bit_block(instrs);
-
-    let mut f = OpenOptions::new()
-        .write(true)
-        .open(STORAGE_PATH)
-        .map_err(|e| e.to_string())?;
-
-    let off = (block as u64) * (BLOCK_BYTES as u64);
-    f.seek(SeekFrom::Start(off)).map_err(|e| e.to_string())?;
-    f.write_all(&buf).map_err(|e| e.to_string())?;
-    Ok(())
-}
-
-fn read_block(block: u16) -> Result<Vec<Instr>, String> {
-    ensure_storage()?;
-    if block as usize >= STORAGE_BLOCKS {
-        return Err(format!("run: block out of range: {}", block));
-    }
-
-    let mut f = OpenOptions::new()
-        .read(true)
-        .open(STORAGE_PATH)
-        .map_err(|e| e.to_string())?;
-
-    let off = (block as u64) * (BLOCK_BYTES as u64);
-    f.seek(SeekFrom::Start(off)).map_err(|e| e.to_string())?;
-
-    let mut buf = vec![0u8; BLOCK_BYTES];
-    f.read_exact(&mut buf).map_err(|e| e.to_string())?;
-
-    Ok(unpack_21bit_block(&buf))
-}
-
 #[derive(Clone, Copy)]
 pub struct Decoded {
     core: u8,
@@ -345,39 +238,33 @@ pub struct Decoded {
     is_inp: bool,
 }
 
-pub fn predecode(program: &[Instr]) -> Vec<Decoded> {
-    let mut out = Vec::with_capacity(program.len());
+fn decode(instr: Instr) -> Decoded {
+    let v = instr & INSTR_MASK;
 
-    for &instr in program {
-        let v = instr & INSTR_MASK;
+    let core = ((v >> 19) & 0b11) as u8;
+    let mode = ((v >> 16) & 0b111) as u8;
+    let a = ((v >> 8) & 0xFF) as u8;
+    let b = (v & 0xFF) as u8;
 
-        let core = ((v >> 19) & 0b11) as u8;
-        let mode = ((v >> 16) & 0b111) as u8;
-        let a = ((v >> 8) & 0xFF) as u8;
-        let b = (v & 0xFF) as u8;
+    let op5 = ((v >> 16) & 0b1_1111) as u8;
+    let imm16 = (v & 0xFFFF) as u16;
 
-        let op5 = ((v >> 16) & 0b1_1111) as u8;
-        let imm16 = (v & 0xFFFF) as u16;
-
-        let is_nop = v == 0;
-        let is_inp = v == 0b011000000000000000000;
-        let is_stp = v == 0b011111111111111111111;
-
-        out.push(Decoded {
-            core,
-            mode,
-            a,
-            b,
-            op5,
-            imm16,
-            raw21: v,
-            is_nop,
-            is_stp,
-            is_inp,
-        });
+    Decoded {
+        core,
+        mode,
+        a,
+        b,
+        op5,
+        imm16,
+        raw21: v,
+        is_nop: v == 0,
+        is_inp: v == 0b011000000000000000000,
+        is_stp: v == 0b011111111111111111111,
     }
+}
 
-    out
+pub fn predecode(program: &[Instr]) -> Vec<Decoded> {
+    program.iter().map(|&instr| decode(instr)).collect()
 }
 
 // ---------- CPU ----------
@@ -392,18 +279,6 @@ enum TerminalRenderMode {
 enum TerminalColourMode {
     TrueColour,
     Ansi256,
-}
-
-#[derive(Copy, Clone)]
-enum ProgRef {
-    Main,
-    Block(usize),
-}
-
-#[derive(Copy, Clone)]
-struct Frame {
-    prog: ProgRef,
-    pc: i32,
 }
 
 #[derive(Copy, Clone)]
@@ -824,8 +699,6 @@ impl Cpu {
 
     fn begin_run(&mut self) {
         self.skip.clear();
-        self.call_stack.clear();
-        self.blocks.clear();
         self.input_pos = 0;
 
         self.screen.fill([0, 0, 0]);
@@ -907,27 +780,6 @@ impl Cpu {
         file.flush().map_err(|e| e.to_string())?;
 
         Ok(())
-    }
-
-    fn prog_len(&self, main: &[Decoded], prog: ProgRef) -> i32 {
-        match prog {
-            ProgRef::Main => main.len() as i32,
-            ProgRef::Block(i) => self.blocks[i].len() as i32,
-        }
-    }
-
-    fn fetch_decoded(&self, main: &[Decoded], prog: ProgRef, pc: i32) -> Decoded {
-        match prog {
-            ProgRef::Main => main[pc as usize],
-            ProgRef::Block(i) => self.blocks[i][pc as usize],
-        }
-    }
-
-    fn fetch_raw21(&self, main: &[Decoded], prog: ProgRef, idx: usize) -> u32 {
-        match prog {
-            ProgRef::Main => main[idx].raw21,
-            ProgRef::Block(i) => self.blocks[i][idx].raw21,
-        }
     }
 
     fn detect_terminal_render_mode() -> TerminalRenderMode {
@@ -1204,13 +1056,6 @@ impl Cpu {
         }
     }
 
-    fn _cur_prog<'a>(&'a self, main: &'a [Decoded], prog: ProgRef) -> &'a [Decoded] {
-        match prog {
-            ProgRef::Main => main,
-            ProgRef::Block(i) => &self.blocks[i],
-        }
-    }
-
     fn execute_interactive(
         &mut self,
         program: &[Decoded],
@@ -1265,7 +1110,7 @@ impl Cpu {
                             && k.modifiers.contains(event::KeyModifiers::CONTROL)
                         {
                             interrupted_thread.store(true, std::sync::atomic::Ordering::SeqCst);
-                            println!("\nExecution terminated by user.");
+                            println!("\n\x1b[38;2;255;255;255m\x1b[48;2;0;0;0mExecution terminated by user.");
                             continue;
                         }
 
