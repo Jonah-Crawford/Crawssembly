@@ -1651,7 +1651,7 @@ This is the list of programs available, along with Inputs, Outputs, and **Scope*
 | math    | `abs`            | `r02`     | `r02`     | `r01-r02`, `60000`       | Returns the absolute value of `r02`.                                      |
 | math    | `divide`         | `r02-r03` | `r02-r03` | `r01-r04`, `60000`       | Quotient in `r02`, remainder in `r03`.                                    |
 | math    | `modulo`         | `r02-r03` | `r02`     | `r01-r03`, `60000`       | Returns only the remainder.                                               |
-| math    | `multiply`       | `r02-r03` | `r02`     | `r01-r04`, `60000`       | Multiplies `r02` by `r03`.                                                |
+| math    | `multiply`       | `r02-r03` | `r02`     | `r01-r05`, `60000-60001` | Multiplies `r02` by `r03`.                                                |
 | math    | `negate`         | `r02`     | `r02`     | `r01-r02`, `60000`       | Negates `r02`.                                                            |
 | math    | `power`          | `r02-r03` | `r02`     | `r01-r05`, `60000-60001` | Raises `r02` to the power of `r03`.                                       |
 | math    | `random`         | -         | `r02`     | `r01-r03`, `60000`       | Generates a pseudorandom integer using the current millisecond timestamp. |
