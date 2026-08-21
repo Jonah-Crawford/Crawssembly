@@ -737,7 +737,7 @@ Example
 
 Remember that annoying immediate limit from `sav` and `cal`? With labels the range is bigger, since negative numbers aren't used and the entire instruction is just the number.
 
-**The range for labels is `0 - 65535`**
+> **The range for labels is `0 - 65534`** The label `65635` is the same as a `stp`, so the normal label functionality won't occur.
 
 ### Line Numbers
 
@@ -1449,7 +1449,7 @@ io screen present rff     ; sends the graphics buffer to the screen
 
 #### Activity: Smiling Screen
 
-Write a program that outputs a smiley face.
+Write a program that outputs a small smiley face, you can check `answers/smiling_screen.craw` for an example.
 
 #### Advanced Activity: Colourful Terminal
 
@@ -1765,6 +1765,8 @@ The rest of this section is used as quick-reference and help.
 `ifl LABEL`: Continues if `r01` is less than 0.  
 `rmv LABEL`: Removes the label from memory, and ends any `if` commands.  
 `fgo LABEL`: Jumps to the label ID. `fgo 0` uses the label ID stored in `r01`.  
+`run REGISTER`: Executes the 21-bit instruction inside the register (More about this below).  
+`io DEVICE COMMAND REGISTER`: Executes the command on the device, with the register value as input/output.  
 `stp`: Stops the program.  
 `nop`: Does nothing.  
 
@@ -1795,6 +1797,7 @@ The rest of this section is used as quick-reference and help.
 
 `io keyboard`
 - `io keyboard poll`: Gets the last key pressed as a code into the input register.
+- `io keyboard mod`: Extracts a bit field of the modifier keys (Shift, CTRL, ALT, SUPER)
 
 `io mouse`
 - `io mouse x`: Gets the mouse X coordinate into the input register.
@@ -1819,7 +1822,7 @@ The rest of this section is used as quick-reference and help.
 - `io disk addr`: Sets the active disk address to the value in the input register.
 - `io disk read`: Reads the value of the active disk address into the input register.
 - `io disk write`: Writes the value of the input register into the active disk address.
-- `io disk save`: Forces the `storage.bin` file to update its contents.
+- `io disk save`: Forces the `storage.bin` file to update its contents (Very slow).
 
 ### Common Mistakes
 
@@ -1829,6 +1832,7 @@ The rest of this section is used as quick-reference and help.
 - Labels are not variables, they are line pointers
 - Literals must be between `-128` and `127`
 - Infinite loops require CTRL+C to break
+- Label 65535 is encoded the same way as `stp`
 - Memory and disk are different, memory is volatile while disk is permanent
 
 You can stop at this point and you'd be fine. But to *really* understand what computers do, we have to peel back another abstraction layer.
@@ -1836,9 +1840,9 @@ You can stop at this point and you'd be fine. But to *really* understand what co
 </details>
 
 <details>
-<summary><strong>Sorry, Crawssembly is a lie.</strong></summary>
+<summary><strong>Sorry, Crawssembly is a lie</strong></summary>
 
-## Sorry, Crawssembly is a lie.
+## Sorry, Crawssembly is a lie
 
 Remember how one of the first things that was said was that programming languages are a lie? That goes for Crawssembly too. The computer has no idea what `sav` or `cal` is, what it means, or how it works.
 
@@ -1892,6 +1896,7 @@ Most instructions follow the form of `aa bbb cccccccc dddddddd`
 | `ifg` | `00 101` | `00 101 llllllll llllllll` | Continue if `r01` > 0 |
 | `ifz` | `00 110` | `00 110 llllllll llllllll` | Continue if `r01` = 0 |
 | `jmp` | `00 111` | `00 111 llllllll llllllll` | Jump to label |
+| `run` | `01 010` | `01 010 00000000 rrrrrrrr` | Executes the 21-bit instruction stored in the register (more about this below) |
 | `fgo` | `01 011` | `01 011 llllllll llllllll` | Jump to label ID; `0` uses the ID in `r01` |
 | `rmv` | `01 101` | `01 101 llllllll llllllll` | Removes/ends label scope |
 | `io`  | `01 110` | `01 110 ddddcccc rrrrrrrr`| Accesses non-CPU devices |
@@ -2005,6 +2010,105 @@ The Executioner reads each binary code, decodes it into separate blocks, and exe
                            │                                               │
                            └───────────────────────────────────────────────┘
 ```
+
+</details>
+
+<details>
+<summary><strong>Dynamic Instruction Execution</strong></summary>
+
+## Dynamic Instruction Execution
+
+The `run` instruction executes a Crawssembly binary instruction stored inside a register. The lower 21 bits of the register are interpreted as a normal CASM instruction and executed immediately.
+
+```craw
+run rXX
+```
+
+`run` uses the following binary format:
+
+```text
+01 010 00000000 rrrrrrrr
+```
+
+where `rrrrrrrr` identifies the register containing the instruction to execute.
+
+For example:
+
+```craw
+sav 0x82A03 r02
+run r02
+```
+
+The value `0x82A03` is the binary encoding of:
+
+```craw
+sav 42 r03
+```
+
+Therefore, `run r02` executes `sav 42 r03`, placing `42` into `r03`.
+
+### Loading and Running Instructions
+
+Since instructions are represented by ordinary 21-bit values, they can be loaded from memory, disk, or generated at runtime before being executed.
+
+For example, an instruction can be read directly from disk:
+
+```craw
+sav 0 r01
+io disk addr r01
+io disk read r02
+run r02
+```
+
+If disk address `0` contains `0x82A03`, this is equivalent to executing:
+
+```
+sav 42 r03
+```
+
+This allows CASM programs to load executable instructions independently of the program currently being executed.
+
+### Control Flow
+
+Instructions executed using `run` have the same effects as instructions appearing directly in the program.
+
+For example, if the register contains an encoded `stp` instruction:
+
+```
+run r02
+```
+
+will stop execution immediately.
+
+Similarly, an encoded `fgo` instruction can change the program counter:
+
+```
+0x0B0005
+```
+
+encodes:
+
+```
+fgo 5
+```
+
+Executing this value using `run` will jump to label `5` in the current program.
+
+This behaviour applies to all instruction types, including arithmetic, register operations, I/O and control-flow instructions.
+
+### Code as Data
+
+`run` allows CASM instructions to be treated as ordinary data. Instructions may be:
+
+- stored in registers
+- stored in memory
+- loaded from disk
+- modified before execution
+- generated dynamically by a program
+
+This provides the foundation for functionality such as executable loaders, dynamically loaded programs, instruction tables, runtime code generation and interpreters written entirely in CASM.
+
+`run` does not create a separate program or execution context. The dynamic instruction is executed as though it occupied the position of the `run` instruction itself, using the current registers, labels, devices and program state.
 
 </details>
 
@@ -2298,10 +2402,12 @@ All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artifici
 
 Thank you to **Koy Camerini-Yachdav** who tested Crawssembly on macOS, and their amazing work making detailed error reports.
 
-Thank you to **Fazin Ahamed** for testing out the package CLI system, specifically user accounts and API key - project linking.
+Thank you to **Fazin Ahamed** for testing out the package CLI system, specifically user accounts and API key & project linking.
 
-Thank you to the *CRAW SYSTEMS* team for help with programming, especially *@Xytrophico* with testing on Linux systems and providing invaluable help.
+Thank you to **@BetterClient** for formatting `fgo` version 2, specifically for jumping to dynamic labels with `fgo 0`.
 
-*Crawssembly is a product of CRAW SYSTEMS (2026)*
+Thank you to the **CRAW SYSTEMS** team for help with programming, especially **@Xytrophico** with testing on Linux systems and providing invaluable help.
+
+*Crawssembly is a product of CRAW SYSTEMS (2025-2026)*
 
 </details>
