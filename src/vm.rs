@@ -232,7 +232,6 @@ pub struct Decoded {
     b: u8,
     op5: u8,
     imm16: u16,
-    raw21: u32,
     is_nop: bool,
     is_stp: bool,
     is_inp: bool,
@@ -256,7 +255,6 @@ fn decode(instr: Instr) -> Decoded {
         b,
         op5,
         imm16,
-        raw21: v,
         is_nop: v == 0,
         is_inp: v == 0b011000000000000000000,
         is_stp: v == 0b011111111111111111111,
@@ -539,10 +537,6 @@ struct Cpu {
     // Latched input: only advances when `inp`
     input_pos: usize,
 
-    // run() support
-    call_stack: Vec<Frame>,
-    blocks: Vec<Vec<Decoded>>, // cache of decoded blocks
-
     // text
     foreground_red: u8,
     foreground_green: u8,
@@ -649,8 +643,6 @@ impl Cpu {
             epoch: 1,
             skip: Vec::new(),
             input_pos: 0,
-            call_stack: Vec::new(),
-            blocks: Vec::new(),
             foreground_red: 255,
             foreground_green: 255,
             foreground_blue: 255,
@@ -1075,7 +1067,6 @@ impl Cpu {
             self.regs[0] = input[0];
         }
 
-        let mut prog = ProgRef::Main;
         let mut pc: i32 = 0;
         let mut tick: u64 = 0;
 
@@ -1225,7 +1216,7 @@ impl Cpu {
         let start = Instant::now();
 
         loop {
-            let len = self.prog_len(program, prog);
+            let len = program.len() as i32;
 
             if interrupted.load(std::sync::atomic::Ordering::SeqCst) {
                 break;
@@ -1235,7 +1226,7 @@ impl Cpu {
                 break;
             }
 
-            let d = self.fetch_decoded(program, prog, pc);
+            let d = program[pc as usize];
             tick += 1;
 
             if speed == 0 {
@@ -1254,8 +1245,7 @@ impl Cpu {
                 writeln!(trace).ok();
             }
 
-            let (next_prog, next_pc, did_stop) = self.step(d, prog, pc, input, program, looped);
-            prog = next_prog;
+            let (next_pc, did_stop) = self.step(d, pc, input, program, looped);
             pc = next_pc;
 
             if did_stop {
@@ -1336,21 +1326,19 @@ impl Cpu {
             self.regs[0] = input[0];
         }
 
-        let mut prog = ProgRef::Main;
         let mut pc: i32 = 0;
         let mut tick: u64 = 0;
 
         loop {
-            let len = self.prog_len(program, prog);
+            let len = program.len() as i32;
             if pc < 0 || pc >= len {
                 break;
             }
 
-            let d = self.fetch_decoded(program, prog, pc);
+            let d = program[pc as usize];
             tick += 1;
 
-            let (next_prog, next_pc, did_stop) = self.step(d, prog, pc, input, program, true);
-            prog = next_prog;
+            let (next_pc, did_stop) = self.step(d, pc, input, program, true);
             pc = next_pc;
 
             if did_stop {
@@ -2022,13 +2010,11 @@ impl Cpu {
     fn step(
         &mut self,
         d: Decoded,
-        prog: ProgRef,
         pc: i32,
         input: &[i32],
         main: &[Decoded],
         looped: bool,
-    ) -> (ProgRef, i32, bool) {
-        // returns (next_prog, next_pc, did_stop)
+    ) -> (i32, bool) {
         if !self.skip.is_empty() {
             if d.op5 == 0b01101 {
                 let id = d.imm16;
@@ -2036,22 +2022,17 @@ impl Cpu {
                     self.skip.remove(pos);
                 }
             }
-            return (prog, pc + 1, false);
+            return (pc + 1, false);
         }
 
-        // stp: RETURN if inside run; HALT if in main
         if d.is_stp {
-            if let Some(frame) = self.call_stack.pop() {
-                return (frame.prog, frame.pc, false);
-            }
-            return (prog, pc, true);
+            return (pc, true);
         }
 
         if d.is_nop {
-            return (prog, pc + 1, false);
+            return (pc + 1, false);
         }
 
-        // inp, gets next file input inside r00
         if d.is_inp {
             if !input.is_empty() {
                 self.input_pos += 1;
@@ -2068,10 +2049,9 @@ impl Cpu {
                 }
             }
 
-            return (prog, pc + 1, false);
+            return (pc + 1, false);
         }
 
-        // ALU
         if d.core == 0b10 || d.core == 0b11 {
             let va = if d.core == 0b10 {
                 self.regs[d.a as usize]
@@ -2080,10 +2060,9 @@ impl Cpu {
             };
             let vb = self.regs[d.b as usize];
             self.regs[1] = alu(d.mode, va, vb);
-            return (prog, pc + 1, false);
+            return (pc + 1, false);
         }
 
-        // Seperated IO command block for hardware interaction
         if d.op5 == 0b01110 {
             let device = (d.imm16 >> 12) as u8;
             let command = ((d.imm16 >> 8) & 0x0F) as u8;
@@ -2091,66 +2070,37 @@ impl Cpu {
 
             self.handle_io(device, command, reg);
 
-            return (prog, pc + 1, false);
+            return (pc + 1, false);
         }
 
-        // SAV
         if d.mode == 0b000 {
             if d.core == 0b00 {
                 let src = self.regs[d.a as usize];
                 let dst = d.b as usize;
                 self.write_reg(dst, src);
-                return (prog, pc + 1, false);
+                return (pc + 1, false);
             }
 
             if d.core == 0b01 {
                 let imm = imm8(d.a);
                 let dst = d.b as usize;
                 self.write_reg(dst, imm);
-                return (prog, pc + 1, false);
+                return (pc + 1, false);
             }
         }
 
-        // STR: encoding used by assembler: core=01 mode=001 A=start_u8 B=block_u8
-        if d.core == 0b01 && d.mode == 0b001 {
-            let start = d.a as usize;
-            let mut blk = d.b as u16;
-            if blk == 0 {
-                let r = self.regs[1];
-                if r >= 0 {
-                    blk = r as u16;
-                }
-            }
-
-            let end = pc as usize;
-
-            // bounds check against CURRENT program length
-            let cur_len = self.prog_len(main, prog) as usize;
-
-            if start <= end && end <= cur_len {
-                let mut instrs: Vec<Instr> = Vec::with_capacity(end - start);
-                for i in start..end {
-                    instrs.push(self.fetch_raw21(main, prog, i) & INSTR_MASK);
-                }
-                let _ = write_block(blk, &instrs);
-            }
-
-            return (prog, pc + 1, false);
-        }
-
-        // Control ops via op5
         match d.op5 {
             0b01111 => {
                 self.label_set(d.imm16, pc);
-                (prog, pc + 1, false)
+                (pc + 1, false)
             }
 
             0b00111 => {
                 let t = self.label_get(d.imm16);
                 if t >= 0 {
-                    (prog, t, false)
+                    (t, false)
                 } else {
-                    (prog, pc + 1, false)
+                    (pc + 1, false)
                 }
             }
 
@@ -2158,12 +2108,12 @@ impl Cpu {
                 if self.regs[1] == 0 {
                     let t = self.label_get(d.imm16);
                     if t >= 0 {
-                        (prog, t, false)
+                        (t, false)
                     } else {
-                        (prog, pc + 1, false)
+                        (pc + 1, false)
                     }
                 } else {
-                    (prog, pc + 1, false)
+                    (pc + 1, false)
                 }
             }
 
@@ -2171,12 +2121,12 @@ impl Cpu {
                 if self.regs[1] > 0 {
                     let t = self.label_get(d.imm16);
                     if t >= 0 {
-                        (prog, t, false)
+                        (t, false)
                     } else {
-                        (prog, pc + 1, false)
+                        (pc + 1, false)
                     }
                 } else {
-                    (prog, pc + 1, false)
+                    (pc + 1, false)
                 }
             }
 
@@ -2184,12 +2134,12 @@ impl Cpu {
                 if self.regs[1] < 0 {
                     let t = self.label_get(d.imm16);
                     if t >= 0 {
-                        (prog, t, false)
+                        (t, false)
                     } else {
-                        (prog, pc + 1, false)
+                        (pc + 1, false)
                     }
                 } else {
-                    (prog, pc + 1, false)
+                    (pc + 1, false)
                 }
             }
 
@@ -2197,72 +2147,55 @@ impl Cpu {
                 if self.regs[1] != 0 {
                     self.skip.push(d.imm16);
                 }
-                (prog, pc + 1, false)
+                (pc + 1, false)
             }
 
             0b00101 => {
                 if self.regs[1] <= 0 {
                     self.skip.push(d.imm16);
                 }
-                (prog, pc + 1, false)
+                (pc + 1, false)
             }
 
             0b00011 => {
                 if self.regs[1] >= 0 {
                     self.skip.push(d.imm16);
                 }
-                (prog, pc + 1, false)
+                (pc + 1, false)
             }
 
             0b01101 => {
                 self.label_rmv(d.imm16);
-                (prog, pc + 1, false)
+                (pc + 1, false)
             }
 
             0b01011 => {
                 let label_id = if d.imm16 == 0 {
                     let value = self.regs[1];
                     if !(0..=u16::MAX as i32).contains(&value) {
-                        return (prog, pc + 1, false);
+                        return (pc + 1, false);
                     }
                     value as u16
                 } else {
                     d.imm16
                 };
+
                 let target = self.label_get(label_id);
                 if target >= 0 {
-                    (prog, target, false)
+                    (target, false)
                 } else {
-                    (prog, pc + 1, false)
+                    (pc + 1, false)
                 }
             }
 
-            // RUN: 01010 + u16 (run 0 uses r01)
+            // RUN: execute the 21-bit instruction stored in the selected register
             0b01010 => {
-                let mut blk = d.imm16;
-                if blk == 0 {
-                    let r = self.regs[1];
-                    if r >= 0 {
-                        blk = r as u16;
-                    }
-                }
-
-                if let Ok(instrs) = read_block(blk) {
-                    let decoded_block = predecode(&instrs);
-                    let idx = self.blocks.len();
-                    self.blocks.push(decoded_block);
-
-                    // return to instruction after run
-                    self.call_stack.push(Frame { prog, pc: pc + 1 });
-
-                    // enter block at pc=0
-                    return (ProgRef::Block(idx), 0, false);
-                }
-
-                (prog, pc + 1, false)
+                let raw = self.regs[d.b as usize] as u32 & INSTR_MASK;
+                let dynamic = decode(raw);
+                self.step(dynamic, pc, input, main, looped)
             }
 
-            _ => (prog, pc + 1, false),
+            _ => (pc + 1, false),
         }
     }
 }

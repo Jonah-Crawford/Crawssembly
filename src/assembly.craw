@@ -1,0 +1,13 @@
+sav 0 r01
+io disk addr r01
+io disk read r02
+run r02
+
+sav 99 r03
+io text int r03
+stp
+
+5
+sav 42 r03
+io text int r03
+stp

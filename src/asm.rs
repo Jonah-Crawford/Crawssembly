@@ -93,7 +93,7 @@ pub fn assemble(lines: &[String]) -> Result<Vec<Instr>, String> {
 
     let mut out: Vec<Instr> = Vec::with_capacity(parsed.len());
     for (ln, pline) in parsed.iter().enumerate() {
-        let instr = encode_line(ln, pline, &label_id, &parsed)?;
+        let instr = encode_line(ln, pline, &label_id)?;
         out.push(instr & 0x1F_FFFF);
     }
 
@@ -118,9 +118,8 @@ enum ParsedLine {
     If { kind: IfKind, label: LabelRef },
     Rmv { label: LabelRef },
     Fgo { label: LabelRef },
-    Run { block: u16 },
+    Run { reg: u8 },
 
-    Str { start: StartRef, block: u8 },
 }
 
 #[derive(Debug, Clone)]
@@ -129,11 +128,6 @@ enum LabelRef {
     Numeric(u16),
 }
 
-#[derive(Debug, Clone)]
-enum StartRef {
-    Named(String),
-    Numeric(u8),
-}
 
 #[derive(Debug, Clone)]
 enum SavSrc {
@@ -276,28 +270,13 @@ fn parse_lines(
 
         if head == "run" {
             if toks.len() != 2 {
-                return Err(format!("Line {}: run expects 1 operand", ln + 1));
+                return Err(format!("Line {}: run expects 1 register", ln + 1));
             }
-            let b = parse_u16(&toks[1]).map_err(|e| format!("Line {}: {e}", ln + 1))?;
-            out.push(ParsedLine::Run { block: b });
-            continue;
-        }
 
-        if head == "str" {
-            if toks.len() != 3 {
-                return Err(format!("Line {}: str expects 2 operands", ln + 1));
-            }
-            let start = if is_number_token(&toks[1]) {
-                let v = parse_u8(&toks[1]).map_err(|e| format!("Line {}: {e}", ln + 1))?;
-                StartRef::Numeric(v)
-            } else {
-                refs.insert(toks[1].clone());
-                StartRef::Named(toks[1].clone())
-            };
+            let reg = parse_reg(&toks[1])
+                .map_err(|e| format!("Line {}: {e}", ln + 1))?;
 
-            let block = parse_u8(&toks[2]).map_err(|e| format!("Line {}: {e}", ln + 1))?;
-
-            out.push(ParsedLine::Str { start, block });
+            out.push(ParsedLine::Run { reg });
             continue;
         }
 
@@ -565,10 +544,9 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
 }
 
 fn encode_line(
-    ln: usize,
+    _ln: usize,
     pline: &ParsedLine,
     label_id: &HashMap<String, u16>,
-    parsed: &[ParsedLine],
 ) -> Result<Instr, String> {
     match pline {
         ParsedLine::Raw(i) => Ok(*i),
@@ -639,13 +617,8 @@ fn encode_line(
             Ok((0b01011u32 << 16) | (id as u32))
         }
 
-        ParsedLine::Run { block } => Ok((0b01010u32 << 16) | (*block as u32)),
+        ParsedLine::Run { reg } => Ok((0b01010u32 << 16) | (*reg as u32)),
 
-        ParsedLine::Str { start, block } => {
-            let start_u8 = resolve_start_u8(start, label_id, parsed)
-                .map_err(|e| format!("Line {}: {e}", ln + 1))?;
-            Ok(pack(0b01, 0b001, start_u8 as u32, *block as u32))
-        }
     }
 }
 
@@ -673,32 +646,6 @@ fn resolve_label_id(lr: &LabelRef, label_id: &HashMap<String, u16>) -> Result<u1
             .get(s)
             .copied()
             .ok_or_else(|| format!("Unknown label '{s}'")),
-    }
-}
-
-fn resolve_start_u8(
-    sr: &StartRef,
-    _label_id: &HashMap<String, u16>,
-    parsed: &[ParsedLine],
-) -> Result<u8, String> {
-    match sr {
-        StartRef::Numeric(n) => Ok(*n),
-        StartRef::Named(name) => {
-            for (i, pl) in parsed.iter().enumerate() {
-                if let ParsedLine::LabelDef { label } = pl
-                    && let LabelRef::Named(n) = label
-                    && n == name
-                {
-                    if i > 255 {
-                        return Err(format!(
-                            "str start label '{name}' resolves to line {i}, exceeds 8-bit"
-                        ));
-                    }
-                    return Ok(i as u8);
-                }
-            }
-            Err(format!("Label '{name}' not defined (needed for str start)"))
-        }
     }
 }
 
@@ -816,17 +763,6 @@ fn parse_i32(tok: &str) -> Result<i32, String> {
     tok.trim()
         .parse::<i32>()
         .map_err(|_| format!("Bad integer '{tok}'"))
-}
-
-fn parse_u8(tok: &str) -> Result<u8, String> {
-    let v = tok
-        .trim()
-        .parse::<u16>()
-        .map_err(|_| format!("Bad u8 '{tok}'"))?;
-    if v > 255 {
-        return Err(format!("Value '{tok}' out of range for u8"));
-    }
-    Ok(v as u8)
 }
 
 fn parse_u16(tok: &str) -> Result<u16, String> {
