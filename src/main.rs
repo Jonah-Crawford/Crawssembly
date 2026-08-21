@@ -26,17 +26,18 @@ color brightcyan "\<(sav|cal|io|inp)\>"
 
 color cyan "\<(nop)\>"
 
-color white "\<(not|and|or|xor|shl|shr|sar|add)\>"
+color brightwhite "\<(not|and|or|xor|shl|shr|sar|add)\>"
 
 color magenta "\<(jmp|jmz|jmg|jml|ifz|ifg|ifl|rmv|fgo|str|run|stp)\>"
 
-color brightblue "\<(screen|keyboard|speaker|mem|disk|text|time)\>"
+color brightblue "\<(screen|keyboard|speaker|mem|disk|text|time|net)\>"
 
 color blue "\<(char|b|hex|newline|pixel|read|write|erase|erasecell)\>"
 color blue "\<(x|g|y|int|clear|unix|low|sleepms|milli|dump|present)\>"
 color blue "\<(r|poll|btn|channel|freq|volume|wave|on|off|sleepus)\>"
 color blue "\<(toggle|addr|save|iso|space|r|g|b|fr|fg|fb|br|bg|bb)\>"
-color blue "\<(mod|modification|modifications)\>"
+color blue "\<(mod|modification|modifications|protocol|port|ip)\>"
+color blue "\<(connect|len|socket|send|recv|tls)\>"
 
 color yellow "[-+]?[0-9]+"
 color yellow "0x[0-9A-Fa-f]+"

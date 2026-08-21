@@ -1,13 +1,76 @@
+sav 100 r01			; creates 127.0.0.1 ip address in memory 0x64
+io mem addr r01
+sav 127 r02
+io mem write r02
+
+sav 101 r01
+io mem addr r01
+sav 0 r02
+io mem write r02
+
+sav 102 r01
+io mem addr r01
+sav 0 r02
+io mem write r02
+
+sav 103 r01
+io mem addr r01
+sav 1 r02
+io mem write r02
+
+sav 100 r01
+io net ip r01				; set ip to 0x64 in memory
+
 sav 0 r01
-io disk addr r01
-io disk read r02
-run r02
+io net protocol r01			; TCP protocol
 
-sav 99 r03
-io text int r03
-stp
+sav 52 r01
+sav 7 r02
+cal shl r01 r02
+cal add 111 r01
+io net port r01				; port 6767
 
-5
-sav 42 r03
-io text int r03
-stp
+io net connect r10			; get socket id into r10
+
+io text int r10
+io text newline rff
+
+io text int ree
+io text newline rff
+
+io text newline rff
+
+sav 127 r01
+cal add 73 r01
+io net addr r01
+
+sav 64 r01		; allow 64 bytes back
+io net len r01		; set length
+
+io net recv r10		; wait for response, get length into r10
+
+io text int r10		; show length
+io text newline rff	; drop cursor down
+
+io text int ree		; show error code
+io text newline rff	; drop cursor down
+
+sav 127 r01		; construct 200
+cal add 73 r01		; 127+73 = 200
+sav r01 r03		; save address
+
+1			; print loop
+
+  io mem addr r03	; access address
+  io mem read r01	; read value
+  io text char r01	; show character value
+
+  cal add 1 r03		; address++
+  sav r01 r03		; update address
+
+  cal add -1 r10	; len--
+  sav r01 r10		; update len
+
+  jmg 1			; not done, continue
+
+stp			; end response walker

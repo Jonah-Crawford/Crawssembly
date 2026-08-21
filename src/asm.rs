@@ -420,6 +420,7 @@ fn parse_io_device(tok: &str) -> Result<u8, String> {
         "disk" | "disc" => Ok(0x7),
         "speech" => Ok(0x8),
         "cpu" => Ok(0x9),
+        "net" | "network" => Ok(0xA),
         _ => Err(format!("Unknown I/O device '{tok}'")),
     }
 }
@@ -533,11 +534,29 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
 
         // cpu
         0x9 => match t.as_str() {
-          "pcread" => Ok(0x0),
-          "pcwrite" => Ok(0x1),
+            "pcread" => Ok(0x0),
+            "pcwrite" => Ok(0x1),
+            _ => Err(format!("Unknown cpu command '{tok}'")),
+        },
 
-          _ => Err(format!("Unknown cpu command '{tok}'")),
-        }
+        0xA => match t.as_str() {
+             "socket" => Ok(0x0),
+             "protocol" | "proto" => Ok(0x1),
+             "addr" | "address" => Ok(0x2),
+             "len" | "length" => Ok(0x3),
+             "port" => Ok(0x4),
+             "ip" | "host" => Ok(0x5),
+             "connect" => Ok(0x6),
+             "send" => Ok(0x7),
+             "recv" | "receive" => Ok(0x8),
+             "close" => Ok(0x9),
+             "listen" => Ok(0xA),
+             "accept" => Ok(0xB),
+             "poll" => Ok(0xC),
+             "available" => Ok(0xD),
+             "tls" | "secure" => Ok(0xE),
+             _ => Err(format!("Unknown network command '{tok}'")),
+        },
 
         _ => Err(format!("Unknown I/O device id {}", device)),
     }
