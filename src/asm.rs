@@ -539,6 +539,7 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
             _ => Err(format!("Unknown cpu command '{tok}'")),
         },
 
+        // net
         0xA => match t.as_str() {
              "socket" => Ok(0x0),
              "protocol" | "proto" => Ok(0x1),
@@ -555,6 +556,7 @@ fn parse_io_command(device: u8, tok: &str) -> Result<u8, String> {
              "poll" => Ok(0xC),
              "available" => Ok(0xD),
              "tls" | "secure" => Ok(0xE),
+             "block" => Ok(0xF),
              _ => Err(format!("Unknown network command '{tok}'")),
         },
 

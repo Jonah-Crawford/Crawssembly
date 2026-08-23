@@ -1682,7 +1682,7 @@ Write a program that outputs `r02` + `r03`, `r02` * `r03`, and `r02` / `r03`.
 Adding to this list is quite easy, simply add your programs to the `std/` folder inside the main Crawssembly folder (where you installed Crawssembly in the first place) and update the CSL by running `craw install-std`. This will propogate your new programs and modules you added
 so that they too can be used from any location. This is helpful for custom programs you would use often that aren't included.
 
-### About the stack
+### About The Stack
 
 The stack in memory is like a tower of plates. You can only remove the top one to use it, and any additional plates have to go on top.
 This ordered nature of the memory addresses is useful for nesting programs using `execute`, and temporary values. `pop` removes the most recent element, `push` adds a new element.
@@ -1693,6 +1693,7 @@ Example
 
 ``` 
 executestd stack/init.craw      ; stack pointer -> red
+executestd heap/init.craw       ; creates the heap (more on this below)
 
 sav 100 r02                     ; 100 into input
 executestd stack/push.craw      ; adds '100' to stack
@@ -1708,6 +1709,41 @@ io text newline rff             ; drops cursor down
 executestd stack/pop.craw       ; removes the last element (100)
 io text int r02                 ; shows last element (100)
 ```
+
+### About The Heap
+
+The heap in memory is like a large storage area where programs can reserve blocks of memory when they need them. Unlike the stack, values on the heap do not have to be removed in the reverse order they were added. A program can request a block with `alloc`, use it for as long as needed, and later return it with `free`.
+
+This makes the heap useful for data whose size or lifetime is not known beforehand, such as text buffers, lists, files being edited, or other dynamically-sized data. `alloc` finds a free region large enough for the requested number of memory cells, while `free` makes an allocated region available for future allocations.
+
+The heap starts at memory address **0x10000**, keeping it separate from lower memory and leaving space above for the stack. Each allocation also has a small **header** stored alongside it, which the allocator uses to keep track of the size and state of the block.
+
+Example
+
+```
+executestd stack/init.craw      ; creates the stack
+executestd heap/init.craw       ; heap pointer -> rec
+
+sav 100 r02                     ; request 100 memory cells
+executestd heap/alloc.craw      ; allocate block -> r02
+
+sav r02 r10                     ; save address of allocated block
+
+io mem addr r10                 ; point memory device to the block
+sav 42 r02
+io mem write r02                ; store 42 inside the allocation
+
+io mem addr r10
+io mem read r02                 ; read the value back
+io text int r02                 ; shows 42
+
+sav r10 r02                     ; address of block to release
+executestd heap/free.craw       ; return block to the heap
+```
+
+Unlike the stack, freeing one allocation does not require freeing allocations made after it first. This flexibility makes the heap more suitable for long-lived or dynamically-sized data, although programs must remember to `free` memory once it is no longer needed.
+
+> Both the stack and heap must be created at the start of programs, even if you only use one. This is to check **stack overflow** (Where the stack reaches the heap) and **heap exhaustion** (where the heap reaches the stack). 
 
 </details>
 

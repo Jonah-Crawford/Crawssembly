@@ -1,0 +1,354 @@
+sav 100 r01		; creates 127.0.0.1 ip address in memory 100
+io mem addr r01
+sav 127 r02
+io mem write r02
+
+sav 101 r01
+io mem addr r01
+sav 0 r02
+io mem write r02
+
+sav 102 r01
+io mem addr r01
+sav 0 r02
+io mem write r02
+
+sav 103 r01
+io mem addr r01
+sav 1 r02
+io mem write r02
+
+sav 100 r01
+io net ip r01		; set ip to 0x64 in memory
+
+sav 0 r01
+io net protocol r01	; TCP protocol
+
+sav 63 r01		; 0b0..0111111
+sav 7 r02		; shift amount
+cal shl r01 r02		; 0b0..01111110000000 (8064)
+cal add 16 r01		; 8064+16 = 8080
+
+io net port r01		; connect to port 8080
+
+io net connect r10	; get socket id into r10
+
+sav 127 r01		; construct 200
+cal add 73 r01		; 127+73 = 200
+
+sav 71 r02		; "GET / HTTP/1.1\r\n
+io mem addr r01		; Host: localhost\r\n
+io mem write r02	; Connection: close\r\n
+cal add 1 r01		; \r\n"
+
+sav 69 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 84 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 32 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 47 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 32 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 72 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 84 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 84 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 80 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 47 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 49 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 46 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 49 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 13 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 10 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 72 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 115 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 116 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 58 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 32 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 108 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 99 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 97 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 108 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 104 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 115 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 116 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 13 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 10 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 67 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 110 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 110 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 101 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 99 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 116 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 105 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 110 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 58 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 32 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 99 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 108 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 115 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 101 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 13 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 10 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 13 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 10 r02
+io mem addr r01
+io mem write r02
+
+sav 127 r01		; construct 200
+cal add 73 r01		; 127+73 = 200
+io net addr r01		; set message addr to 200
+
+sav 54 r01
+io net len r01		; set length to 54
+
+io net send r11		; send http request
+
+sav 127 r01		; construct 128
+cal add 1 r01		; 127+1 = 128
+io net len r01		; allow 128-byte response
+
+sav 127 r01		; construct 300
+cal add 127 r01		; 127+127 = 254
+cal add 46 r01		; 254+46 = 300
+
+io net addr r01		; save response to memory address 300
+
+io net recv r10		; wait for response, get length into r10
+
+io text int r10		; show length
+io text newline rff	; drop cursor down
+
+io text int ree		; show error code
+io text newline rff	; drop cursor down
+
+sav 127 r01		; construct 300
+cal add 127 r01		; 127+127 = 254
+cal add 46 r01		; 254+46 = 300
+sav r01 r03		; save address
+
+1			; print loop
+
+  io mem addr r03	; access address
+  io mem read r01	; read value
+  io text char r01	; show character value
+
+  cal add 1 r03		; address++
+  sav r01 r03		; update address
+
+  cal add -1 r10	; len--
+  sav r01 r10		; update len
+
+  jmg 1			; not done, continue
+
+stp			; end response walker

@@ -613,6 +613,7 @@ struct Cpu {
     net_port: u16,
     net_protocol: i32,
     net_tls: bool,
+    net_blocking: bool,
     net_ip: [u8; 4],
     net_sockets: Vec<Option<NetSocket>>,
 
@@ -720,6 +721,7 @@ impl Cpu {
             net_port: 0,
             net_protocol: 0,
             net_tls: false,
+            net_blocking: true,
             net_ip: [0, 0, 0, 0],
             net_sockets: Vec::new(),
         }
@@ -758,6 +760,7 @@ impl Cpu {
         self.net_port = 0;
         self.net_protocol = 0;
         self.net_tls = false;
+        self.net_blocking = true;
         self.net_ip = [0, 0, 0, 0];
         self.net_sockets.clear();
     }
@@ -775,6 +778,23 @@ impl Cpu {
 
         self.net_sockets.push(Some(socket));
         self.net_sockets.len() - 1
+    }
+
+    fn set_net_blocking(&mut self, blocking: bool) -> Result<(), io::Error> {
+        let nonblocking = !blocking;
+
+        for slot in self.net_sockets.iter_mut() {
+            if let Some(socket) = slot {
+                match socket {
+                    NetSocket::Tcp(stream) => stream.set_nonblocking(nonblocking)?,
+                    NetSocket::TcpListener(listener) => listener.set_nonblocking(nonblocking)?,
+                    NetSocket::Udp(socket) => socket.set_nonblocking(nonblocking)?,
+                }
+            }
+        }
+
+        self.net_blocking = blocking;
+        Ok(())
     }
 
     fn set_net_error(&mut self, error: &io::Error) {
@@ -2108,6 +2128,12 @@ impl Cpu {
 
                         match TcpStream::connect(address) {
                             Ok(stream) => {
+                                if let Err(error) = stream.set_nonblocking(!self.net_blocking) {
+                                    self.set_net_error(&error);
+                                    self.write_reg(r, -1);
+                                    return;
+                                }
+
                                 let id = self.net_add_socket(NetSocket::Tcp(stream));
                                 self.net_socket = Some(id);
                                 self.write_reg(r, id as i32);
@@ -2237,17 +2263,133 @@ impl Cpu {
 
                 // listen
                 0xA => {
-                    self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                    if self.net_protocol != 0 {
+                        self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                        self.write_reg(r, -1);
+                    } else {
+                        let address = SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, self.net_port);
+
+                        match TcpListener::bind(address) {
+                            Ok(listener) => {
+                                if let Err(error) = listener.set_nonblocking(!self.net_blocking) {
+                                    self.set_net_error(&error);
+                                    self.write_reg(r, -1);
+                                    return;
+                                }
+
+                                let id = self.net_add_socket(NetSocket::TcpListener(listener));
+                                self.net_socket = Some(id);
+                                self.write_reg(r, id as i32);
+                            }
+
+                            Err(error) => {
+                                self.set_net_error(&error);
+                                self.write_reg(r, -1);
+                            }
+                        }
+                    }
                 }
 
                 // accept
                 0xB => {
-                    self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                    let Some(id) = self.net_socket else {
+                        self.regs[REG_IO_STATUS] = IO_NET_INVALID_SOCKET;
+                        self.write_reg(r, -1);
+                        return;
+                    };
+
+                    let result = {
+                        match self.net_sockets.get_mut(id).and_then(|s| s.as_mut()) {
+                            Some(NetSocket::TcpListener(listener)) => {
+                                listener.accept().map(|(stream, _)| stream)
+                            }
+
+                            Some(_) => {
+                                self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                                self.write_reg(r, -1);
+                                return;
+                            }
+
+                            None => {
+                                self.regs[REG_IO_STATUS] = IO_NET_INVALID_SOCKET;
+                                self.write_reg(r, -1);
+                                return;
+                            }
+                        }
+                    };
+
+                    match result {
+                        Ok(stream) => {
+                            if let Err(error) = stream.set_nonblocking(!self.net_blocking) {
+                                self.set_net_error(&error);
+                                self.write_reg(r, -1);
+                                return;
+                            }
+
+                            let id = self.net_add_socket(NetSocket::Tcp(stream));
+                            self.net_socket = Some(id);
+                            self.write_reg(r, id as i32);
+                        }
+
+                        Err(error) => {
+                            self.set_net_error(&error);
+                            self.write_reg(r, -1);
+                        }
+                    }
                 }
 
-                // poll
+                // poll: 0 = nothing, 1 = readable, 2 = peer closed, -1 = error
                 0xC => {
-                    self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                    let Some(id) = self.net_socket else {
+                        self.regs[REG_IO_STATUS] = IO_NET_INVALID_SOCKET;
+                        self.write_reg(r, -1);
+                        return;
+                    };
+
+                    let result = {
+                        match self.net_sockets.get_mut(id).and_then(|s| s.as_mut()) {
+                            Some(NetSocket::Tcp(stream)) => {
+                                if let Err(error) = stream.set_nonblocking(true) {
+                                    Err(error)
+                                } else {
+                                    let mut byte = [0u8; 1];
+                                    let peek_result = stream.peek(&mut byte);
+                                    let restore_result = stream.set_nonblocking(!self.net_blocking);
+
+                                    match (peek_result, restore_result) {
+                                        (_, Err(error)) => Err(error),
+                                        (result, Ok(())) => result,
+                                    }
+                                }
+                            }
+
+                            Some(_) => {
+                                self.regs[REG_IO_STATUS] = IO_BAD_VALUE;
+                                self.write_reg(r, -1);
+                                return;
+                            }
+
+                            None => {
+                                self.regs[REG_IO_STATUS] = IO_NET_INVALID_SOCKET;
+                                self.write_reg(r, -1);
+                                return;
+                            }
+                        }
+                    };
+
+                    match result {
+                        Ok(0) => self.write_reg(r, 2),
+                        Ok(_) => self.write_reg(r, 1),
+
+                        Err(error) if error.kind() == io::ErrorKind::WouldBlock => {
+                            self.write_reg(r, 0);
+                        }
+
+                        Err(error) => {
+                            self.set_net_error(&error);
+                            self.write_reg(r, -1);
+                        }
+                    }
                 }
 
                 // available
@@ -2261,6 +2403,15 @@ impl Cpu {
 
                     if self.net_tls {
                         self.regs[REG_IO_STATUS] = IO_UNAVAILABLE;
+                    }
+                }
+
+                // block: 0 = non-blocking, nonzero = blocking
+                0xF => {
+                    let blocking = value != 0;
+
+                    if let Err(error) = self.set_net_blocking(blocking) {
+                        self.set_net_error(&error);
                     }
                 }
 
