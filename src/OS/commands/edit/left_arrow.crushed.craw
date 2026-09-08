@@ -1,0 +1,8 @@
+cal add -1 r10
+sav r01 r10
+cal not r20 rff
+cal add 1 r01
+cal add r10 r01
+ifl 10
+sav r20 r10
+rmv 10

@@ -1,0 +1,42 @@
+cal not r20 rff
+cal add 1 r01
+cal add r10 r01
+ifz 10
+jmp 20
+rmv 10
+cal add -1 r10
+sav r01 r10
+sav r10 r0e
+io mem addr r10
+io mem read r06
+cal add r1f r20
+sav r01 r0d
+11
+cal add 1 r0e
+sav r01 r07
+cal not r0d rff
+cal add 1 r01
+cal add r07 r01
+ifz 12
+jmp 13
+rmv 12
+io mem addr r07
+io mem read r08
+io mem addr r0e
+io mem write r08
+cal add 1 r0e
+sav r01 r0e
+jmp 11
+13
+sav 0 r08
+io mem addr r0e
+io mem write r08
+cal add -1 r1f
+sav r01 r1f
+sav r06 r01
+cal add -10 r01
+ifz 14
+cal add -1 r0a
+sav r01 r0a
+rmv 14
+20

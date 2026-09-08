@@ -1,0 +1,6 @@
+sav r02 r09
+sav 10 r02
+execute character.craw
+sav r09 r02
+cal add 1 r0a
+sav r01 r0a

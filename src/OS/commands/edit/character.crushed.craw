@@ -1,0 +1,27 @@
+sav r02 r05
+cal add r1f r20
+sav r01 r0e
+10
+cal not r10 rff
+cal add 1 r01
+cal add r0e r01
+ifz 11
+io mem addr r0e
+io mem write r05
+cal add 1 r1f
+sav r01 r1f
+cal add 1 r10
+sav r01 r10
+jmp 12
+rmv 11
+ifg 11
+cal add -1 r0e
+sav r01 r0d
+io mem addr r0d
+io mem read r02
+io mem addr r0e
+io mem write r02
+sav r0d r0e
+jmp 10
+rmv 11
+12

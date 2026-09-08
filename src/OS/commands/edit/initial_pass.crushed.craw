@@ -1,0 +1,35 @@
+io text clear rff
+sav 76 r01
+io text char r01
+sav 111 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 100 r01
+io text char r01
+sav 105 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 103 r01
+io text char r01
+sav 46 r01
+io text char r01
+io text char r01
+io text char r01
+sav 1 r0a
+cal add 1 r20
+sav r01 r09
+10
+io mem addr r09
+io mem read r01
+cal add -10 r01
+ifz 11
+cal add 1 r0a
+sav r01 r0a
+rmv 11
+io mem read r01
+ifg 11
+jmp 10
+rmv 11
+io text clear rff

@@ -1,0 +1,81 @@
+sav 64 r01
+sav 10 r02
+cal shl r01 r02
+sav r01 r02
+executestd heap/alloc.craw
+cal add 1 rec
+sav r01 r10
+sav r10 r20
+sav r20 r14
+sav 1 r17
+sav 0 r1f
+execute edit/initial_pass.crushed.craw
+execute edit/render.crushed.craw
+1
+io keyboard poll r02
+io keyboard mod r03
+sav r02 r04
+sav r04 r01
+ifz 2
+sav r03 r01
+ifz 3
+jmp 1
+rmv 3
+rmv 2
+sav r04 r01
+cal add 1 r01
+ifz 2
+execute edit/up_arrow.crushed.craw
+jmp 8
+rmv 2
+sav r04 r01
+cal add 2 r01
+ifz 2
+execute edit/down_arrow.crushed.craw
+jmp 8
+rmv 2
+sav r04 r01
+cal add 3 r01
+ifz 2
+execute edit/left_arrow.crushed.craw
+jmp 8
+rmv 2
+sav r04 r01
+cal add 4 r01
+ifz 2
+execute edit/right_arrow.crushed.craw
+jmp 8
+rmv 2
+sav r04 r01
+cal add 5 r01
+ifz 2
+execute edit/enter.crushed.craw
+jmp 8
+rmv 2
+sav r04 r01
+cal add 6 r01
+ifz 2
+execute edit/backspace.crushed.craw
+jmp 8
+rmv 2
+cal and 2 r03
+ifg 2
+sav r04 r01
+cal add -115 r01
+ifz 3
+execute edit/save.crushed.craw
+jmp 8
+rmv 3
+sav r04 r01
+cal add -120 r01
+ifz 3
+jmp 9
+rmv 3
+jmp 1
+rmv 2
+sav r04 r02
+execute edit/character.crushed.craw
+8
+execute edit/render.crushed.craw
+jmp 1
+9

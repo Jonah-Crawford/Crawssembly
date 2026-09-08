@@ -1,24 +1,25 @@
-sav 100 r01		; creates 192.168.0.237 ip address in memory address 100
+sav 100 r01		; creates ip address in memory address 100
 io mem addr r01
 sav 127 r01
-cal add 65 r01
+cal add 21 r01
 io mem write r01
 
 sav 101 r01
 io mem addr r01
 sav 127 r01
-cal add 41 r01
+cal add 125 r01
 io mem write r01
 
 sav 102 r01
 io mem addr r01
-sav 0 r01
+sav 127 r01
+cal add 31 r01
 io mem write r01
 
 sav 103 r01
 io mem addr r01
 sav 127 r01
-cal add 110 r01
+cal add 105 r01
 io mem write r01
 
 sav 100 r01
@@ -38,10 +39,19 @@ cal add 127 r01		; 127+127 = 254
 cal add 46 r01		; 254+46 = 300
 io net addr r01		; set net address to 300
 
-sav 1 r01
-io net block r01	; blocking mode
+io mem addr r01
+sav 72 r02
+io mem write r02
 
-io net listen r10	; listen on port 6767
+cal add 1 r01
+io mem addr r01
+sav 105 r02
+io mem write r02
+
+sav 2 r01
+io net len r01		; set message length to 2
+
+io net connect r10	; connect, socket -> r10
 
 sav ree r03		; preserve io code
 
@@ -50,13 +60,10 @@ io text newline rff
 io text int r03
 io text newline rff
 
-io net socket r10	; set socket from listen
-io net accept r11	; accept data
+io net send r11		; send package
 
 sav ree r03		; preserve io code
 
-io text int r10
-io text newline rff
 io text int r11
 io text newline rff
 io text int r03

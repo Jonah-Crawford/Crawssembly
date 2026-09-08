@@ -1,0 +1,163 @@
+sav -128 r01
+io text br r01
+io text bg r01
+io text bb r01
+io text clear rff
+sav r20 r14
+sav 1 r17
+sav r17 r15
+sav r15 r16
+cal add r1f r20
+sav r01 r18
+sav r14 r13
+cal add -1 r13
+sav r01 r13
+sav 127 r01
+sav -128 r02
+io text br r01
+io text bg r01
+io text bb r01
+io text fr r02
+io text fg r02
+io text fb r02
+io text int r15
+sav 127 r01
+sav -128 r02
+io text fr r01
+io text fg r01
+io text fb r01
+io text br r02
+io text bg r02
+io text bb r02
+io text space rff
+io text space rff
+io text space rff
+io text space rff
+10
+cal add 1 r13
+sav r01 r13
+cal not r18 rff
+cal add 1 r01
+cal add r13 r01
+ifz 12
+jmp 20
+rmv 12
+cal not r10 rff
+cal add 1 r01
+cal add r13 r01
+ifz 11
+sav r15 r16
+sav 127 r01
+sav -128 r02
+io text br r01
+io text bg r01
+io text bb r01
+io text fr r02
+io text fg r02
+io text fb r02
+rmv 11
+io mem addr r13
+io mem read r04
+sav r04 r01
+cal add -10 r01
+ifz 11
+cal not r10 rff
+cal add 1 r01
+cal add r13 r01
+ifz 12
+io text space rff
+rmv 12
+io text newline rff
+cal add 1 r15
+sav r01 r15
+sav 127 r01
+sav -128 r02
+io text br r01
+io text bg r01
+io text bb r01
+io text fr r02
+io text fg r02
+io text fb r02
+io text int r15
+sav 127 r01
+sav -128 r02
+io text fr r01
+io text fg r01
+io text fb r01
+io text br r02
+io text bg r02
+io text bb r02
+io text space rff
+io text space rff
+io text space rff
+io text space rff
+jmp 10
+rmv 11
+io text char r04
+sav 127 r01
+sav -128 r02
+io text fr r01
+io text fg r01
+io text fb r01
+io text br r02
+io text bg r02
+io text bb r02
+jmp 10
+20
+cal not r10 rff
+cal add 1 r01
+cal add r18 r01
+ifz 11
+sav r15 r16
+sav 127 r01
+sav -128 r02
+io text br r01
+io text bg r01
+io text bb r01
+io text fr r02
+io text fg r02
+io text fb r02
+io text space rff
+rmv 11
+io text newline rff
+io text newline rff
+sav 127 r01
+sav -128 r02
+io text br r01
+io text bg r01
+io text bb r01
+io text fr r02
+io text fg r02
+io text fb r02
+sav 76 r01
+io text char r01
+sav 110 r01
+io text char r01
+io text space rff
+io text int r16
+sav 47 r01
+io text char r01
+io text int r0a
+io text newline rff
+io text int r1f
+io text space rff
+sav 67 r01
+io text char r01
+sav 104 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 114 r01
+io text char r01
+sav 115 r01
+io text char r01
+sav 127 r01
+sav -128 r02
+io text fr r01
+io text fg r01
+io text fb r01
+io text br r02
+io text bg r02
+io text bb r02
+io text newline rff
+io text newline rff
