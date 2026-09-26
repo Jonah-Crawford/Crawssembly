@@ -2,7 +2,7 @@ sav 1 r01				; set speaker channel value
 
 io speaker channel r01			; active channel set to 1
 
-sav 50 r01				; set speakre volume
+sav 50 r01				; set speaker volume
 
 io speaker volume r01			; speaker volume = 50%
 
@@ -10,7 +10,7 @@ sav 110 r01				; freq = 110
 cal add r01 r01				; freq = 220
 cal add r01 r01				; freq = 440
 
-io speaker freq r01			; set active speaker channel
+io speaker freq r01			; set speaker frequency
 
 sav 125 r01				; time = 125
 cal add r01 r01				; time = 250
