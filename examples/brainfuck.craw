@@ -1,0 +1,337 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Brainfuck interpreter in casm (Crawssembly)                                 ;
+; BF Program = memory 0x00000 - 0x00fff                                       ;
+; Tape = memory 0x01000 - 0x01fff                                             ;
+;                                                                             ;
+; > (62) Move the pointer to the right                                        ;
+; < (60) Move the pointer to the left                                         ;
+; + (43) Increment the memory cell at the pointer                             ;
+; - (45) Decrement the memory cell at the pointer                             ;
+; . (46) Output the character signified by the cell at the pointer            ;
+; , (44) Input a character and store it in the cell at the pointer            ;
+; [ (91) Jump past the matching ] if the cell at the pointer is 0             ;
+; ] (93) Jump back to the matching [ if the cell at the pointer is nonzero    ;
+;                                                                             ;
+;                                                           2026 CRAW SYSTEMS ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+sav 0 r01				; init scratch register
+sav 0 r02				; init memory address
+
+1					; loader loop
+
+  sav r00 r01				; ready input value
+  ifg 2					; input > 0
+
+    io mem addr r02			; access memory address
+    io mem write r00			; write input
+
+    cal add 1 r02			; increment address
+    sav r01 r02				; update address
+
+    inp					; get next input value
+
+    jmp 1				; continue loader loop
+
+  rmv 2					; end input check
+
+sav 0 r10				; init bf pc (brainfuck program counter)
+sav 0 r12				; init tpv (tape pointer value)
+
+sav 32 r01				; 0b0..11111
+sav 7 r02				; shift amount
+cal shl r01 r02				; 0b0..111110000000 (0x01000)
+sav r01 r11				; init tp (tape pointer)
+
+sav 0 r01				; reset scratch register
+
+1					; main loop
+
+  io mem addr r10			; access bf symbol
+  io mem read r04			; get symbol into r04
+
+  io mem addr r11			; access tp value
+  io mem read r12			; get tpv
+
+  sav r04 r01				; ready symbol code
+
+  cal add -62 r01			; > symbol found
+  ifz 2					; > branch
+
+    cal add 1 r11			; increment tp
+    sav r01 r11				; update tp
+
+    cal add 1 r10			; next bfpc
+    sav r01 r10				; update bfpc
+
+    jmp 1				; continue loop
+
+  rmv 2					; end > branch
+
+  sav r04 r01				; ready symbol code
+  cal add -60 r01			; < symbol found
+  ifz 2					; < branch
+
+    cal add -1 r11			; decrement tp
+    sav r01 r11				; update tp
+
+    cal add 1 r10			; next bfpc
+    sav r01 r10				; update bfpc
+
+    jmp 1				; continue loop
+
+  rmv 2					; end < branch
+
+  sav r04 r01				; ready symbol code
+  cal add -43 r01			; + symbol found
+  ifz 2					; + branch
+
+    cal add 1 r12			; increment tpv
+    io mem addr r11			; access tpv
+    io mem write r01			; update tpv
+
+    cal add 1 r10			; next bfpc
+    sav r01 r10				; update bfpc
+
+    jmp 1				; continue loop
+
+  rmv 2					; end + branch
+
+  sav r04 r01				; ready symbol code
+  cal add -45 r01			; - symbol found
+  ifz 2					; - branch
+
+    cal add -1 r12			; decrement tpv
+    io mem addr r11			; access tpv
+    io mem write r01			; update tpv
+
+    cal add 1 r10			; next bfpc
+    sav r01 r10				; update bfpc
+
+    jmp 1				; continue loop
+
+  rmv 2					; end - branch
+
+  sav r04 r01				; ready symbol code
+  cal add -46 r01			; . symbol found
+  ifz 2					; . branch
+
+    io text char r12			; output tape char
+
+    cal add 1 r10			; next bfpc
+    sav r01 r10				; update bfpc
+
+    jmp 1				; continue loop
+
+  rmv 2					; end . branch
+
+  sav r04 r01				; ready symbol code
+  cal add -44 r01			; , symbol found
+  ifz 2					; , branch
+
+    3					; get key loop
+
+      io keyboard poll r01		; get key press
+
+      ifz 4				; no key
+        jmp 3				; continue loop
+      rmv 4				; end no key check
+
+      io mem addr r11			; access tpv
+      io mem write r01			; tpv = key
+
+    rmv 3				; free label
+
+    cal add 1 r10			; next bfpc
+    sav r01 r10				; update bfpc
+
+    jmp 1				; continue loop
+
+  rmv 2					; end , branch
+
+  sav r04 r01				; ready symbol code
+  cal add -91 r01			; [ symbol found
+  ifz 2					; [ branch
+
+  ; [ (91) Jump past the matching ] if the cell at the pointer is 0
+
+    sav r12 r01				; ready tpv
+    ifz 3				; tpv = 0, start depth walk to find ]
+
+      sav 0 r05				; init symbol offset value
+      sav 0 r06				; init offsetted symbol
+      sav 0 r07				; init depth value (+1 for [, -1 for ])
+
+      4					; walk loop
+
+        cal add 1 r05			; increment symbol offset value
+        sav r01 r05			; update symbol offset value
+
+        cal add r01 r10			; bfpc + offset
+        io mem addr r01			; get offsetted bfpc
+        io mem read r06			; read walked symbol
+
+        cal add -93 r06			; test for ]
+        ifz 5				; ] found
+
+          cal add -1 r07		; decrease depth
+          sav r01 r07			; update depth
+
+          ifl 6				; depth < 0 (match found)
+
+            cal add r05 r10		; get symbol address
+            cal add 1 r01		; first symbol after matching ]
+            sav r01 r10			; update bfpc
+
+            jmp 1			; continue main loop
+
+          rmv 6				; end match check
+
+          jmp 4				; no match, continue walk
+
+        rmv 5				; end ] check
+
+        cal add -91 r06			; test for [
+        ifz 5				; [ found
+
+          cal add 1 r07			; increase depth
+          sav r01 r07			; update depth
+
+          jmp 4				; continue walk
+
+        rmv 5				; end [ check
+
+        jmp 4				; different symbol, continue walk
+
+      rmv 4				; free label
+    rmv 3				; end depth walk
+
+    cal add 1 r10			; tpv != 0, continue
+    sav r01 r10				; update bfpc
+
+    jmp 1				; continue loop
+
+  rmv 2					; end [ branch
+
+  sav r04 r01				; ready symbol code
+  cal add -93 r01			; ] symbol found
+  ifz 2					; ] branch
+
+    sav r12 r01				; ready tpv
+    ifg 3				; tpv > 0, start depth walk to find [
+
+      sav 0 r05				; init symbol offset value
+      sav 0 r06				; init offsetted symbol
+      sav 0 r07				; init depth value (+1 for ], -1 for [)
+
+      4					; walk loop
+
+        cal add -1 r05			; decrement symbol offset value
+        sav r01 r05			; update symbol offset value
+
+        cal add r01 r10			; bfpc + offset
+        io mem addr r01			; get offsetted bfpc
+        io mem read r06			; read walked symbol
+
+        cal add -91 r06			; test for [
+        ifz 5				; [ found
+
+          cal add -1 r07		; decrease depth
+          sav r01 r07			; update depth
+
+          ifl 6				; depth < 0 (match found)
+
+            cal add r05 r10		; get symbol address
+            cal add 1 r01		; first symbol after matching [
+            sav r01 r10			; update bfpc
+
+            jmp 1			; continue main loop
+
+          rmv 6				; end match check
+
+          jmp 4				; no match, continue walk
+
+        rmv 5				; end [ check
+
+        cal add -93 r06			; test for ]
+        ifz 5				; ] found
+
+          cal add 1 r07			; increase depth
+          sav r01 r07			; update depth
+
+          jmp 4				; continue walk
+
+        rmv 5				; end ] check
+
+        jmp 4				; different symbol, continue walk
+
+      rmv 4				; free label
+    rmv 3				; end tpv > 0 check
+
+    sav r12 r01				; ready tpv
+    ifl 3				; tpv < 0, start depth walk to find [
+
+      sav 0 r05				; init symbol offset value
+      sav 0 r06				; init offsetted symbol
+      sav 0 r07				; init depth value (+1 for ], -1 for [)
+
+      4					; walk loop
+
+        cal add -1 r05			; decrement symbol offset value
+        sav r01 r05			; update symbol offset value
+
+        cal add r01 r10			; bfpc + offset
+        io mem addr r01			; get offsetted bfpc
+        io mem read r06			; read walked symbol
+
+        cal add -91 r06			; test for [
+        ifz 5				; [ found
+
+          cal add -1 r07		; decrease depth
+          sav r01 r07			; update depth
+
+          ifl 6				; depth < 0 (match found)
+
+            cal add r05 r10		; get symbol address
+            cal add 1 r01		; first symbol after matching [
+            sav r01 r10			; update bfpc
+
+            jmp 1			; continue main loop
+
+          rmv 6				; end match check
+
+          jmp 4				; no match, continue walk
+
+        rmv 5				; end [ check
+
+        cal add -93 r06			; test for ]
+        ifz 5				; ] found
+
+          cal add 1 r07			; increase depth
+          sav r01 r07			; update depth
+
+          jmp 4				; continue walk
+
+        rmv 5				; end ] check
+
+        jmp 4				; different symbol, continue walk
+
+      rmv 4				; free label
+    rmv 3				; end tpv < 0 check
+
+    cal add 1 r10			; tpv = 0, continue
+    sav r01 r10				; update bfpc
+
+    jmp 1				; continue loop
+
+  rmv 2					; end [ branch
+
+  sav r04 r01				; EOF character ready
+  ifz 2					; code = 0 => EOF
+    stp					; end program
+  rmv 2					; end EOF check
+
+  cal add 1 r10				; next bfpc
+  sav r01 r10				; update bfpc  
+
+  jmp 1					; continue main loop
