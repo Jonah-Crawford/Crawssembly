@@ -1,0 +1,42 @@
+; CSL: math/power.craw			r02 = addition amount
+; Inputs: r02-r03			r03 = loop count
+; Outputs: r02				r04 = sum total
+; Scope: r01-r05 | 60000-60001		r05 = power
+
+sav r03 r05				; preserve power
+sav r02 r03				; set both mul values to r02
+
+cal add -1 r05				; x^2 = x*x, not x*x*x
+sav r01 r05				; update power value
+
+sav 0 r01				; initialise r01
+
+rmv 60000				; free label for main loop
+rmv 60001				; free label for main addition loop
+
+60000					; main multiply loop
+
+  60001					; main addition loop
+
+    cal add r02 r04			; add to sum total
+    sav r01 r04				; update sum total
+
+    cal add -1 r03			; decrement loop count
+    sav r01 r03				; update loop count
+
+    jmg 60001				; loop count > 0, continue
+
+  cal add -1 r05			; reduce power value
+  sav r01 r05				; update power
+
+  jmg 60000				; continue if power > 0    
+
+rmv 60001				; free label
+rmv 60000				; free label
+
+sav r04 r02				; save result to output register
+
+sav 0 r01				; reset used registers
+sav 0 r03
+sav 0 r04
+sav 0 r05

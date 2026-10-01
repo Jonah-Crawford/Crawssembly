@@ -1,0 +1,41 @@
+; CSL: heap/_free.craw
+; Inputs: r02
+; Outputs: ree
+; Scope: r01-r03 | 60000-60001
+
+sav 4 ree			; assume invalid pointer
+
+io mem addr r02			; set active address
+sav 0 r03			; reset header
+io mem read r03			; get header
+
+sav r03 r01			; ready header
+
+ifg 60000			; header > 0
+
+  cal and 1 r03			; extract free flag
+  ifz 60001			; allocated
+
+    cal or 1 r03		; set free flag to true
+    io mem write r01		; write new free header
+    sav 0 ree			; successful freeing
+
+  rmv 60001			; end allocated chech
+rmv 60000			; end header > 0 branch
+
+sav r03 r01			; ready header
+ifl 60000			; header < 0
+
+  cal and 1 r03			; extract free flag
+  ifz 60001			; allocated
+
+    cal or 1 r03		; set free flag to true
+    io mem write r01		; write new free header
+    sav 0 ree			; successful freeing
+
+  rmv 60001			; end allocated chech
+rmv 60000			; end header < 0 branch
+
+sav 0 r01			; clear used registers
+sav 0 r02
+sav 0 r03

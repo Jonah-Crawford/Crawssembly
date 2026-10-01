@@ -1,0 +1,276 @@
+; CSL: net/write_http_close.craw
+; Inputs: r02
+; Outputs: None
+; Scope: r01-r02
+
+sav 71 r02		; "GET / HTTP/1.1\r\n
+io mem addr r01		; Host: localhost\r\n
+io mem write r02	; Connection: close\r\n
+cal add 1 r01		; \r\n"
+
+sav 69 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 84 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 32 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 47 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 32 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 72 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 84 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 84 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 80 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 47 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 49 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 46 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 49 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 13 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 10 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 72 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 115 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 116 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 58 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 32 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 108 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 99 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 97 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 108 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 104 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 115 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 116 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 13 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 10 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 67 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 110 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 110 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 101 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 99 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 116 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 105 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 110 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 58 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 32 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 99 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 108 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 111 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 115 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 101 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 13 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 10 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 13 r02
+io mem addr r01
+io mem write r02
+cal add 1 r01
+
+sav 10 r02
+io mem addr r01
+io mem write r02
+
+sav 54 r01
+io net len r01		; set length to 54

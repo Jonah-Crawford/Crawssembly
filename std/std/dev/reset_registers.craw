@@ -1,0 +1,1426 @@
+; CSL: data/reset_registers.craw
+; Inputs: r02
+; Outputs: N/A
+; Scope: Variable | 60000
+
+cal add 1 r02                                     ; add 1 so ifg encloses the check
+sav r01 r02                                       ; update register input
+
+cal add -3 r02                                    ; test for r03
+ifg 60000                                         ; r03 found
+  sav 0 r03                                       ; reset r03
+rmv 60000                                         ; end r03 branch
+
+cal add -4 r02                                    ; test for r04
+ifg 60000                                         ; r04 found
+  sav 0 r04                                       ; reset r04
+rmv 60000                                         ; end r04 branch
+
+cal add -5 r02                                    ; test for r05
+ifg 60000                                         ; r05 found
+  sav 0 r05                                       ; reset r05
+rmv 60000                                         ; end r05 branch
+
+cal add -6 r02                                    ; test for r06
+ifg 60000                                         ; r06 found
+  sav 0 r06                                       ; reset r06
+rmv 60000                                         ; end r06 branch
+
+cal add -7 r02                                    ; test for r07
+ifg 60000                                         ; r07 found
+  sav 0 r07                                       ; reset r07
+rmv 60000                                         ; end r07 branch
+
+cal add -8 r02                                    ; test for r08
+ifg 60000                                         ; r08 found
+  sav 0 r08                                       ; reset r08
+rmv 60000                                         ; end r08 branch
+
+cal add -9 r02                                    ; test for r09
+ifg 60000                                         ; r09 found
+  sav 0 r09                                       ; reset r09
+rmv 60000                                         ; end r09 branch
+
+cal add -10 r02                                   ; test for r0a
+ifg 60000                                         ; r0a found
+  sav 0 r0a                                       ; reset r0a
+rmv 60000                                         ; end r0a branch
+
+cal add -11 r02                                   ; test for r0b
+ifg 60000                                         ; r0b found
+  sav 0 r0b                                       ; reset r0b
+rmv 60000                                         ; end r0b branch
+
+cal add -12 r02                                   ; test for r0c
+ifg 60000                                         ; r0c found
+  sav 0 r0c                                       ; reset r0c
+rmv 60000                                         ; end r0c branch
+
+cal add -13 r02                                   ; test for r0d
+ifg 60000                                         ; r0d found
+  sav 0 r0d                                       ; reset r0d
+rmv 60000                                         ; end r0d branch
+
+cal add -14 r02                                   ; test for r0e
+ifg 60000                                         ; r0e found
+  sav 0 r0e                                       ; reset r0e
+rmv 60000                                         ; end r0e branch
+
+cal add -15 r02                                   ; test for r0f
+ifg 60000                                         ; r0f found
+  sav 0 r0f                                       ; reset r0f
+rmv 60000                                         ; end r0f branch
+
+cal add -16 r02                                   ; test for r10
+ifg 60000                                         ; r10 found
+  sav 0 r10                                       ; reset r10
+rmv 60000                                         ; end r10 branch
+
+cal add -17 r02                                   ; test for r11
+ifg 60000                                         ; r11 found
+  sav 0 r11                                       ; reset r11
+rmv 60000                                         ; end r11 branch
+
+cal add -18 r02                                   ; test for r12
+ifg 60000                                         ; r12 found
+  sav 0 r12                                       ; reset r12
+rmv 60000                                         ; end r12 branch
+
+cal add -19 r02                                   ; test for r13
+ifg 60000                                         ; r13 found
+  sav 0 r13                                       ; reset r13
+rmv 60000                                         ; end r13 branch
+
+cal add -20 r02                                   ; test for r14
+ifg 60000                                         ; r14 found
+  sav 0 r14                                       ; reset r14
+rmv 60000                                         ; end r14 branch
+
+cal add -21 r02                                   ; test for r15
+ifg 60000                                         ; r15 found
+  sav 0 r15                                       ; reset r15
+rmv 60000                                         ; end r15 branch
+
+cal add -22 r02                                   ; test for r16
+ifg 60000                                         ; r16 found
+  sav 0 r16                                       ; reset r16
+rmv 60000                                         ; end r16 branch
+
+cal add -23 r02                                   ; test for r17
+ifg 60000                                         ; r17 found
+  sav 0 r17                                       ; reset r17
+rmv 60000                                         ; end r17 branch
+
+cal add -24 r02                                   ; test for r18
+ifg 60000                                         ; r18 found
+  sav 0 r18                                       ; reset r18
+rmv 60000                                         ; end r18 branch
+
+cal add -25 r02                                   ; test for r19
+ifg 60000                                         ; r19 found
+  sav 0 r19                                       ; reset r19
+rmv 60000                                         ; end r19 branch
+
+cal add -26 r02                                   ; test for r1a
+ifg 60000                                         ; r1a found
+  sav 0 r1a                                       ; reset r1a
+rmv 60000                                         ; end r1a branch
+
+cal add -27 r02                                   ; test for r1b
+ifg 60000                                         ; r1b found
+  sav 0 r1b                                       ; reset r1b
+rmv 60000                                         ; end r1b branch
+
+cal add -28 r02                                   ; test for r1c
+ifg 60000                                         ; r1c found
+  sav 0 r1c                                       ; reset r1c
+rmv 60000                                         ; end r1c branch
+
+cal add -29 r02                                   ; test for r1d
+ifg 60000                                         ; r1d found
+  sav 0 r1d                                       ; reset r1d
+rmv 60000                                         ; end r1d branch
+
+cal add -30 r02                                   ; test for r1e
+ifg 60000                                         ; r1e found
+  sav 0 r1e                                       ; reset r1e
+rmv 60000                                         ; end r1e branch
+
+cal add -31 r02                                   ; test for r1f
+ifg 60000                                         ; r1f found
+  sav 0 r1f                                       ; reset r1f
+rmv 60000                                         ; end r1f branch
+
+cal add -32 r02                                   ; test for r20
+ifg 60000                                         ; r20 found
+  sav 0 r20                                       ; reset r20
+rmv 60000                                         ; end r20 branch
+
+cal add -33 r02                                   ; test for r21
+ifg 60000                                         ; r21 found
+  sav 0 r21                                       ; reset r21
+rmv 60000                                         ; end r21 branch
+
+cal add -34 r02                                   ; test for r22
+ifg 60000                                         ; r22 found
+  sav 0 r22                                       ; reset r22
+rmv 60000                                         ; end r22 branch
+
+cal add -35 r02                                   ; test for r23
+ifg 60000                                         ; r23 found
+  sav 0 r23                                       ; reset r23
+rmv 60000                                         ; end r23 branch
+
+cal add -36 r02                                   ; test for r24
+ifg 60000                                         ; r24 found
+  sav 0 r24                                       ; reset r24
+rmv 60000                                         ; end r24 branch
+
+cal add -37 r02                                   ; test for r25
+ifg 60000                                         ; r25 found
+  sav 0 r25                                       ; reset r25
+rmv 60000                                         ; end r25 branch
+
+cal add -38 r02                                   ; test for r26
+ifg 60000                                         ; r26 found
+  sav 0 r26                                       ; reset r26
+rmv 60000                                         ; end r26 branch
+
+cal add -39 r02                                   ; test for r27
+ifg 60000                                         ; r27 found
+  sav 0 r27                                       ; reset r27
+rmv 60000                                         ; end r27 branch
+
+cal add -40 r02                                   ; test for r28
+ifg 60000                                         ; r28 found
+  sav 0 r28                                       ; reset r28
+rmv 60000                                         ; end r28 branch
+
+cal add -41 r02                                   ; test for r29
+ifg 60000                                         ; r29 found
+  sav 0 r29                                       ; reset r29
+rmv 60000                                         ; end r29 branch
+
+cal add -42 r02                                   ; test for r2a
+ifg 60000                                         ; r2a found
+  sav 0 r2a                                       ; reset r2a
+rmv 60000                                         ; end r2a branch
+
+cal add -43 r02                                   ; test for r2b
+ifg 60000                                         ; r2b found
+  sav 0 r2b                                       ; reset r2b
+rmv 60000                                         ; end r2b branch
+
+cal add -44 r02                                   ; test for r2c
+ifg 60000                                         ; r2c found
+  sav 0 r2c                                       ; reset r2c
+rmv 60000                                         ; end r2c branch
+
+cal add -45 r02                                   ; test for r2d
+ifg 60000                                         ; r2d found
+  sav 0 r2d                                       ; reset r2d
+rmv 60000                                         ; end r2d branch
+
+cal add -46 r02                                   ; test for r2e
+ifg 60000                                         ; r2e found
+  sav 0 r2e                                       ; reset r2e
+rmv 60000                                         ; end r2e branch
+
+cal add -47 r02                                   ; test for r2f
+ifg 60000                                         ; r2f found
+  sav 0 r2f                                       ; reset r2f
+rmv 60000                                         ; end r2f branch
+
+cal add -48 r02                                   ; test for r30
+ifg 60000                                         ; r30 found
+  sav 0 r30                                       ; reset r30
+rmv 60000                                         ; end r30 branch
+
+cal add -49 r02                                   ; test for r31
+ifg 60000                                         ; r31 found
+  sav 0 r31                                       ; reset r31
+rmv 60000                                         ; end r31 branch
+
+cal add -50 r02                                   ; test for r32
+ifg 60000                                         ; r32 found
+  sav 0 r32                                       ; reset r32
+rmv 60000                                         ; end r32 branch
+
+cal add -51 r02                                   ; test for r33
+ifg 60000                                         ; r33 found
+  sav 0 r33                                       ; reset r33
+rmv 60000                                         ; end r33 branch
+
+cal add -52 r02                                   ; test for r34
+ifg 60000                                         ; r34 found
+  sav 0 r34                                       ; reset r34
+rmv 60000                                         ; end r34 branch
+
+cal add -53 r02                                   ; test for r35
+ifg 60000                                         ; r35 found
+  sav 0 r35                                       ; reset r35
+rmv 60000                                         ; end r35 branch
+
+cal add -54 r02                                   ; test for r36
+ifg 60000                                         ; r36 found
+  sav 0 r36                                       ; reset r36
+rmv 60000                                         ; end r36 branch
+
+cal add -55 r02                                   ; test for r37
+ifg 60000                                         ; r37 found
+  sav 0 r37                                       ; reset r37
+rmv 60000                                         ; end r37 branch
+
+cal add -56 r02                                   ; test for r38
+ifg 60000                                         ; r38 found
+  sav 0 r38                                       ; reset r38
+rmv 60000                                         ; end r38 branch
+
+cal add -57 r02                                   ; test for r39
+ifg 60000                                         ; r39 found
+  sav 0 r39                                       ; reset r39
+rmv 60000                                         ; end r39 branch
+
+cal add -58 r02                                   ; test for r3a
+ifg 60000                                         ; r3a found
+  sav 0 r3a                                       ; reset r3a
+rmv 60000                                         ; end r3a branch
+
+cal add -59 r02                                   ; test for r3b
+ifg 60000                                         ; r3b found
+  sav 0 r3b                                       ; reset r3b
+rmv 60000                                         ; end r3b branch
+
+cal add -60 r02                                   ; test for r3c
+ifg 60000                                         ; r3c found
+  sav 0 r3c                                       ; reset r3c
+rmv 60000                                         ; end r3c branch
+
+cal add -61 r02                                   ; test for r3d
+ifg 60000                                         ; r3d found
+  sav 0 r3d                                       ; reset r3d
+rmv 60000                                         ; end r3d branch
+
+cal add -62 r02                                   ; test for r3e
+ifg 60000                                         ; r3e found
+  sav 0 r3e                                       ; reset r3e
+rmv 60000                                         ; end r3e branch
+
+cal add -63 r02                                   ; test for r3f
+ifg 60000                                         ; r3f found
+  sav 0 r3f                                       ; reset r3f
+rmv 60000                                         ; end r3f branch
+
+cal add -64 r02                                   ; test for r40
+ifg 60000                                         ; r40 found
+  sav 0 r40                                       ; reset r40
+rmv 60000                                         ; end r40 branch
+
+cal add -65 r02                                   ; test for r41
+ifg 60000                                         ; r41 found
+  sav 0 r41                                       ; reset r41
+rmv 60000                                         ; end r41 branch
+
+cal add -66 r02                                   ; test for r42
+ifg 60000                                         ; r42 found
+  sav 0 r42                                       ; reset r42
+rmv 60000                                         ; end r42 branch
+
+cal add -67 r02                                   ; test for r43
+ifg 60000                                         ; r43 found
+  sav 0 r43                                       ; reset r43
+rmv 60000                                         ; end r43 branch
+
+cal add -68 r02                                   ; test for r44
+ifg 60000                                         ; r44 found
+  sav 0 r44                                       ; reset r44
+rmv 60000                                         ; end r44 branch
+
+cal add -69 r02                                   ; test for r45
+ifg 60000                                         ; r45 found
+  sav 0 r45                                       ; reset r45
+rmv 60000                                         ; end r45 branch
+
+cal add -70 r02                                   ; test for r46
+ifg 60000                                         ; r46 found
+  sav 0 r46                                       ; reset r46
+rmv 60000                                         ; end r46 branch
+
+cal add -71 r02                                   ; test for r47
+ifg 60000                                         ; r47 found
+  sav 0 r47                                       ; reset r47
+rmv 60000                                         ; end r47 branch
+
+cal add -72 r02                                   ; test for r48
+ifg 60000                                         ; r48 found
+  sav 0 r48                                       ; reset r48
+rmv 60000                                         ; end r48 branch
+
+cal add -73 r02                                   ; test for r49
+ifg 60000                                         ; r49 found
+  sav 0 r49                                       ; reset r49
+rmv 60000                                         ; end r49 branch
+
+cal add -74 r02                                   ; test for r4a
+ifg 60000                                         ; r4a found
+  sav 0 r4a                                       ; reset r4a
+rmv 60000                                         ; end r4a branch
+
+cal add -75 r02                                   ; test for r4b
+ifg 60000                                         ; r4b found
+  sav 0 r4b                                       ; reset r4b
+rmv 60000                                         ; end r4b branch
+
+cal add -76 r02                                   ; test for r4c
+ifg 60000                                         ; r4c found
+  sav 0 r4c                                       ; reset r4c
+rmv 60000                                         ; end r4c branch
+
+cal add -77 r02                                   ; test for r4d
+ifg 60000                                         ; r4d found
+  sav 0 r4d                                       ; reset r4d
+rmv 60000                                         ; end r4d branch
+
+cal add -78 r02                                   ; test for r4e
+ifg 60000                                         ; r4e found
+  sav 0 r4e                                       ; reset r4e
+rmv 60000                                         ; end r4e branch
+
+cal add -79 r02                                   ; test for r4f
+ifg 60000                                         ; r4f found
+  sav 0 r4f                                       ; reset r4f
+rmv 60000                                         ; end r4f branch
+
+cal add -80 r02                                   ; test for r50
+ifg 60000                                         ; r50 found
+  sav 0 r50                                       ; reset r50
+rmv 60000                                         ; end r50 branch
+
+cal add -81 r02                                   ; test for r51
+ifg 60000                                         ; r51 found
+  sav 0 r51                                       ; reset r51
+rmv 60000                                         ; end r51 branch
+
+cal add -82 r02                                   ; test for r52
+ifg 60000                                         ; r52 found
+  sav 0 r52                                       ; reset r52
+rmv 60000                                         ; end r52 branch
+
+cal add -83 r02                                   ; test for r53
+ifg 60000                                         ; r53 found
+  sav 0 r53                                       ; reset r53
+rmv 60000                                         ; end r53 branch
+
+cal add -84 r02                                   ; test for r54
+ifg 60000                                         ; r54 found
+  sav 0 r54                                       ; reset r54
+rmv 60000                                         ; end r54 branch
+
+cal add -85 r02                                   ; test for r55
+ifg 60000                                         ; r55 found
+  sav 0 r55                                       ; reset r55
+rmv 60000                                         ; end r55 branch
+
+cal add -86 r02                                   ; test for r56
+ifg 60000                                         ; r56 found
+  sav 0 r56                                       ; reset r56
+rmv 60000                                         ; end r56 branch
+
+cal add -87 r02                                   ; test for r57
+ifg 60000                                         ; r57 found
+  sav 0 r57                                       ; reset r57
+rmv 60000                                         ; end r57 branch
+
+cal add -88 r02                                   ; test for r58
+ifg 60000                                         ; r58 found
+  sav 0 r58                                       ; reset r58
+rmv 60000                                         ; end r58 branch
+
+cal add -89 r02                                   ; test for r59
+ifg 60000                                         ; r59 found
+  sav 0 r59                                       ; reset r59
+rmv 60000                                         ; end r59 branch
+
+cal add -90 r02                                   ; test for r5a
+ifg 60000                                         ; r5a found
+  sav 0 r5a                                       ; reset r5a
+rmv 60000                                         ; end r5a branch
+
+cal add -91 r02                                   ; test for r5b
+ifg 60000                                         ; r5b found
+  sav 0 r5b                                       ; reset r5b
+rmv 60000                                         ; end r5b branch
+
+cal add -92 r02                                   ; test for r5c
+ifg 60000                                         ; r5c found
+  sav 0 r5c                                       ; reset r5c
+rmv 60000                                         ; end r5c branch
+
+cal add -93 r02                                   ; test for r5d
+ifg 60000                                         ; r5d found
+  sav 0 r5d                                       ; reset r5d
+rmv 60000                                         ; end r5d branch
+
+cal add -94 r02                                   ; test for r5e
+ifg 60000                                         ; r5e found
+  sav 0 r5e                                       ; reset r5e
+rmv 60000                                         ; end r5e branch
+
+cal add -95 r02                                   ; test for r5f
+ifg 60000                                         ; r5f found
+  sav 0 r5f                                       ; reset r5f
+rmv 60000                                         ; end r5f branch
+
+cal add -96 r02                                   ; test for r60
+ifg 60000                                         ; r60 found
+  sav 0 r60                                       ; reset r60
+rmv 60000                                         ; end r60 branch
+
+cal add -97 r02                                   ; test for r61
+ifg 60000                                         ; r61 found
+  sav 0 r61                                       ; reset r61
+rmv 60000                                         ; end r61 branch
+
+cal add -98 r02                                   ; test for r62
+ifg 60000                                         ; r62 found
+  sav 0 r62                                       ; reset r62
+rmv 60000                                         ; end r62 branch
+
+cal add -99 r02                                   ; test for r63
+ifg 60000                                         ; r63 found
+  sav 0 r63                                       ; reset r63
+rmv 60000                                         ; end r63 branch
+
+cal add -100 r02                                  ; test for r64
+ifg 60000                                         ; r64 found
+  sav 0 r64                                       ; reset r64
+rmv 60000                                         ; end r64 branch
+
+cal add -101 r02                                  ; test for r65
+ifg 60000                                         ; r65 found
+  sav 0 r65                                       ; reset r65
+rmv 60000                                         ; end r65 branch
+
+cal add -102 r02                                  ; test for r66
+ifg 60000                                         ; r66 found
+  sav 0 r66                                       ; reset r66
+rmv 60000                                         ; end r66 branch
+
+cal add -103 r02                                  ; test for r67
+ifg 60000                                         ; r67 found
+  sav 0 r67                                       ; reset r67
+rmv 60000                                         ; end r67 branch
+
+cal add -104 r02                                  ; test for r68
+ifg 60000                                         ; r68 found
+  sav 0 r68                                       ; reset r68
+rmv 60000                                         ; end r68 branch
+
+cal add -105 r02                                  ; test for r69
+ifg 60000                                         ; r69 found
+  sav 0 r69                                       ; reset r69
+rmv 60000                                         ; end r69 branch
+
+cal add -106 r02                                  ; test for r6a
+ifg 60000                                         ; r6a found
+  sav 0 r6a                                       ; reset r6a
+rmv 60000                                         ; end r6a branch
+
+cal add -107 r02                                  ; test for r6b
+ifg 60000                                         ; r6b found
+  sav 0 r6b                                       ; reset r6b
+rmv 60000                                         ; end r6b branch
+
+cal add -108 r02                                  ; test for r6c
+ifg 60000                                         ; r6c found
+  sav 0 r6c                                       ; reset r6c
+rmv 60000                                         ; end r6c branch
+
+cal add -109 r02                                  ; test for r6d
+ifg 60000                                         ; r6d found
+  sav 0 r6d                                       ; reset r6d
+rmv 60000                                         ; end r6d branch
+
+cal add -110 r02                                  ; test for r6e
+ifg 60000                                         ; r6e found
+  sav 0 r6e                                       ; reset r6e
+rmv 60000                                         ; end r6e branch
+
+cal add -111 r02                                  ; test for r6f
+ifg 60000                                         ; r6f found
+  sav 0 r6f                                       ; reset r6f
+rmv 60000                                         ; end r6f branch
+
+cal add -112 r02                                  ; test for r70
+ifg 60000                                         ; r70 found
+  sav 0 r70                                       ; reset r70
+rmv 60000                                         ; end r70 branch
+
+cal add -113 r02                                  ; test for r71
+ifg 60000                                         ; r71 found
+  sav 0 r71                                       ; reset r71
+rmv 60000                                         ; end r71 branch
+
+cal add -114 r02                                  ; test for r72
+ifg 60000                                         ; r72 found
+  sav 0 r72                                       ; reset r72
+rmv 60000                                         ; end r72 branch
+
+cal add -115 r02                                  ; test for r73
+ifg 60000                                         ; r73 found
+  sav 0 r73                                       ; reset r73
+rmv 60000                                         ; end r73 branch
+
+cal add -116 r02                                  ; test for r74
+ifg 60000                                         ; r74 found
+  sav 0 r74                                       ; reset r74
+rmv 60000                                         ; end r74 branch
+
+cal add -117 r02                                  ; test for r75
+ifg 60000                                         ; r75 found
+  sav 0 r75                                       ; reset r75
+rmv 60000                                         ; end r75 branch
+
+cal add -118 r02                                  ; test for r76
+ifg 60000                                         ; r76 found
+  sav 0 r76                                       ; reset r76
+rmv 60000                                         ; end r76 branch
+
+cal add -119 r02                                  ; test for r77
+ifg 60000                                         ; r77 found
+  sav 0 r77                                       ; reset r77
+rmv 60000                                         ; end r77 branch
+
+cal add -120 r02                                  ; test for r78
+ifg 60000                                         ; r78 found
+  sav 0 r78                                       ; reset r78
+rmv 60000                                         ; end r78 branch
+
+cal add -121 r02                                  ; test for r79
+ifg 60000                                         ; r79 found
+  sav 0 r79                                       ; reset r79
+rmv 60000                                         ; end r79 branch
+
+cal add -122 r02                                  ; test for r7a
+ifg 60000                                         ; r7a found
+  sav 0 r7a                                       ; reset r7a
+rmv 60000                                         ; end r7a branch
+
+cal add -123 r02                                  ; test for r7b
+ifg 60000                                         ; r7b found
+  sav 0 r7b                                       ; reset r7b
+rmv 60000                                         ; end r7b branch
+
+cal add -124 r02                                  ; test for r7c
+ifg 60000                                         ; r7c found
+  sav 0 r7c                                       ; reset r7c
+rmv 60000                                         ; end r7c branch
+
+cal add -125 r02                                  ; test for r7d
+ifg 60000                                         ; r7d found
+  sav 0 r7d                                       ; reset r7d
+rmv 60000                                         ; end r7d branch
+
+cal add -126 r02                                  ; test for r7e
+ifg 60000                                         ; r7e found
+  sav 0 r7e                                       ; reset r7e
+rmv 60000                                         ; end r7e branch
+
+cal add -127 r02                                  ; test for r7f
+ifg 60000                                         ; r7f found
+  sav 0 r7f                                       ; reset r7f
+rmv 60000                                         ; end r7f branch
+
+sav -128 r01                                      ; build test value for r80
+cal add r01 r02                                   ; test for r80
+ifg 60000                                         ; r80 found
+  sav 0 r80                                       ; reset r80
+rmv 60000                                         ; end r80 branch
+
+sav -128 r01                                      ; build test value for r81
+cal add -1 r01                                    ; r01 = -129
+cal add r01 r02                                   ; test for r81
+ifg 60000                                         ; r81 found
+  sav 0 r81                                       ; reset r81
+rmv 60000                                         ; end r81 branch
+
+sav -128 r01                                      ; build test value for r82
+cal add -2 r01                                    ; r01 = -130
+cal add r01 r02                                   ; test for r82
+ifg 60000                                         ; r82 found
+  sav 0 r82                                       ; reset r82
+rmv 60000                                         ; end r82 branch
+
+sav -128 r01                                      ; build test value for r83
+cal add -3 r01                                    ; r01 = -131
+cal add r01 r02                                   ; test for r83
+ifg 60000                                         ; r83 found
+  sav 0 r83                                       ; reset r83
+rmv 60000                                         ; end r83 branch
+
+sav -128 r01                                      ; build test value for r84
+cal add -4 r01                                    ; r01 = -132
+cal add r01 r02                                   ; test for r84
+ifg 60000                                         ; r84 found
+  sav 0 r84                                       ; reset r84
+rmv 60000                                         ; end r84 branch
+
+sav -128 r01                                      ; build test value for r85
+cal add -5 r01                                    ; r01 = -133
+cal add r01 r02                                   ; test for r85
+ifg 60000                                         ; r85 found
+  sav 0 r85                                       ; reset r85
+rmv 60000                                         ; end r85 branch
+
+sav -128 r01                                      ; build test value for r86
+cal add -6 r01                                    ; r01 = -134
+cal add r01 r02                                   ; test for r86
+ifg 60000                                         ; r86 found
+  sav 0 r86                                       ; reset r86
+rmv 60000                                         ; end r86 branch
+
+sav -128 r01                                      ; build test value for r87
+cal add -7 r01                                    ; r01 = -135
+cal add r01 r02                                   ; test for r87
+ifg 60000                                         ; r87 found
+  sav 0 r87                                       ; reset r87
+rmv 60000                                         ; end r87 branch
+
+sav -128 r01                                      ; build test value for r88
+cal add -8 r01                                    ; r01 = -136
+cal add r01 r02                                   ; test for r88
+ifg 60000                                         ; r88 found
+  sav 0 r88                                       ; reset r88
+rmv 60000                                         ; end r88 branch
+
+sav -128 r01                                      ; build test value for r89
+cal add -9 r01                                    ; r01 = -137
+cal add r01 r02                                   ; test for r89
+ifg 60000                                         ; r89 found
+  sav 0 r89                                       ; reset r89
+rmv 60000                                         ; end r89 branch
+
+sav -128 r01                                      ; build test value for r8a
+cal add -10 r01                                   ; r01 = -138
+cal add r01 r02                                   ; test for r8a
+ifg 60000                                         ; r8a found
+  sav 0 r8a                                       ; reset r8a
+rmv 60000                                         ; end r8a branch
+
+sav -128 r01                                      ; build test value for r8b
+cal add -11 r01                                   ; r01 = -139
+cal add r01 r02                                   ; test for r8b
+ifg 60000                                         ; r8b found
+  sav 0 r8b                                       ; reset r8b
+rmv 60000                                         ; end r8b branch
+
+sav -128 r01                                      ; build test value for r8c
+cal add -12 r01                                   ; r01 = -140
+cal add r01 r02                                   ; test for r8c
+ifg 60000                                         ; r8c found
+  sav 0 r8c                                       ; reset r8c
+rmv 60000                                         ; end r8c branch
+
+sav -128 r01                                      ; build test value for r8d
+cal add -13 r01                                   ; r01 = -141
+cal add r01 r02                                   ; test for r8d
+ifg 60000                                         ; r8d found
+  sav 0 r8d                                       ; reset r8d
+rmv 60000                                         ; end r8d branch
+
+sav -128 r01                                      ; build test value for r8e
+cal add -14 r01                                   ; r01 = -142
+cal add r01 r02                                   ; test for r8e
+ifg 60000                                         ; r8e found
+  sav 0 r8e                                       ; reset r8e
+rmv 60000                                         ; end r8e branch
+
+sav -128 r01                                      ; build test value for r8f
+cal add -15 r01                                   ; r01 = -143
+cal add r01 r02                                   ; test for r8f
+ifg 60000                                         ; r8f found
+  sav 0 r8f                                       ; reset r8f
+rmv 60000                                         ; end r8f branch
+
+sav -128 r01                                      ; build test value for r90
+cal add -16 r01                                   ; r01 = -144
+cal add r01 r02                                   ; test for r90
+ifg 60000                                         ; r90 found
+  sav 0 r90                                       ; reset r90
+rmv 60000                                         ; end r90 branch
+
+sav -128 r01                                      ; build test value for r91
+cal add -17 r01                                   ; r01 = -145
+cal add r01 r02                                   ; test for r91
+ifg 60000                                         ; r91 found
+  sav 0 r91                                       ; reset r91
+rmv 60000                                         ; end r91 branch
+
+sav -128 r01                                      ; build test value for r92
+cal add -18 r01                                   ; r01 = -146
+cal add r01 r02                                   ; test for r92
+ifg 60000                                         ; r92 found
+  sav 0 r92                                       ; reset r92
+rmv 60000                                         ; end r92 branch
+
+sav -128 r01                                      ; build test value for r93
+cal add -19 r01                                   ; r01 = -147
+cal add r01 r02                                   ; test for r93
+ifg 60000                                         ; r93 found
+  sav 0 r93                                       ; reset r93
+rmv 60000                                         ; end r93 branch
+
+sav -128 r01                                      ; build test value for r94
+cal add -20 r01                                   ; r01 = -148
+cal add r01 r02                                   ; test for r94
+ifg 60000                                         ; r94 found
+  sav 0 r94                                       ; reset r94
+rmv 60000                                         ; end r94 branch
+
+sav -128 r01                                      ; build test value for r95
+cal add -21 r01                                   ; r01 = -149
+cal add r01 r02                                   ; test for r95
+ifg 60000                                         ; r95 found
+  sav 0 r95                                       ; reset r95
+rmv 60000                                         ; end r95 branch
+
+sav -128 r01                                      ; build test value for r96
+cal add -22 r01                                   ; r01 = -150
+cal add r01 r02                                   ; test for r96
+ifg 60000                                         ; r96 found
+  sav 0 r96                                       ; reset r96
+rmv 60000                                         ; end r96 branch
+
+sav -128 r01                                      ; build test value for r97
+cal add -23 r01                                   ; r01 = -151
+cal add r01 r02                                   ; test for r97
+ifg 60000                                         ; r97 found
+  sav 0 r97                                       ; reset r97
+rmv 60000                                         ; end r97 branch
+
+sav -128 r01                                      ; build test value for r98
+cal add -24 r01                                   ; r01 = -152
+cal add r01 r02                                   ; test for r98
+ifg 60000                                         ; r98 found
+  sav 0 r98                                       ; reset r98
+rmv 60000                                         ; end r98 branch
+
+sav -128 r01                                      ; build test value for r99
+cal add -25 r01                                   ; r01 = -153
+cal add r01 r02                                   ; test for r99
+ifg 60000                                         ; r99 found
+  sav 0 r99                                       ; reset r99
+rmv 60000                                         ; end r99 branch
+
+sav -128 r01                                      ; build test value for r9a
+cal add -26 r01                                   ; r01 = -154
+cal add r01 r02                                   ; test for r9a
+ifg 60000                                         ; r9a found
+  sav 0 r9a                                       ; reset r9a
+rmv 60000                                         ; end r9a branch
+
+sav -128 r01                                      ; build test value for r9b
+cal add -27 r01                                   ; r01 = -155
+cal add r01 r02                                   ; test for r9b
+ifg 60000                                         ; r9b found
+  sav 0 r9b                                       ; reset r9b
+rmv 60000                                         ; end r9b branch
+
+sav -128 r01                                      ; build test value for r9c
+cal add -28 r01                                   ; r01 = -156
+cal add r01 r02                                   ; test for r9c
+ifg 60000                                         ; r9c found
+  sav 0 r9c                                       ; reset r9c
+rmv 60000                                         ; end r9c branch
+
+sav -128 r01                                      ; build test value for r9d
+cal add -29 r01                                   ; r01 = -157
+cal add r01 r02                                   ; test for r9d
+ifg 60000                                         ; r9d found
+  sav 0 r9d                                       ; reset r9d
+rmv 60000                                         ; end r9d branch
+
+sav -128 r01                                      ; build test value for r9e
+cal add -30 r01                                   ; r01 = -158
+cal add r01 r02                                   ; test for r9e
+ifg 60000                                         ; r9e found
+  sav 0 r9e                                       ; reset r9e
+rmv 60000                                         ; end r9e branch
+
+sav -128 r01                                      ; build test value for r9f
+cal add -31 r01                                   ; r01 = -159
+cal add r01 r02                                   ; test for r9f
+ifg 60000                                         ; r9f found
+  sav 0 r9f                                       ; reset r9f
+rmv 60000                                         ; end r9f branch
+
+sav -128 r01                                      ; build test value for ra0
+cal add -32 r01                                   ; r01 = -160
+cal add r01 r02                                   ; test for ra0
+ifg 60000                                         ; ra0 found
+  sav 0 ra0                                       ; reset ra0
+rmv 60000                                         ; end ra0 branch
+
+sav -128 r01                                      ; build test value for ra1
+cal add -33 r01                                   ; r01 = -161
+cal add r01 r02                                   ; test for ra1
+ifg 60000                                         ; ra1 found
+  sav 0 ra1                                       ; reset ra1
+rmv 60000                                         ; end ra1 branch
+
+sav -128 r01                                      ; build test value for ra2
+cal add -34 r01                                   ; r01 = -162
+cal add r01 r02                                   ; test for ra2
+ifg 60000                                         ; ra2 found
+  sav 0 ra2                                       ; reset ra2
+rmv 60000                                         ; end ra2 branch
+
+sav -128 r01                                      ; build test value for ra3
+cal add -35 r01                                   ; r01 = -163
+cal add r01 r02                                   ; test for ra3
+ifg 60000                                         ; ra3 found
+  sav 0 ra3                                       ; reset ra3
+rmv 60000                                         ; end ra3 branch
+
+sav -128 r01                                      ; build test value for ra4
+cal add -36 r01                                   ; r01 = -164
+cal add r01 r02                                   ; test for ra4
+ifg 60000                                         ; ra4 found
+  sav 0 ra4                                       ; reset ra4
+rmv 60000                                         ; end ra4 branch
+
+sav -128 r01                                      ; build test value for ra5
+cal add -37 r01                                   ; r01 = -165
+cal add r01 r02                                   ; test for ra5
+ifg 60000                                         ; ra5 found
+  sav 0 ra5                                       ; reset ra5
+rmv 60000                                         ; end ra5 branch
+
+sav -128 r01                                      ; build test value for ra6
+cal add -38 r01                                   ; r01 = -166
+cal add r01 r02                                   ; test for ra6
+ifg 60000                                         ; ra6 found
+  sav 0 ra6                                       ; reset ra6
+rmv 60000                                         ; end ra6 branch
+
+sav -128 r01                                      ; build test value for ra7
+cal add -39 r01                                   ; r01 = -167
+cal add r01 r02                                   ; test for ra7
+ifg 60000                                         ; ra7 found
+  sav 0 ra7                                       ; reset ra7
+rmv 60000                                         ; end ra7 branch
+
+sav -128 r01                                      ; build test value for ra8
+cal add -40 r01                                   ; r01 = -168
+cal add r01 r02                                   ; test for ra8
+ifg 60000                                         ; ra8 found
+  sav 0 ra8                                       ; reset ra8
+rmv 60000                                         ; end ra8 branch
+
+sav -128 r01                                      ; build test value for ra9
+cal add -41 r01                                   ; r01 = -169
+cal add r01 r02                                   ; test for ra9
+ifg 60000                                         ; ra9 found
+  sav 0 ra9                                       ; reset ra9
+rmv 60000                                         ; end ra9 branch
+
+sav -128 r01                                      ; build test value for raa
+cal add -42 r01                                   ; r01 = -170
+cal add r01 r02                                   ; test for raa
+ifg 60000                                         ; raa found
+  sav 0 raa                                       ; reset raa
+rmv 60000                                         ; end raa branch
+
+sav -128 r01                                      ; build test value for rab
+cal add -43 r01                                   ; r01 = -171
+cal add r01 r02                                   ; test for rab
+ifg 60000                                         ; rab found
+  sav 0 rab                                       ; reset rab
+rmv 60000                                         ; end rab branch
+
+sav -128 r01                                      ; build test value for rac
+cal add -44 r01                                   ; r01 = -172
+cal add r01 r02                                   ; test for rac
+ifg 60000                                         ; rac found
+  sav 0 rac                                       ; reset rac
+rmv 60000                                         ; end rac branch
+
+sav -128 r01                                      ; build test value for rad
+cal add -45 r01                                   ; r01 = -173
+cal add r01 r02                                   ; test for rad
+ifg 60000                                         ; rad found
+  sav 0 rad                                       ; reset rad
+rmv 60000                                         ; end rad branch
+
+sav -128 r01                                      ; build test value for rae
+cal add -46 r01                                   ; r01 = -174
+cal add r01 r02                                   ; test for rae
+ifg 60000                                         ; rae found
+  sav 0 rae                                       ; reset rae
+rmv 60000                                         ; end rae branch
+
+sav -128 r01                                      ; build test value for raf
+cal add -47 r01                                   ; r01 = -175
+cal add r01 r02                                   ; test for raf
+ifg 60000                                         ; raf found
+  sav 0 raf                                       ; reset raf
+rmv 60000                                         ; end raf branch
+
+sav -128 r01                                      ; build test value for rb0
+cal add -48 r01                                   ; r01 = -176
+cal add r01 r02                                   ; test for rb0
+ifg 60000                                         ; rb0 found
+  sav 0 rb0                                       ; reset rb0
+rmv 60000                                         ; end rb0 branch
+
+sav -128 r01                                      ; build test value for rb1
+cal add -49 r01                                   ; r01 = -177
+cal add r01 r02                                   ; test for rb1
+ifg 60000                                         ; rb1 found
+  sav 0 rb1                                       ; reset rb1
+rmv 60000                                         ; end rb1 branch
+
+sav -128 r01                                      ; build test value for rb2
+cal add -50 r01                                   ; r01 = -178
+cal add r01 r02                                   ; test for rb2
+ifg 60000                                         ; rb2 found
+  sav 0 rb2                                       ; reset rb2
+rmv 60000                                         ; end rb2 branch
+
+sav -128 r01                                      ; build test value for rb3
+cal add -51 r01                                   ; r01 = -179
+cal add r01 r02                                   ; test for rb3
+ifg 60000                                         ; rb3 found
+  sav 0 rb3                                       ; reset rb3
+rmv 60000                                         ; end rb3 branch
+
+sav -128 r01                                      ; build test value for rb4
+cal add -52 r01                                   ; r01 = -180
+cal add r01 r02                                   ; test for rb4
+ifg 60000                                         ; rb4 found
+  sav 0 rb4                                       ; reset rb4
+rmv 60000                                         ; end rb4 branch
+
+sav -128 r01                                      ; build test value for rb5
+cal add -53 r01                                   ; r01 = -181
+cal add r01 r02                                   ; test for rb5
+ifg 60000                                         ; rb5 found
+  sav 0 rb5                                       ; reset rb5
+rmv 60000                                         ; end rb5 branch
+
+sav -128 r01                                      ; build test value for rb6
+cal add -54 r01                                   ; r01 = -182
+cal add r01 r02                                   ; test for rb6
+ifg 60000                                         ; rb6 found
+  sav 0 rb6                                       ; reset rb6
+rmv 60000                                         ; end rb6 branch
+
+sav -128 r01                                      ; build test value for rb7
+cal add -55 r01                                   ; r01 = -183
+cal add r01 r02                                   ; test for rb7
+ifg 60000                                         ; rb7 found
+  sav 0 rb7                                       ; reset rb7
+rmv 60000                                         ; end rb7 branch
+
+sav -128 r01                                      ; build test value for rb8
+cal add -56 r01                                   ; r01 = -184
+cal add r01 r02                                   ; test for rb8
+ifg 60000                                         ; rb8 found
+  sav 0 rb8                                       ; reset rb8
+rmv 60000                                         ; end rb8 branch
+
+sav -128 r01                                      ; build test value for rb9
+cal add -57 r01                                   ; r01 = -185
+cal add r01 r02                                   ; test for rb9
+ifg 60000                                         ; rb9 found
+  sav 0 rb9                                       ; reset rb9
+rmv 60000                                         ; end rb9 branch
+
+sav -128 r01                                      ; build test value for rba
+cal add -58 r01                                   ; r01 = -186
+cal add r01 r02                                   ; test for rba
+ifg 60000                                         ; rba found
+  sav 0 rba                                       ; reset rba
+rmv 60000                                         ; end rba branch
+
+sav -128 r01                                      ; build test value for rbb
+cal add -59 r01                                   ; r01 = -187
+cal add r01 r02                                   ; test for rbb
+ifg 60000                                         ; rbb found
+  sav 0 rbb                                       ; reset rbb
+rmv 60000                                         ; end rbb branch
+
+sav -128 r01                                      ; build test value for rbc
+cal add -60 r01                                   ; r01 = -188
+cal add r01 r02                                   ; test for rbc
+ifg 60000                                         ; rbc found
+  sav 0 rbc                                       ; reset rbc
+rmv 60000                                         ; end rbc branch
+
+sav -128 r01                                      ; build test value for rbd
+cal add -61 r01                                   ; r01 = -189
+cal add r01 r02                                   ; test for rbd
+ifg 60000                                         ; rbd found
+  sav 0 rbd                                       ; reset rbd
+rmv 60000                                         ; end rbd branch
+
+sav -128 r01                                      ; build test value for rbe
+cal add -62 r01                                   ; r01 = -190
+cal add r01 r02                                   ; test for rbe
+ifg 60000                                         ; rbe found
+  sav 0 rbe                                       ; reset rbe
+rmv 60000                                         ; end rbe branch
+
+sav -128 r01                                      ; build test value for rbf
+cal add -63 r01                                   ; r01 = -191
+cal add r01 r02                                   ; test for rbf
+ifg 60000                                         ; rbf found
+  sav 0 rbf                                       ; reset rbf
+rmv 60000                                         ; end rbf branch
+
+sav -128 r01                                      ; build test value for rc0
+cal add -64 r01                                   ; r01 = -192
+cal add r01 r02                                   ; test for rc0
+ifg 60000                                         ; rc0 found
+  sav 0 rc0                                       ; reset rc0
+rmv 60000                                         ; end rc0 branch
+
+sav -128 r01                                      ; build test value for rc1
+cal add -65 r01                                   ; r01 = -193
+cal add r01 r02                                   ; test for rc1
+ifg 60000                                         ; rc1 found
+  sav 0 rc1                                       ; reset rc1
+rmv 60000                                         ; end rc1 branch
+
+sav -128 r01                                      ; build test value for rc2
+cal add -66 r01                                   ; r01 = -194
+cal add r01 r02                                   ; test for rc2
+ifg 60000                                         ; rc2 found
+  sav 0 rc2                                       ; reset rc2
+rmv 60000                                         ; end rc2 branch
+
+sav -128 r01                                      ; build test value for rc3
+cal add -67 r01                                   ; r01 = -195
+cal add r01 r02                                   ; test for rc3
+ifg 60000                                         ; rc3 found
+  sav 0 rc3                                       ; reset rc3
+rmv 60000                                         ; end rc3 branch
+
+sav -128 r01                                      ; build test value for rc4
+cal add -68 r01                                   ; r01 = -196
+cal add r01 r02                                   ; test for rc4
+ifg 60000                                         ; rc4 found
+  sav 0 rc4                                       ; reset rc4
+rmv 60000                                         ; end rc4 branch
+
+sav -128 r01                                      ; build test value for rc5
+cal add -69 r01                                   ; r01 = -197
+cal add r01 r02                                   ; test for rc5
+ifg 60000                                         ; rc5 found
+  sav 0 rc5                                       ; reset rc5
+rmv 60000                                         ; end rc5 branch
+
+sav -128 r01                                      ; build test value for rc6
+cal add -70 r01                                   ; r01 = -198
+cal add r01 r02                                   ; test for rc6
+ifg 60000                                         ; rc6 found
+  sav 0 rc6                                       ; reset rc6
+rmv 60000                                         ; end rc6 branch
+
+sav -128 r01                                      ; build test value for rc7
+cal add -71 r01                                   ; r01 = -199
+cal add r01 r02                                   ; test for rc7
+ifg 60000                                         ; rc7 found
+  sav 0 rc7                                       ; reset rc7
+rmv 60000                                         ; end rc7 branch
+
+sav -128 r01                                      ; build test value for rc8
+cal add -72 r01                                   ; r01 = -200
+cal add r01 r02                                   ; test for rc8
+ifg 60000                                         ; rc8 found
+  sav 0 rc8                                       ; reset rc8
+rmv 60000                                         ; end rc8 branch
+
+sav -128 r01                                      ; build test value for rc9
+cal add -73 r01                                   ; r01 = -201
+cal add r01 r02                                   ; test for rc9
+ifg 60000                                         ; rc9 found
+  sav 0 rc9                                       ; reset rc9
+rmv 60000                                         ; end rc9 branch
+
+sav -128 r01                                      ; build test value for rca
+cal add -74 r01                                   ; r01 = -202
+cal add r01 r02                                   ; test for rca
+ifg 60000                                         ; rca found
+  sav 0 rca                                       ; reset rca
+rmv 60000                                         ; end rca branch
+
+sav -128 r01                                      ; build test value for rcb
+cal add -75 r01                                   ; r01 = -203
+cal add r01 r02                                   ; test for rcb
+ifg 60000                                         ; rcb found
+  sav 0 rcb                                       ; reset rcb
+rmv 60000                                         ; end rcb branch
+
+sav -128 r01                                      ; build test value for rcc
+cal add -76 r01                                   ; r01 = -204
+cal add r01 r02                                   ; test for rcc
+ifg 60000                                         ; rcc found
+  sav 0 rcc                                       ; reset rcc
+rmv 60000                                         ; end rcc branch
+
+sav -128 r01                                      ; build test value for rcd
+cal add -77 r01                                   ; r01 = -205
+cal add r01 r02                                   ; test for rcd
+ifg 60000                                         ; rcd found
+  sav 0 rcd                                       ; reset rcd
+rmv 60000                                         ; end rcd branch
+
+sav -128 r01                                      ; build test value for rce
+cal add -78 r01                                   ; r01 = -206
+cal add r01 r02                                   ; test for rce
+ifg 60000                                         ; rce found
+  sav 0 rce                                       ; reset rce
+rmv 60000                                         ; end rce branch
+
+sav -128 r01                                      ; build test value for rcf
+cal add -79 r01                                   ; r01 = -207
+cal add r01 r02                                   ; test for rcf
+ifg 60000                                         ; rcf found
+  sav 0 rcf                                       ; reset rcf
+rmv 60000                                         ; end rcf branch
+
+sav -128 r01                                      ; build test value for rd0
+cal add -80 r01                                   ; r01 = -208
+cal add r01 r02                                   ; test for rd0
+ifg 60000                                         ; rd0 found
+  sav 0 rd0                                       ; reset rd0
+rmv 60000                                         ; end rd0 branch
+
+sav -128 r01                                      ; build test value for rd1
+cal add -81 r01                                   ; r01 = -209
+cal add r01 r02                                   ; test for rd1
+ifg 60000                                         ; rd1 found
+  sav 0 rd1                                       ; reset rd1
+rmv 60000                                         ; end rd1 branch
+
+sav -128 r01                                      ; build test value for rd2
+cal add -82 r01                                   ; r01 = -210
+cal add r01 r02                                   ; test for rd2
+ifg 60000                                         ; rd2 found
+  sav 0 rd2                                       ; reset rd2
+rmv 60000                                         ; end rd2 branch
+
+sav -128 r01                                      ; build test value for rd3
+cal add -83 r01                                   ; r01 = -211
+cal add r01 r02                                   ; test for rd3
+ifg 60000                                         ; rd3 found
+  sav 0 rd3                                       ; reset rd3
+rmv 60000                                         ; end rd3 branch
+
+sav -128 r01                                      ; build test value for rd4
+cal add -84 r01                                   ; r01 = -212
+cal add r01 r02                                   ; test for rd4
+ifg 60000                                         ; rd4 found
+  sav 0 rd4                                       ; reset rd4
+rmv 60000                                         ; end rd4 branch
+
+sav -128 r01                                      ; build test value for rd5
+cal add -85 r01                                   ; r01 = -213
+cal add r01 r02                                   ; test for rd5
+ifg 60000                                         ; rd5 found
+  sav 0 rd5                                       ; reset rd5
+rmv 60000                                         ; end rd5 branch
+
+sav -128 r01                                      ; build test value for rd6
+cal add -86 r01                                   ; r01 = -214
+cal add r01 r02                                   ; test for rd6
+ifg 60000                                         ; rd6 found
+  sav 0 rd6                                       ; reset rd6
+rmv 60000                                         ; end rd6 branch
+
+sav -128 r01                                      ; build test value for rd7
+cal add -87 r01                                   ; r01 = -215
+cal add r01 r02                                   ; test for rd7
+ifg 60000                                         ; rd7 found
+  sav 0 rd7                                       ; reset rd7
+rmv 60000                                         ; end rd7 branch
+
+sav -128 r01                                      ; build test value for rd8
+cal add -88 r01                                   ; r01 = -216
+cal add r01 r02                                   ; test for rd8
+ifg 60000                                         ; rd8 found
+  sav 0 rd8                                       ; reset rd8
+rmv 60000                                         ; end rd8 branch
+
+sav -128 r01                                      ; build test value for rd9
+cal add -89 r01                                   ; r01 = -217
+cal add r01 r02                                   ; test for rd9
+ifg 60000                                         ; rd9 found
+  sav 0 rd9                                       ; reset rd9
+rmv 60000                                         ; end rd9 branch
+
+sav -128 r01                                      ; build test value for rda
+cal add -90 r01                                   ; r01 = -218
+cal add r01 r02                                   ; test for rda
+ifg 60000                                         ; rda found
+  sav 0 rda                                       ; reset rda
+rmv 60000                                         ; end rda branch
+
+sav -128 r01                                      ; build test value for rdb
+cal add -91 r01                                   ; r01 = -219
+cal add r01 r02                                   ; test for rdb
+ifg 60000                                         ; rdb found
+  sav 0 rdb                                       ; reset rdb
+rmv 60000                                         ; end rdb branch
+
+sav -128 r01                                      ; build test value for rdc
+cal add -92 r01                                   ; r01 = -220
+cal add r01 r02                                   ; test for rdc
+ifg 60000                                         ; rdc found
+  sav 0 rdc                                       ; reset rdc
+rmv 60000                                         ; end rdc branch
+
+sav -128 r01                                      ; build test value for rdd
+cal add -93 r01                                   ; r01 = -221
+cal add r01 r02                                   ; test for rdd
+ifg 60000                                         ; rdd found
+  sav 0 rdd                                       ; reset rdd
+rmv 60000                                         ; end rdd branch
+
+sav -128 r01                                      ; build test value for rde
+cal add -94 r01                                   ; r01 = -222
+cal add r01 r02                                   ; test for rde
+ifg 60000                                         ; rde found
+  sav 0 rde                                       ; reset rde
+rmv 60000                                         ; end rde branch
+
+sav -128 r01                                      ; build test value for rdf
+cal add -95 r01                                   ; r01 = -223
+cal add r01 r02                                   ; test for rdf
+ifg 60000                                         ; rdf found
+  sav 0 rdf                                       ; reset rdf
+rmv 60000                                         ; end rdf branch
+
+sav -128 r01                                      ; build test value for re0
+cal add -96 r01                                   ; r01 = -224
+cal add r01 r02                                   ; test for re0
+ifg 60000                                         ; re0 found
+  sav 0 re0                                       ; reset re0
+rmv 60000                                         ; end re0 branch
+
+sav -128 r01                                      ; build test value for re1
+cal add -97 r01                                   ; r01 = -225
+cal add r01 r02                                   ; test for re1
+ifg 60000                                         ; re1 found
+  sav 0 re1                                       ; reset re1
+rmv 60000                                         ; end re1 branch
+
+sav -128 r01                                      ; build test value for re2
+cal add -98 r01                                   ; r01 = -226
+cal add r01 r02                                   ; test for re2
+ifg 60000                                         ; re2 found
+  sav 0 re2                                       ; reset re2
+rmv 60000                                         ; end re2 branch
+
+sav -128 r01                                      ; build test value for re3
+cal add -99 r01                                   ; r01 = -227
+cal add r01 r02                                   ; test for re3
+ifg 60000                                         ; re3 found
+  sav 0 re3                                       ; reset re3
+rmv 60000                                         ; end re3 branch
+
+sav -128 r01                                      ; build test value for re4
+cal add -100 r01                                  ; r01 = -228
+cal add r01 r02                                   ; test for re4
+ifg 60000                                         ; re4 found
+  sav 0 re4                                       ; reset re4
+rmv 60000                                         ; end re4 branch
+
+sav -128 r01                                      ; build test value for re5
+cal add -101 r01                                  ; r01 = -229
+cal add r01 r02                                   ; test for re5
+ifg 60000                                         ; re5 found
+  sav 0 re5                                       ; reset re5
+rmv 60000                                         ; end re5 branch
+
+sav -128 r01                                      ; build test value for re6
+cal add -102 r01                                  ; r01 = -230
+cal add r01 r02                                   ; test for re6
+ifg 60000                                         ; re6 found
+  sav 0 re6                                       ; reset re6
+rmv 60000                                         ; end re6 branch
+
+sav -128 r01                                      ; build test value for re7
+cal add -103 r01                                  ; r01 = -231
+cal add r01 r02                                   ; test for re7
+ifg 60000                                         ; re7 found
+  sav 0 re7                                       ; reset re7
+rmv 60000                                         ; end re7 branch
+
+sav -128 r01                                      ; build test value for re8
+cal add -104 r01                                  ; r01 = -232
+cal add r01 r02                                   ; test for re8
+ifg 60000                                         ; re8 found
+  sav 0 re8                                       ; reset re8
+rmv 60000                                         ; end re8 branch
+
+sav -128 r01                                      ; build test value for re9
+cal add -105 r01                                  ; r01 = -233
+cal add r01 r02                                   ; test for re9
+ifg 60000                                         ; re9 found
+  sav 0 re9                                       ; reset re9
+rmv 60000                                         ; end re9 branch
+
+sav -128 r01                                      ; build test value for rea
+cal add -106 r01                                  ; r01 = -234
+cal add r01 r02                                   ; test for rea
+ifg 60000                                         ; rea found
+  sav 0 rea                                       ; reset rea
+rmv 60000                                         ; end rea branch
+
+sav -128 r01                                      ; build test value for reb
+cal add -107 r01                                  ; r01 = -235
+cal add r01 r02                                   ; test for reb
+ifg 60000                                         ; reb found
+  sav 0 reb                                       ; reset reb
+rmv 60000                                         ; end reb branch
+
+sav -128 r01                                      ; build test value for rec
+cal add -108 r01                                  ; r01 = -236
+cal add r01 r02                                   ; test for rec
+ifg 60000                                         ; rec found
+  sav 0 rec                                       ; reset rec
+rmv 60000                                         ; end rec branch
+
+sav -128 r01                                      ; build test value for red
+cal add -109 r01                                  ; r01 = -237
+cal add r01 r02                                   ; test for red
+ifg 60000                                         ; red found
+  sav 0 red                                       ; reset red
+rmv 60000                                         ; end red branch
+
+sav -128 r01                                      ; build test value for ree
+cal add -110 r01                                  ; r01 = -238
+cal add r01 r02                                   ; test for ree
+ifg 60000                                         ; ree found
+  sav 0 ree                                       ; reset ree
+rmv 60000                                         ; end ree branch
+
+sav -128 r01                                      ; build test value for ref
+cal add -111 r01                                  ; r01 = -239
+cal add r01 r02                                   ; test for ref
+ifg 60000                                         ; ref found
+  sav 0 ref                                       ; reset ref
+rmv 60000                                         ; end ref branch
+
+cal add -1 r02                                    ; test for r01
+ifg 60000                                         ; r01 found
+  sav 0 r01                                       ; reset r01
+rmv 60000                                         ; end r01 branch
+
+cal add -2 r02                                    ; test for r02
+ifg 60000                                         ; r02 found
+  sav 0 r02                                       ; reset r02
+  sav 0 r01                                       ; r02 check clobbered r01, so clean it again
+rmv 60000                                         ; end r02 branch

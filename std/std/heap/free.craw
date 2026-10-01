@@ -1,0 +1,30 @@
+; CSL: heap/free.craw
+; Inputs: r02
+; Outputs: ree
+; Scope: r01-r03 | 60000-60003
+
+sav 4 ree			; assumes bad pointer
+
+sav 16 r01                      ; shift amount
+cal shl 1 r01                   ; creates 65536 (0x10000)
+cal not r01 rff                 ; negation 1st step
+cal add 1 r01                   ; negation 2nd step
+cal add r02 r01                 ; address - heap start
+
+ifg 60003			; address in heap
+
+  executestd heap/_free.craw	; free the block
+
+rmv 60003			; end address in heap branch
+
+sav 16 r01                      ; shift amount
+cal shl 1 r01                   ; creates 65536 (0x10000)
+cal not r01 rff                 ; negation 1st step
+cal add 1 r01                   ; negation 2nd step
+cal add r02 r01                 ; address - heap start
+
+ifz 60003			; address targets very first block
+
+  executestd heap/_free.craw	; free the block
+
+rmv 60003			; end first block branch

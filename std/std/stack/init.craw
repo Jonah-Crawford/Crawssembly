@@ -1,0 +1,15 @@
+; CSL: stack/init.craw
+; Inputs: None
+; Outputs: red
+; Scope: r01-r02, red
+
+sav 1 r01			; 0b0..1
+sav 20 r02			; shift amount
+cal shl r01 r02			; 0b0..100000000000000000000 (0x100000)
+cal add -1 r01			; 0b0..011111111111111111111 (0xfffff)
+
+sav r01 red			; update stack pointer register
+
+sav 0 r01			; reset used registers
+sav 0 r02
+

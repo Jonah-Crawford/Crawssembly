@@ -1,0 +1,158 @@
+; CSL: screen/circle.craw		r02 = midx	r06 = rawy
+; Inputs: r02-r04			r03 = midy	r07 = offx
+; Outputs: None				r04 = radius	r08 = offy
+; Scope: r01-r08 | 60000-60001		r05 = rawx
+
+rmv 60000				; free labels
+rmv 60001
+
+sav 4 r01				; load shift amount (2^4 = 16)
+cal sar r04 r01				; r / 16
+sav r01 r07				; offx = r / 16
+
+sav r04 r05				; rawx = r
+sav 0 r06				; rawy = 0
+
+60000					; main octant draw loop
+
+  ; Octant 1: (midx + rawx, midy + rawy)
+
+  cal add r02 r05
+  io screen x r01
+
+  cal add r03 r06
+  io screen y r01
+
+  io screen pixel rff
+
+  ; Octant 2: (midx + rawy, midy + rawx)
+
+  cal add r02 r06
+  io screen x r01
+
+  cal add r03 r05
+  io screen y r01
+
+  io screen pixel rff
+
+  ; Octant 3: (midx - rawy, midy + rawx)
+
+  cal not r06 rff
+  cal add 1 r01
+  cal add r02 r01
+  io screen x r01
+
+  cal add r03 r05
+  io screen y r01
+
+  io screen pixel rff
+
+  ; Octant 4: (midx - rawx, midy + rawy)
+
+  cal not r05 rff
+  cal add 1 r01
+  cal add r02 r01
+  io screen x r01
+
+  cal add r03 r06
+  io screen y r01
+
+  io screen pixel rff
+
+  ; Octant 5: (midx - rawx, midy - rawy)
+
+  cal not r05 rff
+  cal add 1 r01
+  cal add r02 r01
+  io screen x r01
+
+  cal not r06 rff
+  cal add 1 r01
+  cal add r03 r01
+  io screen y r01
+
+  io screen pixel rff
+
+  ; Octant 6: (midx - rawy, midy - rawx)
+
+  cal not r06 rff
+  cal add 1 r01
+  cal add r02 r01
+  io screen x r01
+
+  cal not r05 rff
+  cal add 1 r01
+  cal add r03 r01
+  io screen y r01
+
+  io screen pixel rff
+
+  ; Octant 7: (midx + rawy, midy - rawx)
+
+  cal add r02 r06
+  io screen x r01
+
+  cal not r05 rff
+  cal add 1 r01
+  cal add r03 r01
+  io screen y r01
+
+  io screen pixel rff
+
+  ; Octant 8: (midx + rawx, midy - rawy)
+
+  cal add r02 r05
+  io screen x r01
+
+  cal not r06 rff
+  cal add 1 r01
+  cal add r03 r01
+  io screen y r01
+
+  io screen pixel rff
+
+  cal add 1 r06				; rawy += 1
+  sav r01 r06				; update rawy
+
+  cal add r06 r07			; offx += rawy
+  sav r01 r07				; update rawy
+
+  cal not r05 rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step
+  cal add r07 r01			; offy = offx - rawx
+  sav r01 r08				; update offy
+
+  ifg 60001				; offy > 0
+
+    sav r08 r07				; offy = offx
+
+    cal add -1 r05			; rawx -= 1
+    sav r01 r05				; update rawx
+
+  rmv 60001				; end offy > 0
+  ifz 60001				; offy = 0
+
+    sav r08 r07				; offy = offx
+
+    cal add -1 r05			; rawx -= 1
+    sav r01 r05				; update rawx
+
+  rmv 60001				; end offy = 0
+
+  cal not r06 rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step
+  cal add r01 r05			; rawx - rawy
+
+  jmg 60000				; x < y, continue
+  jmz 60000				; x = y, continue
+
+rmv 60000				; free used labels
+rmv 60001
+
+sav 0 r02				; reset used registers
+sav 0 r03
+sav 0 r04
+sav 0 r05
+sav 0 r06
+sav 0 r07
+sav 0 r08

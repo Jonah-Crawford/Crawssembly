@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Befunge interpreter in casm                   ;
+; Befunge93 interpreter in casm                 ;
 ;                                               ;
 ; 80x25 grid = memory 0x00000 - 0x007ef (2000)  ;
 ; Casm stack used, from 0xfffff downwards       ;
@@ -47,7 +47,62 @@ sav r01 r03					; init address limit
 sav 0 r01					; init scratch register
 sav 0 r02					; init address register
 
+1						; playfield space loop
+
+  sav 32 r04					; ascii 32 for space
+  io mem addr r02				; load memory address
+  io mem write r04				; write space
+
+  cal add 1 r02					; increment address register
+  sav r01 r02					; update address register
+
+  cal add -1 r03				; decrement address limit
+  sav r01 r03					; update address limit
+
+  ifg 2						; limit not reached
+    jmp 1					; continue loop
+  rmv 2						; end limit not reached check
+
+rmv 1						; free label
+
+sav 15 r01					; 0b0..1111
+sav 7 r02					; shift amount
+cal shl r01 r02					; 0b0..11110000000
+cal add 80 r01					; 0b0..11111010000 (2000)
+
+sav r01 r03					; init address limit
+
+sav 0 r01					; init scratch register
+sav 0 r02					; init address register
+
 1						; program load loop
+
+  cal add -10 r00				; test for newline
+  ifz 2						; newline character
+
+    sav r02 r06					; reg shift by +4
+    sav r03 r07					; cont.
+
+    sav 80 r03					; ready addr % 80
+
+    executestd math/modulo.craw			; addr % 80 into r02
+
+    cal not r02 rff				; negation 1st step
+    cal add 1 r01				; negation 2nd step
+
+    cal add r06 r01				; addr - (addr % 80)
+    cal add 80 r01				; start of next line addr
+
+    sav r01 r02					; update address
+    sav r07 r03					; restore reg shift
+
+    sav 0 r06					; clear reg shift values
+    sav 0 r07					; cont.
+
+    inp						; get next symbol
+    jmp 1					; continue load loop
+
+  rmv 2						; end newline check
 
   io mem addr r02				; access memory address
   io mem write r00				; write program cell
@@ -76,6 +131,8 @@ sav 0 r13					; init string mode flag (smf)
 
 1						; main loop
 
+;  io text newline rff
+
   sav r12 r01					; ready direction
   cal add 0 r01					; test for direction 0
   ifz 2						; east direction (1, 0)
@@ -88,8 +145,8 @@ sav 0 r13					; init string mode flag (smf)
 
   rmv 2						; end east branch
 
-  io text int r10
-  io text newline rff
+;  io text int r10
+;  io text newline rff
 
   sav r12 r01					; ready direction
   cal add -1 r01				; test for direction 1
@@ -103,8 +160,8 @@ sav 0 r13					; init string mode flag (smf)
 
   rmv 2						; end south branch
 
-  io text int r10
-  io text newline rff
+;  io text int r10
+;  io text newline rff
 
   sav r12 r01					; ready direction
   cal add -2 r01				; test for direction 2
@@ -118,8 +175,8 @@ sav 0 r13					; init string mode flag (smf)
 
   rmv 2						; end west branch
 
-  io text int r10
-  io text newline rff
+;  io text int r10
+;  io text newline rff
 
   sav r12 r01					; ready direction
   cal add -3 r01				; test for direction 3
@@ -133,40 +190,40 @@ sav 0 r13					; init string mode flag (smf)
 
   rmv 2						; end north branch
 
-  io text int r10
-  io text newline rff
+;  io text int r10
+;  io text newline rff
 
   cal add -80 r10				; test for +x wrap
   ifz 2						; +x wrap
     sav 0 r10					; wrap x
   rmv 2						; end +x wrap check
 
-  io text int r10
-  io text newline rff
+;  io text int r10
+;  io text newline rff
 
   cal add -25 r11				; test for +y wrap
   ifz 2						; +y wrap
     sav 0 r11					; wrap y
   rmv 2						; end +y wrap check
 
-  io text int r10
-  io text newline rff
+;  io text int r10
+;  io text newline rff
 
   cal add 1 r10					; test for -x wrap
   ifz 2						; -x wrap
     sav 79 r10					; wrap x
   rmv 2						; end -x wrap check
 
-  io text int r10
-  io text newline rff
+;  io text int r10
+;  io text newline rff
 
   cal add 1 r11					; test for -y wrap
   ifz 2						; -y wrap
     sav 24 r11					; wrap y
   rmv 2						; end -y wrap check
 
-  io text int r10
-  io text newline rff
+;  io text int r10
+;  io text newline rff
 
   sav 80 r02					; set 80 as first multiply input
   sav r11 r03					; set ipy to second multiply input
@@ -175,20 +232,20 @@ sav 0 r13					; init string mode flag (smf)
 
   cal add r10 r02				; 80 * ipy + ipx = memory location
 
-  io text int r10
-  io text space rff
-  io text int r11
-  io text space rff
-  io text int r01
-  io text newline rff
+;  io text int r10
+;  io text space rff
+;  io text int r11
+;  io text space rff
+;  io text int r01
+;  io text newline rff
 
   io mem addr r01				; get symbol location in memory
   io mem read r04				; read symbol into r04
 
-  sav r04 r01					; ready symbol
-  ifz 2						; empty symbol (EOF)
-    stp						; end program
-  rmv 2						; end EOF check
+;  io text int r04
+;  io text space rff
+;  io text char r04
+;  io text newline rff
 
   cal add -48 r04				; 48 = 0
   ifz 2						; symbol = 0
@@ -469,9 +526,7 @@ sav 0 r13					; init string mode flag (smf)
 
     executestd math/multiply.craw		; b * a into r02
 
-    sav r01 r02					; ready cal result into push input
-
-    executestd stack/push.craw			; push b * a
+    executestd stack/push.craw			; push b * a from r02
 
     jmp 1					; continue loop
 
@@ -497,9 +552,7 @@ sav 0 r13					; init string mode flag (smf)
 
     executestd math/divide.craw			; b / a into r02
 
-    sav r01 r02					; ready cal result into push input
-
-    executestd stack/push.craw			; push b * a
+    executestd stack/push.craw			; push b * a from r02
 
     jmp 1					; continue loop
 
@@ -525,9 +578,7 @@ sav 0 r13					; init string mode flag (smf)
 
     executestd math/modulo.craw			; b % a into r02
 
-    sav r01 r02					; ready cal result into push input
-
-    executestd stack/push.craw			; push b % a
+    executestd stack/push.craw			; push b % a from r02
 
     jmp 1					; continue loop
 
@@ -555,8 +606,6 @@ sav 0 r13					; init string mode flag (smf)
     ifz 3					; a = 0
       sav 1 r02					; a == 0 is true
     rmv 3					; end a = 0 check
-
-    sav r01 r02					; ready boolean into push input
 
     executestd stack/push.craw			; push (a == 0)
 
@@ -959,6 +1008,7 @@ sav 0 r13					; init string mode flag (smf)
     io mem addr r01				; access symbol address
     io mem read r02				; read symbol into push input
 
+
     executestd stack/push.craw			; push ascii symbol into stack
 
     jmp 1					; continue loop
@@ -1114,6 +1164,16 @@ sav 0 r13					; init string mode flag (smf)
     stp						; terminate program
 
   rmv 2						; end symbol = @
+
+  sav r13 r01					; ready string mode flag
+  ifg 2						; string mode is on
+
+    sav r04 r02					; ascii code into push input
+    executestd stack/push.craw			; push ascii code
+
+    jmp 1					; continue loop    
+
+  rmv 2						; end string mode on check
 
   jmp 1						; other code, continue loop
 

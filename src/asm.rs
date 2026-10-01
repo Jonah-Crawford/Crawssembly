@@ -11,14 +11,14 @@ pub type Instr = u32;
 #[allow(dead_code)]
 pub fn assemble_file(path: &Path) -> Result<Vec<Instr>, String> {
     let mut used_labels = collect_source_numeric_labels(path, &mut Vec::new())?;
-    let mut next_label = u16::MAX - 1; // avoids stinky label 65535 turning into stp
+    let mut next_label = u16::MAX - 1;
     let lines = expand_execute(path, &mut Vec::new(), &mut used_labels, &mut next_label, false)?;
     assemble(&lines)
 }
 
 pub fn expand_execute_file(path: &Path) -> Result<Vec<String>, String> {
     let mut used_labels = collect_source_numeric_labels(path, &mut Vec::new())?;
-    let mut next_label = u16::MAX;
+    let mut next_label = u16::MAX - 1;
     expand_execute(path, &mut Vec::new(), &mut used_labels, &mut next_label, false)
 }
 
@@ -144,6 +144,24 @@ fn rewrite_local_numeric_labels(
                 let comment = raw.char_indices()
                     .find(|(_, c)| *c == '#' || *c == ';')
                     .map(|(i, _)| &raw[i..]);
+
+                // Local labels inside an execute expansion are given globally unique
+                // numeric IDs. Removing one at runtime would make the expanded code
+                // non-reentrant: the first execution would delete a label needed by
+                // every later execution of the same inlined block. Keep such labels
+                // alive for the lifetime of the program by replacing their local rmv
+                // with a nop. rmv instructions targeting caller/external labels are
+                // not present in `remap` and therefore remain untouched.
+                if op == "rmv" {
+                    let mut rewritten = format!("{indent}nop");
+                    if let Some(comment) = comment {
+                        rewritten.push(' ');
+                        rewritten.push_str(comment);
+                    } else {
+                        rewritten.push_str(&format!(" ; hygienic local rmv {old} -> {new}"));
+                    }
+                    return Ok(rewritten);
+                }
 
                 let mut rewritten = format!("{indent}{} {}", toks[0], new);
                 if let Some(comment) = comment {

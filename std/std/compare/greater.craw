@@ -1,0 +1,16 @@
+; CSL: compare/greater.craw
+; Inputs: r02-r03
+; Outputs: r02
+; Scope: r01-r02 | 60000
+
+rmv 60000					; free label
+
+cal not r02 rff					; negation 1st step
+cal add 1 r01					; negation 2nd step
+cal add r01 r03					; r03 - r02
+
+sav 0 r02					; assume r03 >= r02
+
+ifl 60000					; r02 > r03
+  sav 1 r02					; result is 1
+rmv 60000					; end r02 > r03 check

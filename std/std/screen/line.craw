@@ -1,0 +1,188 @@
+; CSL: screen/line.craw		r02 = x0	r06 = dx	r0a = error
+; Inputs: r02-r05		r03 = y0	r07 = dy	r0b = e2
+; Outputs: None			r04 = x1	r08 = sx	r0c = skip flag
+; Scope: r01-r0c | 60000-60002	r05 = y1	r09 = sy
+
+rmv 60000				; free labels
+rmv 60001
+rmv 60002
+
+sav 0 r0c				; set skip flag to false
+
+cal not r02 rff				; negation 1st step
+cal add 1 r01				; negation 2nd step
+cal add r04 r01				; x1 - x0
+
+ifl 60000				; x1 - x0 < 0 (negative)
+
+  cal not r01 rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step
+
+rmv 60000				; end negative check
+
+sav r01 r06				; dx = |x1 - x0|
+
+cal not r03 rff				; negation 1st step
+cal add 1 r01				; negation 2nd step
+cal add r05 r01				; y1 - y0
+
+ifg 60000				; y1 - y0 > 0 (positive)
+
+  cal not r01 rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step
+
+rmv 60000				; end positive check
+
+sav r01 r07				; dy = -|y1 - y0|
+
+cal not r04 rff				; negation 1st step
+cal add 1 r01				; negation 2nd step
+cal add r02 r01				; x0 - x1
+
+sav -1 r08				; assume x0 >= x1
+
+ifl 60000				; x0 < x1
+
+  sav 1 r08				; replace wrong assumption
+
+rmv 60000				; end x0 < x1 check
+
+cal not r05 rff				; negation 1st step
+cal add 1 r01				; negation 2nd step
+cal add r03 r01				; x0 - x1
+
+sav -1 r09				; assume x0 >= x1
+
+ifl 60000				; x0 < x1
+
+  sav 1 r09				; replace wrong assumption
+
+rmv 60000				; end x0 < x1 check
+
+cal add r06 r07				; dx + dy
+sav r01 r0a				; error = dx + dy
+
+60000					; main loop
+
+  io screen x r02			; set x = x0
+  io screen y r03			; set y = y0
+  io screen pixel rff			; set pixel in buffer
+
+  cal add r0a r0a			; 2 * error
+  sav r01 r0b				; e2 = 2 * error
+
+  cal not r07 rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step
+  cal add r0b r01			; e2 - dy
+
+  ifg 60001				; e2 > dy
+
+    cal not r02 rff			; negation 1st step
+    cal add 1 r01			; negation 2ns step
+    cal add r04 r01			; x1 - x0
+
+    ifz 60002				; x0 = x1
+
+      sav 1 r0c				; skip flag = true
+
+    rmv 60002				; end x0 = x1 check
+
+    cal add r0a r07			; error + dy
+    sav r01 r0a				; error = error + dy
+
+    cal add r02 r08			; x0 + sx
+    sav r01 r02				; x0 = x0 + sx
+
+  rmv 60001				; end x2 > dy check
+
+  cal not r07 rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step
+  cal add r0b r01			; e2 - dy
+
+  ifz 60001				; e2 = dy
+
+    cal not r02 rff			; negation 1st step
+    cal add 1 r01			; negation 2ns step
+    cal add r04 r01			; x1 - x0
+
+    ifz 60002				; x0 = x1
+
+      sav 1 r0c				; skip flag = true
+
+    rmv 60002				; end x0 = x1 check
+
+    cal add r0a r07			; error + dy
+    sav r01 r0a				; error = error + dy
+
+    cal add r02 r08			; x0 + sx
+    sav r01 r02				; x0 = x0 + sx
+
+  rmv 60001				; end x2 = dy check
+
+  cal not r0b rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step
+  cal add r06 r01			; dx - e2
+
+  ifg 60001				; e2 < dx
+
+    cal not r03 rff			; negation 1st step
+    cal add 1 r01			; negation 2nd step
+    cal add r05 r01			; y1 - y0
+
+    ifz 60002				; y0 = y1
+
+      sav 1 r0c				; skip flag = true
+
+    rmv 60002				; end y0 = y1 check
+
+    cal add r0a r06			; error + dx
+    sav r01 r0a				; error = error + dx
+
+    cal add r03 r09			; y0 + sy
+    sav r01 r03				; y0 = y0 + sy
+
+  rmv 60001				; end e2 < dx check
+
+  cal not r0b rff			; negation 1st step
+  cal add 1 r01				; negation 2nd step
+  cal add r06 r01			; dx - e2
+
+  ifz 60001				; e2 = dx
+
+    cal not r03 rff			; negation 1st step
+    cal add 1 r01			; negation 2nd step
+    cal add r05 r01			; y1 - y0
+
+    ifz 60002				; y0 = y1
+
+      sav 1 r0c				; skip flag = true
+
+    rmv 60002				; end y0 = y1 check
+
+    cal add r0a r06			; error + dx
+    sav r01 r0a				; error = error + dx
+
+    cal add r03 r09			; y0 + sy
+    sav r01 r03				; y0 = y0 + sy
+
+  rmv 60001				; end e2 = dx check
+
+  sav r0c r01				; ready skip flag
+  jmz 60000				; continue main loop if false
+
+rmv 60000				; free labels
+rmv 60001
+rmv 60002
+
+sav 0 r01				; reset used registers
+sav 0 r02
+sav 0 r03
+sav 0 r04
+sav 0 r05
+sav 0 r06
+sav 0 r07
+sav 0 r08
+sav 0 r09
+sav 0 r0a
+sav 0 r0b
+sav 0 r0c
