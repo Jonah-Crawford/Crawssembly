@@ -1,10 +1,14 @@
 ; CSL: math/multiply.craw		r02 = addition amount
 ; Inputs: r02-r03			r03 = loop count
 ; Outputs: r02				r04 = sum total
-; Scope: r01-r04 | 60000
+; Scope: r01-r04 | 60001
 
 sav 0 r01				; initialise r01
+sav 0 r04				; initialise r04
 
+sav r03 r01				; ready loop count
+ifz 60000				; loop count = 0
+  jmp 60001				; skip addition loop
 rmv 60000				; free label for main loop
 
 60000					; main addition loop
@@ -18,6 +22,9 @@ rmv 60000				; free label for main loop
   jmg 60000				; loop count > 0, continue
 
 rmv 60000				; free label
+
+60001					; end loop for 0 count
+rmv 60001				; free label
 
 sav r04 r02				; save result to general output register
 

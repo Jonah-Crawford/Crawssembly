@@ -490,6 +490,7 @@ fn _mouse_button_bit(button: MouseButton) -> i32 {
     }
 }
 
+#[allow(dead_code)]
 enum NetSocket {
     Tcp(TcpStream),
     TcpListener(TcpListener),

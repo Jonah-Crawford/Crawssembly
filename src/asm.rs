@@ -10,17 +10,23 @@ pub type Instr = u32;
 
 #[allow(dead_code)]
 pub fn assemble_file(path: &Path) -> Result<Vec<Instr>, String> {
-    let lines = expand_execute(path, &mut Vec::new())?;
+    let mut used_labels = collect_source_numeric_labels(path, &mut Vec::new())?;
+    let mut next_label = u16::MAX - 1; // avoids stinky label 65535 turning into stp
+    let lines = expand_execute(path, &mut Vec::new(), &mut used_labels, &mut next_label, false)?;
     assemble(&lines)
 }
 
 pub fn expand_execute_file(path: &Path) -> Result<Vec<String>, String> {
-    expand_execute(path, &mut Vec::new())
+    let mut used_labels = collect_source_numeric_labels(path, &mut Vec::new())?;
+    let mut next_label = u16::MAX;
+    expand_execute(path, &mut Vec::new(), &mut used_labels, &mut next_label, false)
 }
 
-fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, String> {
-    let path = path
-        .canonicalize()
+fn collect_source_numeric_labels(
+    path: &Path,
+    stack: &mut Vec<PathBuf>,
+) -> Result<HashSet<u16>, String> {
+    let path = path.canonicalize()
         .map_err(|e| format!("Could not open '{}': {e}", path.display()))?;
 
     if stack.contains(&path) {
@@ -29,41 +35,196 @@ fn expand_execute(path: &Path, stack: &mut Vec<PathBuf>) -> Result<Vec<String>, 
 
     stack.push(path.clone());
 
-    let src = fs::read_to_string(&path)
-        .map_err(|e| format!("Could not read '{}': {e}", path.display()))?;
+    let result = (|| {
+        let src = fs::read_to_string(&path)
+            .map_err(|e| format!("Could not read '{}': {e}", path.display()))?;
+        let mut used = HashSet::new();
 
-    let mut out = Vec::new();
+        for (ln, raw) in src.lines().enumerate() {
+            let toks = tokenize(raw);
+            let head = toks.first().map(|s| s.as_str());
+
+            if head == Some("execute") || head == Some("executestd") {
+                if toks.len() != 2 {
+                    return Err(format!("{}:{}: {} expects 1 path",
+                        path.display(), ln + 1, toks[0]));
+                }
+
+                let child = if head == Some("executestd") {
+                    std_root().join(&toks[1])
+                } else {
+                    path.parent().unwrap_or_else(|| Path::new(".")).join(&toks[1])
+                };
+
+                used.extend(collect_source_numeric_labels(&child, stack)?);
+                continue;
+            }
+
+            if toks.len() == 1 && is_number_token(&toks[0]) {
+                used.insert(parse_u16(&toks[0])
+                    .map_err(|e| format!("{}:{}: {e}", path.display(), ln + 1))?);
+            } else if toks.len() == 2 {
+                let op = toks[0].to_ascii_lowercase();
+                if matches!(op.as_str(),
+                    "jmp" | "jmz" | "jmg" | "jml" |
+                    "ifz" | "ifg" | "ifl" | "rmv" | "fgo"
+                ) && is_number_token(&toks[1]) {
+                    used.insert(parse_u16(&toks[1])
+                        .map_err(|e| format!("{}:{}: {e}", path.display(), ln + 1))?);
+                }
+            }
+        }
+
+        Ok(used)
+    })();
+
+    stack.pop();
+    result
+}
+
+fn allocate_expansion_label(
+    used_labels: &mut HashSet<u16>,
+    next_label: &mut u16,
+) -> Result<u16, String> {
+    loop {
+        let candidate = *next_label;
+        if candidate == 0 {
+            return Err("Ran out of numeric labels while expanding execute".into());
+        }
+        *next_label = candidate - 1;
+        if used_labels.insert(candidate) {
+            return Ok(candidate);
+        }
+    }
+}
+
+fn local_numeric_label_defs(src: &str, path: &Path) -> Result<HashSet<u16>, String> {
+    let mut defs = HashSet::new();
 
     for (ln, raw) in src.lines().enumerate() {
         let toks = tokenize(raw);
-        let head = toks.first().map(|s| s.as_str());
-
-        if head == Some("execute") || head == Some("executestd") {
-            if toks.len() != 2 {
-                return Err(format!(
-                    "{}:{}: {} expects 1 path",
-                    path.display(),
-                    ln + 1,
-                    toks[0]
-                ));
-            }
-
-            let child = if head == Some("executestd") {
-                std_root().join(&toks[1])
-            } else {
-                path.parent()
-                    .unwrap_or_else(|| Path::new("."))
-                    .join(&toks[1])
-            };
-
-            out.extend(expand_execute(&child, stack)?);
-        } else {
-            out.push(raw.to_string());
+        if toks.len() == 1 && is_number_token(&toks[0]) {
+            defs.insert(parse_u16(&toks[0])
+                .map_err(|e| format!("{}:{}: {e}", path.display(), ln + 1))?);
         }
     }
 
+    Ok(defs)
+}
+
+fn rewrite_local_numeric_labels(
+    raw: &str,
+    remap: &HashMap<u16, u16>,
+) -> Result<String, String> {
+    let toks = tokenize(raw);
+
+    if toks.is_empty() {
+        return Ok(raw.to_string());
+    }
+
+    if toks.len() == 1 && is_number_token(&toks[0]) {
+        let old = parse_u16(&toks[0])?;
+        if let Some(new) = remap.get(&old) {
+            return Ok(new.to_string());
+        }
+    }
+
+    if toks.len() == 2 {
+        let op = toks[0].to_ascii_lowercase();
+
+        if matches!(op.as_str(),
+            "jmp" | "jmz" | "jmg" | "jml" |
+            "ifz" | "ifg" | "ifl" | "rmv" | "fgo"
+        ) && is_number_token(&toks[1]) {
+            let old = parse_u16(&toks[1])?;
+
+            if let Some(new) = remap.get(&old) {
+                let indent_len = raw.len() - raw.trim_start().len();
+                let indent = &raw[..indent_len];
+                let comment = raw.char_indices()
+                    .find(|(_, c)| *c == '#' || *c == ';')
+                    .map(|(i, _)| &raw[i..]);
+
+                let mut rewritten = format!("{indent}{} {}", toks[0], new);
+                if let Some(comment) = comment {
+                    rewritten.push(' ');
+                    rewritten.push_str(comment);
+                }
+                return Ok(rewritten);
+            }
+        }
+    }
+
+    Ok(raw.to_string())
+}
+
+fn expand_execute(
+    path: &Path,
+    stack: &mut Vec<PathBuf>,
+    used_labels: &mut HashSet<u16>,
+    next_label: &mut u16,
+    hygienic: bool,
+) -> Result<Vec<String>, String> {
+    let path = path.canonicalize()
+        .map_err(|e| format!("Could not open '{}': {e}", path.display()))?;
+
+    if stack.contains(&path) {
+        return Err(format!("Recursive execute detected: {}", path.display()));
+    }
+
+    stack.push(path.clone());
+
+    let result = (|| {
+        let src = fs::read_to_string(&path)
+            .map_err(|e| format!("Could not read '{}': {e}", path.display()))?;
+
+        let mut remap = HashMap::new();
+
+        if hygienic {
+            let mut defs: Vec<u16> = local_numeric_label_defs(&src, &path)?
+                .into_iter().collect();
+            defs.sort_unstable();
+
+            for old in defs {
+                let new = allocate_expansion_label(used_labels, next_label)?;
+                remap.insert(old, new);
+            }
+        }
+
+        let mut out = Vec::new();
+
+        for (ln, raw) in src.lines().enumerate() {
+            let toks = tokenize(raw);
+            let head = toks.first().map(|s| s.as_str());
+
+            if head == Some("execute") || head == Some("executestd") {
+                if toks.len() != 2 {
+                    return Err(format!("{}:{}: {} expects 1 path",
+                        path.display(), ln + 1, toks[0]));
+                }
+
+                let child = if head == Some("executestd") {
+                    std_root().join(&toks[1])
+                } else {
+                    path.parent().unwrap_or_else(|| Path::new(".")).join(&toks[1])
+                };
+
+                out.extend(expand_execute(
+                    &child, stack, used_labels, next_label, true
+                )?);
+            } else if hygienic {
+                out.push(rewrite_local_numeric_labels(raw, &remap)
+                    .map_err(|e| format!("{}:{}: {e}", path.display(), ln + 1))?);
+            } else {
+                out.push(raw.to_string());
+            }
+        }
+
+        Ok(out)
+    })();
+
     stack.pop();
-    Ok(out)
+    result
 }
 
 fn std_root() -> PathBuf {

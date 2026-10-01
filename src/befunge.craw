@@ -1,0 +1,1120 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Befunge interpreter in casm                   ;
+;                                               ;
+; 80x25 grid = memory 0x00000 - 0x007ef (2000)  ;
+; Casm stack used, from 0xfffff downwards       ;
+;                                               ;
+; 48-57	Digit	Push integer 0-9                ;
+; 43	Add	Push b + a                      ;
+; 45	Sub	Push b - a                      ;
+; 42	Mul	Push b * a                      ;
+; 47	Divide	Push b / a                      ;
+; 37	Modulo	Push b % a                      ;
+; 33	NOT	Push a == 0                     ;
+; 96	Gt	Push b > a                      ;
+; 62	Right	Direction right                 ;
+; 118	Down	Direction down                  ;
+; 60	Left	Direction left                  ;
+; 94	Up	Direction up                    ;
+; 63	Random	Random direction                ;
+; 95	H IF	Zero: right; otherwise left     ;
+; 124	V IF	Zero: down; otherwise up        ;
+; 34	String	Toggle string mode              ;
+; 58	Dup	Duplicate top                   ;
+; 92	Swap	Swap top two                    ;
+; 36	Discard	Remove top                      ;
+; 46	Intout	Print integer and space         ;
+; 44	Charout	Print character                 ;
+; 35	Bridge	Skip next cell                  ;
+; 103	Get	Read playfield                  ;
+; 112	Put	Write playfield                 ;
+; 38	Intin	Read integer                    ;
+; 126	Charin	Read character                  ;
+; 64	End	Terminate                       ;
+; 32	No-op	Do nothing                      ;
+;                             2026 CRAW SYSTEMS ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+executestd stack/init.craw			; init casm stack
+
+sav 15 r01					; 0b0..1111
+sav 7 r02					; shift amount
+cal shl r01 r02					; 0b0..11110000000
+cal add 80 r01					; 0b0..11111010000 (2000)
+
+sav r01 r03					; init address limit
+
+sav 0 r01					; init scratch register
+sav 0 r02					; init address register
+
+1						; program load loop
+
+  io mem addr r02				; access memory address
+  io mem write r00				; write program cell
+
+  cal add 1 r02					; increment address register
+  sav r01 r02					; update address register
+
+  cal add -1 r03				; decrement address limit
+  sav r01 r03					; update address limit
+
+  ifg 2						; limit not reached
+
+    inp						; get next symbol
+    jmp 1					; continue loop
+
+  rmv 2						; end limit not reached check
+
+rmv 1						; free label
+
+sav 0 r01					; init scratch register
+
+sav -1 r10					; init instruction pointer x with offset (ipx)
+sav 0 r11					; init instruction pointer y (ipy)
+sav 0 r12					; init direction (0=E, 1=S, 2=W, 3=N)
+sav 0 r13					; init string mode flag (smf)
+
+1						; main loop
+
+  sav r12 r01					; ready direction
+  cal add 0 r01					; test for direction 0
+  ifz 2						; east direction (1, 0)
+
+    cal add 1 r10				; dx = 1
+    sav r01 r10					; update ipx
+
+    cal add 0 r11				; dy = 0
+    sav r01 r11					; update ipy
+
+  rmv 2						; end east branch
+
+  io text int r10
+  io text newline rff
+
+  sav r12 r01					; ready direction
+  cal add -1 r01				; test for direction 1
+  ifz 2						; south direction (0, 1)
+
+    cal add 0 r10				; dx = 0
+    sav r01 r10					; update ipx
+
+    cal add 1 r11				; dy = 1
+    sav r01 r11					; update ipy
+
+  rmv 2						; end south branch
+
+  io text int r10
+  io text newline rff
+
+  sav r12 r01					; ready direction
+  cal add -2 r01				; test for direction 2
+  ifz 2						; west direction (-1, 0)
+
+    cal add -1 r10				; dx = -1
+    sav r01 r10					; update ipx
+
+    cal add 0 r11				; dy = 0
+    sav r01 r11					; update ipy
+
+  rmv 2						; end west branch
+
+  io text int r10
+  io text newline rff
+
+  sav r12 r01					; ready direction
+  cal add -3 r01				; test for direction 3
+  ifz 2						; north direction (0, -1)
+
+    cal add 0 r10				; dx = 0
+    sav r01 r10					; update ipx
+
+    cal add -1 r11				; dy = -1
+    sav r01 r11					; update ipy
+
+  rmv 2						; end north branch
+
+  io text int r10
+  io text newline rff
+
+  cal add -80 r10				; test for +x wrap
+  ifz 2						; +x wrap
+    sav 0 r10					; wrap x
+  rmv 2						; end +x wrap check
+
+  io text int r10
+  io text newline rff
+
+  cal add -25 r11				; test for +y wrap
+  ifz 2						; +y wrap
+    sav 0 r11					; wrap y
+  rmv 2						; end +y wrap check
+
+  io text int r10
+  io text newline rff
+
+  cal add 1 r10					; test for -x wrap
+  ifz 2						; -x wrap
+    sav 79 r10					; wrap x
+  rmv 2						; end -x wrap check
+
+  io text int r10
+  io text newline rff
+
+  cal add 1 r11					; test for -y wrap
+  ifz 2						; -y wrap
+    sav 24 r11					; wrap y
+  rmv 2						; end -y wrap check
+
+  io text int r10
+  io text newline rff
+
+  sav 80 r02					; set 80 as first multiply input
+  sav r11 r03					; set ipy to second multiply input
+
+  executestd math/multiply.craw			; 80 * ipy => r02
+
+  cal add r10 r02				; 80 * ipy + ipx = memory location
+
+  io text int r10
+  io text space rff
+  io text int r11
+  io text space rff
+  io text int r01
+  io text newline rff
+
+  io mem addr r01				; get symbol location in memory
+  io mem read r04				; read symbol into r04
+
+  sav r04 r01					; ready symbol
+  ifz 2						; empty symbol (EOF)
+    stp						; end program
+  rmv 2						; end EOF check
+
+  cal add -48 r04				; 48 = 0
+  ifz 2						; symbol = 0
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 48 r02				; set ascii code 48 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 0 r02					; set value of input
+    executestd stack/push.craw			; push 0 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 0
+
+  cal add -49 r04				; 49 = 1
+  ifz 2						; symbol = 1
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 49 r02				; set ascii code 49 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 1 r02					; set value of input
+    executestd stack/push.craw			; push 1 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 1
+
+  cal add -50 r04				; 50 = 2
+  ifz 2						; symbol = 2
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 50 r02				; set ascii code 50 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 2 r02					; set value of input
+    executestd stack/push.craw			; push 2 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 2
+
+  cal add -51 r04				; 51 = 3
+  ifz 2						; symbol = 3
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 51 r02				; set ascii code 51 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 3 r02					; set value of input
+    executestd stack/push.craw			; push 3 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 3
+
+  cal add -52 r04				; 52 = 4
+  ifz 2						; symbol = 4
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 52 r02				; set ascii code 52 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 4 r02					; set value of input
+    executestd stack/push.craw			; push 4 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 4
+
+  cal add -53 r04				; 53 = 5
+  ifz 2						; symbol = 5
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 53 r02				; set ascii code 53 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 5 r02					; set value of input
+    executestd stack/push.craw			; push 5 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 5
+
+  cal add -54 r04				; 54 = 6
+  ifz 2						; symbol = 6
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 54 r02				; set ascii code 54 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 6 r02					; set value of input
+    executestd stack/push.craw			; push 6 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 2
+
+  cal add -55 r04				; 55 = 7
+  ifz 2						; symbol = 7
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 55 r02				; set ascii code 55 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 7 r02					; set value of input
+    executestd stack/push.craw			; push 7 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 7
+
+  cal add -56 r04				; 56 = 8
+  ifz 2						; symbol = 8
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 56 r02				; set ascii code 56 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 8 r02					; set value of input
+    executestd stack/push.craw			; push 8 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 8
+
+  cal add -57 r04				; 57 = 9
+  ifz 2						; symbol = 9
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 57 r02				; set ascii code 57 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 9 r02					; set value of input
+    executestd stack/push.craw			; push 9 to stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = 9
+
+  cal add -43 r04				; 43 = +
+  ifz 2						; symbol = +
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 43 r02				; set ascii code 43 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+    
+    executestd stack/pop.craw			; get a into r02
+    sav r02 r03					; preserve a
+
+    executestd stack/pop.craw			; get b into r02
+
+    cal add r02 r03				; b + a
+
+    sav r01 r02					; ready cal result into push input
+
+    executestd stack/push.craw			; push b + a
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = +
+
+  cal add -45 r04				; 45 = -
+  ifz 2						; symbol = -
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 45 r02				; set ascii code 45 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+    
+    executestd stack/pop.craw			; get a into r02
+    sav r02 r03					; preserve a
+
+    executestd stack/pop.craw			; get b into r02
+
+    cal not r03 rff				; negation 1st step
+    cal add 1 r01				; negation 2nd step
+
+    cal add r02 r01				; b - a
+
+    sav r01 r02					; ready cal result into push input
+
+    executestd stack/push.craw			; push b - a
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = -
+
+  cal add -42 r04				; 42 = *
+  ifz 2						; symbol = *
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 42 r02				; set ascii code 42 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+    
+    executestd stack/pop.craw			; get a into r02
+    sav r02 r03					; preserve a
+
+    executestd stack/pop.craw			; get b into r02
+
+    executestd math/multiply.craw		; b * a into r02
+
+    sav r01 r02					; ready cal result into push input
+
+    executestd stack/push.craw			; push b * a
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = *
+
+  cal add -47 r04				; 47 = /
+  ifz 2						; symbol = /
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 47 r02				; set ascii code 47 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+    
+    executestd stack/pop.craw			; get a into r02
+    sav r02 r03					; preserve a
+
+    executestd stack/pop.craw			; get b into r02
+
+    executestd math/divide.craw			; b / a into r02
+
+    sav r01 r02					; ready cal result into push input
+
+    executestd stack/push.craw			; push b * a
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = /
+
+  cal add -37 r04				; 37 = %
+  ifz 2						; symbol = %
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 37 r02				; set ascii code 37 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+    
+    executestd stack/pop.craw			; get a into r02
+    sav r02 r03					; preserve a
+
+    executestd stack/pop.craw			; get b into r02
+
+    executestd math/modulo.craw			; b % a into r02
+
+    sav r01 r02					; ready cal result into push input
+
+    executestd stack/push.craw			; push b % a
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = %
+
+  cal add -33 r04				; 33 = !
+  ifz 2						; symbol = !
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 33 r02				; set ascii code 33 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+    
+    executestd stack/pop.craw			; get a into r02
+
+    sav r02 r01					; ready a for zero test
+
+    sav 0 r02					; assume a != 0
+
+    ifz 3					; a = 0
+      sav 1 r02					; a == 0 is true
+    rmv 3					; end a = 0 check
+
+    sav r01 r02					; ready boolean into push input
+
+    executestd stack/push.craw			; push (a == 0)
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = !
+
+  cal add -96 r04				; 96 = `
+  ifz 2						; symbol = `
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 96 r02				; set ascii code 96 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+    
+    executestd stack/pop.craw			; get a into r02
+    sav r02 r03					; preserve a
+
+    executestd stack/pop.craw			; get b into r02
+
+    executestd compare/greater.craw		; get (b > a) into r02
+
+    executestd stack/push.craw			; push (b > a) from r02
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = `
+
+  cal add -62 r04				; 62 = >
+  ifz 2						; symbol = >
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 62 r02				; set ascii code 62 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 0 r12					; set direction to east
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = >
+
+  cal add -118 r04				; 118 = v
+  ifz 2						; symbol = v
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 118 r02				; set ascii code 118 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 1 r12					; set direction to east
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = v
+
+  cal add -60 r04				; 60 = <
+  ifz 2						; symbol = <
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 60 r02				; set ascii code 60 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 2 r12					; set direction to east
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = <
+
+  cal add -94 r04				; 94 = ^
+  ifz 2						; symbol = ^
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 94 r02				; set ascii code 94 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 3 r12					; set direction to east
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = ^
+
+  cal add -63 r04				; 63 = ?
+  ifz 2						; symbol = ?
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 63 r02				; set ascii code 63 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd math/random.craw			; pseudo-random i32
+
+    cal and 3 r02				; get smallest 2 bits for direction
+    sav r01 r12					; update direction
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = ?
+
+  cal add -95 r04				; 95 = _
+  ifz 2						; symbol = _
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 95 r02				; set ascii code 95 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; get a
+
+    sav r02 r01					; ready a for zero test
+
+    sav 2 r12					; assume non-zero for west direction
+
+    ifz 3					; a = 0
+      sav 0 r12					; direction = east
+    rmv 3					; end a = 0 
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = _
+
+  cal add -124 r04				; 124 = |
+  ifz 2						; symbol = |
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 124 r02				; set ascii code 124 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; get a
+
+    sav r02 r01					; ready a for zero test
+
+    sav 3 r12					; assume non-zero for north direction
+
+    ifz 3					; a = 0
+      sav 1 r12					; direction = south
+    rmv 3					; end a = 0 
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = |
+
+  cal add -34 r04				; 34 = "
+  ifz 2						; symbol = "
+
+    cal xor 1 r13				; ¬smf
+    sav r01 r13					; update smf
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = "
+
+  cal add -58 r04				; 58 = :
+  ifz 2						; symbol = :
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 58 r02				; set ascii code 58 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; get a into r02
+
+    executestd stack/push.craw			; push a
+    executestd stack/push.craw			; push a again
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = :
+
+  cal add -92 r04				; 92 = :
+  ifz 2						; symbol = :
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 92 r02				; set ascii code 92 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; get a
+    sav r02 r05					; preserve a
+
+    executestd stack/pop.craw			; get b
+    sav r02 r03					; preserve b
+
+    sav r05 r02					; set a to push input
+    executestd stack/push.craw			; push a
+
+    sav r03 r02					; set b to push input
+    executestd stack/push.craw			; push b
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = :
+
+  cal add -36 r04				; 36 = $
+  ifz 2						; symbol = $
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 36 r02				; set ascii code 36 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; remove last stack element
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = $
+
+  cal add -46 r04				; 46 = .
+  ifz 2						; symbol = .
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 46 r02				; set ascii code 46 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; get a into r02
+
+    io text int r02				; print integer
+    io text space rff				; print space
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = .
+
+  cal add -44 r04				; 44 = ,
+  ifz 2						; symbol = ,
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 44 r02				; set ascii code 44 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; get a into r02
+
+    io text char r02				; print character
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = ,
+
+  cal add -35 r04				; 35 = #
+  ifz 2						; symbol = #
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 35 r02				; set ascii code 35 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav r12 r01					; ready direction
+    cal add 0 r01				; test for direction 0
+    ifz 3					; east direction (1, 0)
+
+      cal add 1 r10				; dx = 1
+      sav r01 r10				; update ipx
+
+      cal add 0 r11				; dy = 0
+      sav r01 r11				; update ipy
+
+    rmv 3					; end east branch
+
+    sav r12 r01					; ready direction
+    cal add -1 r01				; test for direction 1
+    ifz 3					; south direction (0, 1)
+
+      cal add 0 r10				; dx = 0
+      sav r01 r10				; update ipx
+
+      cal add 1 r11				; dy = 1
+      sav r01 r11				; update ipy
+
+    rmv 3					; end south branch
+
+    sav r12 r01					; ready direction
+    cal add -2 r01				; test for direction 2
+    ifz 3					; west direction (-1, 0)
+
+      cal add -1 r10				; dx = -1
+      sav r01 r10				; update ipx
+
+      cal add 0 r11				; dy = 0
+      sav r01 r11				; update ipy
+
+    rmv 3					; end west branch
+
+    sav r12 r01					; ready direction
+    cal add -3 r01				; test for direction 3
+    ifz 3					; north direction (0, -1)
+
+      cal add 0 r10				; dx = 0
+      sav r01 r10				; update ipx
+
+      cal add -1 r11				; dy = -1
+      sav r01 r11				; update ipy
+
+    rmv 3					; end north branch
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = #
+
+  cal add -103 r04				; 103 = g
+  ifz 2						; symbol = g
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 103 r02				; set ascii code 103 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; get y
+    sav r02 r06					; preserve y
+
+    executestd stack/pop.craw			; get x
+    sav r02 r05					; preserve x
+
+    sav 80 r02					; first multiply value
+    sav r06 r03					; y is second multiply value
+
+    executestd math/multiply.craw		; 80 * y
+
+    cal add r05 r02				; 80 * y + x to find memory address
+
+    io mem addr r01				; access symbol address
+    io mem read r02				; read symbol into push input
+
+    executestd stack/push.craw			; push ascii symbol into stack
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = g
+
+  cal add -112 r04				; 112 = p
+  ifz 2						; symbol = p
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 112 r02				; set ascii code 112 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    executestd stack/pop.craw			; get y
+    sav r02 r06					; preserve y
+
+    executestd stack/pop.craw			; get x
+    sav r02 r05					; preserve x
+
+    executestd stack/pop.craw			; get char code
+    sav r02 r07					; preserve code
+
+    sav 80 r02					; first multiply value
+    sav r06 r03					; y is second multiply value
+
+    executestd math/multiply.craw		; 80 * y
+
+    cal add r05 r02				; 80 * y + x to find memory address
+
+    io mem addr r01				; access symbol address
+    io mem write r07				; write code    
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = p
+
+  cal add -38 r04				; 38 = &
+  ifz 2						; symbol = &
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 38 r02				; set ascii code 38 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    sav 0 r05					; init sum
+    sav 0 r06					; init done flag
+
+    3						; integer key loop
+
+      sav 0 r02					; reset key test register
+
+      io keyboard poll r02			; get key
+
+      cal add 5 r02				; test for Enter
+      ifz 4					; Enter pressed
+
+        sav r05 r02				; set sum to push input
+        executestd stack/push.craw		; push sum
+
+        jmp 10					; jump out of key loop
+
+      rmv 4					; end Enter check
+
+      ifz 4					; test for no key press
+        jmp 3					; continue loop
+      rmv 4					; end no key check
+
+      cal add -48 r02				; get decimal value
+      ifl 4					; code < decimal
+        jmp 3					; continue loop
+      rmv 4					; end code < decimal check
+
+      cal add -9 r01				; decimal - 48 - 9 < 0
+      ifg 4					; code > decimal
+        jmp 3					; continue loop
+      rmv 4					; end code > decimal
+
+      sav 3 r01					; shift amount (x8)
+      cal shl r05 r01				; sum * 8
+      cal add r05 r01				; sum * 9
+      cal add r05 r01				; sum * 10
+      cal add r02 r01				; 10 * sum + new_digit + 48
+      cal add -48 r01				; 10 * sum + new_digit
+      sav r01 r05				; update sum
+
+      jmp 3					; continue key loop
+
+    rmv 3					; free label
+
+    10						; key loop exit
+    rmv 10					; free label
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = &
+
+  cal add -126 r04				; 126 = ~
+  ifz 2						; symbol = ~
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 126 r02				; set ascii code 126 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    3						; keyboard loop
+
+      sav 0 r02					; reset code register
+
+      io keyboard poll r02			; read key code
+
+      sav r02 r01				; ready code
+      ifz 4					; test for empty code
+        jmp 3					; continue loop
+      rmv 4					; end empty code check
+
+    rmv 3					; free label
+
+    executestd stack/push.craw			; push non-zero key code
+
+    jmp 1					; continue loop
+
+  rmv 2						; end symbol = ~
+
+  cal add -64 r04				; 64 = @
+  ifz 2						; symbol = @
+
+    sav r13 r01					; ready smf
+    ifg 3					; string mode
+
+      sav 64 r02				; set ascii code 64 to stack push input
+      executestd stack/push.craw		; push ascii value to stack
+
+      jmp 1					; continue loop
+
+    rmv 3					; end string mode check
+
+    stp						; terminate program
+
+  rmv 2						; end symbol = @
+
+  jmp 1						; other code, continue loop
+
+stp
