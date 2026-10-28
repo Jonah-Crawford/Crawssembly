@@ -131,8 +131,6 @@ sav 0 r13					; init string mode flag (smf)
 
 1						; main loop
 
-;  io text newline rff
-
   sav r12 r01					; ready direction
   cal add 0 r01					; test for direction 0
   ifz 2						; east direction (1, 0)
@@ -144,9 +142,6 @@ sav 0 r13					; init string mode flag (smf)
     sav r01 r11					; update ipy
 
   rmv 2						; end east branch
-
-;  io text int r10
-;  io text newline rff
 
   sav r12 r01					; ready direction
   cal add -1 r01				; test for direction 1
@@ -160,9 +155,6 @@ sav 0 r13					; init string mode flag (smf)
 
   rmv 2						; end south branch
 
-;  io text int r10
-;  io text newline rff
-
   sav r12 r01					; ready direction
   cal add -2 r01				; test for direction 2
   ifz 2						; west direction (-1, 0)
@@ -174,9 +166,6 @@ sav 0 r13					; init string mode flag (smf)
     sav r01 r11					; update ipy
 
   rmv 2						; end west branch
-
-;  io text int r10
-;  io text newline rff
 
   sav r12 r01					; ready direction
   cal add -3 r01				; test for direction 3
@@ -190,40 +179,25 @@ sav 0 r13					; init string mode flag (smf)
 
   rmv 2						; end north branch
 
-;  io text int r10
-;  io text newline rff
-
   cal add -80 r10				; test for +x wrap
   ifz 2						; +x wrap
     sav 0 r10					; wrap x
   rmv 2						; end +x wrap check
-
-;  io text int r10
-;  io text newline rff
 
   cal add -25 r11				; test for +y wrap
   ifz 2						; +y wrap
     sav 0 r11					; wrap y
   rmv 2						; end +y wrap check
 
-;  io text int r10
-;  io text newline rff
-
   cal add 1 r10					; test for -x wrap
   ifz 2						; -x wrap
     sav 79 r10					; wrap x
   rmv 2						; end -x wrap check
 
-;  io text int r10
-;  io text newline rff
-
   cal add 1 r11					; test for -y wrap
   ifz 2						; -y wrap
     sav 24 r11					; wrap y
   rmv 2						; end -y wrap check
-
-;  io text int r10
-;  io text newline rff
 
   sav 80 r02					; set 80 as first multiply input
   sav r11 r03					; set ipy to second multiply input
@@ -232,20 +206,8 @@ sav 0 r13					; init string mode flag (smf)
 
   cal add r10 r02				; 80 * ipy + ipx = memory location
 
-;  io text int r10
-;  io text space rff
-;  io text int r11
-;  io text space rff
-;  io text int r01
-;  io text newline rff
-
   io mem addr r01				; get symbol location in memory
   io mem read r04				; read symbol into r04
-
-;  io text int r04
-;  io text space rff
-;  io text char r04
-;  io text newline rff
 
   cal add -48 r04				; 48 = 0
   ifz 2						; symbol = 0
@@ -1007,7 +969,6 @@ sav 0 r13					; init string mode flag (smf)
 
     io mem addr r01				; access symbol address
     io mem read r02				; read symbol into push input
-
 
     executestd stack/push.craw			; push ascii symbol into stack
 

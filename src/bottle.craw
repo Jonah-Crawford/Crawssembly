@@ -1,0 +1,214 @@
+sav 99 r02
+
+1
+
+  io text int r02
+
+  io text space rff
+  sav 98 r01
+  io text char r01
+  sav 111 r01
+  io text char r01
+  sav 116 r01
+  io text char r01
+  io text char r01
+  sav 108 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 115 r01
+  io text char r01
+  io text space rff
+  sav 111 r01
+  io text char r01
+  sav 102 r01
+  io text char r01
+  io text space rff
+  sav 98 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  io text space rff
+  sav 111 r01
+  io text char r01
+  sav 110 r01
+  io text char r01
+  io text space rff
+  sav 116 r01
+  io text char r01
+  sav 104 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  io text space rff
+  sav 119 r01
+  io text char r01
+  sav 97 r01
+  io text char r01
+  sav 108 r01
+  io text char r01
+  io text char r01
+  sav 44 r01
+  io text char r01
+
+  io text newline rff
+
+  io text int r02
+
+  io text space rff
+  sav 98 r01
+  io text char r01
+  sav 111 r01
+  io text char r01
+  sav 116 r01
+  io text char r01
+  io text char r01
+  sav 108 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 115 r01
+  io text char r01
+  io text space rff
+  sav 111 r01
+  io text char r01
+  sav 102 r01
+  io text char r01
+  io text space rff
+  sav 98 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  sav 46 r01
+  io text char r01
+
+  io text newline rff
+
+  sav 84 r01
+  io text char r01
+  sav 97 r01
+  io text char r01
+  sav 107 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  io text space rff
+  sav 111 r01
+  io text char r01
+  sav 110 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  io text space rff
+  sav 100 r01
+  io text char r01
+  sav 111 r01
+  io text char r01
+  sav 119 r01
+  io text char r01
+  sav 110 r01
+  io text char r01
+  sav 44 r01
+  io text char r01
+  io text space rff
+  sav 112 r01
+  io text char r01
+  sav 97 r01
+  io text char r01
+  sav 115 r01
+  io text char r01
+  io text char r01
+  io text space rff
+  sav 105 r01
+  io text char r01
+  sav 116 r01
+  io text char r01
+  io text space rff
+  sav 97 r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  sav 111 r01
+  io text char r01
+  sav 117 r01
+  io text char r01
+  sav 110 r01
+  io text char r01
+  sav 100 r01
+  io text char r01
+  sav 44 r01
+  io text char r01
+
+  io text newline rff
+
+  cal add -1 r02
+  sav r01 r02
+
+  io text int r01
+
+  io text space rff
+  sav 98 r01
+  io text char r01
+  sav 111 r01
+  io text char r01
+  sav 116 r01
+  io text char r01
+  io text char r01
+  sav 108 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  sav 115 r01
+  io text char r01
+  io text space rff
+  sav 111 r01
+  io text char r01
+  sav 102 r01
+  io text char r01
+  io text space rff
+  sav 98 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  io text char r01
+  sav 114 r01
+  io text char r01
+  io text space rff
+  sav 111 r01
+  io text char r01
+  sav 110 r01
+  io text char r01
+  io text space rff
+  sav 116 r01
+  io text char r01
+  sav 104 r01
+  io text char r01
+  sav 101 r01
+  io text char r01
+  io text space rff
+  sav 119 r01
+  io text char r01
+  sav 97 r01
+  io text char r01
+  sav 108 r01
+  io text char r01
+  io text char r01
+  sav 46 r01
+  io text char r01
+
+  io text newline rff
+  io text newline rff
+
+  sav r02 r01
+
+  ifz 2
+    stp
+  rmv 2
+
+  jmp 1

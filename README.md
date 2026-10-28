@@ -18,14 +18,14 @@ Related Repos:
 
 ## Contents
 
-- [Why does Crawssembly exist?](#why-does-crawssembly-exist)
-- [Installation](#how-to-install-crawssembly)
-- [Your First Program](#your-first-program)
-- [Beginner Overview](#what-will-i-learn)
-- [Detailed Guide](#detailed-guide)
-- [Quick Reference](#quick-reference)
-- [Crawssembly Package Manager](#crawssembly-package-manager)
-- [Legal](#legal)
+- Why does Crawssembly exist?
+- Installation
+- Your First Program
+- Beginner Overview
+- Detailed Guide
+- Quick Reference
+- Crawssembly Package Manager
+- Legal
 
 ## Why does Crawssembly exist?
 
@@ -2435,8 +2435,6 @@ All code was written by **Jonah 'The Craw' Crawford**, with help of AI (Artifici
 > Don't like AI code? Become a volunteer, make a PR, and get rid of it!
 
 ### Thanks
-
-Thank you to the **Hack Club** team who allowed me the platform and people to develop and improve Crawssembly's culture.
 
 Thank you to **Koy Camerini-Yachdav** who tested Crawssembly on macOS, and their amazing work making detailed error reports.
 

@@ -1,0 +1,109 @@
+; render.craw
+
+io text clear rff			; clear terminal
+
+sav 67 r01				; "Crawsynth"
+io text char r01
+sav 114 r01
+io text char r01
+sav 97 r01
+io text char r01
+sav 119 r01
+io text char r01
+sav 115 r01
+io text char r01
+sav 121 r01
+io text char r01
+sav 110 r01
+io text char r01
+sav 116 r01
+io text char r01
+sav 104 r01
+io text char r01
+
+io text newline rff			; drop cursor down
+
+sav r20 r24				; line index, start at top bar
+
+10					; line render loop
+
+  io text int r24			; print line index
+
+  io text space rff			; "   "
+  io text space rff
+  io text space rff
+
+  sav r22 r25				; column index, start at left bar
+
+  11					; note column loop
+
+    sav 80 r02				; note length into multipler input
+    cal add r20 r24			; get top bar offset
+    sav r01 r03				; line index into multipler input
+
+    executestd math/multiply.craw	; 80 * line -> r02
+
+    cal add r02 r25			; 80 * line + column (note offset)
+    cal add rec r01			; heap address + note offset -> address
+    cal add r22 r01			; add left bar offset
+    cal add 1 r01			; include proper heap header offset
+
+    io mem addr r01			; get note address
+    io mem read r01			; read flag
+
+    ifz 12				; not on
+      io text space rff			; " "
+    rmv 12				; end not on branch
+
+    ifg 12				; on
+
+      sav 35 r01			; ascii code for #
+      io text char r01			; "#"
+
+    rmv 12				; end on branch
+
+    cal add 1 r25			; increment column index
+    sav r25 r01				; update column index
+
+    cal add -80 r01			; test for column out-of-bounds
+    ifz 12				; column out-of-bounds
+
+      sav 0 r25				; reset column index
+      cal add 1 r24			; increment row index
+      sav r01 r24			; update row index
+
+    rmv 12				; end column out-of-bounds check
+
+    cal add -40 r24			; test for row out-of-bounds
+    
+
+
+
+
+
+
+
+  rmv 11				; free label
+
+  io text newline rff			; drop cursor down
+
+rmv 10					; free label
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

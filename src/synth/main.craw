@@ -1,0 +1,68 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; CrawSynth                             ;
+; Basic music creation program          ;
+;                                       ;
+; Arrow keys to move note cursor        ;
+; Space to toggle note                  ;
+; Enter to start/stop playback          ;
+;                                       ;
+;                     2026 CRAW SYSTEMS ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+executestd heap/init.craw		; init the casm heap for song store
+
+sav 56 r01				; 0b0..111000
+sav 7 r02				; shift amount
+cal shl r01 r02				; 0b0..1110000000000
+cal add 32 r01 				; 0b0..1110000100000 (7200)
+
+sav r01 r02				; ready heap block size to alloc input
+
+executestd heap/alloc.craw		; allocate block on heap (heap pointer = rec)
+
+io text clear rff			; clear the terminal
+
+sav 0 r10				; cursorx
+sav 0 r11				; cursory
+
+sav 40 r20				; top bar
+sav 0 r21				; bottom bar
+sav 0 r22				; left bar
+sav 80 r23				; right bar
+
+1					; main input loop
+
+  io keyboard poll r01			; get key press
+
+  ifz 2					; no key pressed
+    jmp 1				; continue input loop
+  rmv 2					; end no key check
+
+  
+
+
+
+
+rmv 1					; free label
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
